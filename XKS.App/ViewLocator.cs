@@ -4,9 +4,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using XKS.ViewModels;
+using XKS.App.ViewModels;
 
-namespace XKS
+namespace XKS.App
 {
     public class ViewLocator : IDataTemplate
     {

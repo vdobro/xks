@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Markup.Xaml;
 
-namespace XKS
+namespace XKS.App
 {
     public class App : Application
     {

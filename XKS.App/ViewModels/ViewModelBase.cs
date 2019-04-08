@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ReactiveUI;
 
-namespace XKS.ViewModels
+namespace XKS.App.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {

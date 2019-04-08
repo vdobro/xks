@@ -1,10 +1,10 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Logging.Serilog;
-using XKS.ViewModels;
-using XKS.Views;
+using XKS.App.ViewModels;
+using XKS.App.Views;
 
-namespace XKS
+namespace XKS.App
 {
     class Program
     {

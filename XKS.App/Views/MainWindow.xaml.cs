@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace XKS.Views
+namespace XKS.App.Views
 {
     public class MainWindow : Window
     {

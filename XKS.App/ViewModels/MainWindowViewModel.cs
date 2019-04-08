@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace XKS.ViewModels
+namespace XKS.App.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
