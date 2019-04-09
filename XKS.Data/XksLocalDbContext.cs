@@ -1,6 +1,7 @@
+
 using Microsoft.EntityFrameworkCore;
 
-namespace XKS.Domain.Repository.Local
+namespace XKS.Data
 {
 	public class XksLocalDbContext : DbContext
 	{
