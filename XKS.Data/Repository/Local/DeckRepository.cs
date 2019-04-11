@@ -1,7 +1,8 @@
 using System;
 using XKS.Domain.Model;
+using XKS.Domain.Repository;
 
-namespace XKS.Domain.Repository.Local
+namespace XKS.Data.Repository.Local
 {
 	public class DeckRepository : IBaseRepository<Deck>
 	{
