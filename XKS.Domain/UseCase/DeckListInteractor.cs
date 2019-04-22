@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace XKS.Domain.UseCase
 {
-    public class DeckListInteractor
-    {
-    }
+	public class DeckListInteractor
+	{
+	}
 }

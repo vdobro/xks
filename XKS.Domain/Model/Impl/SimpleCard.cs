@@ -8,7 +8,6 @@ namespace XKS.Domain.Model.Impl
 
 		public SimpleCard(string question, string answer)
 		{
-			
 		}
 	}
 }
