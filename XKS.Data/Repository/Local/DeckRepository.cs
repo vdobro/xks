@@ -6,22 +6,22 @@ namespace XKS.Data.Repository.Local
 {
 	public class DeckRepository : IBaseRepository<Deck>
 	{
-		public Deck find(Guid id)
+		public Deck Read(Guid id)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Deck add(Deck entity)
+		public Deck Create(Deck entity)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Deck update(Deck entity)
+		public Deck Update(Deck entity)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Deck delete(Deck entity)
+		public Deck Delete(Deck entity)
 		{
 			throw new NotImplementedException();
 		}

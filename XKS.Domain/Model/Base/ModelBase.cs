@@ -1,6 +1,6 @@
 using System;
 
-namespace XKS.Domain.Model
+namespace XKS.Domain.Model.Base
 {
 	public abstract class ModelBase
 	{

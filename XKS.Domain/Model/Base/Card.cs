@@ -1,7 +1,11 @@
-namespace XKS.Domain.Model
+namespace XKS.Domain.Model.Base
 {
-	abstract public class Card : ModelBase
+	public abstract class Card : ModelBase
 	{
 		public abstract string TypeName { get; }
+
+		public abstract bool IsAnswerCorrect(string answer);
+
+		public abstract string GetRepresentativeAnswer();
 	}
 }

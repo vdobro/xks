@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using XKS.Domain.Model.Base;
 
 namespace XKS.Domain.Model
 {

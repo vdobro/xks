@@ -1,16 +1,17 @@
 using System;
 using XKS.Domain.Model;
+using XKS.Domain.Model.Base;
 
 namespace XKS.Domain.Repository
 {
 	public interface IBaseRepository<T> where T : ModelBase
 	{
-		T find(Guid id);
+		T Create(T entity);
 
-		T add(T entity);
+		T Read(Guid id);
+		
+		T Update(T entity);
 
-		T update(T entity);
-
-		T delete(T entity);
+		T Delete(T entity);
 	}
 }

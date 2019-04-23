@@ -2,16 +2,22 @@ using System;
 using Gtk;
 using XKS.App.Resource;
 using UI = Gtk.Builder.ObjectAttribute;
+using Window = Gtk.Window;
 
 namespace XKS.App
 {
 	class MainWindowController : Window
 	{
-		[UI] private Entry answerEntryBox = null;
-		[UI] private Button submitAnswerButton = null;
-		[UI] private Stack mainSwitcherStack = null;
+		[UI] private Stack topStack = null;
 
-		private int _counter;
+		[UI] private Label questionLabel = null;
+		
+		[UI] private Box answerViewBox = null;
+		[UI] private Label answerLabel = null;
+		
+		[UI] private Entry answerEntryBox = null;
+
+		private bool cardAnswered = false;
 
 		public MainWindowController() : this(
 			new Builder(ResourceConfiguration.MainWindowFile))
@@ -24,7 +30,6 @@ namespace XKS.App
 			builder.Autoconnect(this);
 
 			DeleteEvent += Window_DeleteEvent;
-			submitAnswerButton.Clicked += OnAnswerSubmitted;
 		}
 
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
@@ -32,10 +37,30 @@ namespace XKS.App
 			Application.Quit();
 		}
 
-		private void OnAnswerSubmitted(object sender, EventArgs a)
+		private void OnEnterClicked(object sender, EventArgs a)
 		{
-			_counter++;
-			answerEntryBox.Text = "Hello World! This button has been clicked " + _counter + " time(s).";
+			if (cardAnswered)
+			{
+				cardAnswered = false;
+				SwitchToAnswerMode();
+			}
+			else
+			{
+				cardAnswered = true;
+				SwitchToQuestionMode();
+			}
+			
+		}
+
+		private void SwitchToAnswerMode()
+		{
+			topStack.VisibleChild = answerViewBox;
+			
+		}
+
+		private void SwitchToQuestionMode()
+		{
+			topStack.VisibleChild = questionLabel;
 		}
 	}
 }
