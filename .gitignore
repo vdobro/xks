@@ -367,3 +367,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+#GitLab runner local build files
+builds/

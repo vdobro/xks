@@ -49,7 +49,6 @@ namespace XKS.App
 				cardAnswered = true;
 				SwitchToQuestionMode();
 			}
-			
 		}
 
 		private void SwitchToAnswerMode()
