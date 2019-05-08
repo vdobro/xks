@@ -1,0 +1,46 @@
+image: microsoft/dotnet:latest
+
+stages:
+  - build
+  - package
+
+variables:
+  root_project: "xks"
+  project: "XKS.Launcher"
+  artifact_name: "$root_project-$CI_COMMIT_REF_SLUG-$CI_JOB_NAME"
+  publish_args: "$project/$project.csproj -c Release --self-contained -r "
+
+before_script:
+  - dotnet restore
+
+build:
+  stage: build
+  script:
+    - dotnet build --no-incremental -c Release
+
+package_linux:
+  stage: package
+  script: dotnet publish $publish_args linux-x64 -o ../$root_project-linux-x64
+  artifacts:
+    name: "$artifact_name"
+    expire_in: 4 weeks
+    paths:
+      - $root_project-linux-x64/
+      
+package_windows:
+  stage: package
+  script: dotnet publish $publish_args win-x64 -o ../$root_project-windows-x64
+  artifacts:
+    name: "$artifact_name"
+    expire_in: 4 weeks
+    paths:
+      - $root_project-windows-x64/
+      
+package_osx:
+  stage: package
+  script: dotnet publish $publish_args osx-x64 -o ../$root_project-osx-x64
+  artifacts:
+    name: "$artifact_name"
+    expire_in: 4 weeks
+    paths:
+      - $root_project-osx-x64/
