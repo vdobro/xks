@@ -8,6 +8,8 @@ namespace XKS.App
 {
 	class MainWindowController : Window
 	{
+		#region UI
+
 		[UI] private Stack topStack = null;
 
 		[UI] private Label questionLabel = null;
@@ -17,7 +19,9 @@ namespace XKS.App
 		
 		[UI] private Entry answerEntryBox = null;
 
-		private bool cardAnswered = false;
+		#endregion
+
+		private bool _cardAnswered = false;
 
 		public MainWindowController() : this(
 			new Builder(ResourceConfiguration.MainWindowFile))
@@ -30,6 +34,7 @@ namespace XKS.App
 			builder.Autoconnect(this);
 
 			DeleteEvent += Window_DeleteEvent;
+			answerEntryBox.Activated += OnEnterClicked;
 		}
 
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
@@ -39,14 +44,14 @@ namespace XKS.App
 
 		private void OnEnterClicked(object sender, EventArgs a)
 		{
-			if (cardAnswered)
+			if (_cardAnswered)
 			{
-				cardAnswered = false;
+				_cardAnswered = false;
 				SwitchToAnswerMode();
 			}
 			else
 			{
-				cardAnswered = true;
+				_cardAnswered = true;
 				SwitchToQuestionMode();
 			}
 			
@@ -55,7 +60,6 @@ namespace XKS.App
 		private void SwitchToAnswerMode()
 		{
 			topStack.VisibleChild = answerViewBox;
-			
 		}
 
 		private void SwitchToQuestionMode()
