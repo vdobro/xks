@@ -2,6 +2,7 @@ image: microsoft/dotnet:latest
 
 stages:
   - build
+  - test
   - package
 
 variables:
@@ -17,6 +18,16 @@ build:
   stage: build
   script:
     - dotnet build --no-incremental -c Release
+
+test:
+  stage: test
+  script: dotnet test --logger "junit;LogFilePath=test-results.xml"
+  artifacts:
+    reports:
+      junit: 
+        - XKS.Domain.Tests/test-results.xml
+        - XKS.Data.Tests/test-results.xml
+        - XKS.App.Tests/test-results.xml
 
 package_linux:
   stage: package
