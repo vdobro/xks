@@ -12,10 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GtkSharp" Version="3.22.24.*" />
+    <PackageReference Include="GtkSharp" Version="3.22.24.37" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XKS.Core\XKS.Core.csproj" />
     <ProjectReference Include="..\XKS.Domain\XKS.Domain.csproj" />
   </ItemGroup>
 

@@ -2,7 +2,6 @@ using System;
 using Gtk;
 using XKS.App.Resource;
 using UI = Gtk.Builder.ObjectAttribute;
-using Window = Gtk.Window;
 
 namespace XKS.App
 {

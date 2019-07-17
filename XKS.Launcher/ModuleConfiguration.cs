@@ -2,43 +2,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using XKS.Domain.Configuration;
+using XKS.Core.Configuration;
+using XKS.Core.Infrastructure;
 
 namespace XKS.Launcher
 {
 	public static class ModuleConfiguration
 	{
 		private static readonly object LockKey = new object();
-		private static readonly ICollection<IApplicationModule> modules 
+
+		private static readonly ICollection<IApplicationModule> Modules
 			= new List<IApplicationModule>();
-		private static bool AlreadyStarted = false;
+
+		private static bool _alreadyStarted = false;
 
 		public static void StartApplication()
 		{
 			lock (LockKey)
 			{
-				if (AlreadyStarted)
+				if (_alreadyStarted)
 				{
 					throw new Exception("Application has already been started");
 				}
-				
+
+				_alreadyStarted = true;
+
 				RegisterModules();
-				
+
 				InitializeEverything();
-				
+
 				CheckInitializationErrors();
-				
-				StartSingleLaunchableModule();
+
+				StartSingleModule();
 			}
 		}
-		
+
 		private static void RegisterModules()
 		{
 			lock (LockKey)
-			{	
+			{
 				foreach (var moduleType in AssemblyUtilities.RegisteredModuleTypes)
 				{
-					modules.Add((IApplicationModule) 
+					Modules.Add((IApplicationModule)
 						Activator.CreateInstance(moduleType));
 				}
 			}
@@ -47,7 +52,7 @@ namespace XKS.Launcher
 		private static void InitializeEverything()
 		{
 			IServiceCollection services = new ServiceCollection();
-			foreach (var module in modules)
+			foreach (var module in Modules)
 			{
 				module.InitializeBeforeStartup(services);
 			}
@@ -57,21 +62,23 @@ namespace XKS.Launcher
 		{
 			lock (LockKey)
 			{
-				var failedInitializations = modules.Where(module => !module.InitializedSuccessfully).ToList();
+				var failedInitializations = Modules.Where(module => 
+					!module.InitializedSuccessfully).ToList();
 				if (failedInitializations.Any())
 				{
 					throw new Exception("Initialization failure in modules: " +
-					                    string.Join(", ", 
-						                    failedInitializations.Select(module => module.DisplayName)));
+					                    string.Join(", ",
+						                    failedInitializations
+						                    .Select(module => module.DisplayName)));
 				}
 			}
 		}
 
-		private static void StartSingleLaunchableModule()
+		private static void StartSingleModule()
 		{
 			lock (LockKey)
 			{
-				foreach (var module in modules)
+				foreach (var module in Modules)
 				{
 					module.OnStartup();
 				}

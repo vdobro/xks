@@ -1,28 +1,23 @@
 using System;
-using Gtk;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using XKS.Core.Configuration;
 
-namespace XKS.App.Configuration
+namespace XKS.Domain
 {
-	[RegisteredModule("App module")]
-	internal sealed class AppModule : IApplicationModule
+	[RegisteredModule("Domain module")]
+	// ReSharper disable once UnusedMember.Global
+	internal sealed class Module : IApplicationModule
 	{
 		public string DisplayName => GetType().AssemblyQualifiedName;
 		public bool InitializedSuccessfully { get; private set; }
-
-		private const string ApplicationId = "com.dobrovolskis.xks"; 
-		
-		private readonly Application _app =
-			new Application(ApplicationId, GLib.ApplicationFlags.None);
 
 		public void InitializeBeforeStartup(IServiceCollection services)
 		{
 			try
 			{
-				Application.Init();
-				_app.Register(GLib.Cancellable.Current);
-
+				services.AddMediatR(typeof(Module).Assembly);
+				
 				InitializedSuccessfully = true;
 			}
 			catch (Exception e)
@@ -34,11 +29,7 @@ namespace XKS.App.Configuration
 
 		public void OnStartup()
 		{
-			var win = new DeckListController();
-			_app.AddWindow(win);
-
-			win.Show();
-			Application.Run();
+			
 		}
 	}
 }

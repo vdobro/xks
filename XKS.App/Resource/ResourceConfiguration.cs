@@ -6,5 +6,7 @@ namespace XKS.App.Resource
 		
 		public const string MainWindowUI = "MainWindow";
 		public const string MainWindowFile = MainWindowUI + UIFileExtension;
+		public const string DeckListUI = "DeckList";
+		public const string DeckListWindowFile = DeckListUI + UIFileExtension;
 	}
 }

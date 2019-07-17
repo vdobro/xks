@@ -5,17 +5,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\XKS.Domain\XKS.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Repository" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.3" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.3" />
+      <PackageReference Include="AutoMapper" Version="8.1.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\XKS.Core\XKS.Core.csproj" />
+      <ProjectReference Include="..\XKS.Domain\XKS.Domain.csproj" />
     </ItemGroup>
 
 </Project>
