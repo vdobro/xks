@@ -8,17 +8,10 @@ namespace XKS.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Deck> builder)
 		{
-			builder.ToTable("xks_deck");
-			
-			builder.Property(x => x.ID)
-				.HasColumnName("xks_id")
-				.IsRequired();
-
-			builder.Property(x => x.Name)
-				.HasColumnName("name")
-				.IsRequired();
-			
 			builder.HasKey(x => x.ID);
+
+			builder.Property(x => x.Name).IsRequired();
+			
 		}
 	}
 }

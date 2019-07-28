@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using static XKS.Data.ConnectionConfiguration;
+using static XKS.Data.ConnectionConfiguration.Providers;
 
 namespace XKS.Data.Tests.Infrastructure
 {
@@ -7,8 +9,7 @@ namespace XKS.Data.Tests.Infrastructure
 		public static StandardDbContext Create()
 		{
 			var options = new DbContextOptionsBuilder<StandardDbContext>()
-				.UseNpgsql(ConnectionConfiguration
-					.BuildDatabaseConnectionString("xks_test"))
+				.UseSqlite(BuildDatabaseConnectionString(SQLite, "xks_test"))
 				.Options;
 			var context = new StandardDbContext(options);
 

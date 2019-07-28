@@ -8,6 +8,8 @@ namespace XKS.Data.Backing
 	public class Card : Core.Entities.Entity, ICustomMappingOwner
 	{
 		public virtual ICollection<CardTag> TagLinks { get; private set; }
+		
+		public virtual Deck Deck { get; private set; }
 
 		public Card()
 		{

@@ -1,19 +1,27 @@
-using System.Threading.Tasks;
 using Gtk;
 using XKS.App.Resource;
+using XKS.App.Views;
 using UI = Gtk.Builder.ObjectAttribute;
 
 namespace XKS.App
 {
 	public class DeckListController : Window
 	{
-		[UI] 
-		private ListStore deckListStore = null;
+		[UI] private ListBox deckList = null;
+		[UI] private Stack mainStack = null;
+		[UI] private Button newDeckButton = null;
 
-		[UI] 
-		private Button btnOpen = null;
-		[UI] 
-		private FileChooserDialog deckChooser = null;
+		[UI] private StackSwitcher deckModeStackSwitcher = null;
+		[UI] private Stack learningStack = null;
+		[UI] private Box questionViewBox = null;
+		[UI] private Label questionLabel = null;
+		[UI] private Entry questionEntryBox = null;
+		[UI] private Box answerViewBox = null;
+		[UI] private Label answerLabel = null;
+		[UI] private Button nextQuestionButton = null;
+		[UI] private Button typoButton = null;
+
+		private readonly DeckListView _deckListView;
 		
 		public DeckListController() : this(
 			new Builder(ResourceConfiguration.DeckListWindowFile))
@@ -25,26 +33,17 @@ namespace XKS.App
 		{
 			builder.Autoconnect(this);
 			
+			deckModeStackSwitcher.Hide();
+			
+			_deckListView = new DeckListView(
+				deckModeStackSwitcher, deckList, mainStack, newDeckButton);
+			
 			DeleteEvent += Window_DeleteEvent;
 		}
-		
+
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
 		{
 			Application.Quit();
-		}
-
-		private async Task OnOpenClicked()
-		{
-			for (var i = 0; i < 10; i++)
-			{
-				deckListStore.AppendValues(await GetNextName(i));
-			}
-		}
-
-		private async Task<string> GetNextName(int i)
-		{
-			await Task.Delay(2000);
-			return "Deck" + i;
 		}
 	}
 }

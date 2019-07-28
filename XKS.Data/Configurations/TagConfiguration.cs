@@ -8,8 +8,6 @@ namespace XKS.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Tag> builder)
 		{
-			builder.ToTable("xks_tags");
-			
 			builder.HasKey(x => x.ID);
 		}
 	}

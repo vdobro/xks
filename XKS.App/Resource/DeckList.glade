@@ -26,12 +26,6 @@ Author: Vitalijus Dobrovolskis
   <!-- interface-license-type gplv3 -->
   <!-- interface-name xks -->
   <!-- interface-authors Vitalijus Dobrovolskis -->
-  <object class="GtkListStore" id="deckListStore">
-    <columns>
-      <!-- column-name Name -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkApplicationWindow" id="DeckList">
     <property name="can_focus">False</property>
     <child type="titlebar">
@@ -40,64 +34,29 @@ Author: Vitalijus Dobrovolskis
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="title" translatable="yes">xks</property>
-        <property name="subtitle" translatable="yes">Empty deck</property>
         <property name="spacing">5</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkButtonBox" id="fileButtonBox">
+          <object class="GtkButton" id="newDeckButton">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="layout_style">expand</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_underline">True</property>
+            <property name="always_show_image">True</property>
             <child>
-              <object class="GtkButton" id="btnOpen">
+              <object class="GtkImage" id="newDeckIcon">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_underline">True</property>
-                <property name="always_show_image">True</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="stock">gtk-open</property>
-                  </object>
-                </child>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-new</property>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkMenuButton" id="btnOpenRecent">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_popover">False</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">pan-down-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
-          <object class="GtkStackSwitcher" id="mainStackSwitcher">
+          <object class="GtkStackSwitcher" id="deckModeStackSwitcher">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="stack">deckModeStack</property>
           </object>
           <packing>
             <property name="pack_type">end</property>
@@ -107,70 +66,227 @@ Author: Vitalijus Dobrovolskis
       </object>
     </child>
     <child>
-      <object class="GtkTreeView" id="deckListView">
+      <object class="GtkStack" id="mainStack">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="model">deckListStore</property>
-        <property name="enable_grid_lines">horizontal</property>
-        <child internal-child="selection">
-          <object class="GtkTreeSelection"/>
-        </child>
-        <child>
-          <object class="GtkTreeViewColumn" id="nameColumn">
-            <property name="title" translatable="yes">Deck name</property>
-            <property name="clickable">True</property>
-            <child>
-              <object class="GtkCellRendererText" id="nameTextRenderer"/>
-              <attributes>
-                <attribute name="text">0</attribute>
-              </attributes>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkTreeViewColumn">
-            <property name="title" translatable="yes">column</property>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkFileFilter" id="xksDeckFilter">
-    <patterns>
-      <pattern>*.xks</pattern>
-    </patterns>
-  </object>
-  <object class="GtkFileChooserDialog" id="deckChooser">
-    <property name="can_focus">False</property>
-    <property name="type_hint">dialog</property>
-    <property name="filter">xksDeckFilter</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox">
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
+        <property name="transition_type">slide-left-right</property>
+        <property name="interpolate_size">True</property>
+        <child>
+          <object class="GtkViewport" id="deckListViewport">
+            <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkListBox" id="deckList">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
+            <property name="name">page0</property>
+            <property name="title" translatable="yes">page0</property>
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkStack" id="deckModeStack">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="transition_type">crossfade</property>
+            <property name="interpolate_size">True</property>
+            <child>
+              <object class="GtkStack" id="learningStack">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="transition_type">slide-left-right</property>
+                <child>
+                  <object class="GtkBox" id="questionViewBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="questionLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Here lieth the question</property>
+                        <property name="selectable">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="questionEntryBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="activates_default">True</property>
+                        <property name="truncate_multiline">True</property>
+                        <property name="caps_lock_warning">False</property>
+                        <property name="placeholder_text" translatable="yes">Your answer</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">questionPage</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="answerViewBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="answerLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">The answer is 42.</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="answerViewButtons">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkButton" id="nextQuestionButton">
+                            <property name="label" translatable="yes">Next question</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="typoButton">
+                            <property name="label" translatable="yes">Made a Typo</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">answerPage</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">learningPage</property>
+                <property name="title" translatable="yes">Learn</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkNotebook" id="editModeTabs">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tab_pos">left</property>
+                <property name="scrollable">True</property>
+                <property name="enable_popup">True</property>
+                <child>
+                  <object class="GtkTreeView" id="basicCardsListView">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                  </object>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="tabBasicCardsLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Basic</property>
+                  </object>
+                  <packing>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTreeView" id="graphCardsListView">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="tabGraphsLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Graphs</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTreeView" id="tableListView">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="tabTablesLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Tables</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">editModePage</property>
+                <property name="title" translatable="yes">Edit</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
     </child>

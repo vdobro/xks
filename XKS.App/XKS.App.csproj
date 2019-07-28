@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XKS.Core\XKS.Core.csproj" />
     <ProjectReference Include="..\XKS.Domain\XKS.Domain.csproj" />
   </ItemGroup>
 
