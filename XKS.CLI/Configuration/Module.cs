@@ -1,19 +1,27 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
-using XKS.Core.Configuration;
+using StructureMap;
+using XKS.Common.Configuration;
 
 namespace XKS.CLI.Configuration
 {
-    [RegisteredModule("CLI client module")]
+    [RegisteredModule]
     public class Module : IApplicationModule
     {
         public string DisplayName => GetType().AssemblyQualifiedName;
         public bool InitializedSuccessfully { get; private set; }
-        public void InitializeBeforeStartup(IServiceCollection services)
+
+        public IServiceCollection InitializeBeforeStartup(IServiceCollection services)
         {
             throw new System.NotImplementedException();
         }
 
-        public void OnStartup()
+        public Registry InitializeBeforeStartup()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnStartup(Container container)
         {
             throw new System.NotImplementedException();
         }

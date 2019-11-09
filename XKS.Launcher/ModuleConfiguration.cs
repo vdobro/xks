@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using XKS.Core.Configuration;
-using XKS.Core.Infrastructure;
+using StructureMap;
+using XKS.Common.Configuration;
+using XKS.Common.Infrastructure;
 
 namespace XKS.Launcher
 {
@@ -16,6 +18,8 @@ namespace XKS.Launcher
 
 		private static bool _alreadyStarted = false;
 
+		private static Container? _serviceContainer;
+		
 		public static void StartApplication()
 		{
 			lock (LockKey)
@@ -43,19 +47,22 @@ namespace XKS.Launcher
 			{
 				foreach (var moduleType in AssemblyUtilities.RegisteredModuleTypes)
 				{
-					Modules.Add((IApplicationModule)
-						Activator.CreateInstance(moduleType));
+					var instance = Activator.CreateInstance(moduleType);
+					Modules.Add((IApplicationModule) instance!);
 				}
 			}
 		}
 
 		private static void InitializeEverything()
 		{
-			IServiceCollection services = new ServiceCollection();
-			foreach (var module in Modules)
+			var registries = Modules.Select(x => x.InitializeBeforeStartup());
+			
+			var rootRegistry = new Registry();
+			foreach (var registry in registries)
 			{
-				module.InitializeBeforeStartup(services);
+				rootRegistry.IncludeRegistry(registry);
 			}
+			_serviceContainer = new Container(rootRegistry);
 		}
 
 		private static void CheckInitializationErrors()
@@ -66,7 +73,7 @@ namespace XKS.Launcher
 					!module.InitializedSuccessfully).ToList();
 				if (failedInitializations.Any())
 				{
-					throw new Exception("Initialization failure in modules: " +
+					throw new Exception("Module initialization failure: " +
 					                    string.Join(", ",
 						                    failedInitializations
 						                    .Select(module => module.DisplayName)));
@@ -80,7 +87,7 @@ namespace XKS.Launcher
 			{
 				foreach (var module in Modules)
 				{
-					module.OnStartup();
+					module.OnStartup(_serviceContainer!);
 				}
 			}
 		}

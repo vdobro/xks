@@ -3,15 +3,17 @@ using System.Reflection;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using XKS.Core.Configuration;
-using XKS.Core.Entities;
+using StructureMap;
+using XKS.Common.Configuration;
+using XKS.Common.Entities;
+using XKS.Core.Repository;
 using XKS.Data.Repositories;
-using XKS.Domain.Repository;
+
 using static XKS.Data.ConnectionConfiguration;
 
 namespace XKS.Data
 {
-	[RegisteredModule("Data module")]
+	[RegisteredModule]
 	internal sealed class Module : IApplicationModule
 	{
 		public string DisplayName => GetType().AssemblyQualifiedName;
@@ -19,46 +21,63 @@ namespace XKS.Data
 		public bool InitializedSuccessfully { get; private set; }
 
 		private const string DatabaseName = "xks";
-		private readonly Providers Database = Providers.PostgreSQL;
+		private static readonly Providers Database = Providers.PostgreSQL;
 
-		public void InitializeBeforeStartup(IServiceCollection services)
+		private static DbContextOptions<StandardDbContext> ConfigDbContextOptions(DbContextOptionsBuilder<StandardDbContext> builder)
 		{
-			services.AddDbContext<StandardDbContext>(options =>
+			var connectionString = BuildDatabaseConnectionString(Database, DatabaseName);
+			switch (Database)
 			{
-				var connectionString = BuildDatabaseConnectionString(Database, DatabaseName);
-				switch (Database)
-				{
-					case Providers.SQLite:
-						options.UseSqlite(connectionString);
-						break;
-					case Providers.PostgreSQL:
-						options.UseNpgsql(connectionString);
-						break;
-					case Providers.MSSQL:
-						options.UseSqlServer(connectionString);
-						break;
-					case Providers.MySQL:
-						options.UseMySQL(connectionString);
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-			});
-			
-			services.AddScoped<IEntityRepository<Deck>, DeckRepository>();
+				case Providers.SQLite:
+					builder.UseSqlite(connectionString);
+					break;
+				case Providers.PostgreSQL:
+					builder.UseNpgsql(connectionString);
+					break;
+				case Providers.MSSQL:
+					builder.UseSqlServer(connectionString);
+					break;
+				case Providers.MySQL:
+					builder.UseMySQL(connectionString);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 
-			services.BuildServiceProvider().GetService<StandardDbContext>()
-				.Database.EnsureCreated();
-			
-			services.AddAutoMapper(typeof(DataAutoMapperProfile).GetTypeInfo().Assembly);
+			return builder.Options;
+		}
+		
+		public StructureMap.Registry InitializeBeforeStartup()
+		{
+			// services.AddScoped<IEntityRepository<Deck>, DeckRepository>();
+
+			// services.AddAutoMapper(typeof(DataAutoMapperProfile).GetTypeInfo().Assembly);
 
 			InitializedSuccessfully = true;
+
+			return new Module.Registry(Database);
 		}
 
-		public void OnStartup()
+		public void OnStartup(Container container)
 		{
 			
 		}
+		
+		class Registry : StructureMap.Registry
+		{
+			private Providers databaseProvider;
+			
+			public Registry(Providers databaseProvider)
+			{
+				this.databaseProvider = databaseProvider;
+				
+				For<DbContextOptions<StandardDbContext>>()
+				   .Use(() => ConfigDbContextOptions(new DbContextOptionsBuilder<StandardDbContext>()));
+				For<DbContext>().Use<StandardDbContext>();
 
+				For<IEntityRepository<Deck>>().Use<DeckRepository>();
+			}
+		}
 	}
+	
 }

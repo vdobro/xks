@@ -5,6 +5,8 @@
 
         <IsPackable>false</IsPackable>
 
+        <RootNamespace>XKS.Domain.Tests</RootNamespace>
+
         <LangVersion>8</LangVersion>
 
         <Nullable>enable</Nullable>
@@ -20,7 +22,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\XKS.Core\XKS.Core.csproj" />
-      <ProjectReference Include="..\XKS.Data\XKS.Data.csproj" />
     </ItemGroup>
 
 </Project>

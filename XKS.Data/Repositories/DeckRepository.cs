@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using XKS.Core.Entities;
-using XKS.Domain.Repository;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using XKS.Common.Entities;
+using XKS.Core.Repository;
 
 namespace XKS.Data.Repositories
 {
@@ -12,16 +15,17 @@ namespace XKS.Data.Repositories
 		private readonly StandardDbContext _dbContext;
 		private readonly IMapper mapper;
 
-		public DeckRepository(StandardDbContext dbContext,
-			IMapper mapper)
+		public DeckRepository(StandardDbContext dbContext, IMapper mapper)
 		{
 			_dbContext = dbContext;
 			this.mapper = mapper;
 		}
 		
-		public IQueryable<Deck> GetAll()
+		public async Task<IEnumerable<Deck>> GetAll()
 		{
-			return mapper.ProjectTo<Deck>(_dbContext.Decks);
+			return await _dbContext.Decks
+			                       .ProjectTo<Deck>(mapper.ConfigurationProvider)
+			                       .ToListAsync();
 		}
 
 		public async Task<Deck> Find(Guid id)

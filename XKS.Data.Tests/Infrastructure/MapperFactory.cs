@@ -1,6 +1,6 @@
 using System;
 using AutoMapper;
-using XKS.Core.Infrastructure;
+using XKS.Common.Infrastructure;
 
 namespace XKS.Data.Tests.Infrastructure
 {

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
-using XKS.Core.Infrastructure;
+using XKS.Common.Infrastructure;
 
 namespace XKS.Data.Backing
 {
-	public class Deck : XKS.Core.Entities.Entity, IMapFrom<XKS.Core.Entities.Deck>, IEquatable<Deck>
+	public class Deck : XKS.Common.Entities.Entity,
+	                    //IMapFrom<XKS.Common.Entities.Deck>, 
+	                    IEquatable<Deck>
 	{
 		public override int GetHashCode()
 		{
@@ -40,8 +42,16 @@ namespace XKS.Data.Backing
 
 		public bool Equals(Deck obj)
 		{
+			if (obj is null) return false;
 			return this.ID == obj.ID
-			       && this.Name == obj.Name;
+			    && this.Name == obj.Name;
 		}
+
+		public static Func<Deck, Common.Entities.Deck> Projection =
+			(x) => new Common.Entities.Deck()
+			{
+				Name = x.Name,
+				Cards = { },
+			};
 	}
 }

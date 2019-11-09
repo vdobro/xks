@@ -1,39 +1,37 @@
 using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using XKS.Core.Entities;
+using XKS.Common.Entities;
+using XKS.Core.Repository;
 using XKS.Data.Repositories;
 using XKS.Data.Tests.Infrastructure;
-using XKS.Domain.Repository;
 
 namespace XKS.Data.Tests
 {
 	public class SampleTest : BaseTest
 	{
-		private IEntityRepository<Deck> deckRepo;
+		private IEntityRepository<Deck> _deckRepo;
 		
 		[SetUp]
 		public void Setup()
 		{
-			deckRepo = new DeckRepository(DbContext, Mapper);
+			_deckRepo = new DeckRepository(DbContext, Mapper);
 		}
 
 		[Test]
 		public async Task CreateDeck()
 		{
-			Assert.IsEmpty(deckRepo.GetAll());
+			Assert.IsEmpty(await _deckRepo.GetAll());
 
 			var deck = new Deck()
 			{
 				Name = $"new deck {Guid.NewGuid()}"
 			};
-			deck = await deckRepo.Save(deck);
+			deck = await _deckRepo.Save(deck);
 			
-			Assert.IsNotEmpty(deckRepo.GetAll());
+			Assert.IsNotEmpty(await _deckRepo.GetAll());
 
-			Assert.AreEqual((await deckRepo.Find(deck.ID)).Name, deck.Name);
-			
+			Assert.AreEqual((await _deckRepo.Find(deck.ID)).Name, deck.Name);
 		}
-
 	}
 }

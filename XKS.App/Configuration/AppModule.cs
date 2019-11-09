@@ -1,11 +1,14 @@
 using System;
 using Gtk;
 using Microsoft.Extensions.DependencyInjection;
-using XKS.Core.Configuration;
+using StructureMap;
+using XKS.Common.Configuration;
+using XKS.Core.Service;
+using Container = StructureMap.Container;
 
 namespace XKS.App.Configuration
 {
-	[RegisteredModule("App module")]
+	[RegisteredModule]
 	internal sealed class AppModule : IApplicationModule
 	{
 		public string DisplayName => GetType().AssemblyQualifiedName;
@@ -16,7 +19,7 @@ namespace XKS.App.Configuration
 		private readonly Application _app =
 			new Application(ApplicationId, GLib.ApplicationFlags.None);
 
-		public void InitializeBeforeStartup(IServiceCollection services)
+		public Registry InitializeBeforeStartup()
 		{
 			try
 			{
@@ -24,21 +27,38 @@ namespace XKS.App.Configuration
 				_app.Register(GLib.Cancellable.Current);
 
 				InitializedSuccessfully = true;
+
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
 				InitializedSuccessfully = false;
 			}
+			
+			return new AppRegistry();
 		}
 
-		public void OnStartup()
+		public void OnStartup(Container container)
 		{
-			var win = new DeckListController();
+			/*var win = container.GetInstance<DeckListController>();
+			
 			_app.AddWindow(win);
 
 			win.Show();
-			Application.Run();
+
+			Application.Run();*/
+
+			var e = container.GetInstance<IDeckService>();
+			
+		}
+
+		public class AppRegistry : Registry
+		{
+			public AppRegistry()
+			{
+				For<IExampleService>().Use<ExampleService>();
+				For<DeckListController>().Use<DeckListController>();
+			}
 		}
 	}
 }

@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
         <OutputType>WinExe</OutputType>
+        <LangVersion>8</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -17,8 +19,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\XKS.App\XKS.App.csproj" />
+      <ProjectReference Include="..\XKS.Core\XKS.Core.csproj" />
       <ProjectReference Include="..\XKS.Data\XKS.Data.csproj" />
-      <ProjectReference Include="..\XKS.Domain\XKS.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StructureMap" Version="4.7.1" />
     </ItemGroup>
 
 </Project>
