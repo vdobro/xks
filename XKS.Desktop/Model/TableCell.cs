@@ -4,27 +4,26 @@ namespace XKS.Model
 {
 	public class TableCell : Entity
 	{
-		public virtual TableRow ParentRow { get; private set; }
+		public virtual TableRow? ParentRow { get; private set; }
 
-		public virtual ColumnDefinition Column { get; private set; }
+		public virtual ColumnDefinition? Column { get; private set; }
 
-		public string TextValue { get; set; }
+		public string? TextValue { get; set; }
 
-		public DateTime DateValue { get; set; }
+		public DateTime? DateValue { get; set; }
 
-		public Decimal NumericValue { get; set; }
+		public Decimal? NumericValue { get; set; }
 
-		public Boolean BooleanValue { get; set; }
+		public Boolean? BooleanValue { get; set; }
 
-		public TableCell(TableRow         row,
+		public TableCell(TableRow row,
 		                 ColumnDefinition column,
-		                 string           value) : this(row, column)
+		                 string value) : this(row, column)
 		{
 			void FailConversion()
 			{
-				throw new ArgumentException(
-					$"Cannot convert {value} to type " +
-					Enum.GetName(typeof(ColumnTypes), column.Type));
+				var type = Enum.GetName(typeof(ColumnTypes), column.Type!);
+				throw new ArgumentException($"Cannot convert {value} to type " + type);
 			}
 			
 			switch (column.Type)

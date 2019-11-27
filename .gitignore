@@ -371,4 +371,5 @@ ASALocalRun/
 #GitLab runner local build files
 builds/
 
+/**/*.glade
 /**/test-results.xml

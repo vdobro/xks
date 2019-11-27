@@ -4,7 +4,7 @@ namespace XKS.Model
 {
 	public class Deck : Entity
 	{
-		public string Name { get; set; }
+		public string? Name { get; set; }
 		
 		public virtual ICollection<Table> Tables { get; private set; } 
 			= new List<Table>();

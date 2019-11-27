@@ -15,7 +15,6 @@ namespace XKS
 			new Application(ApplicationId, GLib.ApplicationFlags.None);
 
 		private readonly Container _container;
-		private DeckListController _window;
 
 		public MainApplication()
 		{
@@ -25,20 +24,30 @@ namespace XKS
 			_app.Register(GLib.Cancellable.Current);
 		}
 
-		public void Run(string[] args)
+		public void Run()
 		{
-			_window = _container.GetInstance<DeckListController>();
+			var window = _container.GetInstance<MainWindowController>();
 			
-			_app.AddWindow(_window);
+			_app.AddWindow(window);
 
-			_window.Show();
+			window.Show();
 			
-			Initialize();
+			Initialize(window);
 
 			Application.Run();
 		}
+
+		private async void Initialize(MainWindowController window)
+		{
+			await using var dbContext = _container.GetInstance<DbContext>();
+			
+			await dbContext.Database.EnsureCreatedAsync();
+			await dbContext.Database.MigrateAsync();
+			
+			window.Initialize();
+		}
 		
-		private Container BuildServiceCollection()
+		private static Container BuildServiceCollection()
 		{
 			return new Container(_ =>
 			{
@@ -48,16 +57,6 @@ namespace XKS
 					x.LookForRegistries();
 				});
 			});
-		}
-
-		private async void Initialize()
-		{
-			await using var dbContext = _container.GetInstance<DbContext>();
-			
-			await dbContext.Database.EnsureCreatedAsync();
-			await dbContext.Database.MigrateAsync();
-			
-			_window.Initialize();
 		}
 	}
 }

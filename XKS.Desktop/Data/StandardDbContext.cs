@@ -9,13 +9,14 @@ namespace XKS.Data
 		private const string GeneralPrefix = "xks_";
 		public DbSet<Deck>? Decks { get; set; }
 		public DbSet<Table>? Tables { get; set; }
-		public DbSet<TableRow> TableRows { get; set; }
-		public DbSet<ColumnDefinition> ColumnDefinitions { get; set; }
-		public DbSet<TableCell> Tokens { get; set; }
-		public DbSet<DirectedGraph> Graphs { get; set; }
-		public DbSet<GraphNode> GraphNodes { get; set; }
+		public DbSet<TableRow>? TableRows { get; set; }
+		public DbSet<ColumnDefinition>? ColumnDefinitions { get; set; }
+		public DbSet<TableCell>? Tokens { get; set; }
+		public DbSet<DirectedGraph>? Graphs { get; set; }
+		public DbSet<GraphNode>? GraphNodes { get; set; }
 		
-		public StandardDbContext(DbContextOptions<StandardDbContext> options) : base(options)
+		public StandardDbContext(DbContextOptions<StandardDbContext> options) 
+			: base(options)
 		{
 		}
 

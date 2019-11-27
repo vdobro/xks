@@ -6,7 +6,7 @@ namespace XKS.View
 	{
 		public AppRegistry()
 		{
-			For<DeckListController>().Use<DeckListController>();
+			For<MainWindowController>().Use<MainWindowController>();
 		}
 	}
 }

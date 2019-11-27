@@ -2,60 +2,55 @@ using System;
 using System.Threading.Tasks;
 using Gtk;
 using XKS.Model;
+using XKS.Service;
 
 namespace XKS.View
 {
-    public class MainView
-    {
-        private readonly Stack learningStack;
-        
-        private readonly Box questionViewBox;
-        private readonly Label questionLabel;
-        private readonly Entry questionEntryBox;
-        
-        private readonly Box answerViewBox;
-        private readonly Label answerLabel;
-        private readonly Button nextQuestionButton;
-        private readonly Button typoButton;
+	public class MainView
+	{
+		private readonly IDeckService _deckService;
+		private readonly Stack _learningStack;
 
-        public MainView(
-	        Stack learningStack, 
-            Box questionViewBox, 
-            Label questionLabel,
-            Entry questionEntryBox,
-            Box answerViewBox, 
-            Label answerLabel,
-            Button nextQuestionButton,
-            Button typoButton)
-        {
-            this.learningStack = learningStack 
-                                 ?? throw new ArgumentNullException(nameof(learningStack));
-            this.questionViewBox = questionViewBox 
-                                   ?? throw new ArgumentNullException(nameof(questionViewBox));
-            this.questionLabel = questionLabel 
-                                 ?? throw new ArgumentNullException(nameof(questionLabel));
-            this.questionEntryBox = questionEntryBox 
-                                    ?? throw new ArgumentNullException(nameof(questionEntryBox));
-            this.answerViewBox = answerViewBox 
-                                 ?? throw new ArgumentNullException(nameof(answerViewBox));
-            this.answerLabel = answerLabel
-                               ?? throw new ArgumentNullException(nameof(answerLabel));
-            this.nextQuestionButton = nextQuestionButton 
-                                      ?? throw new ArgumentNullException(nameof(nextQuestionButton));
-            this.typoButton = typoButton 
-                              ?? throw new ArgumentNullException(nameof(typoButton));
-            
-            ConnectEventHandlers();
-        }
+		private readonly Box   _questionViewBox;
+		private readonly Label _questionLabel;
+		private readonly Entry _questionEntryBox;
+		private readonly InfoBar _answerFeedbackBar;
+		private readonly Label _correctAnswerLabel;
+		private readonly Label _actualAnswerLabel;
+		private readonly Button _acceptAnswerButton;
 
-        public async Task Initialize(Deck deck)
-        {
-	        
-        }
+		public MainView(IDeckService deckService,
+		                Stack? learningStack,
+		                Box?   questionViewBox,
+		                Label? questionLabel,
+		                Entry? questionEntryBox,
+		                InfoBar? answerFeedbackBar,
+		                Label? correctAnswerLabel,
+		                Label? actualAnswerLabel,
+		                Button? acceptAnswerButton)
+		{
+			_deckService = deckService;
+			
+			_learningStack = learningStack ?? throw new ArgumentNullException(nameof(learningStack));
+			_questionViewBox = questionViewBox ?? throw new ArgumentNullException(nameof(questionViewBox));
+			_questionLabel = questionLabel ?? throw new ArgumentNullException(nameof(questionLabel));
+			_questionEntryBox = questionEntryBox ?? throw new ArgumentNullException(nameof(questionEntryBox));
+			_answerFeedbackBar = answerFeedbackBar ?? throw new ArgumentNullException(nameof(answerFeedbackBar));
+			_correctAnswerLabel = correctAnswerLabel ?? throw new ArgumentNullException(nameof(correctAnswerLabel));
+			_actualAnswerLabel = actualAnswerLabel ?? throw new ArgumentNullException(nameof(actualAnswerLabel));
+			_acceptAnswerButton = acceptAnswerButton ?? throw new ArgumentNullException(nameof(acceptAnswerButton));
+			
+			ConnectEventHandlers();
+		}
 
-        private void ConnectEventHandlers()
-        {
-            
-        }
-    }
+		public async Task Initialize(Guid deckId)
+		{
+			var deck = await _deckService.Find(deckId);
+			Console.WriteLine($"Deck {deck.Name} was chosen");
+		}
+		
+		private void ConnectEventHandlers()
+		{
+		}
+	}
 }
