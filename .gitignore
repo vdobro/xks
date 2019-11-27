@@ -370,3 +370,5 @@ ASALocalRun/
 
 #GitLab runner local build files
 builds/
+
+/**/test-results.xml
