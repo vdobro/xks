@@ -5,6 +5,6 @@ namespace XKS.Model
 		TEXT,
 		DATE,
 		NUMERIC,
-		BOOLEAN,
+		BOOLEAN
 	}
 }

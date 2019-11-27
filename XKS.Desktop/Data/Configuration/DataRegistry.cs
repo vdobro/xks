@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using StructureMap;
 using XKS.Model;
 using static XKS.Data.Configuration.PersistenceConfiguration;
 
 namespace XKS.Data
 {
-	public class DataRegistry: StructureMap.Registry
+	public class DataRegistry : Registry
 	{
 		public DataRegistry()
 		{

@@ -1,4 +1,5 @@
 using StructureMap;
+using XKS.Controller;
 
 namespace XKS.View
 {

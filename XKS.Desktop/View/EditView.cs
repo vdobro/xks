@@ -4,7 +4,6 @@ namespace XKS.View
 	{
 		public void Initialize()
 		{
-			
 		}
 	}
 }

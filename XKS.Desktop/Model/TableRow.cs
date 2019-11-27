@@ -4,7 +4,7 @@ namespace XKS.Model
 {
 	public class TableRow : Entity
 	{
-		public virtual ICollection<TableCell> Cells { get; private set; } = new List<TableCell>();
+		public virtual ICollection<TableCell> Cells { get; } = new List<TableCell>();
 
 		protected TableRow()
 		{

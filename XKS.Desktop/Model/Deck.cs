@@ -5,11 +5,11 @@ namespace XKS.Model
 	public class Deck : Entity
 	{
 		public string? Name { get; set; }
-		
-		public virtual ICollection<Table> Tables { get; private set; } 
+
+		public virtual ICollection<Table> Tables { get; }
 			= new List<Table>();
-		
-		public virtual ICollection<DirectedGraph> Graphs { get; private set; }
+
+		public virtual ICollection<DirectedGraph> Graphs { get; }
 			= new List<DirectedGraph>();
 
 		protected Deck()
@@ -18,7 +18,7 @@ namespace XKS.Model
 
 		public Deck(string name)
 		{
-			this.Name = name;
+			Name = name;
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace XKS.Data.Configuration
 	{
 		private const           string    DatabaseName = "xks";
 		private static readonly Providers Database     = SQLite;
-		
+
 		public static DbContextOptions<StandardDbContext> ConfigDbContextOptions(
 			DbContextOptionsBuilder<StandardDbContext> builder)
 		{
@@ -32,6 +32,7 @@ namespace XKS.Data.Configuration
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+
 			return builder.Options;
 		}
 	}

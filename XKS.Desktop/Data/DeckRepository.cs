@@ -6,7 +6,7 @@ using XKS.Model;
 
 namespace XKS.Data
 {
-	public class DeckRepository: IEntityRepository<Deck>
+	public class DeckRepository : IEntityRepository<Deck>
 	{
 		private readonly StandardDbContext _dbContext;
 
@@ -14,16 +14,10 @@ namespace XKS.Data
 		{
 			_dbContext = dbContext;
 		}
-		
-		public async Task<IEnumerable<Deck>> GetAll()
-		{
-			return await _dbContext.Decks!.ToListAsync();
-		}
 
-		public async Task<Deck> Find(Guid id)
-		{
-			return await _dbContext.Decks!.FindAsync(id);
-		}
+		public async Task<IEnumerable<Deck>> GetAll() => await _dbContext.Decks!.ToListAsync();
+
+		public async Task<Deck> Find(Guid id) => await _dbContext.Decks!.FindAsync(id);
 
 		public async Task<Deck> Save(Deck entity)
 		{
@@ -39,6 +33,7 @@ namespace XKS.Data
 				_dbContext.Decks!.Add(entity);
 				id = entity.ID;
 			}
+
 			await _dbContext.SaveChangesAsync();
 			return await Find(id);
 		}

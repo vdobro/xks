@@ -3,7 +3,7 @@ using XKS.Service.Implementation;
 
 namespace XKS.Service
 {
-	public class CoreRegistry: Registry
+	public class CoreRegistry : Registry
 	{
 		public CoreRegistry()
 		{
