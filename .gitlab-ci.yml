@@ -1,4 +1,4 @@
-image: microsoft/dotnet:latest
+image: mcr.microsoft.com/dotnet/core/sdk:3.0-alpine
 
 stages:
   - build
@@ -7,7 +7,7 @@ stages:
 
 variables:
   root_project: "xks"
-  project: "XKS.Launcher"
+  project: "XKS.Desktop"
   artifact_name: "$root_project-$CI_COMMIT_REF_SLUG-$CI_JOB_NAME"
   publish_args: "$project/$project.csproj -c Release --self-contained -r "
 
@@ -24,10 +24,8 @@ test:
   script: dotnet test --logger "junit;LogFilePath=test-results.xml"
   artifacts:
     reports:
-      junit: 
-        - XKS.Domain.Tests/test-results.xml
-        - XKS.Data.Tests/test-results.xml
-        - XKS.App.Tests/test-results.xml
+      junit:
+        - XKS.Tests/test-results.xml
 
 package_linux:
   stage: package

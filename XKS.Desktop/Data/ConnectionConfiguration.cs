@@ -7,7 +7,12 @@ namespace XKS.Data
 {
 	public static class ConnectionConfiguration
 	{
-		private const string LocalDbFolder = "XKS";
+		private const string LocalDbFolder = ".xks";
+		
+		private static string Host = "localhost";
+		private static string Username = "vd";
+		private static string Password = "vd";
+		
 		public static string BuildDatabaseConnectionString(Providers provider, string dbName)
 		{
 			switch (provider)
@@ -19,7 +24,7 @@ namespace XKS.Data
 					var path = Path.Combine(appPath, dbName + ".db");
 					return $"Data Source={path}";
 				case Providers.PostgreSQL:
-					return $"Host=localhost;Database={dbName};Username=vd;Password=vd";
+					return $"Host={Host};Database={dbName};Username={Username};Password={Password}";
 				case Providers.MSSQL:
 					break;
 				case Providers.MySQL:
@@ -27,7 +32,7 @@ namespace XKS.Data
 				default:
 					throw new ArgumentOutOfRangeException(nameof(provider), provider, null);
 			}
-			throw new NotImplementedException();
+			throw new NotImplementedException("Database type not supported yet");
 		}
 		
 		public enum Providers

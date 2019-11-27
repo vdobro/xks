@@ -8,5 +8,9 @@ namespace XKS.Model
 	{
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
 		public Guid ID { get; set; }
+
+		protected Entity()
+		{
+		}
 	}
 }

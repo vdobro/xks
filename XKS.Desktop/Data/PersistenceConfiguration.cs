@@ -8,11 +8,12 @@ namespace XKS.Data
 	public static class PersistenceConfiguration
 	{
 		private const           string    DatabaseName = "xks";
-		private static readonly Providers Database     = PostgreSQL;
+		private static readonly Providers Database     = SQLite;
 		
 		public static DbContextOptions<StandardDbContext> ConfigDbContextOptions(
 			DbContextOptionsBuilder<StandardDbContext> builder)
 		{
+			builder.UseLazyLoadingProxies();
 			var connectionString = BuildDatabaseConnectionString(Database, DatabaseName);
 			switch (Database)
 			{

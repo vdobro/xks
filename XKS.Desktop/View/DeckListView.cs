@@ -14,7 +14,7 @@ namespace XKS.View
 		
 		private readonly ListBox deckList;
 		private readonly Stack   mainStack;
-		private readonly Button  newDeckButton;
+		private readonly Button  newItemButton;
 		private readonly Stack   deckModeStack;
 
 		private readonly IEnumerable<Deck> _decks;
@@ -32,37 +32,44 @@ namespace XKS.View
 				                new ArgumentNullException(nameof(deckList));
 			this.mainStack = mainStack ?? throw
 				                 new ArgumentNullException(nameof(mainStack));
-			this.newDeckButton = newItemButton ?? throw
+			this.newItemButton = newItemButton ?? throw
 				                     new ArgumentNullException(nameof(newItemButton));
 			_deckService = deckService;
 		}
 
 		public async Task Initialize()
 		{
-			await _deckService.Create(new Deck()
-			{
-				Name = "Neuer Deck"
-			});
+			await PopulateList();
+			ConnectEventHandlers();
+		}
+
+		public async Task PopulateList()
+		{
 			var decks = await _deckService.GetAll();
 
+			foreach (var listChild in deckList.Children)
+			{
+				deckList.Remove(listChild);
+			}
+			
 			foreach (var deck in decks)
 			{
 				deckList.Add(new DeckListRow(deck));
 			}
 			
 			deckList.ShowAll();
-			
-			ConnectEventHandlers();
 		}
 
 		private void ConnectEventHandlers()
 		{
-			deckList.SelectionNotifyEvent += async (o, args) =>
-			{
-				var row = (DeckListRow) deckList.SelectedRow;
-				var deck = await _deckService.Find(row.DeckId);
-				OnDeckSelected?.Invoke(this, deck);
-			};
+			deckList.SelectionNotifyEvent += OnDeckSelectionChanged;
+		}
+
+		private async void OnDeckSelectionChanged(object o, SelectionNotifyEventArgs args)
+		{
+			var row = (DeckListRow) args.RetVal;
+			var deck = await _deckService.Find(row.DeckId);
+			OnDeckSelected?.Invoke(this, deck);
 		}
 
 		class DeckListRow : ListBoxRow

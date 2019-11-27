@@ -4,5 +4,9 @@ namespace XKS.Model
 	{
 		public string      Title { get; set; }
 		public ColumnTypes Type  { get; set; }
+
+		protected ColumnDefinition()
+		{
+		}
 	}
 }

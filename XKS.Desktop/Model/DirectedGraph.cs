@@ -4,20 +4,20 @@ namespace XKS.Model
 {
 	public class DirectedGraph : Entity
 	{
-		public Deck Deck { get; private set; }
+		public virtual Deck Deck { get; private set; }
 		
 		public virtual ICollection<GraphNode> Nodes { get; set; } = new List<GraphNode>();
 		
-		public GraphNode RootNode { get; set; }
-	}
+		public virtual GraphNode RootNode { get; set; }
 
-	public class GraphNode : Entity
-	{
-		public string Value { get; set; }
-		
-		public virtual ICollection<GraphNode> Adjacent { get; private set; } 
-			= new List<GraphNode>();
-		
-		public GraphNode Parent { get; set; }
-	} 
+		public DirectedGraph(Deck parent)
+		{
+			this.Deck = parent;
+		}
+
+		protected DirectedGraph()
+		{
+			
+		}
+	}
 }
