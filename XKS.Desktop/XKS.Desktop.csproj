@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <LangVersion>8</LangVersion>
+        <Nullable>enable</Nullable>
+        <RootNamespace>XKS</RootNamespace>
+        <Authors>Vitalijus Dobrovolskis</Authors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="**\*.glade" />
+        <EmbeddedResource Include="**\*.glade">
+            <LogicalName>%(Filename)%(Extension)</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="GtkSharp" Version="3.22.25.56" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />
+        <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.18" />
+        <PackageReference Include="StructureMap" Version="4.7.1" />
+    </ItemGroup>
+</Project>
