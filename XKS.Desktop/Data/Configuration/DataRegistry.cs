@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using XKS.Model;
-using static XKS.Data.PersistenceConfiguration;
+using static XKS.Data.Configuration.PersistenceConfiguration;
 
 namespace XKS.Data
 {

@@ -3,7 +3,7 @@ using System.IO;
 using static System.Environment;
 using static System.Environment.SpecialFolder;
 
-namespace XKS.Data
+namespace XKS.Data.Configuration
 {
 	public static class ConnectionConfiguration
 	{

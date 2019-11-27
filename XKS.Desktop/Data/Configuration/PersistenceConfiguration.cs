@@ -1,9 +1,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
-using static XKS.Data.ConnectionConfiguration;
-using static XKS.Data.ConnectionConfiguration.Providers;
+using static XKS.Data.Configuration.ConnectionConfiguration;
+using static XKS.Data.Configuration.ConnectionConfiguration.Providers;
 
-namespace XKS.Data
+namespace XKS.Data.Configuration
 {
 	public static class PersistenceConfiguration
 	{
