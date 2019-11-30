@@ -8,6 +8,9 @@ namespace XKS.Service
 		public CoreRegistry()
 		{
 			For<IDeckService>().Use<DeckService>();
+			For<ITableService>().Use<TableService>();
+			For<ITableCellValidationService>().Use<TableCellValidationService>();
+			For<ITableCellService>().Use<TableCellService>();
 		}
 	}
 }

@@ -14,7 +14,27 @@ namespace XKS.Controller
 
 		private readonly IDeckService _deckService;
 		private readonly MainView     _mainView;
+		
+		#region UI
 
+		[UI] private readonly ListBox? deckList          = null;
+		[UI] private readonly Stack?   mainStack         = null;
+		[UI] private readonly Button?  newItemButton     = null;
+		[UI] private readonly Popover? newItemPopover    = null;
+		[UI] private readonly Entry?   newItemTitleEntry = null;
+
+		[UI] private readonly StackSwitcher? deckModeStackSwitcher = null;
+		[UI] private readonly Stack?         deckModeStack         = null;
+		[UI] private readonly Box?           questionViewBox       = null;
+		[UI] private readonly InfoBar?       answerFeedbackBar     = null;
+		[UI] private readonly Label?         questionLabel         = null;
+		[UI] private readonly Entry?         questionEntryBox      = null;
+		[UI] private readonly Label?         correctAnswerLabel    = null;
+		[UI] private readonly Label?         actualAnswerLabel     = null;
+		[UI] private readonly Button?        acceptButton          = null;
+
+		#endregion
+		
 		public MainWindowController(IDeckService deckService)
 			: this(new Builder(ResourceConfiguration.MainWindowFile),
 			       deckService)
@@ -64,7 +84,13 @@ namespace XKS.Controller
 
 		private async void NewItemTitleEntryOnKeyPressEvent(object? o, EventArgs eventArgs)
 		{
-			await _deckService.Create(new Deck(newItemTitleEntry!.Text));
+			var titleValue = newItemTitleEntry!.Text.Trim();
+			if (string.IsNullOrWhiteSpace(titleValue))
+			{
+				return;
+			}
+
+			await _deckService.Create(new Deck(titleValue));
 			newItemTitleEntry.Text = string.Empty;
 
 			newItemPopover?.Hide();
@@ -87,25 +113,5 @@ namespace XKS.Controller
 			_deckListView.OnDeckSelected -= DeckListViewOnOnDeckSelected;
 			Application.Quit();
 		}
-
-		#region UI
-
-		[UI] private readonly ListBox? deckList          = null;
-		[UI] private readonly Stack?   mainStack         = null;
-		[UI] private readonly Button?  newItemButton     = null;
-		[UI] private readonly Popover? newItemPopover    = null;
-		[UI] private readonly Entry?   newItemTitleEntry = null;
-
-		[UI] private readonly StackSwitcher? deckModeStackSwitcher = null;
-		[UI] private readonly Stack?         deckModeStack         = null;
-		[UI] private readonly Box?           questionViewBox       = null;
-		[UI] private readonly InfoBar?       answerFeedbackBar     = null;
-		[UI] private readonly Label?         questionLabel         = null;
-		[UI] private readonly Entry?         questionEntryBox      = null;
-		[UI] private readonly Label?         correctAnswerLabel    = null;
-		[UI] private readonly Label?         actualAnswerLabel     = null;
-		[UI] private readonly Button?        acceptButton          = null;
-
-		#endregion
 	}
 }

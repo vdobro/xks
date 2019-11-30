@@ -6,7 +6,7 @@ namespace XKS.Model
 	{
 		public virtual ICollection<TableCell> Cells { get; } = new List<TableCell>();
 
-		protected TableRow()
+		public TableRow()
 		{
 		}
 	}

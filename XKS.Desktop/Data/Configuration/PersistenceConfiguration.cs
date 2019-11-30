@@ -23,12 +23,6 @@ namespace XKS.Data.Configuration
 				case PostgreSQL:
 					builder.UseNpgsql(connectionString);
 					break;
-				case MSSQL:
-					builder.UseSqlServer(connectionString);
-					break;
-				case MySQL:
-					builder.UseMySQL(connectionString);
-					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}

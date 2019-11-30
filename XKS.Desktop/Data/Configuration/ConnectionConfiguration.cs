@@ -11,8 +11,6 @@ namespace XKS.Data.Configuration
 		{
 			SQLite,
 			PostgreSQL,
-			MSSQL,
-			MySQL
 		}
 
 		private const string LocalDbFolder = ".xks";
@@ -26,21 +24,15 @@ namespace XKS.Data.Configuration
 			switch (provider)
 			{
 				case Providers.SQLite:
-					var appPath = Path.Combine(GetFolderPath(MyDocuments),
-					                           LocalDbFolder);
+					var appPath = Path.Combine(GetFolderPath(MyDocuments), LocalDbFolder);
 					if (!Directory.Exists(appPath))
 					{
 						Directory.CreateDirectory(appPath);
 					}
-
 					var path = Path.Combine(appPath, dbName + ".db");
 					return $"Data Source={path}";
 				case Providers.PostgreSQL:
 					return $"Host={Host};Database={dbName};Username={Username};Password={Password}";
-				case Providers.MSSQL:
-					break;
-				case Providers.MySQL:
-					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(provider), provider, null);
 			}
