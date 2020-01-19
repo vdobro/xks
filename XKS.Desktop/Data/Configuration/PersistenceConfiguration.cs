@@ -8,7 +8,7 @@ namespace XKS.Data.Configuration
 	public static class PersistenceConfiguration
 	{
 		private const           string    DatabaseName = "xks";
-		private static readonly Providers Database     = SQLite;
+		private static readonly Providers Database     = MariaDB;
 
 		public static DbContextOptions<StandardDbContext> ConfigDbContextOptions(
 			DbContextOptionsBuilder<StandardDbContext> builder)
@@ -22,6 +22,10 @@ namespace XKS.Data.Configuration
 					break;
 				case PostgreSQL:
 					builder.UseNpgsql(connectionString);
+					break;
+				case MySQL:
+				case MariaDB:
+					builder.UseMySql(connectionString);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();

@@ -19,25 +19,25 @@ namespace XKS.View
 		private readonly Box _questionViewBox;
 
 		public MainView(IDeckService deckService,
-		                Stack?       learningStack,
-		                Box?         questionViewBox,
-		                Label?       questionLabel,
-		                Entry?       questionEntryBox,
-		                InfoBar?     answerFeedbackBar,
-		                Label?       correctAnswerLabel,
-		                Label?       actualAnswerLabel,
-		                Button?      acceptAnswerButton)
+		                Stack        learningStack,
+		                Box          questionViewBox,
+		                Label        questionLabel,
+		                Entry        questionEntryBox,
+		                InfoBar      answerFeedbackBar,
+		                Label        correctAnswerLabel,
+		                Label        actualAnswerLabel,
+		                Button       acceptAnswerButton)
 		{
 			_deckService = deckService;
 
-			_learningStack = learningStack ?? throw new ArgumentNullException(nameof(learningStack));
-			_questionViewBox = questionViewBox ?? throw new ArgumentNullException(nameof(questionViewBox));
-			_questionLabel = questionLabel ?? throw new ArgumentNullException(nameof(questionLabel));
-			_questionEntryBox = questionEntryBox ?? throw new ArgumentNullException(nameof(questionEntryBox));
-			_answerFeedbackBar = answerFeedbackBar ?? throw new ArgumentNullException(nameof(answerFeedbackBar));
-			_correctAnswerLabel = correctAnswerLabel ?? throw new ArgumentNullException(nameof(correctAnswerLabel));
-			_actualAnswerLabel = actualAnswerLabel ?? throw new ArgumentNullException(nameof(actualAnswerLabel));
-			_acceptAnswerButton = acceptAnswerButton ?? throw new ArgumentNullException(nameof(acceptAnswerButton));
+			_learningStack = learningStack;
+			_questionViewBox = questionViewBox;
+			_questionLabel = questionLabel;
+			_questionEntryBox = questionEntryBox;
+			_answerFeedbackBar = answerFeedbackBar;
+			_correctAnswerLabel = correctAnswerLabel;
+			_actualAnswerLabel = actualAnswerLabel;
+			_acceptAnswerButton = acceptAnswerButton;
 
 			ConnectEventHandlers();
 		}

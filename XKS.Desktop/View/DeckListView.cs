@@ -8,28 +8,19 @@ namespace XKS.View
 {
 	public class DeckListView
 	{
-		private readonly ListBox _deckList;
-		private readonly Stack   _deckModeStack;
+		public event EventHandler<Deck> OnDeckSelected = delegate { };
+
+		public ListBox DeckList { get; }
 
 		private readonly IDeckService _deckService;
-		private readonly Stack        _mainStack;
-		private readonly Button       _newItemButton;
 
 		public DeckListView(IDeckService deckService,
-		                    Stack?       deckModeStack,
-		                    ListBox?     deckList,
-		                    Stack?       mainStack,
-		                    Button?      newItemButton)
+		                    ListBox      deckList)
 		{
 			_deckService = deckService;
 
-			_deckModeStack = deckModeStack ?? throw new ArgumentNullException(nameof(deckModeStack));
-			_deckList = deckList ?? throw new ArgumentNullException(nameof(deckList));
-			_mainStack = mainStack ?? throw new ArgumentNullException(nameof(mainStack));
-			_newItemButton = newItemButton ?? throw new ArgumentNullException(nameof(newItemButton));
+			DeckList = deckList;
 		}
-
-		public event EventHandler<Deck> OnDeckSelected = delegate { };
 
 		public async Task Initialize()
 		{
@@ -37,31 +28,38 @@ namespace XKS.View
 			ConnectEventHandlers();
 		}
 
-		public async Task PopulateList()
+		public async Task Refresh()
+		{
+			await PopulateList();
+		}
+
+		private async Task PopulateList()
 		{
 			var decks = await _deckService.GetAll();
 
-			foreach (var listChild in _deckList.Children)
+			foreach (var listChild in DeckList.Children)
 			{
-				_deckList.Remove(listChild);
+				DeckList.Remove(listChild);
 			}
 
 			foreach (var deck in decks)
 			{
-				_deckList.Add(new DeckListRow(deck));
+				DeckList.Add(new DeckListRow(deck));
 			}
 
-			_deckList.ShowAll();
+			DeckList.ShowAll();
 		}
 
 		private void ConnectEventHandlers()
 		{
-			_deckList.SelectionNotifyEvent += OnDeckSelectionChanged;
+			DeckList.RowSelected += OnDeckSelectionChanged;
 		}
 
-		private async void OnDeckSelectionChanged(object o, SelectionNotifyEventArgs args)
+		private async void OnDeckSelectionChanged(object? o, EventArgs eventArgs)
 		{
-			var row = (DeckListRow) args.RetVal;
+			var row = (DeckListRow) DeckList.SelectedRow;
+			if (row == null) return;
+
 			var deck = await _deckService.Find(row.DeckId);
 			OnDeckSelected?.Invoke(this, deck);
 		}

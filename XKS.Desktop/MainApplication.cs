@@ -25,7 +25,7 @@ namespace XKS
 
 		public void Run()
 		{
-			var window = _container.GetInstance<MainWindowController>();
+			var window = _container.GetInstance<MainWindow>();
 
 			_app.AddWindow(window);
 
@@ -36,7 +36,7 @@ namespace XKS
 			Application.Run();
 		}
 
-		private async void Initialize(MainWindowController window)
+		private async void Initialize(MainWindow window)
 		{
 			await using var dbContext = _container.GetInstance<DbContext>();
 

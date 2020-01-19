@@ -11,13 +11,16 @@ namespace XKS.Data.Configuration
 		{
 			SQLite,
 			PostgreSQL,
+			MySQL,
+			MariaDB,
 		}
 
 		private const string LocalDbFolder = ".xks";
 
 		private static readonly string Host     = "localhost";
-		private static readonly string Username = "vd";
-		private static readonly string Password = "vd";
+		private static readonly string Port     = "32783";
+		private static readonly string Username = "root";
+		private static readonly string Password = "sa";
 
 		public static string BuildDatabaseConnectionString(Providers provider, string dbName)
 		{
@@ -29,15 +32,17 @@ namespace XKS.Data.Configuration
 					{
 						Directory.CreateDirectory(appPath);
 					}
+
 					var path = Path.Combine(appPath, dbName + ".db");
 					return $"Data Source={path}";
 				case Providers.PostgreSQL:
-					return $"Host={Host};Database={dbName};Username={Username};Password={Password}";
+					return $"Host={Host};Port={Port};Database={dbName};Username={Username};Password={Password}";
+				case Providers.MySQL:
+				case Providers.MariaDB:
+					return $"Server={Host};Port={Port};User Id={Username};Password={Password};Database={dbName}";
 				default:
-					throw new ArgumentOutOfRangeException(nameof(provider), provider, null);
+					throw new ArgumentOutOfRangeException(nameof(provider), "Unsupported database type");
 			}
-
-			throw new NotImplementedException("Database type not supported yet");
 		}
 	}
 }

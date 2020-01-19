@@ -7,7 +7,7 @@ namespace XKS.View
 	{
 		public AppRegistry()
 		{
-			For<MainWindowController>().Use<MainWindowController>();
+			For<MainWindow>().Use<MainWindow>();
 		}
 	}
 }
