@@ -3,37 +3,41 @@ using XKS.Model;
 
 namespace XKS.Service.Implementation
 {
-	public class TableCellValidationService
+	public sealed class TableCellValidationService
 		: ITableCellValidationService
 	{
 		public (bool isValid, object convertedValue) IsValueValid(TableCell cell, string value)
 		{
-			switch (cell.Column?.Type ?? 
+			switch (cell.Column?.Type ??
 			        throw new ArgumentException("Corresponding column of a cell cannot be null"))
 			{
-				case ColumnTypes.TEXT:
+				case ColumnTypes.Text:
 					return (true, value);
-				case ColumnTypes.DATE:
+				case ColumnTypes.Date:
 					if (DateTime.TryParse(value, out var dateVal))
 					{
 						return (true, dateVal);
 					}
+
 					break;
-				case ColumnTypes.NUMERIC:
+				case ColumnTypes.Numeric:
 					if (decimal.TryParse(value, out var decimalVal))
 					{
 						return (true, decimalVal);
 					}
+
 					break;
-				case ColumnTypes.BOOLEAN:
+				case ColumnTypes.Boolean:
 					if (bool.TryParse(value, out var boolVal))
 					{
 						return (true, boolVal);
 					}
+
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+
 			return (false, new object());
 		}
 	}

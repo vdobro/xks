@@ -26,6 +26,78 @@ Author: Vitalijus Dobrovolskis
   <!-- interface-license-type gplv3 -->
   <!-- interface-name xks -->
   <!-- interface-authors Vitalijus Dobrovolskis -->
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="deckListViewAdjustment">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkListStore" id="tableEditorStore">
+    <columns>
+      <!-- column-name Title -->
+      <column type="gchararray"/>
+      <!-- column-name Year -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Something</col>
+        <col id="1" translatable="yes">2019</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Nothing</col>
+        <col id="1" translatable="yes">1996</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Cat</col>
+        <col id="1" translatable="yes">01</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Dog</col>
+        <col id="1" translatable="yes">02</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Me</col>
+        <col id="1" translatable="yes">1997</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Car</col>
+        <col id="1" translatable="yes">5020</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Aachen</col>
+        <col id="1" translatable="yes">52074</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Everything</col>
+        <col id="1" translatable="yes">42</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Most</col>
+        <col id="1" translatable="yes">5</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">E</col>
+        <col id="1" translatable="yes">99</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">A</col>
+        <col id="1" translatable="yes">4</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">B</col>
+        <col id="1" translatable="yes">6</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">C</col>
+        <col id="1" translatable="yes">7</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkApplicationWindow" id="MainWindow">
     <property name="can_focus">False</property>
     <child type="titlebar">
@@ -168,6 +240,7 @@ Author: Vitalijus Dobrovolskis
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="message_type">warning</property>
+                    <property name="revealed">False</property>
                     <child internal-child="action_area">
                       <object class="GtkButtonBox">
                         <property name="can_focus">False</property>
@@ -391,7 +464,7 @@ Author: Vitalijus Dobrovolskis
                     <property name="scrollable">True</property>
                     <property name="enable_popup">True</property>
                     <child>
-                      <object class="GtkViewport">
+                      <object class="GtkViewport" id="graphTab">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -413,7 +486,7 @@ Author: Vitalijus Dobrovolskis
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkViewport">
+                      <object class="GtkViewport" id="tableTab">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -446,14 +519,103 @@ Author: Vitalijus Dobrovolskis
                 </child>
                 <child>
                   <object class="GtkStack" id="itemEditModeStack">
+                    <property name="width_request">300</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkTreeView" id="tableEditor">
+                      <object class="GtkBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection"/>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkToolbar" id="tableEditorToolbar">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="toolbar_style">both-horiz</property>
+                            <child>
+                              <object class="GtkToolButton" id="addColumnButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="is_important">True</property>
+                                <property name="label" translatable="yes">Add column</property>
+                                <property name="use_underline">True</property>
+                                <property name="stock_id">gtk-add</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="homogeneous">True</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <object class="GtkTreeView" id="tableEditor">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="vadjustment">adjustment1</property>
+                                <property name="model">tableEditorStore</property>
+                                <property name="reorderable">True</property>
+                                <property name="rules_hint">True</property>
+                                <property name="enable_grid_lines">both</property>
+                                <property name="activate_on_single_click">True</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection"/>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn">
+                                    <property name="resizable">True</property>
+                                    <property name="title" translatable="yes">Name</property>
+                                    <property name="clickable">True</property>
+                                    <property name="reorderable">True</property>
+                                    <property name="sort_indicator">True</property>
+                                    <property name="sort_column_id">0</property>
+                                    <child>
+                                      <object class="GtkCellRendererText"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn">
+                                    <property name="resizable">True</property>
+                                    <property name="title" translatable="yes">Year</property>
+                                    <property name="clickable">True</property>
+                                    <property name="reorderable">True</property>
+                                    <property name="sort_indicator">True</property>
+                                    <property name="sort_column_id">1</property>
+                                    <child>
+                                      <object class="GtkCellRendererText"/>
+                                      <attributes>
+                                        <attribute name="text">1</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn">
+                                    <property name="title" translatable="yes">column</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
@@ -464,7 +626,7 @@ Author: Vitalijus Dobrovolskis
                   </object>
                   <packing>
                     <property name="resize">True</property>
-                    <property name="shrink">True</property>
+                    <property name="shrink">False</property>
                   </packing>
                 </child>
               </object>
@@ -523,10 +685,5 @@ Author: Vitalijus Dobrovolskis
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="deckListViewAdjustment">
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
 </interface>

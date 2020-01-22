@@ -5,18 +5,18 @@ using XKS.Model;
 
 namespace XKS.Service.Implementation
 {
-	public class TableCellService : ITableCellService
+	public sealed class TableCellService : ITableCellService
 	{
 		private readonly IEntityRepository<TableCell> _cellRepository;
-		private readonly ITableCellValidationService _validationService;
+		private readonly ITableCellValidationService  _validationService;
 
 		public TableCellService(IEntityRepository<TableCell> cellRepository,
-		                        ITableCellValidationService validationService)
+		                        ITableCellValidationService  validationService)
 		{
 			_cellRepository = cellRepository ?? throw new ArgumentNullException(nameof(cellRepository));
 			_validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
 		}
-		
+
 		public async Task SetCellValue(TableCell cell, string value)
 		{
 			void FailConversion()
@@ -34,28 +34,27 @@ namespace XKS.Service.Implementation
 
 			switch (GetCellType(cell))
 			{
-				case ColumnTypes.TEXT:
+				case ColumnTypes.Text:
 					cell.TextValue = (string) returnedValue;
 					break;
-				case ColumnTypes.DATE:
+				case ColumnTypes.Date:
 					cell.DateValue = (DateTime) returnedValue;
 					break;
-				case ColumnTypes.NUMERIC:
+				case ColumnTypes.Numeric:
 					cell.NumericValue = (decimal) returnedValue;
 					break;
-				case ColumnTypes.BOOLEAN:
+				case ColumnTypes.Boolean:
 					cell.BooleanValue = (bool?) returnedValue;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+
 			await _cellRepository.Save(cell);
 		}
 
-		private static ColumnTypes GetCellType(TableCell cell)
-		{
-			return cell.Column?.Type ?? throw new ArgumentException(
-				       "Column corresponding to a cell cannot be null");
-		}
+		private static ColumnTypes GetCellType(TableCell cell) =>
+			cell.Column?.Type ?? throw new ArgumentException(
+				"Column corresponding to a cell cannot be null");
 	}
 }

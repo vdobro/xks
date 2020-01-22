@@ -20,7 +20,7 @@ namespace XKS.Model
 		                 ColumnDefinition column,
 		                 string           textValue) : this(row, column)
 		{
-			this.TextValue = textValue;
+			TextValue = textValue;
 		}
 
 
@@ -28,27 +28,27 @@ namespace XKS.Model
 		                 ColumnDefinition column,
 		                 DateTime         dateTimeValue) : this(row, column)
 		{
-			this.DateValue = dateTimeValue;
+			DateValue = dateTimeValue;
 		}
 
 		public TableCell(TableRow         row,
 		                 ColumnDefinition column,
 		                 decimal          numericValue) : this(row, column)
 		{
-			this.NumericValue = numericValue;
+			NumericValue = numericValue;
 		}
 
 		public TableCell(TableRow         row,
 		                 ColumnDefinition column,
 		                 bool             value) : this(row, column)
 		{
-			this.BooleanValue = value;
+			BooleanValue = value;
 		}
-		
+
 		protected TableCell()
 		{
 		}
-		
+
 		private TableCell(TableRow         parentRow,
 		                  ColumnDefinition column)
 		{

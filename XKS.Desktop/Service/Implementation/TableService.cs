@@ -5,7 +5,7 @@ using XKS.Model;
 
 namespace XKS.Service.Implementation
 {
-	public class TableService : ITableService
+	public sealed class TableService : ITableService
 	{
 		private readonly IEntityRepository<Table> _tableRepository;
 
@@ -13,7 +13,7 @@ namespace XKS.Service.Implementation
 		{
 			_tableRepository = tableRepository ?? throw new ArgumentNullException(nameof(tableRepository));
 		}
-		
+
 		public async Task<Table> Create(string title, Deck deck)
 		{
 			var table = new Table(title, deck);

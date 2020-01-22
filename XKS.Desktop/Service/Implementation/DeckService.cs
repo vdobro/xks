@@ -6,7 +6,7 @@ using XKS.Model;
 
 namespace XKS.Service.Implementation
 {
-	public class DeckService : IDeckService
+	public sealed class DeckService : IDeckService
 	{
 		private readonly IEntityRepository<Deck> _repository;
 

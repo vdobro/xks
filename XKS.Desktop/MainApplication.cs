@@ -1,14 +1,24 @@
+using System.IO;
 using GLib;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using StructureMap;
 using XKS.Controller;
+using XKS.View;
 using Application = Gtk.Application;
+using Task = System.Threading.Tasks.Task;
 
 namespace XKS
 {
 	public class MainApplication
 	{
 		private const string ApplicationId = "com.dobrovolskis.xks";
+		private const string ConfigFile    = "appsettings.json";
+
+		public static IConfiguration Configuration { get; } =
+			new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+			                          .AddJsonFile(ConfigFile, false, true)
+			                          .Build();
 
 		private readonly Application _app =
 			new Application(ApplicationId, ApplicationFlags.None);
@@ -38,24 +48,33 @@ namespace XKS
 
 		private async void Initialize(MainWindow window)
 		{
-			await using var dbContext = _container.GetInstance<DbContext>();
+			await InitPersistence();
+			ViewDependencyContainer.Build(_container, window);
 
-			await dbContext.Database.EnsureCreatedAsync();
-			await dbContext.Database.MigrateAsync();
-
-			window.Initialize();
+			var orchestrator = _container.GetInstance<MainControllerOrchestrator>();
+			orchestrator.Initialize();
 		}
 
-		private static Container BuildServiceCollection()
+		private Container BuildServiceCollection()
 		{
 			return new Container(_ =>
 			{
+				_.For<IConfiguration>().Use(x => Configuration);
+
 				_.Scan(x =>
 				{
 					x.TheCallingAssembly();
 					x.LookForRegistries();
 				});
 			});
+		}
+
+		private async Task InitPersistence()
+		{
+			await using var dbContext = _container.GetInstance<DbContext>();
+
+			await dbContext.Database.EnsureCreatedAsync();
+			await dbContext.Database.MigrateAsync();
 		}
 	}
 }
