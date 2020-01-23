@@ -13,19 +13,23 @@
         <EmbeddedResource Include="**\*.glade">
             <LogicalName>%(Filename)%(Extension)</LogicalName>
         </EmbeddedResource>
+        <None Update="appsettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="GtkSharp" Version="3.22.25.56" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
 
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />
-        <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.18" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
+        
         <PackageReference Include="StructureMap" Version="4.7.1" />
     </ItemGroup>
 </Project>

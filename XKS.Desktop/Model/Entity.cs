@@ -6,7 +6,8 @@ namespace XKS.Model
 {
 	public class Entity
 	{
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		[Key]
 		public Guid ID { get; set; }
 
 		protected Entity()
