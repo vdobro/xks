@@ -1,6 +1,6 @@
 namespace XKS.Data.Configuration
 {
-	public enum DatabaseProviders
+	public enum DatabaseProvider
 	{
 		SQLite,
 		PostgreSQL,

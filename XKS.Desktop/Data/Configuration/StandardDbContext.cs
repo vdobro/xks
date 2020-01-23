@@ -2,11 +2,12 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using XKS.Model;
 
-namespace XKS.Data
+namespace XKS.Data.Configuration
 {
 	public class StandardDbContext : DbContext
 	{
-		private const string GeneralPrefix = "xks_";
+		private const string GeneralPrefix = "xks";
+		private const char Separator = '_';
 
 		public DbSet<Deck>?             Decks             { get; set; }
 		public DbSet<Table>?            Tables            { get; set; }
@@ -29,7 +30,7 @@ namespace XKS.Data
 
 			foreach (var entity in modelBuilder.Model.GetEntityTypes())
 			{
-				entity.SetTableName(GeneralPrefix + entity.DisplayName().ToSnakeCase());
+				entity.SetTableName(GeneralPrefix + Separator + entity.DisplayName().ToSnakeCase());
 
 				// Replace column names            
 				foreach (var property in entity.GetProperties())
@@ -38,7 +39,7 @@ namespace XKS.Data
 
 					if (property.IsPrimaryKey())
 					{
-						property.SetColumnName(GeneralPrefix + property.GetColumnName());
+						property.SetColumnName(GeneralPrefix + Separator + property.GetColumnName());
 					}
 				}
 

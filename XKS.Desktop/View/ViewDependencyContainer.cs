@@ -6,11 +6,13 @@ namespace XKS.View
 	{
 		public static void Build(Container container, MainWindow window)
 		{
-			container.Inject(window.ConstructDeckListView());
-			container.Inject(window.ConstructEditView());
 			container.Inject(window.ConstructMainView());
-			container.Inject(window.ConstructNewDeckDialogView());
+			container.Inject(window.ConstructDeckListView());
 			container.Inject(window.ConstructSessionView());
+			container.Inject(window.ConstructEditView());
+			container.Inject(window.ConstructTableEditorView());
+			container.Inject(window.ConstructGraphEditorView());
+			container.Inject(window.ConstructNewDeckDialogView());
 		}
 	}
 }

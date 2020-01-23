@@ -14,6 +14,7 @@ namespace XKS.Data.Configuration
 			For<DbContext>().Use<StandardDbContext>();
 
 			For<IEntityRepository<Deck>>().Use<DeckRepository>();
+			For<IEntityRepository<Table>>().Use<TableRepository>();
 		}
 	}
 }

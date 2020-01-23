@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using XKS.Model;
 
-namespace XKS.Service.Implementation
+namespace XKS.Service
 {
 	public interface ITableCellService
 	{

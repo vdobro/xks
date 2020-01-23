@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 using XKS.Model;
 using XKS.Service;
 using XKS.View;
+using XKS.View.Fragment;
 
 namespace XKS.Controller
 {
-	public class DeckListController
+	public sealed class DeckListController
 	{
 		private readonly IDeckService _deckService;
 		private readonly DeckListView _view;
@@ -20,11 +21,17 @@ namespace XKS.Controller
 			ConnectEventHandlers();
 		}
 
-		public event EventHandler<Deck> OnDeckSelected = delegate { };
+		public event EventHandler<Deck> DeckSelected = delegate { };
 
 		public async Task Initialize()
 		{
 			await PopulateList();
+		}
+
+		public async Task CreateDeck(string name)
+		{
+			await _deckService.Create(new Deck(name));
+			await Refresh();
 		}
 
 		public async Task Refresh()
@@ -41,10 +48,7 @@ namespace XKS.Controller
 		{
 			var decks = await _deckService.GetAll();
 
-			foreach (var listChild in _view.DeckList.Children)
-			{
-				_view.DeckList.Remove(listChild);
-			}
+			Utilities.ClearListBox(_view.DeckList);
 
 			foreach (var deck in decks)
 			{
@@ -68,7 +72,7 @@ namespace XKS.Controller
 			}
 
 			var deck = await _deckService.Find(row.DeckId);
-			OnDeckSelected?.Invoke(this, deck);
+			DeckSelected.Invoke(this, deck);
 		}
 	}
 }

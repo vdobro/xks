@@ -2,7 +2,7 @@ using System;
 using Gtk;
 using XKS.Model;
 
-namespace XKS.View
+namespace XKS.View.Fragment
 {
 	internal sealed class DeckListRow : ListBoxRow
 	{

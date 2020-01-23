@@ -4,38 +4,23 @@ namespace XKS.View
 {
 	public sealed class EditView
 	{
-		public Paned      EditStack          { get; }
-		public Notebook   EditModeTabs       { get; }
-		public Viewport   GraphTab           { get; }
-		public ListBox    GraphList          { get; }
-		public Viewport   TableTab           { get; }
-		public ListBox    TableList          { get; }
-		public Stack      ItemEditModeStack  { get; }
-		public Toolbar    TableEditorToolbar { get; }
-		public TreeView   TableEditor        { get; }
-		public ToolButton AddColumnButton    { get; }
+		public Paned      EditStack           { get; }
+		public Notebook   ElementCategoryTabs { get; }
+		public Viewport   GraphTab            { get; }
+		public Viewport   TableTab            { get; }
+		public Stack      ItemEditModeStack   { get; }
 
 		public EditView(Paned      editStack,
-		                Notebook   editModeTabs,
+		                Notebook   elementCategoryTabs,
 		                Viewport   graphTab,
-		                ListBox    graphList,
 		                Viewport   tableTab,
-		                ListBox    tableList,
-		                Stack      itemEditModeStack,
-		                Toolbar    tableEditorToolbar,
-		                TreeView   tableEditor,
-		                ToolButton addColumnButton)
+		                Stack      itemEditModeStack)
 		{
-			TableTab = tableTab;
-			TableList = tableList;
 			EditStack = editStack;
-			EditModeTabs = editModeTabs;
+			ElementCategoryTabs = elementCategoryTabs;
 			GraphTab = graphTab;
-			GraphList = graphList;
+			TableTab = tableTab;
 			ItemEditModeStack = itemEditModeStack;
-			TableEditorToolbar = tableEditorToolbar;
-			TableEditor = tableEditor;
-			AddColumnButton = addColumnButton;
 		}
 	}
 }

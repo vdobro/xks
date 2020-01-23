@@ -9,13 +9,14 @@ namespace XKS
 	{
 		#region UI
 
-		[UI] private readonly Viewport? deckListViewport  = null;
-		[UI] private readonly ListBox?  deckList          = null;
-		[UI] private readonly Stack?    mainStack         = null;
-		[UI] private readonly Button?   backButton        = null;
-		[UI] private readonly Button?   newItemButton     = null;
-		[UI] private readonly Popover?  newDeckPopover    = null;
-		[UI] private readonly Entry?    newDeckTitleEntry = null;
+		[UI] private readonly Viewport? deckListViewport     = null;
+		[UI] private readonly ListBox?  deckList             = null;
+		[UI] private readonly Stack?    mainStack            = null;
+		[UI] private readonly Button?   backButton           = null;
+		[UI] private readonly Button?   newItemButton        = null;
+		[UI] private readonly Popover?  newElementPopover    = null;
+		[UI] private readonly Label?    nameLabel            = null;
+		[UI] private readonly Entry?    newElementTitleEntry = null;
 
 		[UI] private readonly StackSwitcher? deckModeStackSwitcher = null;
 		[UI] private readonly Stack?         deckModeStack         = null;
@@ -31,17 +32,17 @@ namespace XKS
 		[UI] private readonly Paned? editStack         = null;
 		[UI] private readonly Stack? itemEditModeStack = null;
 
-		[UI] private readonly Toolbar?    tableEditorToolbar = null;
-		[UI] private readonly ToolButton? addColumnButton    = null;
-		[UI] private readonly TreeView?   tableEditor        = null;
-		[UI] private readonly Notebook?   editModeTabs       = null;
-		[UI] private readonly Viewport?   graphTab           = null;
-		[UI] private readonly Viewport?   tableTab           = null;
-		[UI] private readonly ListBox?    graphList          = null;
-		[UI] private readonly ListBox?    tableList          = null;
+		[UI] private readonly Toolbar?    tableEditorToolbar  = null;
+		[UI] private readonly ToolButton? addColumnButton     = null;
+		[UI] private readonly TreeView?   tableEditorView     = null;
+		[UI] private readonly Notebook?   elementCategoryTabs = null;
+		[UI] private readonly Viewport?   graphTab            = null;
+		[UI] private readonly Viewport?   tableTab            = null;
+		[UI] private readonly ListBox?    graphList           = null;
+		[UI] private readonly ListBox?    tableList           = null;
 
 		#endregion
-		
+
 		public MainWindow()
 			: this(new Builder(ResourceConfiguration.MainWindowFile))
 		{
@@ -60,25 +61,32 @@ namespace XKS
 			             deckModeStackSwitcher!,
 			             mainStack!,
 			             deckListViewport!,
-			             deckModeStack!);
+			             deckModeStack!,
+			             questionViewBox!,
+			             editStack!);
 
 		public DeckListView ConstructDeckListView() => new DeckListView(deckList!);
 
-		public NewDeckDialogView ConstructNewDeckDialogView() =>
-			new NewDeckDialogView(newDeckPopover!,
-			                      newDeckTitleEntry!);
+		public NewElementDialogView ConstructNewDeckDialogView() =>
+			new NewElementDialogView(newElementPopover!,
+			                         nameLabel!,
+			                         newElementTitleEntry!);
 
 		public EditView ConstructEditView() =>
 			new EditView(editStack!,
-			             editModeTabs!,
+			             elementCategoryTabs!,
 			             graphTab!,
-			             graphList!,
 			             tableTab!,
-			             tableList!,
-			             itemEditModeStack!,
-			             tableEditorToolbar!,
-			             tableEditor!,
-			             addColumnButton!);
+			             itemEditModeStack!);
+
+		public TableEditorView ConstructTableEditorView() =>
+			new TableEditorView(tableList!,
+			                    tableEditorToolbar!,
+			                    tableEditorView!,
+			                    addColumnButton!);
+
+		public GraphEditorView ConstructGraphEditorView() =>
+			new GraphEditorView(graphList!);
 
 		public SessionView ConstructSessionView() =>
 			new SessionView(deckModeStack!,
@@ -99,6 +107,5 @@ namespace XKS
 		{
 			Application.Quit();
 		}
-
 	}
 }

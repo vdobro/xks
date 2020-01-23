@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 using static System.Environment;
 using static System.Environment.SpecialFolder;
-using static XKS.Data.Configuration.DatabaseProviders;
+using static XKS.Data.Configuration.DatabaseProvider;
 
 namespace XKS.Data.Configuration
 {
@@ -15,7 +15,7 @@ namespace XKS.Data.Configuration
 
 		private static IConfiguration Configuration => MainApplication.Configuration;
 
-		private static DatabaseProviders DatabaseProvider =>
+		private static DatabaseProvider DatabaseProvider =>
 			GetConfigurationKey("Type") switch
 			{
 				"mariadb" => MariaDB,
