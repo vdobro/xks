@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="xks" targetName="xks" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dcda1423-0865-4ba7-9e21-63cebc985397" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MainApplication.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MainWindow.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/boost/di.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.glade" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/types.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/DeckListView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/EditView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/GraphEditorView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/MainView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/NewItemDialogView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/SessionView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/TableEditorView.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/AppRegistry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/DeckListController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/EditorController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/GraphEditorController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/MainController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/MainControllerOrchestrator.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/NewElementDialogController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/SessionController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/TableEditorController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Controller/Utilities.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Configuration/ConnectionConfiguration.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Configuration/DataRegistry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Configuration/DatabaseProvider.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Configuration/StandardDbContext.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Repository/DeckRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Repository/TableRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Repository/Utility/BasicRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Data/Repository/Utility/IEntityRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/MainApplication.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/MainWindow.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/ColumnDefinition.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/ColumnTypes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/Deck.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/DirectedGraph.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/Entity.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/GraphNode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/Table.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/TableCell.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Model/TableRow.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Program.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Resource/MainWindow.glade" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Resource/ResourceConfiguration.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/CoreRegistry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/IDeckService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/ITableCellService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/ITableCellValidationService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/ITableService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/Implementation/DeckService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/Implementation/TableCellService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/Implementation/TableCellValidationService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/Service/Implementation/TableService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/DeckListView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/EditView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/Fragment/DeckListRow.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/Fragment/TableListRow.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/GraphEditorView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/MainView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/NewElementDialogView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/SessionView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/TableEditorView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/View/ViewDependencyContainer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/XKS.Desktop.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Desktop/appsettings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Tests/UnitTest1.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.Tests/XKS.Tests.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../cs/XKS.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/AppRegistry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/DeckListController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/EditorController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/GraphEditorController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/MainController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/MainControllerOrchestrator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/NewElementDialogController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/SessionController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/TableEditorController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Controller/Utilities.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Configuration/ConnectionConfiguration.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Configuration/DataRegistry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Configuration/DatabaseProvider.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Configuration/StandardDbContext.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Repository/DeckRepository.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Repository/TableRepository.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Repository/Utility/BasicRepository.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Data/Repository/Utility/IEntityRepository.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/MainApplication.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/MainWindow.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/ColumnDefinition.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/ColumnTypes.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/Deck.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/DirectedGraph.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/Entity.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/GraphNode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/Table.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/TableCell.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Model/TableRow.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Resource/MainWindow.glade" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Resource/ResourceConfiguration.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/CoreRegistry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/IDeckService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/ITableCellService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/ITableCellValidationService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/ITableService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/Implementation/DeckService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/Implementation/TableCellService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/Implementation/TableCellValidationService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/Service/Implementation/TableService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/DeckListView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/EditView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/Fragment/DeckListRow.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/Fragment/TableListRow.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/GraphEditorView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/MainView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/NewElementDialogView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/SessionView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/TableEditorView.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/View/ViewDependencyContainer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/XKS.Desktop.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Desktop/appsettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Tests/UnitTest1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.Tests/XKS.Tests.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../XKS.sln" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="qZLbIUyh" />
+  </component>
+  <component name="ProjectId" id="1WqQJpmWswgi5qSUB9kzVjwtUWO" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="xks" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xks" TARGET_NAME="xks" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="xks" RUN_TARGET_NAME="xks">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="/usr/bin" />
+    <option name="version" value="2" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dcda1423-0865-4ba7-9e21-63cebc985397" name="Default Changelist" comment="" />
+      <created>1579874576225</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1579874576225</updated>
+      <workItem from="1579874578831" duration="7527000" />
+      <workItem from="1579966685030" duration="11281000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2572" y="328" width="606" height="386" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1579976361078">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2572" y="328" width="606" height="386" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579976361078" />
+    <state x="2688" y="242" width="374" height="560" key="#com.intellij.ide.util.MemberChooser" timestamp="1579977270469">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2688" y="242" width="374" height="560" key="#com.intellij.ide.util.MemberChooser/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579977270469" />
+    <state x="2445" y="119" width="860" height="805" key="CommitChangelistDialog2" timestamp="1579983308617">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2445" y="119" width="860" height="805" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579983308617" />
+    <state width="1874" height="276" key="GridCell.Tab.0.bottom" timestamp="1579982806158">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="276" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579982806158" />
+    <state width="1874" height="276" key="GridCell.Tab.0.center" timestamp="1579982806157">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="276" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579982806157" />
+    <state width="1874" height="276" key="GridCell.Tab.0.left" timestamp="1579982806157">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="276" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579982806157" />
+    <state width="1874" height="276" key="GridCell.Tab.0.right" timestamp="1579982806157">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="276" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579982806157" />
+    <state width="1874" height="341" key="GridCell.Tab.1.bottom" timestamp="1579874639603">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="341" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579874639603" />
+    <state width="1874" height="341" key="GridCell.Tab.1.center" timestamp="1579874639603">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="341" key="GridCell.Tab.1.center/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579874639603" />
+    <state width="1874" height="341" key="GridCell.Tab.1.left" timestamp="1579874639603">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="341" key="GridCell.Tab.1.left/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579874639603" />
+    <state width="1874" height="341" key="GridCell.Tab.1.right" timestamp="1579874639603">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1874" height="341" key="GridCell.Tab.1.right/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579874639603" />
+    <state x="2340" y="161" key="SettingsEditor" timestamp="1579974632803">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2340" y="161" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579974632803" />
+    <state x="2536" y="367" key="com.intellij.ide.util.TipDialog" timestamp="1579874580839">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2536" y="367" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579874580839" />
+    <state x="2544" y="239" width="672" height="677" key="run.anything.popup" timestamp="1579876554871">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2544" y="239" width="672" height="677" key="run.anything.popup/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579876554871" />
+  </component>
+</project>

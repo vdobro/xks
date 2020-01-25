@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using XKS.Model;
 
-namespace XKS.Data
+namespace XKS.Data.Repository.Utility
 {
 	public interface IEntityRepository<T> where T : Entity
 	{

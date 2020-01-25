@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XKS.Data;
+using XKS.Data.Repository.Utility;
 using XKS.Model;
 
 namespace XKS.Service.Implementation

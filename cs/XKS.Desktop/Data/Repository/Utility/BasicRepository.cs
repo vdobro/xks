@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using XKS.Model;
 
-namespace XKS.Data
+namespace XKS.Data.Repository.Utility
 {
 	public abstract class BasicRepository<T> : IEntityRepository<T> where T : Entity
 	{

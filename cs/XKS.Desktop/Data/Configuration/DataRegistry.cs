@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StructureMap;
+using XKS.Data.Repository;
+using XKS.Data.Repository.Utility;
 using XKS.Model;
 
 namespace XKS.Data.Configuration

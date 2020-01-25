@@ -1,7 +1,8 @@
 using XKS.Data.Configuration;
+using XKS.Data.Repository.Utility;
 using XKS.Model;
 
-namespace XKS.Data
+namespace XKS.Data.Repository
 {
 	public class DeckRepository : BasicRepository<Deck>
 	{
