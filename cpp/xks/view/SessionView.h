@@ -5,6 +5,7 @@
 #pragma once
 
 #include <gtkmm.h>
+
 #include "../types.h"
 
 using namespace Gtk;

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <gtkmm.h>
+
 #include "../types.h"
 
 using namespace Gtk;
@@ -16,7 +17,7 @@ namespace xks::view {
 		explicit TableEditorView(const RefPtr<Builder>& builder) : TableEditorView() {
 			builder->get_widget("tableEditorToolbar", table_editor_toolbar);
 			builder->get_widget("addColumnButton", add_column_button);
-			builder->get_widget("tableEditorView", table_editor_view);
+			builder->get_widget("tableEditor", table_editor_view);
 			builder->get_widget("tableList", table_list);
 		}
 

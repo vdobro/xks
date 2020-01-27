@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "types.h"
+#include "MainOrchestrator.h"
 #include "view/DeckListView.h"
 #include "view/EditView.h"
 #include "view/GraphEditorView.h"
@@ -20,41 +21,56 @@ using namespace Gtk;
 using namespace Glib;
 
 using namespace xks::view;
-using std::make_shared;
+
 
 namespace xks {
 	class MainWindow {
 	public:
-		explicit MainWindow(const string& filename) :
-				builder(get_builder()),
+		explicit MainWindow(const RefPtr<Gtk::Builder>& builder) :
+				builder(builder),
 				deck_list_view(make_shared<DeckListView>(DeckListView(builder))),
 				edit_view(make_shared<EditView>(EditView(builder))),
 				graph_editor_view(make_shared<GraphEditorView>(builder)),
 				main_view(make_shared<MainView>(MainView(builder))),
 				new_item_dialog_view(make_shared<NewItemDialogView>(NewItemDialogView(builder))),
 				session_view(make_shared<SessionView>(SessionView(builder))),
-				table_editor_view(make_shared<TableEditorView>(TableEditorView(builder))) {}
-
-		const sptr<const DeckListView> deck_list_view;
-		const sptr<const EditView> edit_view;
-		const sptr<const GraphEditorView> graph_editor_view;
-		const sptr<const MainView> main_view;
-		const sptr<const NewItemDialogView> new_item_dialog_view;
-		const sptr<const SessionView> session_view;
-		const sptr<const TableEditorView> table_editor_view;
-
-	private:
-		MainWindow() = default;
-
-		const RefPtr<Gtk::Builder> builder;
+				table_editor_view(make_shared<TableEditorView>(TableEditorView(builder))),
+				gtk_window(get_window()) {}
 
 		[[nodiscard]]
-		RefPtr<Builder> get_builder() const {
-			auto builderRef = Gtk::Builder::create();
-			builder->add_from_file("main.glade");
-
-			return builderRef;
+		Gtk::Window* get_window() const {
+			Window* windowPtr = nullptr;
+			builder->get_widget(WINDOW_ID, windowPtr);
+			return windowPtr;
 		}
+
+		[[nodiscard]]
+		auto get_injector() const {
+			return di::make_injector(
+					di::bind<DeckListView>().to(deck_list_view),
+					di::bind<EditView>().to(edit_view),
+					di::bind<GraphEditorView>().to(graph_editor_view),
+					di::bind<MainView>().to(main_view),
+					di::bind<NewItemDialogView>().to(new_item_dialog_view),
+					di::bind<SessionView>().to(session_view),
+					di::bind<TableEditorView>().to(table_editor_view)
+			);
+		}
+
+	private:
+		inline static const string WINDOW_ID = "mainWindow";
+
+		const RefPtr<Builder> builder;
+
+		const sptr<DeckListView> deck_list_view;
+		const sptr<EditView> edit_view;
+		const sptr<GraphEditorView> graph_editor_view;
+		const sptr<MainView> main_view;
+		const sptr<NewItemDialogView> new_item_dialog_view;
+		const sptr<SessionView> session_view;
+		const sptr<TableEditorView> table_editor_view;
+
+		Gtk::Window* const gtk_window{};
 	};
 }
 

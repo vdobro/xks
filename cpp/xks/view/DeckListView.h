@@ -15,15 +15,17 @@ namespace xks::view {
 	class DeckListView {
 	public:
 		explicit DeckListView(const RefPtr<Gtk::Builder>& builder) {
-			builder->get_widget("deckList", _deckList);
+			builder->get_widget("deckList", deck_list);
 		}
 
 		[[nodiscard]]
 		const ListBox& get_deck_list() const {
-			return *_deckList;
+			return *deck_list;
 		}
 
 	private:
-		ListBox* _deckList{};
+		DeckListView() = default;
+
+		ListBox* deck_list;
 	};
 }

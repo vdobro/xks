@@ -5,6 +5,7 @@
 #pragma once
 
 #include <gtkmm.h>
+
 #include "../types.h"
 
 using namespace Gtk;
@@ -43,7 +44,7 @@ namespace xks::view {
 		}
 
 		[[nodiscard]]
-		Viewport& getTableTab() const {
+		Viewport& get_table_tab() const {
 			return *table_tab;
 		}
 

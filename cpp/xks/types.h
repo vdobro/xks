@@ -4,8 +4,10 @@
 
 #pragma once
 
-namespace di = boost::di;
 #include <string>
+#include <utility>
+
+namespace di = boost::di;
 
 using string = std::string;
 
@@ -17,3 +19,7 @@ using sptr = std::shared_ptr<T>;
 
 template<typename T>
 using wptr = std::weak_ptr<T>;
+
+
+using std::make_shared;
+using std::make_unique;
