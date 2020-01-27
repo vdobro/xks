@@ -3,7 +3,7 @@ project(xks)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-long-long -Wno-sign-compare -Wnull-dereference -pedantic-errors")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -mwindows -Wno-long-long -Wno-sign-compare -Wnull-dereference -pedantic-errors")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
