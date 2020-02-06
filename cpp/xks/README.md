@@ -12,6 +12,7 @@ XKS is a helper for memorization of large amounts of structured data like lists,
 - libcairomm-1.0-dev
 - libatkmm-1.6-dev
 - libgtkmm-3.0-dev
+- libboost-all-dev
 ### Windows (via MSYS)
 - mingw-w64-x86_64-gcc
 - mingw-w64-x86_64-gtkmm3
