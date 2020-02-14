@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #pragma once
 
@@ -8,41 +10,25 @@
 #include <iostream>
 
 #include "types.h"
-#include "MainOrchestrator.h"
-#include "view/DeckListView.h"
-#include "view/EditView.h"
+
 #include "view/GraphEditorView.h"
-#include "view/MainView.h"
-#include "view/NewItemDialogView.h"
-#include "view/SessionView.h"
 #include "view/TableEditorView.h"
+
+#include "MainOrchestrator.h"
 
 using namespace Gtk;
 using namespace Glib;
 
 using namespace xks::view;
 
-
 namespace xks {
+
 	class MainWindow {
 	public:
-		explicit MainWindow(const RefPtr<Gtk::Builder>& builder) :
-				builder(builder),
-				deck_list_view(make_shared<DeckListView>(DeckListView(builder))),
-				edit_view(make_shared<EditView>(EditView(builder))),
-				graph_editor_view(make_shared<GraphEditorView>(builder)),
-				main_view(make_shared<MainView>(MainView(builder))),
-				new_item_dialog_view(make_shared<NewItemDialogView>(NewItemDialogView(builder))),
-				session_view(make_shared<SessionView>(SessionView(builder))),
-				table_editor_view(make_shared<TableEditorView>(TableEditorView(builder))),
-				gtk_window(get_window()) {}
+		explicit MainWindow(const RefPtr<Gtk::Builder>& builder);
 
 		[[nodiscard]]
-		Gtk::Window* get_window() const {
-			Window* windowPtr = nullptr;
-			builder->get_widget(WINDOW_ID, windowPtr);
-			return windowPtr;
-		}
+		Gtk::Window* get_window() const;
 
 		[[nodiscard]]
 		auto get_injector() const {
@@ -58,7 +44,7 @@ namespace xks {
 		}
 
 	private:
-		inline static const string WINDOW_ID = "mainWindow";
+		inline static const string WINDOW_ID = "mainWindow"; // NOLINT(cert-err58-cpp)
 
 		const RefPtr<Builder> builder;
 

@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #pragma once
 
@@ -12,13 +14,19 @@ using namespace Gtk;
 using namespace Glib;
 
 namespace xks::view {
+
 	class NewItemDialogView {
 	public:
-		explicit NewItemDialogView(const RefPtr<Builder>& builder) : NewItemDialogView() {
-			builder->get_widget("newElementPopover", new_item_popover);
-			builder->get_widget("nameLabel", name_label);
-			builder->get_widget("newElementTitleEntry", new_item_title_entry);
-		}
+		explicit NewItemDialogView(const RefPtr<Builder>& builder);
+
+		[[nodiscard]]
+		Popover& get_new_item_popover() const;
+
+		[[nodiscard]]
+		Label& get_name_label() const;
+
+		[[nodiscard]]
+		Entry& get_new_item_title_entry() const;
 
 	private:
 		NewItemDialogView() = default;

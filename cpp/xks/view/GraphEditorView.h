@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #pragma once
 
@@ -12,16 +14,13 @@ using namespace Gtk;
 using namespace Glib;
 
 namespace xks::view {
+
 	class GraphEditorView {
 	public:
-		explicit GraphEditorView(const RefPtr<Builder>& builder) : GraphEditorView() {
-			builder->get_widget("graphList", graph_list);
-		}
+		explicit GraphEditorView(const RefPtr<Builder>& builder);
 
 		[[nodiscard]]
-		ListBox& get_graph_list() const {
-			return *graph_list;
-		}
+		ListBox& get_graph_list() const;
 
 	private:
 		GraphEditorView() = default;

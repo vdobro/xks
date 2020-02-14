@@ -12,13 +12,47 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dcda1423-0865-4ba7-9e21-63cebc985397" name="Default Changelist" comment="xks-5 Integrated GTK Builder">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+    <list default="true" id="dcda1423-0865-4ba7-9e21-63cebc985397" name="Default Changelist" comment="xks-5 Split code into declaration and implementation files.">
+      <change afterPath="$PROJECT_DIR$/CPPLINT.cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MainApplication.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MainOrchestrator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MainWindow.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/DeckListController.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/EditorController.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/MainController.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/NewItemDialogController.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/SessionController.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cppcheck.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/DeckListView.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/EditView.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/GraphEditorView.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/MainView.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/NewItemDialogView.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/SessionView.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/TableEditorView.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/fileTemplates/includes/C File Header.h" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fileTemplates/includes/C File Header.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainApplication.h" beforeDir="false" afterPath="$PROJECT_DIR$/MainApplication.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainOrchestrator.h" beforeDir="false" afterPath="$PROJECT_DIR$/MainOrchestrator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/DeckListController.h" beforeDir="false" afterPath="$PROJECT_DIR$/controller/DeckListController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/EditorController.h" beforeDir="false" afterPath="$PROJECT_DIR$/controller/EditorController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/MainController.h" beforeDir="false" afterPath="$PROJECT_DIR$/controller/MainController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/NewItemDialogController.h" beforeDir="false" afterPath="$PROJECT_DIR$/controller/NewItemDialogController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/SessionController.h" beforeDir="false" afterPath="$PROJECT_DIR$/controller/SessionController.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.glade" beforeDir="false" afterPath="$PROJECT_DIR$/resources/main.glade" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/types.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/DeckListView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/DeckListView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/EditView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/EditView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/GraphEditorView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/GraphEditorView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/MainView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/MainView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/NewItemDialogView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/NewItemDialogView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/SessionView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/SessionView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/TableEditorView.h" beforeDir="false" afterPath="$PROJECT_DIR$/view/TableEditorView.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +62,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -44,6 +78,7 @@
       </list>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="UPDATE_TYPE" value="MERGE" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="qZLbIUyh" />
@@ -52,17 +87,20 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -92,21 +130,40 @@
       <workItem from="1580073300147" duration="13362000" />
       <workItem from="1580129322013" duration="1936000" />
       <workItem from="1580131308400" duration="847000" />
+      <workItem from="1580684153861" duration="1613000" />
+      <workItem from="1580984919140" duration="10478000" />
+      <workItem from="1581699232317" duration="1697000" />
+      <workItem from="1581700942439" duration="307000" />
     </task>
+    <task id="LOCAL-00001" summary="xks-5 Added missing dependency to build instructions. Fixed CMake build on non-Windows OSs.">
+      <created>1580986655912</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1580986655912</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="xks-5 Integrated GTK Builder" />
-    <option name="LAST_COMMIT_MESSAGE" value="xks-5 Integrated GTK Builder" />
+    <MESSAGE value="xks-5 Added missing dependency to build instructions. Fixed CMake build on non-Windows OSs." />
+    <MESSAGE value="xks-5 Split code into declaration and implementation files." />
+    <option name="LAST_COMMIT_MESSAGE" value="xks-5 Split code into declaration and implementation files." />
   </component>
   <component name="WindowStateProjectService">
     <state x="552" y="179" key="#C/C++" timestamp="1580131123579">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="179" key="#C/C++/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580131123579" />
-    <state x="2338" y="181" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580080675245">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="395" y="94" width="800" height="683" key="#Inspections" timestamp="1580990337010">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
+    <state x="395" y="94" width="800" height="683" key="#Inspections/0.0.1600.866@0.0.1600.866" timestamp="1580990337010" />
+    <state x="348" y="145" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581699357916">
+      <screen x="0" y="0" width="1600" height="866" />
+    </state>
+    <state x="348" y="145" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1600.866@0.0.1600.866" timestamp="1581699357916" />
     <state x="2338" y="181" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580080675245" />
     <state x="2572" y="328" width="606" height="386" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1579976361078">
       <screen x="1920" y="0" width="1920" height="1080" />
@@ -116,34 +173,39 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2688" y="242" width="374" height="560" key="#com.intellij.ide.util.MemberChooser/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580073654607" />
-    <state x="525" y="115" width="860" height="805" key="CommitChangelistDialog2" timestamp="1580135151910">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="438" y="53" width="860" height="813" key="CommitChangelistDialog2" timestamp="1581701575181">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state x="525" y="115" key="CommitChangelistDialog2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580135151910" />
+    <state x="438" y="53" width="860" height="813" key="CommitChangelistDialog2/0.0.1600.866@0.0.1600.866" timestamp="1581701575181" />
     <state x="2445" y="119" width="860" height="805" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580088503720" />
     <state x="2407" y="350" width="424" height="482" key="FileChooserDialogImpl" timestamp="1580080672402">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2407" y="350" width="424" height="482" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580080672402" />
-    <state width="938" height="282" key="GridCell.Tab.0.bottom" timestamp="1580135272789">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1554" height="214" key="GridCell.Tab.0.bottom" timestamp="1581000864477">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state width="938" height="282" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580135272789" />
+    <state width="1554" height="214" key="GridCell.Tab.0.bottom/0.0.1600.866@0.0.1600.866" timestamp="1581000864477" />
     <state width="1874" height="276" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580088243485" />
-    <state width="938" height="282" key="GridCell.Tab.0.center" timestamp="1580135272789">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1554" height="214" key="GridCell.Tab.0.center" timestamp="1581000864476">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state width="938" height="282" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580135272789" />
+    <state width="1554" height="214" key="GridCell.Tab.0.center/0.0.1600.866@0.0.1600.866" timestamp="1581000864476" />
     <state width="1874" height="276" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580088243485" />
-    <state width="938" height="282" key="GridCell.Tab.0.left" timestamp="1580135272789">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1554" height="214" key="GridCell.Tab.0.left" timestamp="1581000864476">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state width="938" height="282" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580135272789" />
+    <state width="1554" height="214" key="GridCell.Tab.0.left/0.0.1600.866@0.0.1600.866" timestamp="1581000864476" />
     <state width="1874" height="276" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580088243485" />
-    <state width="938" height="282" key="GridCell.Tab.0.right" timestamp="1580135272789">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1554" height="214" key="GridCell.Tab.0.right" timestamp="1581000864476">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state width="938" height="282" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580135272789" />
+    <state width="1554" height="214" key="GridCell.Tab.0.right/0.0.1600.866@0.0.1600.866" timestamp="1581000864476" />
     <state width="1874" height="276" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580088243485" />
     <state width="1874" height="341" key="GridCell.Tab.1.bottom" timestamp="1580083141664">
       <screen x="1920" y="0" width="1920" height="1080" />
@@ -165,23 +227,27 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="769" y="232" key="RollbackChangesDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580131144649" />
-    <state x="420" y="155" width="1211" height="708" key="SettingsEditor" timestamp="1580135226776">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="333" y="70" width="1010" height="736" key="SettingsEditor" timestamp="1580998044181">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state x="420" y="155" width="1211" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580135226776" />
+    <state x="333" y="70" width="1010" height="736" key="SettingsEditor/0.0.1600.866@0.0.1600.866" timestamp="1580998044181" />
     <state x="2340" y="161" width="1211" height="730" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580080716941" />
-    <state x="616" y="353" key="com.intellij.ide.util.TipDialog" timestamp="1580131378674">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="513" y="294" key="com.intellij.ide.util.TipDialog" timestamp="1581699249432">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
     <state x="616" y="353" key="com.intellij.ide.util.TipDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1580131378674" />
+    <state x="513" y="294" key="com.intellij.ide.util.TipDialog/0.0.1600.866@0.0.1600.866" timestamp="1581699249432" />
     <state x="2536" y="367" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579874580839" />
-    <state x="2648" y="443" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1579983669555">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="607" y="355" width="454" height="166" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1580986555548">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
+    <state x="607" y="355" width="454" height="166" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1600.866@0.0.1600.866" timestamp="1580986555548" />
     <state x="2648" y="443" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1579983669555" />
-    <state x="2526" y="119" width="707" height="807" key="find.popup" timestamp="1580087620914">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="505" y="95" width="707" height="648" key="find.popup" timestamp="1580986719517">
+      <screen x="0" y="0" width="1600" height="866" />
     </state>
+    <state x="505" y="95" width="707" height="648" key="find.popup/0.0.1600.866@0.0.1600.866" timestamp="1580986719517" />
     <state x="2526" y="119" width="707" height="807" key="find.popup/1920.0.1920.1080/0.0.1920.1046@1920.0.1920.1080" timestamp="1580087620914" />
     <state x="2544" y="239" width="672" height="677" key="run.anything.popup" timestamp="1580076224816">
       <screen x="1920" y="0" width="1920" height="1080" />

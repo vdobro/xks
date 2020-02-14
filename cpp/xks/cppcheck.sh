@@ -1,0 +1,1 @@
+cppcheck --project=cmake-build-debug/compile_commands.json --enable=all --inconclusive --template="cppcheck {severity}: {file}:{line}: {message}" --error-exitcode=1 --std=posix --suppress="*:/usr/include/*" --force --xml 2> cppcheck.xml

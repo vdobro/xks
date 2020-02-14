@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #pragma once
 
@@ -12,47 +14,28 @@ using namespace Gtk;
 using namespace Glib;
 
 namespace xks::view {
+
 	class MainView {
 	public:
-		explicit MainView(const RefPtr<Builder>& builder) : MainView() {
-			builder->get_widget("deckListViewport", deck_list_viewport);
-			builder->get_widget("mainStack", main_stack);
-			builder->get_widget("backButton", back_button);
-			builder->get_widget("newItemButton", new_item_button);
-
-			builder->get_widget("deckModeStackSwitcher", deck_mode_stack_switcher);
-			builder->get_widget("deckModeStack", deck_mode_stack);
-		}
+		explicit MainView(const RefPtr<Builder>& builder);
 
 		[[nodiscard]]
-		Button& get_back_button() const {
-			return *back_button;
-		}
+		Button& get_back_button() const;
 
 		[[nodiscard]]
-		Button& get_new_item_button() const {
-			return *new_item_button;
-		}
+		Button& get_new_item_button() const;
 
 		[[nodiscard]]
-		Stack& get_main_stack() const {
-			return *main_stack;
-		}
+		Stack& get_main_stack() const;
 
 		[[nodiscard]]
-		StackSwitcher& get_deck_mode_stack_switcher() const {
-			return *deck_mode_stack_switcher;
-		}
+		StackSwitcher& get_deck_mode_stack_switcher() const;
 
 		[[nodiscard]]
-		Stack& get_deck_mode_stack() const {
-			return *deck_mode_stack;
-		}
+		Stack& get_deck_mode_stack() const;
 
 		[[nodiscard]]
-		Viewport& get_deck_list_viewport() const {
-			return *deck_list_viewport;
-		}
+		Viewport& get_deck_list_viewport() const;
 
 	private:
 		MainView() = default;

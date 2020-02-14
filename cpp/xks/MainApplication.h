@@ -1,11 +1,14 @@
-//
-// Created by Vitalijus Dobrovolskis on 24.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 24.01.2020
+ */
 
 #pragma once
 
 #include <iostream>
 #include <gtkmm.h>
+#include <memory>
 
 #include "boost/di.hpp"
 #include "types.h"
@@ -16,49 +19,25 @@ using namespace Gtk;
 using namespace di;
 
 namespace xks {
+
 	class MainApplication {
 	public:
-		MainApplication(int argc, char* argv[])
-				: application(Gtk::Application::create(argc, argv, APPLICATION_ID)),
-				  main_window(make_unique<MainWindow>(get_builder(UI_FILE))),
-				  gtk_window(main_window->get_window()) {
-			auto di = main_window->get_injector();
-			auto main_orchestrator = di.create<MainOrchestrator>();
-			main_orchestrator.initialize();
-		}
+		explicit MainApplication(int argc, char* argv[]);
 
-		void run() {
-			application->run(*gtk_window);
-			delete gtk_window;
-		}
+		void run();
 
 	private:
-		inline const static string APPLICATION_ID = "com.dobrovolskis.xks";
-		inline const static string CONFIG_FILE = "appsettings.json";
-		inline const static string UI_FILE = "main.glade";
+		inline const static string APPLICATION_ID = "com.dobrovolskis.xks"; // NOLINT(cert-err58-cpp)
+		inline const static string CONFIG_FILE = "appsettings.json"; // NOLINT(cert-err58-cpp)
+
+		inline const static string RESOURCE_PATH = "resources/"; // NOLINT(cert-err58-cpp)
+		inline const static string UI_FILE = RESOURCE_PATH + "main.glade"; // NOLINT(cert-err58-cpp)
 
 		const RefPtr<Application> application;
 		const uptr<MainWindow> main_window;
 		Window* const gtk_window;
 
 		[[nodiscard]]
-		static RefPtr<Builder> get_builder(const string& filename) {
-			Glib::RefPtr<Gtk::Builder> builderRef = Gtk::Builder::create();
-			try {
-				builderRef->add_from_file(filename);
-			}
-			catch (const Glib::FileError& ex) {
-				std::cerr << "FileError: " << ex.what() << std::endl;
-			}
-			catch (const Glib::MarkupError& ex) {
-				std::cerr << "MarkupError: " << ex.what() << std::endl;
-			}
-			catch (const Gtk::BuilderError& ex) {
-				std::cerr << "BuilderError: " << ex.what() << std::endl;
-			}
-			return builderRef;
-		}
+		static RefPtr<Builder> get_builder(const string& filename);
 	};
 }
-
-

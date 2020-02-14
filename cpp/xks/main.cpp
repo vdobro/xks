@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #include "MainApplication.h"
 

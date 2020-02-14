@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #pragma once
 
@@ -12,22 +14,31 @@ using namespace Gtk;
 using namespace Glib;
 
 namespace xks::view {
+
 	class SessionView {
 	public:
-		explicit SessionView(const RefPtr<Builder>& builder) : SessionView() {
-			builder->get_widget("questionViewBox", question_view_box);
-			builder->get_widget("answerFeedbackBar", answer_feedback_bar);
-			builder->get_widget("questionLabel", question_label);
-			builder->get_widget("questionEntryBox", question_entry_box);
-			builder->get_widget("correctAnswerLabel", correct_answer_label);
-			builder->get_widget("actualAnswerLabel", actual_answer_label);
-			builder->get_widget("acceptButton", accept_button);
-		}
+		explicit SessionView(const RefPtr<Builder>& builder);
 
 		[[nodiscard]]
-		Box& get_question_view_box() const {
-			return *question_view_box;
-		}
+		Button& get_accept_button() const;
+
+		[[nodiscard]]
+		Box& get_question_view_box() const;
+
+		[[nodiscard]]
+		Label& get_question_label() const;
+
+		[[nodiscard]]
+		Entry& get_question_entry_box() const;
+
+		[[nodiscard]]
+		Label& get_correct_answer_label() const;
+
+		[[nodiscard]]
+		Label& get_actual_answer_label() const;
+
+		[[nodiscard]]
+		InfoBar& get_answer_feedback_bar() const;
 
 	private:
 		SessionView() = default;

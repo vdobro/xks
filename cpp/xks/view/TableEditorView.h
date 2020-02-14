@@ -1,6 +1,8 @@
-//
-// Created by Vitalijus Dobrovolskis on 25.01.2020
-//
+/**
+ * Copyright 2020 Vitalijus Dobrovolskis
+ *
+ * Created by Vitalijus Dobrovolskis on 25.01.2020
+ */
 
 #pragma once
 
@@ -12,34 +14,22 @@ using namespace Gtk;
 using namespace Glib;
 
 namespace xks::view {
+
 	class TableEditorView {
 	public:
-		explicit TableEditorView(const RefPtr<Builder>& builder) : TableEditorView() {
-			builder->get_widget("tableEditorToolbar", table_editor_toolbar);
-			builder->get_widget("addColumnButton", add_column_button);
-			builder->get_widget("tableEditor", table_editor_view);
-			builder->get_widget("tableList", table_list);
-		}
+		explicit TableEditorView(const RefPtr<Builder>& builder);
 
 		[[nodiscard]]
-		Toolbar& get_table_editor_toolbar() const {
-			return *table_editor_toolbar;
-		}
+		Toolbar& get_table_editor_toolbar() const;
 
 		[[nodiscard]]
-		ToolButton& get_add_column_button() const {
-			return *add_column_button;
-		}
+		ToolButton& get_add_column_button() const;
 
 		[[nodiscard]]
-		TreeView& get_table_editor_view() const {
-			return *table_editor_view;
-		}
+		TreeView& get_table_editor_view() const;
 
 		[[nodiscard]]
-		ListBox& get_table_list() const {
-			return *table_list;
-		};
+		ListBox& get_table_list() const;
 
 	private:
 		TableEditorView() = default;
