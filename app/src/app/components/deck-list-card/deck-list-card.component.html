@@ -1,0 +1,38 @@
+<a class="uk-card uk-card-small uk-display-block uk-card-default uk-link-toggle uk-card-body uk-animation-fade"
+   [hidden]="editMode">
+	<div class="uk-grid-small uk-flex-middle" uk-grid>
+		<div class="uk-width-expand">
+			<div class="uk-card-title">
+				<span class="uk-link-heading">
+					{{ deck.name }}
+				</span>
+			</div>
+		</div>
+		<div class="uk-width-auto">
+			<a (click)="onEditClicked();$event.stopPropagation()"
+			   uk-icon="icon: pencil"></a>
+		</div>
+	</div>
+	<p *ngIf="deck.description.length > 0">
+		{{ deck.description }}
+	</p>
+</a>
+<div class="uk-card uk-card-small uk-display-block uk-card-default uk-card-body uk-animation-fade"
+	 [hidden]="!editMode">
+	<form (submit)="onChangesSubmit()">
+		<div class="uk-grid-small uk-flex-middle" uk-grid>
+			<div class="uk-width-expand">
+				<input class="uk-input" type="text" placeholder="Title"
+					   [formControl]="nameInput"
+					   [value]="deck.name">
+			</div>
+			<div class="uk-width-auto">
+				<button type="submit" uk-icon="icon: check"></button>
+			</div>
+		</div>
+		<textarea class="uk-textarea uk-margin-top" placeholder="Description"
+				  [formControl]="descriptionInput"
+				  [value]="deck.description">
+		</textarea>
+	</form>
+</div>
