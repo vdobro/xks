@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {v4 as uuid} from 'uuid';
-import {Deck} from "./models/Deck";
+import {Deck} from "../models/Deck";
 
 @Injectable({
 	providedIn: 'root'
 })
 export class DeckService {
 
-	private decks: Deck[] = [
+	private static decks: Deck[] = [
 		{name: 'pz', id: uuid(), description: ""},
 		{name: 'ääßrgaeg', id: uuid(), description: ""},
 		{name: 'ąčęėįšųūž', id: uuid(), description: "acvbaslcgbkaert 'erg dgfgkojhdrg lxcvb lkjahsdf "},
@@ -25,15 +25,18 @@ export class DeckService {
 		{name: 'sdfsdf', id: uuid(), description: ""},
 		{name: ';df135345´´', id: uuid(), description: "4e5 lkjahsdf "},
 	];
-
 	constructor() {
 	}
 
+	getById(id: string) : Deck {
+		return DeckService.decks.find(x => x.id === id);
+	}
+
 	getAll(): Deck[] {
-		return this.decks;
+		return DeckService.decks;
 	}
 
 	add(deck: Deck): void {
-		this.decks.push(deck);
+		DeckService.decks.push(deck);
 	}
 }

@@ -1,4 +1,4 @@
-<div #deckDetailsModal id="deck-details-modal" uk-modal>
+<div #newDeckModal id="new-deck-modal" uk-modal>
 	<div class="uk-modal-dialog uk-modal-body">
 		<button class="uk-modal-close-default" type="button" uk-close></button>
 		<h2 class="uk-modal-title">New deck</h2>
@@ -9,7 +9,8 @@
 					<input id="deckNameInput"
 						   class="uk-input"
 						   type="text"
-						   placeholder="Enter deck name" [formControl]="nameInput">
+						   placeholder="Enter deck name"
+						   [formControl]="nameInput">
 				</div>
 			</div>
 			<div class="uk-margin">
@@ -24,6 +25,5 @@
 
 			<button class="uk-float-right uk-button uk-button-primary" type="submit">Save</button>
 		</form>
-
 	</div>
 </div>

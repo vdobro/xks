@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { Deck } from "../../models/Deck";
 
 import UIkit from 'uikit';
@@ -12,8 +12,8 @@ export class DeckListViewComponent implements OnInit {
 
 	@ViewChild("deckListFooter") deckListFooter: ElementRef;
 
-	@Input() deckList: Deck[];
-	@Output() deckSelected = new EventEmitter<Deck>();
+	@Input()
+	decks: Deck[];
 
 	constructor() {
 	}

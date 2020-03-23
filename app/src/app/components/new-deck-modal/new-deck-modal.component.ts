@@ -4,16 +4,16 @@ import {Deck} from "../../models/Deck";
 import UIkit from 'uikit';
 import {v4 as uuid} from 'uuid';
 import {FormControl} from "@angular/forms";
-import {DeckService} from "../../deck.service";
+import {DeckService} from "../../services/deck.service";
 
 @Component({
-	selector: 'app-deck-details',
-	templateUrl: './deck-details.component.html',
-	styleUrls: ['./deck-details.component.sass']
+	selector: 'app-new-deck-modal',
+	templateUrl: './new-deck-modal.component.html',
+	styleUrls: ['./new-deck-modal.component.sass']
 })
-export class DeckDetailsComponent implements OnInit {
+export class NewDeckModalComponent implements OnInit {
 
-	@ViewChild("deckDetailsModal") modal: ElementRef;
+	@ViewChild("newDeckModal") modal: ElementRef;
 	@Output() newDeck = new EventEmitter<Deck>();
 
 	nameInput = new FormControl('');
@@ -26,6 +26,9 @@ export class DeckDetailsComponent implements OnInit {
 	}
 
 	onSaveClick() {
+		if (this.nameInput.value.trim() === '') {
+			return;
+		}
 		const newDeck: Deck = {
 			name: this.nameInput.value,
 			description: this.descriptionInput.value,

@@ -1,9 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-
-import {Deck} from "./models/Deck";
-import {DeckService} from "./deck.service";
-import {DeckListViewComponent} from "./components/deck-list-view/deck-list-view.component";
-
+import {Component, OnInit} from '@angular/core';
 
 @Component({
 	selector: 'app-root',
@@ -13,22 +8,10 @@ import {DeckListViewComponent} from "./components/deck-list-view/deck-list-view.
 export class AppComponent implements OnInit {
 	title = 'xks';
 
-	@ViewChild(DeckListViewComponent)
-	deckListView;
-
-	decks: Deck[] = this.deckService.getAll();
-
-	constructor(private deckService: DeckService) {
+	constructor() {
 	}
 
 	ngOnInit(): void {
 	}
 
-	onNewDeckCreated(deck: Deck) {
-		this.deckListView.onNewDeckCreated();
-	}
-
-	onDeckSelected(deck: Deck) {
-
-	}
 }

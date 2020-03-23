@@ -1,5 +1,5 @@
 <a class="uk-card uk-card-small uk-display-block uk-card-default uk-link-toggle uk-card-body uk-animation-fade"
-   [hidden]="editMode">
+   [hidden]="editMode" [routerLink]="['/decks', deck.id]">
 	<div class="uk-grid-small uk-flex-middle" uk-grid>
 		<div class="uk-width-expand">
 			<div class="uk-card-title">
@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<div class="uk-width-auto">
-			<a (click)="onEditClicked();$event.stopPropagation()"
+			<a (click)="onEditClicked();$event.preventDefault();$event.stopPropagation();"
 			   uk-icon="icon: pencil"></a>
 		</div>
 	</div>
