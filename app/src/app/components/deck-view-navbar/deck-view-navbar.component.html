@@ -1,0 +1,30 @@
+<div #offcanvas id="offcanvas-list"
+	 uk-offcanvas="mode:push; esc-close:false; bg-close:false;">
+	<div class="uk-offcanvas-bar uk-flex uk-flex-column">
+		<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav>
+			<li>
+				<a routerLink="/" class="uk-navbar-item uk-logo">xks</a>
+			</li>
+			<li *ngIf="deck" class="uk-parent uk-open">
+				<a href="#">Lists</a>
+				<ul class="uk-nav-sub">
+					<li deck-elements *ngFor="let listId of deck.listIds" [listId]="listId"></li>
+				</ul>
+			</li>
+			<li class="uk-nav-header">Actions</li>
+			<li>
+				<a routerLink="/decks">
+					<span class="uk-margin-small-right"
+						  uk-icon="icon: table">
+					</span>Return to all
+				</a></li>
+			<li class="uk-nav-divider"></li>
+			<li>
+				<a href="#">
+					<span class="uk-margin-small-right" uk-icon="icon: trash">
+					</span>Delete
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>

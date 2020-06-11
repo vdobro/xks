@@ -32,14 +32,15 @@ export class NewDeckModalComponent implements OnInit {
 		const newDeck: Deck = {
 			name: this.nameInput.value,
 			description: this.descriptionInput.value,
-			id: uuid()
+			id: uuid(),
+			listIds: [],
 		};
 		this.deckService.add(newDeck);
 
 		this.clearForm();
 
 		UIkit.modal(this.modal.nativeElement).hide();
-		this.newDeck.emit();
+		this.newDeck.emit(newDeck);
 	}
 
 	private clearForm() {

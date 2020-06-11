@@ -1,8 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {DeckService} from "../../services/deck.service";
 import {ActivatedRoute} from "@angular/router";
-import {NavbarItemProviderService} from "../../services/navbar-item-provider.service";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -13,15 +12,14 @@ export const DECK_ID_PARAM: string = 'deckId';
 })
 export class DeckViewComponent implements OnInit {
 
+	@Output()
 	deck: Deck;
 
 	constructor(private deckService: DeckService,
-				private route: ActivatedRoute,
-				private navbarItemProviderService: NavbarItemProviderService) {
+				private route: ActivatedRoute) {
 	}
 
 	ngOnInit(): void {
-		this.navbarItemProviderService.clear();
 		this.route.paramMap.subscribe(params => {
 			this.deck = this.deckService.getById(params.get(DECK_ID_PARAM));
 		});

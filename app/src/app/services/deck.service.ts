@@ -1,42 +1,28 @@
 import {Injectable} from '@angular/core';
-import {v4 as uuid} from 'uuid';
 import {Deck} from "../models/Deck";
+import {ListService} from "./list.service";
+import {MockData} from "./mock-data";
 
 @Injectable({
 	providedIn: 'root'
 })
 export class DeckService {
 
-	private static decks: Deck[] = [
-		{name: 'pz', id: uuid(), description: ""},
-		{name: 'ääßrgaeg', id: uuid(), description: ""},
-		{name: 'ąčęėįšųūž', id: uuid(), description: "acvbaslcgbkaert 'erg dgfgkojhdrg lxcvb lkjahsdf "},
-		{name: 'erg', id: uuid(), description: " 23"},
-		{name: 'sdfsdf', id: uuid(), description: "32234"},
-		{name: '3425', id: uuid(), description: "werwer 345345 fghsfghsfgh"},
-		{name: 'sdfsdf', id: uuid(), description: ""},
-		{
-			name: ';+üäöl´´',
-			id: uuid(),
-			description: "retertlxcvb fgkojhdrg lxcvb lkjahs slcgbkaert 'erg dgfgkojhdrg lxcvb lkjahsdf "
-		},
-		{name: '4545645', id: uuid(), description: ""},
-		{name: 'vnsfjh', id: uuid(), description: "cvbcvb"},
-		{name: 'sdfsdf', id: uuid(), description: ""},
-		{name: ';df135345´´', id: uuid(), description: "4e5 lkjahsdf "},
-	];
-	constructor() {
+	constructor(private listService: ListService) {
 	}
 
-	getById(id: string) : Deck {
-		return DeckService.decks.find(x => x.id === id);
+	getById(id: string): Deck {
+		return MockData.decks.find(x => x.id === id);
 	}
 
 	getAll(): Deck[] {
-		return DeckService.decks;
+		return MockData.decks.map((deck) => {
+			deck.listIds = this.listService.getByDeck(deck).map(list => list.id);
+			return deck;
+		});
 	}
 
 	add(deck: Deck): void {
-		DeckService.decks.push(deck);
+		MockData.decks.push(deck);
 	}
 }

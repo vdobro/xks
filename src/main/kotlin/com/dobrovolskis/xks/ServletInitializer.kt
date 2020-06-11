@@ -1,6 +1,7 @@
 package com.dobrovolskis.xks
 
 import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.boot.runApplication
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 class ServletInitializer : SpringBootServletInitializer() {

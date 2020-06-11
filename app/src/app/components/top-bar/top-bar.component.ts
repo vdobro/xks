@@ -1,39 +1,57 @@
-import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild} from '@angular/core';
+import {
+	Component,
+	ComponentFactoryResolver,
+	ComponentRef,
+	OnDestroy,
+	OnInit,
+	Output,
+	ViewChild
+} from '@angular/core';
 import {NavBarItemsDirective} from "../nav-bar-items.directive";
-import {NavbarItemProviderService} from "../../services/navbar-item-provider.service";
-
-export class NavBarItem {
-	constructor(public component: Type<any>) {}
-}
+import {NavigationService} from "../../services/navigation.service";
+import {NavBarItem} from "../nav-bar-item";
 
 @Component({
 	selector: 'app-top-bar',
 	templateUrl: './top-bar.component.html',
 	styleUrls: ['./top-bar.component.sass']
 })
-export class TopBarComponent implements OnInit {
+export class TopBarComponent implements OnInit, OnDestroy {
 
 	@ViewChild(NavBarItemsDirective, {static: true})
-	navbarItems: NavBarItemsDirective;
+	navBarItems: NavBarItemsDirective;
+
+	@Output()
+	active: boolean = true;
+
+	private componentRefs : ComponentRef<any>[] = []
 
 	constructor(private componentFactoryResolver: ComponentFactoryResolver,
-				private navbarItemProviderService: NavbarItemProviderService) {
+				private navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
-		this.navbarItemProviderService.getAll().subscribe((items) => {
+		this.navigationService.topNavBarVisible().subscribe((isVisible) => {
+			this.active = (isVisible);
+		});
+		this.navigationService.getAll().subscribe((items) => {
 			this.updateItemsList(items);
 		});
 	}
 
-	updateItemsList(items: NavBarItem[]) {
-		const viewContainerRef = this.navbarItems.viewContainerRef;
+	ngOnDestroy() {
+		this.componentRefs.forEach(ref => ref.destroy());
+	}
+
+	private updateItemsList(items: NavBarItem[]) {
+		const viewContainerRef = this.navBarItems.viewContainerRef;
 		viewContainerRef.clear();
 
 		for(const item of items) {
 			const componentFactory = this.componentFactoryResolver
 				.resolveComponentFactory(item.component);
-			viewContainerRef.createComponent(componentFactory);
+			const componentRef = viewContainerRef.createComponent(componentFactory);
+			this.componentRefs.push(componentRef);
 		}
 	}
 }
