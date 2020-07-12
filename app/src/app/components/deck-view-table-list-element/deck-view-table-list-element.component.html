@@ -1,5 +1,6 @@
-<a>{{table.name}}
-	<span class="uk-badge uk-margin-small-left">{{table.rows.length}}</span>
+<a [hidden]="editMode" class="uk-text-middle uk-animation-fade">
+	{{table.name}}
+	<span class="uk-badge ">{{table.rows.length}}</span>
 	<a class="uk-float-right uk-margin-small-left"
 	   (click)="onDeleteClicked();$event.preventDefault();$event.stopPropagation();"
 	   uk-icon="icon: trash"></a>
@@ -7,3 +8,19 @@
 	   (click)="onEditClicked();$event.preventDefault();$event.stopPropagation();"
 	   uk-icon="icon: pencil"></a>
 </a>
+<div [hidden]="!editMode" class="uk-animation-fade">
+	<form (submit)="onChangesSubmit()">
+		<div class="uk-grid-small uk-flex-middle" uk-grid>
+			<div class="uk-width-expand">
+				<input class="uk-input uk-form-small"
+					   type="text"
+					   placeholder="Title"
+					   [formControl]="nameInput"
+					   [value]="table.name">
+			</div>
+			<div class="uk-width-auto">
+				<button type="submit" uk-icon="icon: check"></button>
+			</div>
+		</div>
+	</form>
+</div>
