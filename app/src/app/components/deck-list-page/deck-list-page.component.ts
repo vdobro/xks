@@ -29,5 +29,6 @@ export class DeckListPageComponent implements OnInit {
 
 	onNewDeckCreated() {
 		this.deckListView.onNewDeckCreated();
+		this.decks = this.deckService.getAll();
 	}
 }

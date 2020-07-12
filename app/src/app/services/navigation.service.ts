@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {NavBarItem} from "../components/nav-bar-item";
+import {Deck} from "../models/Deck";
 
 @Injectable({
 	providedIn: 'root'
@@ -10,7 +11,9 @@ export class NavigationService {
 	private items: NavBarItem[] = [];
 
 	private itemsObservable: Subject<NavBarItem[]> = new Subject();
-	private topBarVisibleObservable: Subject<boolean> = new Subject();
+	private topBarVisible$: Subject<boolean> = new Subject();
+	private sidebarVisible$: Subject<boolean> = new Subject();
+	private activeDeck$: Subject<Deck> = new Subject();
 
 	constructor() {
 	}
@@ -20,7 +23,15 @@ export class NavigationService {
 	}
 
 	topNavBarVisible() : Observable<boolean> {
-		return this.topBarVisibleObservable;
+		return this.topBarVisible$;
+	}
+
+	sidebarVisible() : Observable<boolean> {
+		return this.sidebarVisible$;
+	}
+
+	activeDeck() : Observable<Deck> {
+		return this.activeDeck$;
 	}
 
 	addItem(item: NavBarItem) {
@@ -33,8 +44,15 @@ export class NavigationService {
 		this.update();
 	}
 
-	setTopBarVisibility(show: boolean) {
-		this.topBarVisibleObservable.next(show);
+	populateSidebar(deck: Deck) {
+		let topBarVisible = deck === null;
+		this.setTopBarVisibility(topBarVisible);
+		this.activeDeck$.next(deck);
+	}
+
+	private setTopBarVisibility(show: boolean) {
+		this.sidebarVisible$.next(!show);
+		this.topBarVisible$.next(show);
 	}
 
 	private update() {

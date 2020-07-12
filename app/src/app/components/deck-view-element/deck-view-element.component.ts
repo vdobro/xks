@@ -21,4 +21,12 @@ export class DeckViewElementComponent implements OnInit {
 	ngOnInit(): void {
 		this.list = this.listService.getById(this.listId);
 	}
+
+	onDeleteClicked() : void {
+
+	}
+
+	onEditClicked() : void {
+
+	}
 }

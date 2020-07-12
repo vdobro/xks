@@ -8,13 +8,13 @@ import {HttpClientModule} from "@angular/common/http";
 import {NewDeckModalComponent} from './components/new-deck-modal/new-deck-modal.component';
 import {DeckListCardComponent} from './components/deck-list-card/deck-list-card.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {DeckViewComponent, DECK_ID_PARAM} from './components/deck-view/deck-view.component';
+import {DECK_ID_PARAM, DeckViewComponent} from './components/deck-view/deck-view.component';
 import {DeckListPageComponent} from './components/deck-list-page/deck-list-page.component';
 import {TopBarComponent} from './components/top-bar/top-bar.component';
-import { NavBarItemsDirective } from './components/nav-bar-items.directive';
-import { DeckListNavbarComponent } from './components/deck-list-navbar/deck-list-navbar.component';
-import { DeckViewNavbarComponent } from './components/deck-view-navbar/deck-view-navbar.component';
-import { DeckViewElementComponent } from './components/deck-view-element/deck-view-element.component';
+import {NavBarItemsDirective} from './components/nav-bar-items.directive';
+import {DeckListNavbarComponent} from './components/deck-list-navbar/deck-list-navbar.component';
+import {DeckViewElementComponent} from './components/deck-view-element/deck-view-element.component';
+import {SidebarComponent} from './components/sidebar/sidebar.component';
 
 @NgModule({
 	declarations: [
@@ -27,8 +27,8 @@ import { DeckViewElementComponent } from './components/deck-view-element/deck-vi
 		TopBarComponent,
 		NavBarItemsDirective,
 		DeckListNavbarComponent,
-		DeckViewNavbarComponent,
 		DeckViewElementComponent,
+		SidebarComponent,
 	],
 	imports: [
 		BrowserModule,

@@ -5,7 +5,7 @@
 			<li>
 				<a routerLink="/" class="uk-navbar-item uk-logo">xks</a>
 			</li>
-			<li *ngIf="deck" class="uk-parent uk-open">
+			<li *ngIf="deck$ | async as deck" class="uk-parent uk-open">
 				<a href="#">Lists</a>
 				<ul class="uk-nav-sub">
 					<li deck-elements *ngFor="let listId of deck.listIds" [listId]="listId"></li>
@@ -15,9 +15,17 @@
 			<li>
 				<a routerLink="/decks">
 					<span class="uk-margin-small-right"
-						  uk-icon="icon: table">
-					</span>Return to all
-				</a></li>
+						  uk-icon="icon: plus"></span>
+					Add list
+				</a>
+			</li>
+			<li>
+				<a routerLink="/decks">
+					<span class="uk-margin-small-right"
+						  uk-icon="icon: table"></span>
+					Return to all
+				</a>
+			</li>
 			<li class="uk-nav-divider"></li>
 			<li>
 				<a href="#">
