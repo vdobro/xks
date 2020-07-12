@@ -5,34 +5,42 @@
 			<li>
 				<a routerLink="/" class="uk-navbar-item uk-logo">xks</a>
 			</li>
-			<li *ngIf="deck$ | async as deck" class="uk-parent uk-open">
-				<a href="#">Lists</a>
+			<li *ngIf="deck" class="uk-parent uk-open">
+				<a href="#">Tables</a>
 				<ul class="uk-nav-sub">
-					<li deck-elements *ngFor="let listId of deck.listIds" [listId]="listId"></li>
+					<li deck-elements *ngFor="let table of tables"
+						[table]="table"
+						(deleted)="onTableDeleted(table.id)"
+					></li>
 				</ul>
 			</li>
 			<li class="uk-nav-header">Actions</li>
 			<li>
-				<a routerLink="/decks">
+				<a (click)="newTableModal.openDialog()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: plus"></span>
-					Add list
+					New table
 				</a>
 			</li>
 			<li>
 				<a routerLink="/decks">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: table"></span>
-					Return to all
+					Return to decks
 				</a>
 			</li>
 			<li class="uk-nav-divider"></li>
 			<li>
-				<a href="#">
-					<span class="uk-margin-small-right" uk-icon="icon: trash">
-					</span>Delete
+				<a (click)="onDeckDeleted()">
+					<span class="uk-margin-small-right" uk-icon="icon: trash"></span>
+					Delete
 				</a>
 			</li>
 		</ul>
 	</div>
+</div>
+<div *ngIf="deck">
+	<app-new-table-modal
+		[deck]="deck"
+		(tableCreated)="onNewTableCreated($event)"></app-new-table-modal>
 </div>

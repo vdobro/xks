@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeckViewElementComponent } from './deck-view-element.component';
+import { DeckViewTableListElement } from './deck-view-table-list-element.component';
 
-describe('DeckViewElementComponent', () => {
-  let component: DeckViewElementComponent;
-  let fixture: ComponentFixture<DeckViewElementComponent>;
+describe('DeckViewTableListElementComponent', () => {
+  let component: DeckViewTableListElement;
+  let fixture: ComponentFixture<DeckViewTableListElement>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeckViewElementComponent ]
+      declarations: [ DeckViewTableListElement ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeckViewElementComponent);
+    fixture = TestBed.createComponent(DeckViewTableListElement);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

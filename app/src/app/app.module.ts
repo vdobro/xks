@@ -13,8 +13,9 @@ import {DeckListPageComponent} from './components/deck-list-page/deck-list-page.
 import {TopBarComponent} from './components/top-bar/top-bar.component';
 import {NavBarItemsDirective} from './components/nav-bar-items.directive';
 import {DeckListNavbarComponent} from './components/deck-list-navbar/deck-list-navbar.component';
-import {DeckViewElementComponent} from './components/deck-view-element/deck-view-element.component';
+import {DeckViewTableListElement} from './components/deck-view-table-list-element/deck-view-table-list-element.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
+import { NewTableModalComponent } from './components/new-table-modal/new-table-modal.component';
 
 @NgModule({
 	declarations: [
@@ -27,8 +28,9 @@ import {SidebarComponent} from './components/sidebar/sidebar.component';
 		TopBarComponent,
 		NavBarItemsDirective,
 		DeckListNavbarComponent,
-		DeckViewElementComponent,
+		DeckViewTableListElement,
 		SidebarComponent,
+		NewTableModalComponent,
 	],
 	imports: [
 		BrowserModule,

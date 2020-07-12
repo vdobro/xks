@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {FormControl} from "@angular/forms";
+import {DeckService} from "../../services/deck.service";
 
 @Component({
 	selector: 'app-deck-list-card',
@@ -17,7 +18,7 @@ export class DeckListCardComponent implements OnInit {
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');
 
-	constructor() {
+	constructor(private deckService: DeckService) {
 	}
 
 	ngOnInit(): void {
@@ -33,5 +34,7 @@ export class DeckListCardComponent implements OnInit {
 		this.deck.name = this.nameInput.value;
 		this.deck.description = this.descriptionInput.value;
 		this.editMode = false;
+
+		this.deckService.update(this.deck);
 	}
 }

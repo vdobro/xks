@@ -1,6 +1,6 @@
 import {Deck} from "../models/Deck";
 import {v4 as uuid} from 'uuid';
-import {List} from "../models/List";
+import {Table} from "../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -12,20 +12,20 @@ export namespace MockData {
 		name: 'Deck with lists',
 		id: 'ee07eb82-e7d9-47e4-9be8-4ccd4d7a18ae',
 		description: "",
-		listIds: []};
+		tableIds: []};
 	export const decks: Deck[] = [
 		sampleDeck,
-		{name: 'Another deck', id: uuid(), description: "", listIds: []},
-		{name: 'DBWT 1', id: uuid(), description: "Datenbanken und Webtechnologien 1 ", listIds: []},
-		{name: 'Finnish 1', id: uuid(), description: " 23", listIds: []},
-		{name: 'Deutsche Artikel', id: uuid(), description: "Vokabeln mit dem dazugehörigen Geschlecht", listIds: []},
-		{name: 'Medieval Lithuania', id: uuid(), description: "Historic dates and persons", listIds: []},
-		{name: 'Random things', id: uuid(), description: "", listIds: []},
-		{name: 'Cat names', id: uuid(), description: "", listIds: [],},
-		{name: 'Sumerian numbers', id: uuid(), description: "", listIds: []},
-		{name: 'Friends\' phone numbers', id: uuid(), description: "4e5 lkjahsdf ", listIds: []},
+		{name: 'Another deck', id: uuid(), description: "", tableIds: []},
+		{name: 'DBWT 1', id: uuid(), description: "Datenbanken und Webtechnologien 1 ", tableIds: []},
+		{name: 'Finnish 1', id: uuid(), description: " 23", tableIds: []},
+		{name: 'Deutsche Artikel', id: uuid(), description: "Vokabeln mit dem dazugehörigen Geschlecht", tableIds: []},
+		{name: 'Medieval Lithuania', id: uuid(), description: "Historic dates and persons", tableIds: []},
+		{name: 'Random things', id: uuid(), description: "", tableIds: []},
+		{name: 'Cat names', id: uuid(), description: "", tableIds: [],},
+		{name: 'Sumerian numbers', id: uuid(), description: "", tableIds: []},
+		{name: 'Friends\' phone numbers', id: uuid(), description: "4e5 lkjahsdf ", tableIds: []},
 	];
-	export const sampleLists: List[] = [
+	export const sampleTables: Table[] = [
 		{
 			id: '81c831f5-5e0f-4c9c-bebc-838096cbd2ad',
 			deckId: sampleDeck.id,

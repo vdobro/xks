@@ -2,7 +2,6 @@ import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@a
 import {Deck} from "../../models/Deck";
 
 import UIkit from 'uikit';
-import {v4 as uuid} from 'uuid';
 import {FormControl} from "@angular/forms";
 import {DeckService} from "../../services/deck.service";
 
@@ -26,19 +25,13 @@ export class NewDeckModalComponent implements OnInit {
 	}
 
 	onSaveClick() {
-		if (this.nameInput.value.trim() === '') {
+		const name = this.nameInput.value.trim();
+		if (name === '') {
 			return;
 		}
-		const newDeck: Deck = {
-			name: this.nameInput.value,
-			description: this.descriptionInput.value,
-			id: uuid(),
-			listIds: [],
-		};
-		this.deckService.add(newDeck);
+		const newDeck = this.deckService.create(name, this.descriptionInput.value);
 
 		this.clearForm();
-
 		UIkit.modal(this.modal.nativeElement).hide();
 		this.newDeck.emit(newDeck);
 	}
