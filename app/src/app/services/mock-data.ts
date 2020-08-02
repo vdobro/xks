@@ -28,22 +28,22 @@ import {Table} from "../models/Table";
  * @since 2020.06.11
  */
 export namespace MockData {
-	export const sampleDeck : Deck = {
+	export const sampleDeck: Deck = {
 		name: 'Deck with lists',
 		id: 'ee07eb82-e7d9-47e4-9be8-4ccd4d7a18ae',
-		description: "",
-		tableIds: []};
+		description: ""
+	};
 	export const decks: Deck[] = [
 		sampleDeck,
-		{name: 'Another deck', id: uuid(), description: "", tableIds: []},
-		{name: 'DBWT 1', id: uuid(), description: "Datenbanken und Webtechnologien 1 ", tableIds: []},
-		{name: 'Finnish 1', id: uuid(), description: " 23", tableIds: []},
-		{name: 'Deutsche Artikel', id: uuid(), description: "Vokabeln mit dem dazugehörigen Geschlecht", tableIds: []},
-		{name: 'Medieval Lithuania', id: uuid(), description: "Historic dates and persons", tableIds: []},
-		{name: 'Random things', id: uuid(), description: "", tableIds: []},
-		{name: 'Cat names', id: uuid(), description: "", tableIds: [],},
-		{name: 'Sumerian numbers', id: uuid(), description: "", tableIds: []},
-		{name: 'Friends\' phone numbers', id: uuid(), description: "4e5 lkjahsdf ", tableIds: []},
+		{name: 'Another deck', id: uuid(), description: ""},
+		{name: 'DBWT 1', id: uuid(), description: "Datenbanken und Webtechnologien 1 "},
+		{name: 'Finnish 1', id: uuid(), description: " 23"},
+		{name: 'Deutsche Artikel', id: uuid(), description: "Vokabeln mit dem dazugehörigen Geschlecht"},
+		{name: 'Medieval Lithuania', id: uuid(), description: "Historic dates and persons"},
+		{name: 'Random things', id: uuid(), description: ""},
+		{name: 'Cat names', id: uuid(), description: ""},
+		{name: 'Sumerian numbers', id: uuid(), description: ""},
+		{name: 'Friends\' phone numbers', id: uuid(), description: "4e5 lkjahsdf "},
 	];
 	export const sampleTables: Table[] = [
 		{
@@ -53,20 +53,30 @@ export namespace MockData {
 			columns: [],
 			rows: [],
 		},
-		{ id: '30abfe21-cc41-45b1-baa2-93f8acb856d9',
+		{
+			id: '30abfe21-cc41-45b1-baa2-93f8acb856d9',
 			name: "Another list",
-			deckId: sampleDeck.id, columns: [], rows: [] },
-		{ id: '65ed0bde-0572-419a-8a0f-3ef32e97bd1c',
+			deckId: sampleDeck.id, columns: [], rows: []
+		},
+		{
+			id: '65ed0bde-0572-419a-8a0f-3ef32e97bd1c',
 			name: "Third list",
-			deckId: sampleDeck.id, columns: [], rows: [] },
-		{ id: 'fa083969-e077-44d9-ba6e-c1744acb565f',
+			deckId: sampleDeck.id, columns: [], rows: []
+		},
+		{
+			id: 'fa083969-e077-44d9-ba6e-c1744acb565f',
 			name: "Fourth list",
-			deckId: sampleDeck.id, columns: [], rows: [] },
-		{ id: 'bef7f348-3d2f-480a-8add-d5c877f6bb42',
+			deckId: sampleDeck.id, columns: [], rows: []
+		},
+		{
+			id: 'bef7f348-3d2f-480a-8add-d5c877f6bb42',
 			name: "Definitive list",
-			deckId: sampleDeck.id, columns: [], rows: [] },
-		{ id: '910c5c80-95a5-488f-9285-ee4899f7de3e',
+			deckId: sampleDeck.id, columns: [], rows: []
+		},
+		{
+			id: '910c5c80-95a5-488f-9285-ee4899f7de3e',
 			name: "The last list",
-			deckId: sampleDeck.id, columns: [], rows: [] }
+			deckId: sampleDeck.id, columns: [], rows: []
+		}
 	];
 }

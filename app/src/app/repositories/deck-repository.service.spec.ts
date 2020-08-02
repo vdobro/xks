@@ -19,12 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {TestBed} from '@angular/core/testing';
+
+import {DeckRepository} from './deck-repository.service';
+
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.14
+ * @since 2020.08.01
  */
-export interface Deck {
-	id: string;
-	name: string;
-	description: string;
-}
+describe('DeckRepositoryService', () => {
+	let service: DeckRepository;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(DeckRepository);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

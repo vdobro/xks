@@ -24,6 +24,8 @@ import {Deck} from "../models/Deck";
 import {TableService} from "./table.service";
 import {v4 as uuid} from 'uuid';
 import {MockData} from "./mock-data";
+import {BaseRepository} from "../repositories/BaseRepository";
+import {DeckRepository} from "../repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,7 +38,13 @@ export class DeckService {
 
 	private decks: Deck[] = MockData.decks;
 
-	constructor(private listService: TableService) {
+	private readonly repository: BaseRepository<Deck>;
+	private readonly listService: TableService;
+
+	constructor(repository: DeckRepository,
+				listService: TableService) {
+		this.repository = repository;
+		this.listService = listService;
 	}
 
 	getById(id: string): Deck {
@@ -44,18 +52,14 @@ export class DeckService {
 	}
 
 	getAll(): Deck[] {
-		return this.decks.map((deck) => {
-			deck.tableIds = this.listService.getByDeck(deck).map(list => list.id);
-			return deck;
-		});
+		return this.decks;
 	}
 
 	create(name: string, description: string): Deck {
 		const newDeck: Deck = {
 			id: uuid(),
 			name: name,
-			description: description,
-			tableIds: [],
+			description: description
 		};
 		this.decks.push(newDeck);
 		return newDeck;
