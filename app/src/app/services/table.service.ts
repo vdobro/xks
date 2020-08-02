@@ -24,7 +24,6 @@ import {Injectable} from '@angular/core';
 import {v4 as uuid} from 'uuid';
 import {Table} from "../models/Table";
 import {Deck} from "../models/Deck";
-import {MockData} from "./mock-data";
 import {TableRepository} from "../repositories/table-repository.service";
 
 /**
@@ -36,35 +35,32 @@ import {TableRepository} from "../repositories/table-repository.service";
 })
 export class TableService {
 
-	private tables: Table[] = MockData.sampleTables;
-
 	constructor(private repository: TableRepository) {
 	}
 
-	public getById(id: string): Table {
-		const results = this.tables.filter(x => x.id === id);
-		return results[0];
+	public async getById(id: string): Promise<Table> {
+		return await this.repository.getById(id);
 	}
 
-	public getByDeck(deck: Deck): Table[] {
-		return this.tables.filter(x => x.deckId === deck.id);
+	public async getByDeck(deck: Deck): Promise<Table[]> {
+		return await this.repository.getByDeck(deck.id);
 	}
 
-	public create(deck: Deck, name: string): Table {
+	public async create(deck: Deck, name: string): Promise<Table> {
 		const table: Table = {
 			id: uuid(),
 			deckId: deck.id,
 			name: name
 		};
-		this.tables.push(table);
+		await this.repository.add(table);
 		return table;
 	}
 
-	public delete(id: string) {
-		this.tables = this.tables.filter(item => item.id !== id);
+	public async delete(id: string) {
+		await this.repository.delete(id);
 	}
 
-	public update(table: Table) {
-		//TODO
+	public async update(table: Table) {
+		await this.repository.update(table);
 	}
 }

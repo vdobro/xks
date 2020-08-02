@@ -61,7 +61,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 			if (deck === null) {
 				this.tables = [];
 			} else {
-				this.tables = this.tableService.getByDeck(this.deck);
+				this.tableService.getByDeck(this.deck).then((tables) => {
+					this.tables = tables;
+				});
 			}
 		});
 	}

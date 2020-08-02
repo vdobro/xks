@@ -21,6 +21,9 @@
 
 import {Component, OnInit} from '@angular/core';
 
+import PouchDB from "pouchdb";
+import PouchFind from 'pouchdb-find';
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.03.04
@@ -34,9 +37,9 @@ export class AppComponent implements OnInit {
 	title = 'xks';
 
 	constructor() {
+		PouchDB.plugin(PouchFind);
 	}
 
 	ngOnInit(): void {
 	}
-
 }

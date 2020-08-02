@@ -54,8 +54,8 @@ export class DeckViewTableListElement implements OnInit {
 		this.nameInput.setValue(this.table?.name);
 	}
 
-	onDeleteClicked(): void {
-		this.tableService.delete(this.table.id);
+	async onDeleteClicked(): Promise<void> {
+		await this.tableService.delete(this.table.id);
 		this.deleted.emit(this.table);
 	}
 
@@ -63,13 +63,13 @@ export class DeckViewTableListElement implements OnInit {
 		this.editMode = true;
 	}
 
-	onChangesSubmit() {
+	async onChangesSubmit() {
 		if (this.table === null) {
 			return;
 		}
 		this.table.name = this.nameInput.value;
 
-		this.tableService.update(this.table);
+		await this.tableService.update(this.table);
 		this.edited.emit(this.table);
 		this.editMode = false;
 	}

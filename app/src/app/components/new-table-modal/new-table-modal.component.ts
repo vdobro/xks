@@ -51,12 +51,12 @@ export class NewTableModalComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	onSaveClick() {
+	async onSaveClick() {
 		const name = this.nameInput.value.trim();
 		if (name === '') {
 			return;
 		}
-		const table = this.tableService.create(this.deck, this.nameInput.value);
+		const table = await this.tableService.create(this.deck, this.nameInput.value);
 
 		this.nameInput.reset();
 		UIkit.modal(this.modal.nativeElement).hide();

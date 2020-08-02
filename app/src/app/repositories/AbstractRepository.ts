@@ -30,7 +30,7 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	implements BaseRepository<Entity> {
 
 	private readonly dbName: string;
-	private readonly db: any;
+	protected readonly db: any;
 
 	abstract mapToDataEntity(entity: Entity): DataEntity
 

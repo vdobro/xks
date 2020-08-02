@@ -35,6 +35,22 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 
 	constructor() {
 		super('tables');
+
+		this.db.createIndex({
+			index: {fields: ['deckId']}
+		});
+		this.db.createIndex({
+			index: {fields: ['name']}
+		});
+	}
+
+	async getByDeck(id: string): Promise<Table[]> {
+		const result = await this.db.find({
+			selector: {
+				deckId: id
+			}
+		});
+		return result.docs.map(this.mapToEntity);
 	}
 
 	mapToDataEntity(entity: Table): TableDataEntity {
