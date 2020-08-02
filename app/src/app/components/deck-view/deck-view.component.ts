@@ -39,21 +39,21 @@ export const DECK_ID_PARAM: string = 'deckId';
 export class DeckViewComponent implements OnInit, OnDestroy {
 
 	@Output()
-	deck: Deck;
+	deck$: Promise<Deck>;
 
 	constructor(private deckService: DeckService,
 				private route: ActivatedRoute,
 				private navigationService: NavigationService) {
 	}
 
-	ngOnInit(): void {
-		this.route.paramMap.subscribe(params => {
-			this.deck = this.deckService.getById(params.get(DECK_ID_PARAM));
-			this.navigationService.populateSidebar(this.deck);
+	async ngOnInit(): Promise<void> {
+		this.route.paramMap.subscribe(async params => {
+			this.deck$ = this.deckService.getById(params.get(DECK_ID_PARAM));
+			this.navigationService.populateSidebar(await this.deck$);
 		});
 	}
 
-	ngOnDestroy() : void {
+	ngOnDestroy() {
 		this.navigationService.populateSidebar(null);
 	}
 }

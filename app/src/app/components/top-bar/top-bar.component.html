@@ -1,8 +1,9 @@
-<div uk-sticky="animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent;">
+<div
+	uk-sticky="animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent;">
 	<nav class="uk-navbar-container uk-margin uk-preserve-color" uk-navbar>
-		<div class="uk-navbar-left" [hidden]="!active" >
+		<div class="uk-navbar-left" [hidden]="!active">
 			<a routerLink="/" class="uk-navbar-item uk-logo">xks</a>
-			<ul class="uk-navbar-nav" >
+			<ul class="uk-navbar-nav">
 				<ng-template appNavBarItems></ng-template>
 			</ul>
 		</div>

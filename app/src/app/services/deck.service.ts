@@ -21,10 +21,7 @@
 
 import {Injectable} from '@angular/core';
 import {Deck} from "../models/Deck";
-import {TableService} from "./table.service";
 import {v4 as uuid} from 'uuid';
-import {MockData} from "./mock-data";
-import {BaseRepository} from "../repositories/BaseRepository";
 import {DeckRepository} from "../repositories/deck-repository.service";
 
 /**
@@ -36,40 +33,32 @@ import {DeckRepository} from "../repositories/deck-repository.service";
 })
 export class DeckService {
 
-	private decks: Deck[] = MockData.decks;
-
-	private readonly repository: BaseRepository<Deck>;
-	private readonly listService: TableService;
-
-	constructor(repository: DeckRepository,
-				listService: TableService) {
-		this.repository = repository;
-		this.listService = listService;
+	constructor(private repository: DeckRepository) {
 	}
 
-	getById(id: string): Deck {
-		return this.decks.find(x => x.id === id);
+	async getById(id: string): Promise<Deck> {
+		return this.repository.getById(id);
 	}
 
-	getAll(): Deck[] {
-		return this.decks;
+	async getAll(): Promise<Deck[]> {
+		return this.repository.getAll();
 	}
 
-	create(name: string, description: string): Deck {
+	async create(name: string, description: string): Promise<Deck> {
 		const newDeck: Deck = {
 			id: uuid(),
 			name: name,
 			description: description
 		};
-		this.decks.push(newDeck);
+		await this.repository.add(newDeck);
 		return newDeck;
 	}
 
-	update(deck: Deck) {
-		//TODO
+	async update(deck: Deck) {
+		await this.repository.update(deck);
 	}
 
-	delete(deck: Deck) {
-		this.decks = this.decks.filter(x => x.id !== deck.id);
+	async delete(deck: Deck) {
+		await this.repository.delete(deck.id);
 	}
 }

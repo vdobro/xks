@@ -22,24 +22,48 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckListCardComponent} from './deck-list-card.component';
+import {Component, ViewChild} from "@angular/core";
+import {Deck} from "../../models/Deck";
+import {v4 as uuid} from 'uuid';
 
 describe('DeckListCardComponent', () => {
-	let component: DeckListCardComponent;
-	let fixture: ComponentFixture<DeckListCardComponent>;
+	let component: TestHostComponent;
+	let fixture: ComponentFixture<TestHostComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [DeckListCardComponent]
+			declarations: [DeckListCardComponent, TestHostComponent]
 		}).compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(DeckListCardComponent);
+		fixture = TestBed.createComponent(TestHostComponent);
 		component = fixture.componentInstance;
+		component.deck = generateDeck();
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
+
+	@Component({
+		selector: 'host-component',
+		template: `
+			<app-deck-list-card [deck]=deck></app-deck-list-card>`
+	})
+	class TestHostComponent {
+		@ViewChild(DeckListCardComponent)
+		public componentUnderTest;
+
+		deck: Deck;
+	}
 });
+
+function generateDeck(): Deck {
+	return {
+		id: uuid(),
+		name: uuid() + ' name',
+		description: uuid() + ' description'
+	}
+}

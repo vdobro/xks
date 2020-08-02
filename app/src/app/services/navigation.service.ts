@@ -47,15 +47,15 @@ export class NavigationService {
 		return this.itemsObservable;
 	}
 
-	topNavBarVisible() : Observable<boolean> {
+	topNavBarVisible(): Observable<boolean> {
 		return this.topBarVisible$;
 	}
 
-	sidebarVisible() : Observable<boolean> {
+	sidebarVisible(): Observable<boolean> {
 		return this.sidebarVisible$;
 	}
 
-	activeDeck() : Observable<Deck> {
+	activeDeck(): Observable<Deck> {
 		return this.activeDeck$;
 	}
 

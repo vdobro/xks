@@ -1,23 +1,47 @@
-import { AppPage } from './app.po';
-import { browser, logging } from 'protractor';
+/*
+ * Copyright (C) 2020 Vitalijus Dobrovolskis
+ *
+ * This file is part of xks.
+ *
+ * xks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, version 3 of the License.
+ *
+ * xks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with xks; see the file LICENSE. If not,
+ * see <https://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {AppPage} from './app.po';
 
 describe('workspace-project App', () => {
-  let page: AppPage;
+	let page: AppPage;
 
-  beforeEach(() => {
-    page = new AppPage();
-  });
+	beforeEach(() => {
+		page = new AppPage();
+	});
 
-  it('should display welcome message', () => {
-    page.navigateTo();
-    expect(page.getTitleText()).toEqual('xks app is running!');
-  });
+	it('should display welcome message', () => {
+		page.navigateTo();
+		expect(page.getTitleText()).toEqual('xks');
+	});
 
-  afterEach(async () => {
-    // Assert that there are no errors emitted from the browser
-    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
-    expect(logs).not.toContain(jasmine.objectContaining({
-      level: logging.Level.SEVERE,
-    } as logging.Entry));
-  });
+	afterEach(async () => {
+		// Assert that there are no errors emitted from the browser
+		// DOESN'T WORK WITH FIREFOX
+
+		/*
+		const logs = await browser.manage().logs().get(logging.Type.BROWSER);
+		expect(logs).not.toContain(jasmine.objectContaining({
+			level: logging.Level.SEVERE,
+		} as logging.Entry));
+		*/
+	});
 });

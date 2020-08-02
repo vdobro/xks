@@ -49,12 +49,12 @@ export class NewDeckModalComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	onSaveClick() {
+	async onSaveClick() {
 		const name = this.nameInput.value.trim();
 		if (name === '') {
 			return;
 		}
-		const newDeck = this.deckService.create(name, this.descriptionInput.value);
+		const newDeck = await this.deckService.create(name, this.descriptionInput.value);
 
 		this.clearForm();
 		UIkit.modal(this.modal.nativeElement).hide();

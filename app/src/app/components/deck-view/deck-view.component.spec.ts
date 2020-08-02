@@ -22,6 +22,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckViewComponent} from './deck-view.component';
+import {RouterModule} from "@angular/router";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,9 +34,9 @@ describe('DeckViewComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [DeckViewComponent]
-		})
-			.compileComponents();
+			declarations: [DeckViewComponent],
+			imports: [RouterModule.forRoot([])]
+		}).compileComponents();
 	}));
 
 	beforeEach(() => {

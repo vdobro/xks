@@ -21,7 +21,8 @@
 
 import {Injectable} from '@angular/core';
 import {Deck} from "../models/Deck";
-import {AbstractRepository, BaseDataEntity} from "./BaseRepository";
+import {BaseDataEntity} from "./BaseRepository";
+import {AbstractRepository} from "./AbstractRepository";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,7 +37,7 @@ export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 		super('decks');
 	}
 
-	mapToDataEntity(entity: Deck) : DeckEntity {
+	mapToDataEntity(entity: Deck): DeckEntity {
 		return {
 			_id: entity.id,
 			_rev: '',

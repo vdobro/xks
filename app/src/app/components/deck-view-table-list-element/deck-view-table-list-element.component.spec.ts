@@ -22,29 +22,52 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckViewTableListElement} from './deck-view-table-list-element.component';
+import {Component, ViewChild} from "@angular/core";
+import {v4 as uuid} from 'uuid';
+import {Table} from "../../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.06.11
  */
 describe('DeckViewTableListElementComponent', () => {
-	let component: DeckViewTableListElement;
-	let fixture: ComponentFixture<DeckViewTableListElement>;
+	let component: TestHostComponent;
+	let fixture: ComponentFixture<TestHostComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [DeckViewTableListElement]
-		})
-			.compileComponents();
+			declarations: [DeckViewTableListElement, TestHostComponent]
+		}).compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(DeckViewTableListElement);
+		fixture = TestBed.createComponent(TestHostComponent);
 		component = fixture.componentInstance;
+		component.table = generateTable();
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
+
+	@Component({
+		selector: 'host-component',
+		template: `
+			<li deck-elements [table]="table"></li>`
+	})
+	class TestHostComponent {
+		@ViewChild(DeckViewTableListElement)
+		public componentUnderTest;
+
+		table: Table;
+	}
 });
+
+function generateTable(): Table {
+	return {
+		id: uuid(),
+		deckId: uuid() + 'as deck ID',
+		name: 'name ' + uuid()
+	};
+}

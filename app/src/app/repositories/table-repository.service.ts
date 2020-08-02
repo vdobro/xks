@@ -20,51 +20,42 @@
  */
 
 import {Injectable} from '@angular/core';
-
-import {v4 as uuid} from 'uuid';
+import {AbstractRepository} from "./AbstractRepository";
 import {Table} from "../models/Table";
-import {Deck} from "../models/Deck";
-import {MockData} from "./mock-data";
-import {TableRepository} from "../repositories/table-repository.service";
+import {BaseDataEntity} from "./BaseRepository";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.07.12
+ * @since 2020.08.02
  */
 @Injectable({
 	providedIn: 'root'
 })
-export class TableService {
+export class TableRepository extends AbstractRepository<Table, TableDataEntity> {
 
-	private tables: Table[] = MockData.sampleTables;
-
-	constructor(private repository: TableRepository) {
+	constructor() {
+		super('tables');
 	}
 
-	public getById(id: string): Table {
-		const results = this.tables.filter(x => x.id === id);
-		return results[0];
+	mapToDataEntity(entity: Table): TableDataEntity {
+		return {
+			_id: entity.id,
+			_rev: '',
+			name: entity.name,
+			deckId: entity.deckId,
+		}
 	}
 
-	public getByDeck(deck: Deck): Table[] {
-		return this.tables.filter(x => x.deckId === deck.id);
+	mapToEntity(entity: TableDataEntity): Table {
+		return {
+			id: entity._id,
+			deckId: entity.deckId,
+			name: entity.name
+		}
 	}
+}
 
-	public create(deck: Deck, name: string): Table {
-		const table: Table = {
-			id: uuid(),
-			deckId: deck.id,
-			name: name
-		};
-		this.tables.push(table);
-		return table;
-	}
-
-	public delete(id: string) {
-		this.tables = this.tables.filter(item => item.id !== id);
-	}
-
-	public update(table: Table) {
-		//TODO
-	}
+export interface TableDataEntity extends BaseDataEntity {
+	deckId: string;
+	name: string;
 }

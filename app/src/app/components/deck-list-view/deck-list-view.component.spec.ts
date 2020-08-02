@@ -22,28 +22,50 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckListViewComponent} from './deck-list-view.component';
+import {Component, ViewChild} from "@angular/core";
+import {Deck} from "../../models/Deck";
+import {MockData} from "../../services/mock-data";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.03.14
  */
 describe('DeckListViewComponent', () => {
-	let component: DeckListViewComponent;
-	let fixture: ComponentFixture<DeckListViewComponent>;
+	let component: TestHostComponent;
+	let fixture: ComponentFixture<TestHostComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [DeckListViewComponent]
+			declarations: [DeckListViewComponent, TestHostComponent]
 		}).compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(DeckListViewComponent);
+		fixture = TestBed.createComponent(TestHostComponent);
 		component = fixture.componentInstance;
+		component.setDecks(MockData.decks);
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
+
+	@Component({
+		selector: 'host-component',
+		template: `
+			<app-deck-list-view [decks$]="decks"></app-deck-list-view>`
+	})
+	class TestHostComponent {
+		@ViewChild(DeckListViewComponent)
+		public componentUnderTest;
+
+		decks: Promise<Deck[]>;
+
+		setDecks(decks: Deck[]) {
+			this.decks = new Promise<Deck[]>((resolve, _) => {
+				resolve(decks);
+			});
+		}
+	}
 });

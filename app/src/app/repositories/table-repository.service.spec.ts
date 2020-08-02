@@ -19,19 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+import {TestBed} from '@angular/core/testing';
 
-export const environment = {
-	production: false
-};
+import {TableRepository} from './table-repository.service';
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.08.02
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+describe('TableRepository', () => {
+	let service: TableRepository;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TableRepository);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

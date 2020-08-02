@@ -39,12 +39,14 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	@ViewChild("offcanvas", {static: true})
 	sideBar: ElementRef;
-	@ViewChild(NewTableModalComponent) newTableModal: NewTableModalComponent;
+
+	@ViewChild(NewTableModalComponent)
+	newTableModal: NewTableModalComponent;
 
 	deck: Deck;
-	tables : Table[] = [];
+	tables: Table[] = [];
 
-	private active : boolean;
+	private active: boolean;
 
 	constructor(private navigationService: NavigationService,
 				private deckService: DeckService,
@@ -71,27 +73,27 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		UIkit.offcanvas(this.sideBar.nativeElement);
 	}
 
-	onTableDeleted(tableId: string) : void {
+	onTableDeleted(tableId: string): void {
 		this.tables = this.tables.filter(item => item.id !== tableId);
 	}
 
-	onNewTableCreated(table: Table) : void {
+	onNewTableCreated(table: Table): void {
 		this.tables.push(table);
 	}
 
-	onDeckDeleted() : void {
+	async onDeckDeleted(): Promise<void> {
 		if (this.deck === null) {
 			this.tables = [];
 			return;
 		}
 
-		this.deckService.delete(this.deck);
+		await this.deckService.delete(this.deck);
 		this.deck = null;
 		this.tables = [];
-		this.router.navigate(['/']);
+		await this.router.navigate(['/']);
 	}
 
-	private update() : void {
+	private update(): void {
 		if (this.active) {
 			UIkit.offcanvas(this.sideBar.nativeElement).show();
 		} else {

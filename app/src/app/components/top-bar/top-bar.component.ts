@@ -41,7 +41,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	@Output()
 	active: boolean = true;
 
-	private componentRefs : ComponentRef<any>[] = []
+	private componentRefs: ComponentRef<any>[] = []
 
 	constructor(private componentFactoryResolver: ComponentFactoryResolver,
 				private navigationService: NavigationService) {
@@ -64,7 +64,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		const viewContainerRef = this.navBarItems.viewContainerRef;
 		viewContainerRef.clear();
 
-		for(const item of items) {
+		for (const item of items) {
 			const componentFactory = this.componentFactoryResolver
 				.resolveComponentFactory(item.component);
 			const componentRef = viewContainerRef.createComponent(componentFactory);

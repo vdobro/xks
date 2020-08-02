@@ -38,7 +38,7 @@ export class DeckListViewComponent implements OnInit {
 	@ViewChild("deckListFooter") deckListFooter: ElementRef;
 
 	@Input()
-	decks: Deck[];
+	decks$: Promise<Deck[]>;
 
 	constructor() {
 	}

@@ -37,7 +37,7 @@ export class DeckListPageComponent implements OnInit {
 	@ViewChild(DeckListViewComponent)
 	deckListView: DeckListViewComponent;
 
-	decks : Deck[] = this.deckService.getAll();
+	decks: Promise<Deck[]> = this.deckService.getAll();
 
 	constructor(private deckService: DeckService,
 				private navigationService: NavigationService) {
