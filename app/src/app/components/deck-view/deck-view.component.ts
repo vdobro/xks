@@ -24,6 +24,7 @@ import {Deck} from "../../models/Deck";
 import {DeckService} from "../../services/deck.service";
 import {ActivatedRoute} from "@angular/router";
 import {NavigationService} from "../../services/navigation.service";
+import {Table} from "../../models/Table";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -41,6 +42,9 @@ export class DeckViewComponent implements OnInit, OnDestroy {
 	@Output()
 	deck$: Promise<Deck>;
 
+	@Output()
+	selectedTable: Table;
+
 	constructor(private deckService: DeckService,
 				private route: ActivatedRoute,
 				private navigationService: NavigationService) {
@@ -50,6 +54,9 @@ export class DeckViewComponent implements OnInit, OnDestroy {
 		this.route.paramMap.subscribe(async params => {
 			this.deck$ = this.deckService.getById(params.get(DECK_ID_PARAM));
 			this.navigationService.populateSidebar(await this.deck$);
+		});
+		this.navigationService.activeTable().subscribe((table: Table) => {
+			this.selectedTable = table;
 		});
 	}
 

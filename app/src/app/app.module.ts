@@ -37,6 +37,8 @@ import {DeckListNavbarComponent} from './components/deck-list-navbar/deck-list-n
 import {DeckViewTableListElement} from './components/deck-view-table-list-element/deck-view-table-list-element.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {NewTableModalComponent} from './components/new-table-modal/new-table-modal.component';
+import {TableViewComponent} from './components/table-view/table-view.component';
+import {TableCellEditorComponent} from './components/table-cell-editor/table-cell-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -56,6 +58,8 @@ import {NewTableModalComponent} from './components/new-table-modal/new-table-mod
 		DeckViewTableListElement,
 		SidebarComponent,
 		NewTableModalComponent,
+		TableViewComponent,
+		TableCellEditorComponent,
 	],
 	imports: [
 		BrowserModule,

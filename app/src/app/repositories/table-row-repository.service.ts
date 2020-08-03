@@ -21,57 +21,70 @@
 
 import {Injectable} from '@angular/core';
 import {AbstractRepository} from "./AbstractRepository";
-import {Table} from "../models/Table";
+import {TableRow} from "../models/TableRow";
 import {BaseDataEntity} from "./BaseRepository";
+import {Table} from "../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.02
+ * @since 2020.08.03
  */
 @Injectable({
 	providedIn: 'root'
 })
-export class TableRepository extends AbstractRepository<Table, TableDataEntity> {
+export class TableRowRepository extends AbstractRepository<TableRow, TableRowDataEntity> {
 
 	constructor() {
-		super('table');
-
+		super('table-row');
 		this.db.createIndex({
-			index: {fields: ['deckId']}
+			index: {fields: ['tableId']}
 		});
 		this.db.createIndex({
-			index: {fields: ['name']}
+			index: {fields: ['index']}
 		});
 	}
 
-	async getByDeck(id: string): Promise<Table[]> {
-		const result = await this.db.find({
-			selector: {
-				deckId: id
-			}
+	mapToDataEntity(entity: TableRow): TableRowDataEntity {
+		const values = {};
+		entity.values.forEach((value, key) => {
+			values[key] = value;
 		});
-		return result.docs.map(this.mapToEntity);
-	}
-
-	mapToDataEntity(entity: Table): TableDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
-			name: entity.name,
-			deckId: entity.deckId,
+			values: JSON.stringify(values),
+			index: entity.index,
+			tableId: entity.tableId
 		}
 	}
 
-	mapToEntity(entity: TableDataEntity): Table {
+	mapToEntity(entity: TableRowDataEntity): TableRow {
+		const values = new Map<string, string>();
+		for (let [key, value] of Object.entries(JSON.parse(entity.values))) {
+			values.set(key, value as string);
+		}
 		return {
 			id: entity._id,
-			deckId: entity.deckId,
-			name: entity.name
+			values: values,
+			index: entity.index,
+			tableId: entity.tableId
 		}
+	}
+
+	async getByTable(table: Table): Promise<TableRow[]> {
+		const result = await this.db.find({
+			selector: {
+				tableId: table.id,
+				index: {$exists: true}
+			},
+			sort: ['index']
+		});
+		return result.docs.map(this.mapToEntity);
 	}
 }
 
-export interface TableDataEntity extends BaseDataEntity {
-	deckId: string;
-	name: string;
+export interface TableRowDataEntity extends BaseDataEntity {
+	tableId: string,
+	index: number,
+	values: string
 }

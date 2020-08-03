@@ -19,13 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TableColumn} from "./TableColumn";
-
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.04.03
  */
 export interface TableRow {
 	id: string;
-	values: Map<TableColumn, string>;
+	tableId: string;
+	index: number;
+	values: Map<string, string>;
 }

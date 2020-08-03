@@ -1,0 +1,15 @@
+<form (submit)="onCellValueSubmitted()">
+	<div class="uk-grid-small uk-flex-middle" uk-grid>
+		<div class="uk-width-expand">
+			<input #cellInputElement
+				   class="uk-input uk-form-small"
+				   type="text"
+				   placeholder="Title"
+				   [formControl]="cellInput"
+				   [value]="">
+		</div>
+		<div class="uk-width-auto">
+			<button type="submit" uk-icon="icon: check"></button>
+		</div>
+	</div>
+</form>

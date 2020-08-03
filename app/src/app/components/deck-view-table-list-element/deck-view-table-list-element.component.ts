@@ -23,6 +23,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TableService} from "../../services/table.service";
 import {Table} from "../../models/Table";
 import {FormControl} from "@angular/forms";
+import {NavigationService} from "../../services/navigation.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -44,10 +45,12 @@ export class DeckViewTableListElement implements OnInit {
 	@Output()
 	edited: EventEmitter<Table> = new EventEmitter<Table>();
 
+	rowCount: number = 42;
 	editMode: boolean = false;
 	nameInput = new FormControl('');
 
-	constructor(private tableService: TableService) {
+	constructor(private tableService: TableService,
+				private navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
@@ -72,5 +75,9 @@ export class DeckViewTableListElement implements OnInit {
 		await this.tableService.update(this.table);
 		this.edited.emit(this.table);
 		this.editMode = false;
+	}
+
+	async onNameClick() {
+		this.navigationService.selectTable(this.table);
 	}
 }

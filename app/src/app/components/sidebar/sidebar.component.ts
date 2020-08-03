@@ -45,6 +45,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	deck: Deck;
 	tables: Table[] = [];
+	tableSelected: boolean = false;
 
 	private active: boolean;
 
@@ -52,19 +53,22 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 				private deckService: DeckService,
 				private tableService: TableService,
 				private router: Router) {
-		this.navigationService.sidebarVisible().subscribe((isVisible) => {
+		this.navigationService.sidebarVisible().subscribe((isVisible: boolean) => {
 			this.active = (isVisible);
 			this.update();
 		});
-		this.navigationService.activeDeck().subscribe((deck) => {
+		this.navigationService.activeDeck().subscribe((deck: Deck) => {
 			this.deck = deck;
 			if (deck === null) {
 				this.tables = [];
 			} else {
-				this.tableService.getByDeck(this.deck).then((tables) => {
+				this.tableService.getByDeck(this.deck).then((tables: Table[]) => {
 					this.tables = tables;
 				});
 			}
+		});
+		this.navigationService.activeTable().subscribe((table: Table) => {
+			this.tableSelected = table !== null;
 		});
 	}
 
@@ -77,10 +81,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	onTableDeleted(tableId: string): void {
 		this.tables = this.tables.filter(item => item.id !== tableId);
+		this.navigationService.selectTable(null);
 	}
 
 	onNewTableCreated(table: Table): void {
 		this.tables.push(table);
+		this.navigationService.selectTable(null);
 	}
 
 	async onDeckDeleted(): Promise<void> {
@@ -101,5 +107,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		} else {
 			UIkit.offcanvas(this.sideBar.nativeElement).hide();
 		}
+	}
+
+	openDeckDetails() {
+		this.navigationService.selectTable(null);
 	}
 }

@@ -20,42 +20,67 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Deck} from "../models/Deck";
-import {BaseDataEntity} from "./BaseRepository";
 import {AbstractRepository} from "./AbstractRepository";
+import {TableColumn} from "../models/TableColumn";
+import {BaseDataEntity} from "./BaseRepository";
+import {Table} from "../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.01
+ * @since 2020.08.02
  */
 @Injectable({
 	providedIn: 'root'
 })
-export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
+export class TableColumnRepository extends AbstractRepository<TableColumn, TableColumnDataEntity> {
 
 	constructor() {
-		super('deck');
+		super('table-column');
+		this.db.createIndex({
+			index: {
+				fields: ['tableId']
+			}
+		});
+		this.db.createIndex({
+			index: {
+				fields: ['index']
+			}
+		});
 	}
 
-	mapToDataEntity(entity: Deck): DeckEntity {
+	mapToDataEntity(entity: TableColumn): TableColumnDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
-			name: entity.name,
-			description: entity.description
-		};
+			tableId: entity.tableId,
+			index: entity.index,
+			name: entity.name
+		}
 	}
 
-	mapToEntity(entity: DeckEntity): Deck {
+	mapToEntity(entity: TableColumnDataEntity): TableColumn {
 		return {
 			id: entity._id,
-			name: entity.name,
-			description: entity.description,
-		};
+			tableId: entity.tableId,
+			index: entity.index,
+			name: entity.name
+		}
+	}
+
+	async getByTable(table: Table): Promise<TableColumn[]> {
+		const result = await this.db.find({
+			selector: {
+				tableId: table.id,
+				index: {$exists: true}
+			},
+			sort: ['index']
+		})
+		return result.docs.map(this.mapToEntity);
 	}
 }
 
-export interface DeckEntity extends BaseDataEntity {
+export interface TableColumnDataEntity extends BaseDataEntity {
+	tableId: string;
+	index: number;
 	name: string;
-	description: string
 }

@@ -10,23 +10,29 @@
 				<ul class="uk-nav-sub">
 					<li deck-elements *ngFor="let table of tables"
 						[table]="table"
-						(deleted)="onTableDeleted(table.id)"
-					></li>
+						(deleted)="onTableDeleted(table.id)"></li>
 				</ul>
 			</li>
 			<li class="uk-nav-header">Actions</li>
-			<li>
+			<li *ngIf="tableSelected">
+				<a (click)="openDeckDetails()">
+					<span class="uk-margin-small-right"
+						  uk-icon="icon: album"></span>
+					Deck details
+				</a>
+			</li>
+			<li *ngIf="!tableSelected">
 				<a (click)="newTableModal.openDialog()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: plus"></span>
 					New table
 				</a>
 			</li>
-			<li>
+			<li *ngIf="!tableSelected">
 				<a routerLink="/decks">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: table"></span>
-					Return to decks
+					All decks
 				</a>
 			</li>
 			<li class="uk-nav-divider"></li>

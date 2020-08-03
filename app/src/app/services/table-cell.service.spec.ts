@@ -19,13 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {TestBed} from '@angular/core/testing';
+
+import {TableCellService} from './table-cell.service';
+
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.03
  */
-export interface TableColumn {
-	id: string;
-	tableId: string;
-	index: number;
-	name: string;
-}
+describe('TableCellService', () => {
+	let service: TableCellService;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TableCellService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

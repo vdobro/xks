@@ -19,13 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {TestBed} from '@angular/core/testing';
+
+import {TableColumnRepository} from './table-column-repository.service';
+
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.02
  */
-export interface TableColumn {
-	id: string;
-	tableId: string;
-	index: number;
-	name: string;
-}
+describe('TableColumnRepository', () => {
+	let service: TableColumnRepository;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TableColumnRepository);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

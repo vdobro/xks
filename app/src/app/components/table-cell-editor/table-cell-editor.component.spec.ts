@@ -19,13 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {TableCellEditorComponent} from './table-cell-editor.component';
+
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.03
  */
-export interface TableColumn {
-	id: string;
-	tableId: string;
-	index: number;
-	name: string;
-}
+describe('TableCellComponent', () => {
+	let component: TableCellEditorComponent;
+	let fixture: ComponentFixture<TableCellEditorComponent>;
+
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [TableCellEditorComponent]
+		}).compileComponents();
+	}));
+
+	beforeEach(() => {
+		fixture = TestBed.createComponent(TableCellEditorComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

@@ -1,4 +1,9 @@
-<div *ngIf="deck$ | async as deck" class="uk-container uk-container-small uk-position-relative">
-	<h1 class="uk-heading-medium">{{deck.name}}</h1>
-	<p class="uk-text-lead">{{deck.description}}</p>
+<div *ngIf="deck$ | async as deck"
+	 class="uk-container uk-container-small uk-margin-auto-top uk-position-relative">
+	<div *ngIf="!selectedTable">
+		<h1 class="uk-heading-medium">{{deck.name}}</h1>
+		<p class="uk-text-lead">{{deck.description}}</p>
+	</div>
+	<app-table-view *ngIf="selectedTable"
+					[table]="selectedTable"></app-table-view>
 </div>

@@ -23,6 +23,7 @@ import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {NavBarItem} from "../components/nav-bar-item";
 import {Deck} from "../models/Deck";
+import {Table} from "../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -39,6 +40,7 @@ export class NavigationService {
 	private topBarVisible$: Subject<boolean> = new Subject();
 	private sidebarVisible$: Subject<boolean> = new Subject();
 	private activeDeck$: Subject<Deck> = new Subject();
+	private activeTable$: Subject<Table> = new Subject();
 
 	constructor() {
 	}
@@ -59,6 +61,10 @@ export class NavigationService {
 		return this.activeDeck$;
 	}
 
+	activeTable(): Observable<Table> {
+		return this.activeTable$;
+	}
+
 	addItem(item: NavBarItem) {
 		this.items.push(item);
 		this.update();
@@ -70,9 +76,16 @@ export class NavigationService {
 	}
 
 	populateSidebar(deck: Deck) {
-		const topBarVisible = deck === null;
-		this.setTopBarVisibility(topBarVisible);
+		const deckIsNull = deck === null;
+		this.setTopBarVisibility(deckIsNull);
 		this.activeDeck$.next(deck);
+		if (deckIsNull) {
+			this.activeTable$.next(null);
+		}
+	}
+
+	selectTable(table: Table) {
+		this.activeTable$.next(table);
 	}
 
 	private setTopBarVisibility(show: boolean) {
