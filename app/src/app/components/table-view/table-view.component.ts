@@ -24,7 +24,6 @@ import {Table} from "../../models/Table";
 import {TableCellService} from "../../services/table-cell.service";
 import {TableColumn} from "../../models/TableColumn";
 import {TableRow} from "../../models/TableRow";
-import {FormControl} from "@angular/forms";
 import {KeyValue} from "@angular/common";
 
 /**
@@ -43,16 +42,15 @@ export class TableViewComponent implements OnInit, OnChanges {
 
 	@Output()
 	columns: TableColumn[] = [];
-
 	@Output()
 	rows: TableRow[] = [];
-
-	columnInCreation: boolean = false;
-	columnNameInput = new FormControl('');
-	newRowColumnIndex: number = 0;
-
 	@Output()
 	rowInEditing: TableRow;
+	@Output()
+	columnInCreation: boolean = false;
+	@Output()
+	newRowColumnIndex: number = 0;
+
 
 	readonly indexAscOrder = (a: KeyValue<string, string>, b: KeyValue<string, string>): number => {
 		const indexA = this.columns.find(value => value.id === a.key).index;
@@ -61,7 +59,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 		return indexA > indexB ? 1 : ((indexB > indexA) ? -1 : 0);
 	}
 
-	constructor(private tableService: TableCellService) {
+	constructor(private cellService: TableCellService) {
 	}
 
 	async ngOnInit() {
@@ -76,15 +74,17 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.columnInCreation = true;
 	}
 
-	async onTableCreated() {
-		await this.tableService.addColumn(this.columnNameInput.value, this.table);
+	async columnAdded(column: TableColumn) {
+		for (const value of this.rows) {
+			await this.cellService.appendColumnToRow(value, column);
+		}
 		await this.reloadAll();
 		this.columnInCreation = false;
 	}
 
 	private async reloadAll() {
-		this.columns = await this.tableService.getColumns(this.table);
-		this.rows = await this.tableService.getRows(this.table);
+		this.columns = await this.cellService.getColumns(this.table);
+		this.rows = await this.cellService.getRows(this.table);
 	}
 
 	async onNewRowCellValueSubmitted(newRow: TableRow) {

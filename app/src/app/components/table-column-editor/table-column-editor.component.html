@@ -1,12 +1,12 @@
-<form (submit)="onCellValueSubmitted()">
+<form (submit)="onCreated()">
 	<div class="uk-grid-small uk-flex-middle" uk-grid>
 		<div class="uk-width-expand">
-			<input #cellInputElement
+			<input #columnNameInput
 				   class="uk-input uk-form-small"
 				   type="text"
-				   placeholder="Cell value"
-				   [formControl]="cellInput"
-				   [value]="">
+				   placeholder="Column title"
+				   [formControl]="nameInput"
+				   [value]="column?.name">
 		</div>
 		<div class="uk-width-auto">
 			<button type="submit" uk-icon="icon: check"></button>

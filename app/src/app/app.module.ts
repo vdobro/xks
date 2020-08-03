@@ -39,6 +39,7 @@ import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {NewTableModalComponent} from './components/new-table-modal/new-table-modal.component';
 import {TableViewComponent} from './components/table-view/table-view.component';
 import {TableCellEditorComponent} from './components/table-cell-editor/table-cell-editor.component';
+import {TableColumnEditorComponent} from './components/table-column-editor/table-column-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -60,6 +61,7 @@ import {TableCellEditorComponent} from './components/table-cell-editor/table-cel
 		NewTableModalComponent,
 		TableViewComponent,
 		TableCellEditorComponent,
+		TableColumnEditorComponent,
 	],
 	imports: [
 		BrowserModule,

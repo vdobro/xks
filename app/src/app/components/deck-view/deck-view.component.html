@@ -1,8 +1,14 @@
-<div *ngIf="deck$ | async as deck"
+<div *ngIf="deck"
 	 class="uk-container uk-container-small uk-margin-auto-top uk-position-relative">
 	<div *ngIf="!selectedTable">
 		<h1 class="uk-heading-medium">{{deck.name}}</h1>
-		<p class="uk-text-lead">{{deck.description}}</p>
+		<p *ngIf="deck.description" class="uk-text-lead">{{deck.description}}</p>
+		<div *ngIf="!anyTablesAvailable">
+			<h2 class="uk-heading-bullet">No tables</h2>
+			<p class="uk-text-small uk-text-normal">
+				Press <span class="uk-text-uppercase uk-text-light">New table</span> to create one
+			</p>
+		</div>
 	</div>
 	<app-table-view *ngIf="selectedTable"
 					[table]="selectedTable"></app-table-view>

@@ -53,6 +53,16 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 		return result.docs.map(this.mapToEntity);
 	}
 
+	async existAnyForDeck(id: string): Promise<boolean> {
+		const result = await this.db.find({
+			selector: {
+				deckId: id
+			},
+			limit: 1
+		});
+		return result.docs.length > 0;
+	}
+
 	mapToDataEntity(entity: Table): TableDataEntity {
 		return {
 			_id: entity.id,

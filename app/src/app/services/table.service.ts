@@ -46,6 +46,10 @@ export class TableService {
 		return await this.repository.getByDeck(deck.id);
 	}
 
+	public async anyExistForDeck(deck: Deck): Promise<boolean> {
+		return await this.repository.existAnyForDeck(deck.id);
+	}
+
 	public async create(deck: Deck, name: string): Promise<Table> {
 		const table: Table = {
 			id: uuid(),

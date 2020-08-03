@@ -48,7 +48,7 @@ export class TableCellService {
 		return await this.rowRepository.getByTable(table);
 	}
 
-	async addColumn(name: string, table: Table): Promise<void> {
+	async addColumn(name: string, table: Table): Promise<TableColumn> {
 		const allColumns = await this.columnRepository.getByTable(table);
 		const column = {
 			id: uuid(),
@@ -57,6 +57,7 @@ export class TableCellService {
 			index: allColumns.length
 		};
 		await this.columnRepository.add(column);
+		return column;
 	}
 
 	async createRow(table: Table): Promise<TableRow> {
@@ -73,6 +74,12 @@ export class TableCellService {
 			values: values
 		}
 		await this.rowRepository.add(row);
+		return row;
+	}
+
+	async appendColumnToRow(row: TableRow, column: TableColumn): Promise<TableRow> {
+		row.values.set(column.id, '');
+		await this.rowRepository.update(row);
 		return row;
 	}
 

@@ -25,6 +25,7 @@ import {DeckService} from "../../services/deck.service";
 import {ActivatedRoute} from "@angular/router";
 import {NavigationService} from "../../services/navigation.service";
 import {Table} from "../../models/Table";
+import {TableService} from "../../services/table.service";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -40,20 +41,25 @@ export const DECK_ID_PARAM: string = 'deckId';
 export class DeckViewComponent implements OnInit, OnDestroy {
 
 	@Output()
-	deck$: Promise<Deck>;
+	deck: Deck;
 
 	@Output()
 	selectedTable: Table;
 
+	@Output()
+	anyTablesAvailable: boolean = false;
+
 	constructor(private deckService: DeckService,
 				private route: ActivatedRoute,
-				private navigationService: NavigationService) {
+				private navigationService: NavigationService,
+				private tableService: TableService) {
 	}
 
 	async ngOnInit(): Promise<void> {
 		this.route.paramMap.subscribe(async params => {
-			this.deck$ = this.deckService.getById(params.get(DECK_ID_PARAM));
-			this.navigationService.populateSidebar(await this.deck$);
+			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
+			this.navigationService.populateSidebar(this.deck);
+			this.anyTablesAvailable = await this.tableService.anyExistForDeck(this.deck);
 		});
 		this.navigationService.activeTable().subscribe((table: Table) => {
 			this.selectedTable = table;
