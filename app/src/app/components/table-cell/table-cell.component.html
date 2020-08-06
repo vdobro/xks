@@ -1,17 +1,6 @@
-<form *ngIf="editMode" (submit)="onSubmit()">
-	<div class="uk-grid-small uk-flex-middle" uk-grid>
-		<div class="uk-width-expand">
-			<input #cellInputElement
-				   class="uk-input uk-form-small"
-				   type="text"
-				   placeholder="Cell value"
-				   [formControl]="cellInput">
-		</div>
-		<div class="uk-width-auto">
-			<button type="submit" uk-icon="icon: check"></button>
-		</div>
-	</div>
-</form>
+<table-cell-editor *ngIf="editMode"
+				   (valueSubmitted)="onSubmit($event)">
+</table-cell-editor>
 <span *ngIf="!editMode">
 	{{currentValue}}
 </span>

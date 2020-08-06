@@ -12,11 +12,13 @@
 	<form (submit)="onChangesSubmit()">
 		<div class="uk-grid-small uk-flex-middle" uk-grid>
 			<div class="uk-width-expand">
-				<input class="uk-input uk-form-small"
-					   type="text"
-					   placeholder="Title"
-					   [formControl]="nameInput"
-					   [value]="table.name">
+				<label>
+					<input class="uk-input uk-form-small"
+						   type="text"
+						   placeholder="Title"
+						   [formControl]="nameInput"
+						   [value]="table.name">
+				</label>
 			</div>
 			<div class="uk-width-auto">
 				<button type="submit" uk-icon="icon: check"></button>

@@ -48,7 +48,6 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 			index: {fields: ['index', 'tableId']}
 		});
 		this.indexCreated = true;
-		console.log('column index created');
 	}
 
 	mapToDataEntity(entity: TableColumn): TableColumnDataEntity {

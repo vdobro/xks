@@ -19,22 +19,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	EventEmitter,
-	HostListener,
-	Input,
-	OnChanges,
-	OnInit,
-	Output,
-	SimpleChanges,
-	ViewChild
-} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TableRow} from "../../models/TableRow";
 import {TableColumn} from "../../models/TableColumn";
-import {FormControl} from "@angular/forms";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -45,10 +32,7 @@ import {FormControl} from "@angular/forms";
 	templateUrl: './table-cell.component.html',
 	styleUrls: ['./table-cell.component.sass']
 })
-export class TableCellComponent implements OnInit, OnChanges, AfterViewInit {
-
-	@ViewChild('cellInputElement', {static: false})
-	cellInputElement: ElementRef;
+export class TableCellComponent implements OnInit, OnChanges {
 
 	@Input()
 	row: TableRow;
@@ -59,8 +43,6 @@ export class TableCellComponent implements OnInit, OnChanges, AfterViewInit {
 
 	@Output()
 	cellValueChanged = new EventEmitter<string>();
-
-	cellInput = new FormControl('');
 
 	editMode: boolean = false;
 	currentValue: string = '';
@@ -87,11 +69,7 @@ export class TableCellComponent implements OnInit, OnChanges, AfterViewInit {
 		this.switchToEditMode();
 	}
 
-	async onSubmit() {
-		const value = this.cellInput.value.trim();
-		if (value === '') {
-			return;
-		}
+	async onSubmit(value: string) {
 		this.currentValue = value;
 		this.cellValueChanged.emit(value);
 		this.editMode = false;
@@ -102,13 +80,6 @@ export class TableCellComponent implements OnInit, OnChanges, AfterViewInit {
 			this.currentValue = this.row.values.get(this.column.id);
 		} else {
 			this.currentValue = '';
-		}
-		this.cellInput.setValue(this.currentValue);
-	}
-
-	ngAfterViewInit() {
-		if (this.editMode) {
-			this.cellInputElement.nativeElement.focus();
 		}
 	}
 }

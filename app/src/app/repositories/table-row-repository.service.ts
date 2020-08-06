@@ -48,7 +48,6 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 			index: {fields: ['index', 'tableId']}
 		});
 		this.indexCreated = true;
-		console.log('column index created');
 	}
 
 	mapToDataEntity(entity: TableRow): TableRowDataEntity {

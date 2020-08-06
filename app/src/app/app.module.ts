@@ -41,6 +41,7 @@ import {TableViewComponent} from './components/table-view/table-view.component';
 import {TableColumnEditorComponent} from './components/table-column-editor/table-column-editor.component';
 import {TableCellComponent} from './components/table-cell/table-cell.component';
 import {TableNewRowEditorComponent} from './components/table-new-row-editor/table-new-row-editor.component';
+import {TableCellEditorComponent} from './components/table-cell-editor/table-cell-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -64,6 +65,7 @@ import {TableNewRowEditorComponent} from './components/table-new-row-editor/tabl
 		TableColumnEditorComponent,
 		TableCellComponent,
 		TableNewRowEditorComponent,
+		TableCellEditorComponent,
 	],
 	imports: [
 		BrowserModule,
