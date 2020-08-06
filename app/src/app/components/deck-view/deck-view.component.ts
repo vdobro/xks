@@ -22,7 +22,7 @@
 import {Component, OnDestroy, OnInit, Output} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {DeckService} from "../../services/deck.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NavigationService} from "../../services/navigation.service";
 import {Table} from "../../models/Table";
 import {TableService} from "../../services/table.service";
@@ -50,6 +50,7 @@ export class DeckViewComponent implements OnInit, OnDestroy {
 	anyTablesAvailable: boolean = false;
 
 	constructor(private deckService: DeckService,
+				private router: Router,
 				private route: ActivatedRoute,
 				private navigationService: NavigationService,
 				private tableService: TableService) {
@@ -58,6 +59,10 @@ export class DeckViewComponent implements OnInit, OnDestroy {
 	async ngOnInit(): Promise<void> {
 		this.route.paramMap.subscribe(async params => {
 			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
+			if (this.deck === null) {
+				await this.router.navigate(['/']);
+				return;
+			}
 			this.navigationService.populateSidebar(this.deck);
 			this.anyTablesAvailable = await this.tableService.anyExistForDeck(this.deck);
 		});

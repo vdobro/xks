@@ -24,7 +24,6 @@ import {Table} from "../../models/Table";
 import {TableCellService} from "../../services/table-cell.service";
 import {TableColumn} from "../../models/TableColumn";
 import {TableRow} from "../../models/TableRow";
-import {KeyValue} from "@angular/common";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -51,14 +50,6 @@ export class TableViewComponent implements OnInit, OnChanges {
 	@Output()
 	newRowColumnIndex: number = 0;
 
-
-	readonly indexAscOrder = (a: KeyValue<string, string>, b: KeyValue<string, string>): number => {
-		const indexA = this.columns.find(value => value.id === a.key).index;
-		const indexB = this.columns.find(value => value.id === b.key).index;
-
-		return indexA > indexB ? 1 : ((indexB > indexA) ? -1 : 0);
-	}
-
 	constructor(private cellService: TableCellService) {
 	}
 
@@ -78,27 +69,20 @@ export class TableViewComponent implements OnInit, OnChanges {
 		for (const value of this.rows) {
 			await this.cellService.appendColumnToRow(value, column);
 		}
-		await this.reloadAll();
+		if (this.rows.length > 1) {
+			await this.reloadAll();
+		} else {
+			this.columns = await this.cellService.getColumns(this.table);
+		}
 		this.columnInCreation = false;
+	}
+
+	rowAdded(row: TableRow) {
+		this.rows.push(row);
 	}
 
 	private async reloadAll() {
 		this.columns = await this.cellService.getColumns(this.table);
 		this.rows = await this.cellService.getRows(this.table);
-	}
-
-	async onNewRowCellValueSubmitted(newRow: TableRow) {
-		if (this.newRowColumnIndex === this.columns.length - 1) {
-			await this.reloadAll();
-			this.newRowColumnIndex = 0;
-			this.rowInEditing = null;
-		} else {
-			this.newRowColumnIndex++;
-			this.rowInEditing = newRow;
-		}
-	}
-
-	getCellAt(row: TableRow, index: number): string {
-		return row.values.get(this.columns.find(column => column.index === index).id);
 	}
 }

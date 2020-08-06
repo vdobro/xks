@@ -64,7 +64,7 @@ export class TableCellService {
 		const allRows = await this.getRows(table);
 		const allColumns = await this.getColumns(table);
 		const values = new Map<string, string>();
-		allColumns.forEach((value: TableColumn, index: number) => {
+		allColumns.forEach((value: TableColumn) => {
 			values.set(value.id, '');
 		});
 		const row = {
@@ -87,6 +87,26 @@ export class TableCellService {
 		row.values.set(column.id, cellValue);
 		await this.rowRepository.update(row);
 		return row;
+	}
+
+	async deleteRow(row: TableRow) {
+		await this.rowRepository.delete(row.id);
+	}
+
+	async swapColumns(first: TableColumn, second: TableColumn) {
+		[first.index, second.index] = [second.index, first.index];
+		await this.columnRepository.update(first);
+		await this.columnRepository.update(second);
+	}
+
+	async swapRows(first: TableRow, second: TableRow) {
+		[first.index, second.index] = [second.index, first.index];
+		await this.rowRepository.update(first);
+		await this.rowRepository.update(second);
+	}
+
+	async deleteColumn(column: TableColumn) {
+		await this.columnRepository.delete(column.id);
 	}
 }
 

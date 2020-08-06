@@ -38,8 +38,9 @@ import {DeckViewTableListElement} from './components/deck-view-table-list-elemen
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {NewTableModalComponent} from './components/new-table-modal/new-table-modal.component';
 import {TableViewComponent} from './components/table-view/table-view.component';
-import {TableCellEditorComponent} from './components/table-cell-editor/table-cell-editor.component';
 import {TableColumnEditorComponent} from './components/table-column-editor/table-column-editor.component';
+import {TableCellComponent} from './components/table-cell/table-cell.component';
+import {TableNewRowEditorComponent} from './components/table-new-row-editor/table-new-row-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -60,8 +61,9 @@ import {TableColumnEditorComponent} from './components/table-column-editor/table
 		SidebarComponent,
 		NewTableModalComponent,
 		TableViewComponent,
-		TableCellEditorComponent,
 		TableColumnEditorComponent,
+		TableCellComponent,
+		TableNewRowEditorComponent,
 	],
 	imports: [
 		BrowserModule,

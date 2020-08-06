@@ -21,24 +21,25 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {TableCellEditorComponent} from './table-cell-editor.component';
+import {TableCellComponent} from './table-cell.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.03
+ * @since 2020.08.04
  */
 describe('TableCellComponent', () => {
-	let component: TableCellEditorComponent;
-	let fixture: ComponentFixture<TableCellEditorComponent>;
+	let component: TableCellComponent;
+	let fixture: ComponentFixture<TableCellComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [TableCellEditorComponent]
-		}).compileComponents();
+			declarations: [TableCellComponent]
+		})
+			.compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(TableCellEditorComponent);
+		fixture = TestBed.createComponent(TableCellComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

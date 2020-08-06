@@ -82,6 +82,11 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	}
 
 	private async getDataEntity(id: string): Promise<DataEntity> {
-		return this.db.get(id);
+		try {
+			return await this.db.get(id);
+		} catch (e) {
+			console.log('Could not get document ' + id);
+			return null;
+		}
 	}
 }

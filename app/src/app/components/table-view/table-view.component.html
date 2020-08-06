@@ -20,23 +20,13 @@
 	</thead>
 	<tbody>
 	<tr *ngFor="let row of rows">
-		<td *ngFor="let item of row.values | keyvalue : indexAscOrder">
-			{{item.value}}
+		<td table-cell *ngFor="let column of columns"
+			[row]="row"
+			[column]="column"
+			[newCell]="false">
 		</td>
 	</tr>
-	<tr>
-		<td *ngFor="let column of columns; let i = index">
-			<div *ngIf="newRowColumnIndex === i">
-				<app-table-cell-editor [table]="table"
-									   [column]="column"
-									   [row]="rowInEditing"
-									   (cellSubmitted)="onNewRowCellValueSubmitted($event)">
-				</app-table-cell-editor>
-			</div>
-			<span *ngIf="newRowColumnIndex !== i && rowInEditing">
-				{{getCellAt(rowInEditing, i)}}
-			</span>
-		</td>
+	<tr table-new-row-editor [columns]="columns" [table]="table" (newRow)="rowAdded($event)">
 	</tr>
 	</tbody>
 </table>

@@ -34,14 +34,21 @@ import {Table} from "../models/Table";
 })
 export class TableRowRepository extends AbstractRepository<TableRow, TableRowDataEntity> {
 
+	private indexCreated: boolean = false;
+
 	constructor() {
 		super('table-row');
-		this.db.createIndex({
-			index: {fields: ['tableId']}
+	}
+
+	private async checkIndexesInitialized(): Promise<void> {
+		if (this.indexCreated) {
+			return;
+		}
+		await this.db.createIndex({
+			index: {fields: ['index', 'tableId']}
 		});
-		this.db.createIndex({
-			index: {fields: ['index']}
-		});
+		this.indexCreated = true;
+		console.log('column index created');
 	}
 
 	mapToDataEntity(entity: TableRow): TableRowDataEntity {
@@ -72,12 +79,15 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 	}
 
 	async getByTable(table: Table): Promise<TableRow[]> {
+		await this.checkIndexesInitialized();
 		const result = await this.db.find({
 			selector: {
-				tableId: table.id,
-				index: {$exists: true}
+				$and: [
+					{tableId: {$eq: table.id}},
+					{index: {$exists: true}}
+				]
 			},
-			sort: ['index']
+			sort: [{index: 'asc'}, {tableId: 'asc'}]
 		});
 		return result.docs.map(this.mapToEntity);
 	}
