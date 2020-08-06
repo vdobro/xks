@@ -30,7 +30,7 @@ import {Table} from "../../models/Table";
  * @since 2020.08.04
  */
 @Component({
-	selector: 'app-table-column-editor',
+	selector: 'table-column-editor',
 	templateUrl: './table-column-editor.component.html',
 	styleUrls: ['./table-column-editor.component.sass']
 })

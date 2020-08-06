@@ -24,6 +24,7 @@ import {
 	Component,
 	ElementRef,
 	EventEmitter,
+	HostListener,
 	Input,
 	OnChanges,
 	OnInit,
@@ -79,6 +80,11 @@ export class TableCellComponent implements OnInit, OnChanges, AfterViewInit {
 
 	switchToEditMode() {
 		this.editMode = true;
+	}
+
+	@HostListener("click")
+	onClick() {
+		this.switchToEditMode();
 	}
 
 	async onSubmit() {

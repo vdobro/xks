@@ -10,20 +10,21 @@
 					type="button" (click)="addColumn()">
 				Add column
 			</button>
-			<div *ngIf="columnInCreation" class="uk-animation-fade">
-				<app-table-column-editor [table]="table"
-										 (nameChanged)="columnAdded($event)">
-				</app-table-column-editor>
-			</div>
+			<table-column-editor *ngIf="columnInCreation" class="uk-animation-fade"
+								 [table]="table"
+								 (nameChanged)="columnAdded($event)">
+			</table-column-editor>
 		</th>
 	</tr>
 	</thead>
 	<tbody>
 	<tr *ngFor="let row of rows">
-		<td table-cell *ngFor="let column of columns"
+		<td table-cell
+			*ngFor="let column of columns"
 			[row]="row"
 			[column]="column"
-			[newCell]="false">
+			[newCell]="false"
+			(cellValueChanged)="cellChanged($event, row, column)">
 		</td>
 	</tr>
 	<tr table-new-row-editor [columns]="columns" [table]="table" (newRow)="rowAdded($event)">

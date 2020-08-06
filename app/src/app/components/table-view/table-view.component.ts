@@ -81,6 +81,10 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.rows.push(row);
 	}
 
+	async cellChanged(value: string, row: TableRow, column: TableColumn) {
+		await this.cellService.changeCellValue(value, row, column);
+	}
+
 	private async reloadAll() {
 		this.columns = await this.cellService.getColumns(this.table);
 		this.rows = await this.cellService.getRows(this.table);
