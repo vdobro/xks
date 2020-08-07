@@ -1,46 +1,46 @@
-<div class="uk-container uk-container-xlarge">
-	<div class="uk-grid-divider uk-grid-medium uk-grid-match" uk-grid uk-height-match>
-		<div class="uk-width-expand">
-			<h2 class="uk-heading-medium">{{table?.name}}</h2>
-		</div>
-		<div class="uk-width-auto">
-			<button *ngIf="!columnInCreation"
-					class="uk-button uk-button-default"
-					type="button" (click)="addColumn()">
-				Add column
-			</button>
-			<table-column-editor
-				*ngIf="columnInCreation" class="uk-animation-fade"
-				[table]="table"
-				(nameChanged)="columnAdded($event)">
-			</table-column-editor>
-		</div>
+<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
+	<div class="uk-width-expand">
+		<h2 class="uk-heading-medium">{{table?.name}}</h2>
 	</div>
-	<div class="uk-overflow-auto">
-		<table class="uk-table uk-table-divider uk-table-hover uk-table-justify">
-			<thead>
-			<tr>
-				<th *ngFor="let column of columns"
-					class="uk-width-small">{{column.name}}</th>
-				<th>
-				</th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr *ngFor="let row of rows">
-				<td table-cell
-					*ngFor="let column of columns"
-					[row]="row"
-					[column]="column"
-					[newCell]="false"
-					(cellValueChanged)="cellChanged($event, row, column)">
-				</td>
-			</tr>
-			<tr table-new-row-editor [columns]="columns"
-				[table]="table"
-				(newRow)="rowAdded($event)">
-			</tr>
-			</tbody>
-		</table>
+	<div class="uk-width-auto">
+		<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
+				(click)="addColumn()">
+			Add column
+		</button>
+		<table-column-editor *ngIf="columnInCreation" class="uk-animation-fade"
+							 [newColumn]="true"
+							 [table]="table"
+							 (nameChanged)="columnAdded($event)">
+		</table-column-editor>
 	</div>
+</div>
+<div class="uk-overflow-auto uk-margin">
+	<table class="uk-table uk-table-striped uk-table-divider uk-text-nowrap uk-table-hover">
+		<thead>
+		<tr>
+			<th app-table-column class="uk-table-expand"
+				*ngFor="let column of columns; let position = index"
+				[showSwapControls]="showColumnSwapControls"
+				[leftmostInTable]="position === 0"
+				[rightmostInTable]="position === columns.length - 1"
+				[column]="column"
+				(changedPosition)="moveColumn(column, $event)"
+				(columnDeleted)="deleteColumn(column)"></th>
+			<th *ngIf="rows.length > 0">
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr table-row *ngFor="let row of rows"
+			[row]="row"
+			[columns]="columns"
+			(rowDeleted)="deleteRow(row)">
+		</tr>
+		<tr table-new-row-editor
+			[columns]="columns"
+			[table]="table"
+			(newRow)="rowAdded($event)">
+		</tr>
+		</tbody>
+	</table>
 </div>

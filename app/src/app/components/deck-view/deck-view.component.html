@@ -1,6 +1,5 @@
-<div *ngIf="deck"
-	 class="uk-container uk-container-expand uk-margin-auto-top uk-position-relative">
-	<div *ngIf="!selectedTable">
+<div class="uk-container uk-container-small">
+	<div *ngIf="deck && !selectedTable">
 		<h1 class="uk-heading-medium">{{deck.name}}</h1>
 		<p *ngIf="deck.description" class="uk-text-lead">{{deck.description}}</p>
 		<div *ngIf="!anyTablesAvailable">
@@ -10,5 +9,6 @@
 			</p>
 		</div>
 	</div>
+	<app-table-view *ngIf="selectedTable" [table]="selectedTable">
+	</app-table-view>
 </div>
-<app-table-view *ngIf="selectedTable" [table]="selectedTable"></app-table-view>

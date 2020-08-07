@@ -24,6 +24,7 @@ import {Table} from "../../models/Table";
 import {TableCellService} from "../../services/table-cell.service";
 import {TableColumn} from "../../models/TableColumn";
 import {TableRow} from "../../models/TableRow";
+import {ColumnMoveDirection} from "../table-column-editor/table-column-editor.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -49,6 +50,8 @@ export class TableViewComponent implements OnInit, OnChanges {
 	columnInCreation: boolean = false;
 	@Output()
 	newRowColumnIndex: number = 0;
+	@Output()
+	showColumnSwapControls: boolean;
 
 	constructor(private cellService: TableCellService) {
 	}
@@ -81,8 +84,27 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.rows.push(row);
 	}
 
-	async cellChanged(value: string, row: TableRow, column: TableColumn) {
-		await this.cellService.changeCellValue(value, row, column);
+	async moveColumn(column: TableColumn, direction: ColumnMoveDirection) {
+		const otherColumnIndex = direction === ColumnMoveDirection.LEFT ? column.index - 1 : column.index + 1;
+		const otherColumn = this.columns
+			.find((col) => col.index === otherColumnIndex);
+		if (otherColumn) {
+			await this.cellService.swapColumns(column, otherColumn);
+			await this.reloadAll();
+		}
+	}
+
+	async deleteColumn(column: TableColumn) {
+		if (this.columns.length === 1) {
+			await this.cellService.deleteAllRowsIn(this.table);
+		}
+		await this.cellService.deleteColumn(column);
+		await this.reloadAll();
+	}
+
+	async deleteRow(row: TableRow) {
+		await this.cellService.deleteRow(row);
+		await this.reloadAll();
 	}
 
 	private async reloadAll() {

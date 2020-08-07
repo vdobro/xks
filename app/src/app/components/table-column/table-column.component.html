@@ -1,0 +1,12 @@
+<table-column-editor *ngIf="editMode"
+					 [newColumn]="false"
+					 [existingColumn]="column"
+					 [leftmostInTable]="leftmostInTable"
+					 [rightmostInTable]="rightmostInTable"
+					 (nameChanged)="onNameSubmit($event.name)"
+					 (positionChanged)="changedPosition.emit($event)"
+					 (columnDeleted)="columnDeleted.emit($event)">
+</table-column-editor>
+<span *ngIf="!editMode">
+	{{column.name}}
+</span>

@@ -40,10 +40,23 @@ export class TableColumnEditorComponent implements OnInit {
 	columnNameInput: ElementRef;
 
 	@Input()
+	newColumn: boolean;
+	@Input()
+	leftmostInTable: boolean;
+	@Input()
+	rightmostInTable: boolean;
+
+	@Input()
+	existingColumn: TableColumn = null;
+	@Input()
 	table: Table;
 
 	@Output()
 	nameChanged = new EventEmitter<TableColumn>();
+	@Output()
+	positionChanged = new EventEmitter<ColumnMoveDirection>();
+	@Output()
+	columnDeleted = new EventEmitter<TableColumn>();
 
 	column: TableColumn;
 	nameInput = new FormControl('');
@@ -52,10 +65,14 @@ export class TableColumnEditorComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		if (this.existingColumn) {
+			this.column = this.existingColumn;
+			this.nameInput.setValue(this.column.name);
+		}
 		this.columnNameInput.nativeElement.focus();
 	}
 
-	async onCreated() {
+	async onNameSubmit() {
 		const name = this.nameInput.value.trim();
 		if (name === '') {
 			return;
@@ -67,4 +84,21 @@ export class TableColumnEditorComponent implements OnInit {
 		}
 		this.nameChanged.emit(this.column);
 	}
+
+	onMoveLeft() {
+		this.positionChanged.emit(ColumnMoveDirection.LEFT);
+	}
+
+	onMoveRight() {
+		this.positionChanged.emit(ColumnMoveDirection.RIGHT);
+	}
+
+	onColumnDelete() {
+		this.columnDeleted.emit(this.column);
+	}
+}
+
+export enum ColumnMoveDirection {
+	LEFT,
+	RIGHT
 }

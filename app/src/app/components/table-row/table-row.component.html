@@ -1,0 +1,11 @@
+<td table-cell
+	*ngFor="let column of columns"
+	[row]="row"
+	[column]="column"
+	[newCell]="false"
+	(cellValueChanged)="cellChanged($event, row, column)">
+</td>
+<td>
+	<a uk-icon="trash"
+	   (click)="this.rowDeleted.emit(this.row)"></a>
+</td>

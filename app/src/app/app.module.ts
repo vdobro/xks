@@ -42,6 +42,9 @@ import {TableColumnEditorComponent} from './components/table-column-editor/table
 import {TableCellComponent} from './components/table-cell/table-cell.component';
 import {TableNewRowEditorComponent} from './components/table-new-row-editor/table-new-row-editor.component';
 import {TableCellEditorComponent} from './components/table-cell-editor/table-cell-editor.component';
+import {TableColumnComponent} from './components/table-column/table-column.component';
+import {ConfirmDeleteDeckModalComponent} from './components/confirm-delete-deck-modal/confirm-delete-deck-modal.component';
+import {TableRowComponent} from './components/table-row/table-row.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -66,6 +69,9 @@ import {TableCellEditorComponent} from './components/table-cell-editor/table-cel
 		TableCellComponent,
 		TableNewRowEditorComponent,
 		TableCellEditorComponent,
+		TableColumnComponent,
+		ConfirmDeleteDeckModalComponent,
+		TableRowComponent,
 	],
 	imports: [
 		BrowserModule,

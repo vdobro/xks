@@ -19,74 +19,67 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {TableRow} from "../../models/TableRow";
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {TableColumn} from "../../models/TableColumn";
+import {ColumnMoveDirection} from "../table-column-editor/table-column-editor.component";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.04
+ * @since 2020.08.07
  */
 @Component({
-	selector: 'td [table-cell]',
-	templateUrl: './table-cell.component.html',
-	styleUrls: ['./table-cell.component.sass']
+	selector: 'th [app-table-column]',
+	templateUrl: './table-column.component.html',
+	styleUrls: ['./table-column.component.sass']
 })
-export class TableCellComponent implements OnInit, OnChanges {
+export class TableColumnComponent implements OnInit {
 
-	@Input()
-	row: TableRow;
-	@Input()
-	newCell: boolean;
 	@Input()
 	column: TableColumn;
 
+	@Input()
+	showSwapControls: boolean = false;
+	@Input()
+	leftmostInTable: boolean = false;
+	@Input()
+	rightmostInTable: boolean = false;
+
 	@Output()
-	cellValueChanged = new EventEmitter<string>();
+	columnChanged = new EventEmitter<TableColumn>();
+	@Output()
+	changedPosition = new EventEmitter<ColumnMoveDirection>();
+	@Output()
+	columnDeleted = new EventEmitter<TableColumn>();
 
 	editMode: boolean = false;
-	currentValue: string = '';
 
 	constructor() {
 	}
 
 	ngOnInit(): void {
-		this.updateExistingValue();
-		this.editMode = this.newCell;
-	}
-
-	ngOnChanges(changes: SimpleChanges) {
-		this.updateExistingValue();
-		this.editMode = this.newCell;
-	}
-
-	switchToEditMode() {
-		this.editMode = true;
 	}
 
 	@HostListener("click")
 	onClick() {
-		this.switchToEditMode();
+		this.editMode = true;
 	}
 
 	@HostListener("document:keydown.escape")
 	onEscapeClick(_: KeyboardEvent) {
-		if (!this.newCell) {
-			this.editMode = false;
-		}
-	}
-
-	async onSubmit(value: string) {
-		this.currentValue = value;
-		this.cellValueChanged.emit(value);
 		this.editMode = false;
 	}
 
-	private updateExistingValue() {
-		if (this.row) {
-			this.currentValue = this.row.values.get(this.column.id);
-		} else {
-			this.currentValue = '';
-		}
+	async onNameSubmit(value: string) {
+		this.column.name = value;
+		this.columnChanged.emit(this.column);
+		this.editMode = false;
+	}
+
+	onMoveLeft() {
+
+	}
+
+	onMoveRight() {
+
 	}
 }

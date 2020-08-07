@@ -1,5 +1,5 @@
 <div #offcanvas id="offcanvas-list"
-	 uk-offcanvas="mode:push; esc-close:false; bg-close:false;">
+	 uk-offcanvas="mode:slide; esc-close:false; bg-close:false; stack: true;">
 	<div class="uk-offcanvas-bar uk-flex uk-flex-column">
 		<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav>
 			<li>
@@ -37,9 +37,9 @@
 			</li>
 			<li class="uk-nav-divider"></li>
 			<li>
-				<a (click)="onDeckDeleted()">
+				<a (click)="confirmDeleteDeckModal.openDialog()">
 					<span class="uk-margin-small-right" uk-icon="icon: trash"></span>
-					Delete
+					Delete deck
 				</a>
 			</li>
 		</ul>
@@ -48,4 +48,6 @@
 <div *ngIf="deck">
 	<app-new-table-modal [deck]="deck"
 						 (tableCreated)="onNewTableCreated($event)"></app-new-table-modal>
+	<app-confirm-delete-deck-modal [deck]="deck"
+								   (confirmed)="onDeckDeleted()"></app-confirm-delete-deck-modal>
 </div>

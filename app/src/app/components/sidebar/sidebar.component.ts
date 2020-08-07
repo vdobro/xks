@@ -29,7 +29,12 @@ import {TableService} from "../../services/table.service";
 import {NewTableModalComponent} from "../new-table-modal/new-table-modal.component";
 import {Router} from "@angular/router";
 import {DeckService} from "../../services/deck.service";
+import {ConfirmDeleteDeckModalComponent} from "../confirm-delete-deck-modal/confirm-delete-deck-modal.component";
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.07.12
+ */
 @Component({
 	selector: 'app-sidebar',
 	templateUrl: './sidebar.component.html',
@@ -42,6 +47,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	@ViewChild(NewTableModalComponent)
 	newTableModal: NewTableModalComponent;
+
+	@ViewChild(ConfirmDeleteDeckModalComponent)
+	confirmDeleteDeckModal: ConfirmDeleteDeckModalComponent;
 
 	deck: Deck;
 	tables: Table[] = [];
@@ -89,7 +97,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		this.navigationService.selectTable(null);
 	}
 
-	async onDeckDeleted(): Promise<void> {
+	async onDeckDeleted() {
 		if (this.deck === null) {
 			this.tables = [];
 			return;

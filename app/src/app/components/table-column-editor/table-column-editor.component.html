@@ -1,15 +1,23 @@
-<form (submit)="onCreated()">
+<form (submit)="onNameSubmit()" class="uk-form-horizontal"
+	  [ngClass]="newColumn ? '' : 'uk-table-expand-wide'">
 	<div class="uk-grid-small" uk-grid>
+		<button *ngIf="!leftmostInTable && !newColumn"
+				uk-icon="arrow-left" (click)="onMoveLeft()"></button>
 		<div class="uk-inline">
-			<input #columnNameInput
-				   class="uk-input uk-form-large uk-form-width-medium"
-				   type="text"
-				   placeholder="Column title"
-				   [formControl]="nameInput"
-				   [value]="column?.name">
+			<label>
+				<input #columnNameInput
+					   class="uk-input uk-width-auto"
+					   [ngClass]="newColumn ? 'uk-form-large' : 'uk-form-small'"
+					   type="text"
+					   placeholder="Column title"
+					   [formControl]="nameInput"
+					   [value]="column?.name">
+			</label>
 			<button type="submit" class="uk-form-icon uk-form-icon-flip" uk-icon="icon: check"></button>
 		</div>
-		<div class="uk-width-auto">
-		</div>
+		<button *ngIf="!newColumn" uk-icon="icon: trash"
+				(click)="onColumnDelete();$event.preventDefault();$event.stopPropagation();"></button>
+		<button *ngIf="!rightmostInTable && !newColumn"
+				uk-icon="arrow-right" (click)="onMoveRight()"></button>
 	</div>
 </form>
