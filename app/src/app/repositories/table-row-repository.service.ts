@@ -40,16 +40,6 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 		super('table-row');
 	}
 
-	private async checkIndexesInitialized(): Promise<void> {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['index', 'tableId']}
-		});
-		this.indexCreated = true;
-	}
-
 	mapToDataEntity(entity: TableRow): TableRowDataEntity {
 		const values = {};
 		entity.values.forEach((value, key) => {
@@ -78,17 +68,43 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 	}
 
 	async getByTable(table: Table): Promise<TableRow[]> {
+		return await this.getByTableId(table.id);
+	}
+
+	async getByTableId(tableId: string): Promise<TableRow[]> {
+		const result = await this.getDataEntitiesByTable(tableId);
+		return result.map(this.mapToEntity);
+	}
+
+	async deleteAllInTable(table: Table) {
+		const all = await this.getDataEntitiesByTable(table.id);
+		for (const row of all) {
+			await this.db.remove(row);
+		}
+	}
+
+	private async checkIndexesInitialized(): Promise<void> {
+		if (this.indexCreated) {
+			return;
+		}
+		await this.db.createIndex({
+			index: {fields: ['index', 'tableId']}
+		});
+		this.indexCreated = true;
+	}
+
+	private async getDataEntitiesByTable(tableId: string): Promise<TableRowDataEntity[]> {
 		await this.checkIndexesInitialized();
-		const result = await this.db.find({
+		const results = await this.db.find({
 			selector: {
 				$and: [
-					{tableId: {$eq: table.id}},
+					{tableId: {$eq: tableId}},
 					{index: {$exists: true}}
 				]
 			},
 			sort: [{index: 'asc'}, {tableId: 'asc'}]
-		});
-		return result.docs.map(this.mapToEntity);
+		})
+		return results.docs;
 	}
 }
 

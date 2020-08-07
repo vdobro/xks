@@ -19,7 +19,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {AfterContentInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+	AfterContentInit,
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	OnChanges,
+	OnInit,
+	Output,
+	SimpleChanges,
+	ViewChild
+} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 /**
@@ -31,7 +42,7 @@ import {FormControl} from "@angular/forms";
 	templateUrl: './table-cell-editor.component.html',
 	styleUrls: ['./table-cell-editor.component.sass']
 })
-export class TableCellEditorComponent implements OnInit, AfterContentInit {
+export class TableCellEditorComponent implements OnInit, AfterContentInit, OnChanges {
 
 	@ViewChild('cellInputElement', {static: true})
 	cellInputElement: ElementRef;
@@ -53,6 +64,10 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit {
 
 	ngAfterContentInit(): void {
 		this.cellInputElement.nativeElement.focus();
+	}
+
+	ngOnChanges(changes: SimpleChanges) {
+		this.cellInput.setValue(this.existingValue);
 	}
 
 	onSubmit() {

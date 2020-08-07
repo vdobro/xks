@@ -46,7 +46,6 @@
 	</div>
 </div>
 <div *ngIf="deck">
-	<app-new-table-modal
-		[deck]="deck"
-		(tableCreated)="onNewTableCreated($event)"></app-new-table-modal>
+	<app-new-table-modal [deck]="deck"
+						 (tableCreated)="onNewTableCreated($event)"></app-new-table-modal>
 </div>

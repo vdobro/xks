@@ -1,15 +1,15 @@
 <form (submit)="onCreated()">
-	<div class="uk-grid-small uk-flex-middle" uk-grid>
-		<div class="uk-width-expand">
+	<div class="uk-grid-small" uk-grid>
+		<div class="uk-inline">
 			<input #columnNameInput
-				   class="uk-input uk-form-small"
+				   class="uk-input uk-form-large uk-form-width-medium"
 				   type="text"
 				   placeholder="Column title"
 				   [formControl]="nameInput"
 				   [value]="column?.name">
+			<button type="submit" class="uk-form-icon uk-form-icon-flip" uk-icon="icon: check"></button>
 		</div>
 		<div class="uk-width-auto">
-			<button type="submit" uk-icon="icon: check"></button>
 		</div>
 	</div>
 </form>

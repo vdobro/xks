@@ -1,16 +1,14 @@
 <form (submit)="onSubmit()">
 	<div class="uk-grid-small uk-flex-middle" uk-grid>
-		<div class="uk-width-expand">
-			<label>
-				<input #cellInputElement
-					   class="uk-input uk-form-small"
-					   type="text"
-					   placeholder="Cell value"
-					   [formControl]="cellInput">
-			</label>
-		</div>
-		<div class="uk-width-auto">
-			<button type="submit" uk-icon="icon: check"></button>
+		<div class="uk-inline">
+			<input #cellInputElement
+				   class="uk-input uk-form-small"
+				   type="text"
+				   placeholder="Cell value"
+				   [formControl]="cellInput">
+			<button type="submit"
+					class="uk-form-icon uk-form-icon-flip"
+					uk-icon="icon: check"></button>
 		</div>
 	</div>
 </form>

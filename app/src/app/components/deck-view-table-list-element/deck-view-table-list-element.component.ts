@@ -78,6 +78,6 @@ export class DeckViewTableListElement implements OnInit {
 	}
 
 	async onNameClick() {
-		this.navigationService.selectTable(this.table);
+		await this.navigationService.selectTable(this.table);
 	}
 }

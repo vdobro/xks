@@ -23,6 +23,7 @@ import {Injectable} from '@angular/core';
 import {Deck} from "../models/Deck";
 import {v4 as uuid} from 'uuid';
 import {DeckRepository} from "../repositories/deck-repository.service";
+import {TableService} from "./table.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,7 +34,8 @@ import {DeckRepository} from "../repositories/deck-repository.service";
 })
 export class DeckService {
 
-	constructor(private repository: DeckRepository) {
+	constructor(private repository: DeckRepository,
+				private tableService: TableService) {
 	}
 
 	async getById(id: string): Promise<Deck> {
@@ -59,6 +61,7 @@ export class DeckService {
 	}
 
 	async delete(deck: Deck) {
+		await this.tableService.deleteAllInDeck(deck);
 		await this.repository.delete(deck.id);
 	}
 }

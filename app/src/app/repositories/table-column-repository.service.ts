@@ -70,6 +70,18 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 	}
 
 	async getByTable(table: Table): Promise<TableColumn[]> {
+		const result = await this.getDataEntitiesInTable(table);
+		return result.map(this.mapToEntity);
+	}
+
+	async deleteAllInTable(table: Table) {
+		const result = await this.getDataEntitiesInTable(table);
+		for (let column of result) {
+			await this.db.remove(column);
+		}
+	}
+
+	private async getDataEntitiesInTable(table: Table): Promise<TableColumnDataEntity[]> {
 		await this.checkIndexesInitialized();
 		const result = await this.db.find({
 			selector: {
@@ -80,7 +92,7 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 			},
 			sort: [{index: 'asc'}, {tableId: 'asc'}]
 		})
-		return result.docs.map(this.mapToEntity);
+		return result.docs;
 	}
 }
 

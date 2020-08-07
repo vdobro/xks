@@ -1,10 +1,9 @@
-<h2 class="uk-heading-medium">{{table.name}}</h2>
-<table class="uk-table uk-table-divider uk-table-hover">
-	<thead>
-	<tr>
-		<th *ngFor="let column of columns"
-			class="uk-width-small">{{column.name}}</th>
-		<th>
+<div class="uk-container uk-container-xlarge">
+	<div class="uk-grid-divider uk-grid-medium uk-grid-match" uk-grid uk-height-match>
+		<div class="uk-width-expand">
+			<h2 class="uk-heading-medium">{{table?.name}}</h2>
+		</div>
+		<div class="uk-width-auto">
 			<button *ngIf="!columnInCreation"
 					class="uk-button uk-button-default"
 					type="button" (click)="addColumn()">
@@ -15,22 +14,33 @@
 				[table]="table"
 				(nameChanged)="columnAdded($event)">
 			</table-column-editor>
-		</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr *ngFor="let row of rows">
-		<td table-cell
-			*ngFor="let column of columns"
-			[row]="row"
-			[column]="column"
-			[newCell]="false"
-			(cellValueChanged)="cellChanged($event, row, column)">
-		</td>
-	</tr>
-	<tr table-new-row-editor [columns]="columns"
-		[table]="table"
-		(newRow)="rowAdded($event)">
-	</tr>
-	</tbody>
-</table>
+		</div>
+	</div>
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider uk-table-hover uk-table-justify">
+			<thead>
+			<tr>
+				<th *ngFor="let column of columns"
+					class="uk-width-small">{{column.name}}</th>
+				<th>
+				</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let row of rows">
+				<td table-cell
+					*ngFor="let column of columns"
+					[row]="row"
+					[column]="column"
+					[newCell]="false"
+					(cellValueChanged)="cellChanged($event, row, column)">
+				</td>
+			</tr>
+			<tr table-new-row-editor [columns]="columns"
+				[table]="table"
+				(newRow)="rowAdded($event)">
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

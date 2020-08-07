@@ -25,6 +25,7 @@ import {v4 as uuid} from 'uuid';
 import {Table} from "../models/Table";
 import {Deck} from "../models/Deck";
 import {TableRepository} from "../repositories/table-repository.service";
+import {TableCellService} from "./table-cell.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,7 +36,8 @@ import {TableRepository} from "../repositories/table-repository.service";
 })
 export class TableService {
 
-	constructor(private repository: TableRepository) {
+	constructor(private repository: TableRepository,
+				private cellService: TableCellService) {
 	}
 
 	public async getById(id: string): Promise<Table> {
@@ -61,7 +63,17 @@ export class TableService {
 	}
 
 	public async delete(id: string) {
+		const table = await this.getById(id);
+		await this.cellService.deleteAllRowsIn(table);
+		await this.cellService.deleteAllColumnsIn(table);
 		await this.repository.delete(id);
+	}
+
+	public async deleteAllInDeck(deck: Deck) {
+		const tables = await this.getByDeck(deck);
+		for (let table of tables) {
+			await this.delete(table.id);
+		}
 	}
 
 	public async update(table: Table) {

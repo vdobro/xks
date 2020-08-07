@@ -49,7 +49,7 @@ export class TableCellService {
 	}
 
 	async addColumn(name: string, table: Table): Promise<TableColumn> {
-		const allColumns = await this.columnRepository.getByTable(table);
+		const allColumns = await this.getColumns(table);
 		const column = {
 			id: uuid(),
 			tableId: table.id,
@@ -57,6 +57,10 @@ export class TableCellService {
 			index: allColumns.length
 		};
 		await this.columnRepository.add(column);
+		const rows = await this.getRows(table);
+		for (const row of rows) {
+			await this.appendColumnToRow(row, column);
+		}
 		return column;
 	}
 
@@ -89,6 +93,10 @@ export class TableCellService {
 		return row;
 	}
 
+	async deleteAllRowsIn(table: Table) {
+		await this.rowRepository.deleteAllInTable(table);
+	}
+
 	async deleteRow(row: TableRow) {
 		await this.rowRepository.delete(row.id);
 	}
@@ -106,7 +114,16 @@ export class TableCellService {
 	}
 
 	async deleteColumn(column: TableColumn) {
+		const rows = await this.rowRepository.getByTableId(column.tableId);
+		for (let row of rows) {
+			row.values.delete(column.id);
+			await this.rowRepository.update(row);
+		}
 		await this.columnRepository.delete(column.id);
+	}
+
+	async deleteAllColumnsIn(table: Table) {
+		await this.columnRepository.deleteAllInTable(table);
 	}
 }
 
