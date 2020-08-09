@@ -76,6 +76,20 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 		return result.map(this.mapToEntity);
 	}
 
+	async getInIndexRange(tableId: string, from: number, to: number): Promise<TableRow[]> {
+		await this.checkIndexesInitialized();
+		const results = await this.db.find({
+			selector: {
+				$and: [
+					{tableId: {$eq: tableId}},
+					{index: {$gte: from, $lte: to}}
+				]
+			},
+			sort: [{index: 'asc'}, {tableId: 'asc'}]
+		});
+		return results.docs.map(this.mapToEntity);
+	}
+
 	async deleteAllInTable(table: Table) {
 		const all = await this.getDataEntitiesByTable(table.id);
 		for (const row of all) {

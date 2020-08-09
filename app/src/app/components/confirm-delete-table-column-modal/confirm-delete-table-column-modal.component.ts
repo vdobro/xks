@@ -21,25 +21,24 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {TableColumn} from "../../models/TableColumn";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.07
+ * @since 2020.08.09
  */
 @Component({
-	selector: 'app-confirm-delete-deck-modal',
-	templateUrl: './confirm-delete-deck-modal.component.html',
-	styleUrls: ['./confirm-delete-deck-modal.component.sass']
+	selector: 'confirm-delete-table-column-modal',
+	templateUrl: './confirm-delete-table-column-modal.component.html',
+	styleUrls: ['./confirm-delete-table-column-modal.component.sass']
 })
-export class ConfirmDeleteDeckModalComponent implements OnInit {
-
-	@ViewChild("confirmDeleteDeckModal")
-	modal: ElementRef;
+export class ConfirmDeleteTableColumnModalComponent implements OnInit {
+	@ViewChild('confirmDeleteTableColumnModal')
+	modal;
 
 	@Input()
-	deck: Deck;
+	column: TableColumn;
 
 	@Output()
 	confirmed = new EventEmitter<void>();

@@ -1,12 +1,9 @@
 <table-column-editor *ngIf="editMode"
 					 [newColumn]="false"
 					 [existingColumn]="column"
-					 [leftmostInTable]="leftmostInTable"
-					 [rightmostInTable]="rightmostInTable"
 					 (nameChanged)="onNameSubmit($event.name)"
-					 (positionChanged)="changedPosition.emit($event)"
-					 (columnDeleted)="columnDeleted.emit($event)">
+					 (columnDeleted)="columnDeleted.emit()">
 </table-column-editor>
-<span *ngIf="!editMode">
+<span *ngIf="!editMode" class="uk-animation-fade">
 	{{column.name}}
 </span>

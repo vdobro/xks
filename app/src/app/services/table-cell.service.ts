@@ -26,6 +26,8 @@ import {Table} from "../models/Table";
 import {TableRow} from "../models/TableRow";
 import {TableColumn} from "../models/TableColumn";
 import {v4 as uuid} from 'uuid';
+import {AbstractRepository} from "../repositories/AbstractRepository";
+import {BaseDataEntity} from "../repositories/BaseRepository";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -101,16 +103,14 @@ export class TableCellService {
 		await this.rowRepository.delete(row.id);
 	}
 
-	async swapColumns(first: TableColumn, second: TableColumn) {
-		[first.index, second.index] = [second.index, first.index];
-		await this.columnRepository.update(first);
-		await this.columnRepository.update(second);
+	async moveColumn(oldColumn: TableColumn, newIndex: number) {
+		const columns = await this.columnRepository.getByTableId(oldColumn.tableId);
+		await TableCellService.moveElement(oldColumn, newIndex, columns, this.columnRepository);
 	}
 
-	async swapRows(first: TableRow, second: TableRow) {
-		[first.index, second.index] = [second.index, first.index];
-		await this.rowRepository.update(first);
-		await this.rowRepository.update(second);
+	async moveRow(oldRow: TableRow, newIndex: number) {
+		const rows = await this.rowRepository.getByTableId(oldRow.tableId);
+		await TableCellService.moveElement(oldRow, newIndex, rows, this.rowRepository);
 	}
 
 	async deleteColumn(column: TableColumn) {
@@ -124,6 +124,30 @@ export class TableCellService {
 
 	async deleteAllColumnsIn(table: Table) {
 		await this.columnRepository.deleteAllInTable(table);
+	}
+
+	private static async moveElement<T extends { id: string, index: number },
+		DT extends BaseDataEntity>(element: T,
+								   newIndex: number,
+								   allEntities: T[],
+								   repository: AbstractRepository<T, DT>) {
+
+		const oldIndex = element.index;
+		if (oldIndex === newIndex) return;
+
+		allEntities[oldIndex].index = newIndex;
+		if (oldIndex < newIndex) {
+			for (let i = oldIndex + 1; i <= newIndex; i++) {
+				allEntities[i].index = i - 1;
+			}
+		} else {
+			for (let i = oldIndex - 1; i >= newIndex; i--) {
+				allEntities[i].index = i + 1;
+			}
+		}
+		const [begin, end] = oldIndex < newIndex ? [oldIndex, newIndex] : [newIndex, oldIndex];
+		const rowsToUpdate = allEntities.slice(begin, end + 1);
+		await repository.updateAll(rowsToUpdate);
 	}
 }
 

@@ -24,6 +24,8 @@ import {TableColumn} from "../../models/TableColumn";
 import {FormControl} from "@angular/forms";
 import {TableCellService} from "../../services/table-cell.service";
 import {Table} from "../../models/Table";
+import {ConfirmDeleteTableColumnModalComponent} from "../confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
+
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,6 +40,8 @@ export class TableColumnEditorComponent implements OnInit {
 
 	@ViewChild('columnNameInput', {static: true})
 	columnNameInput: ElementRef;
+	@ViewChild(ConfirmDeleteTableColumnModalComponent)
+	confirmDeleteColumnModal: ConfirmDeleteTableColumnModalComponent;
 
 	@Input()
 	newColumn: boolean;
@@ -53,8 +57,6 @@ export class TableColumnEditorComponent implements OnInit {
 
 	@Output()
 	nameChanged = new EventEmitter<TableColumn>();
-	@Output()
-	positionChanged = new EventEmitter<ColumnMoveDirection>();
 	@Output()
 	columnDeleted = new EventEmitter<TableColumn>();
 
@@ -85,20 +87,7 @@ export class TableColumnEditorComponent implements OnInit {
 		this.nameChanged.emit(this.column);
 	}
 
-	onMoveLeft() {
-		this.positionChanged.emit(ColumnMoveDirection.LEFT);
-	}
-
-	onMoveRight() {
-		this.positionChanged.emit(ColumnMoveDirection.RIGHT);
-	}
-
 	onColumnDelete() {
 		this.columnDeleted.emit(this.column);
 	}
-}
-
-export enum ColumnMoveDirection {
-	LEFT,
-	RIGHT
 }

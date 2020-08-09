@@ -24,7 +24,9 @@ import {Table} from "../../models/Table";
 import {TableCellService} from "../../services/table-cell.service";
 import {TableColumn} from "../../models/TableColumn";
 import {TableRow} from "../../models/TableRow";
-import {ColumnMoveDirection} from "../table-column-editor/table-column-editor.component";
+import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {TableRowComponent} from "../table-row/table-row.component";
+import {TableColumnComponent} from "../table-column/table-column.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -84,16 +86,6 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.rows.push(row);
 	}
 
-	async moveColumn(column: TableColumn, direction: ColumnMoveDirection) {
-		const otherColumnIndex = direction === ColumnMoveDirection.LEFT ? column.index - 1 : column.index + 1;
-		const otherColumn = this.columns
-			.find((col) => col.index === otherColumnIndex);
-		if (otherColumn) {
-			await this.cellService.swapColumns(column, otherColumn);
-			await this.reloadAll();
-		}
-	}
-
 	async deleteColumn(column: TableColumn) {
 		if (this.columns.length === 1) {
 			await this.cellService.deleteAllRowsIn(this.table);
@@ -110,5 +102,19 @@ export class TableViewComponent implements OnInit, OnChanges {
 	private async reloadAll() {
 		this.columns = await this.cellService.getColumns(this.table);
 		this.rows = await this.cellService.getRows(this.table);
+	}
+
+	async dropRow(event: CdkDragDrop<TableViewComponent, TableRowComponent>) {
+		const row = this.rows.splice(event.previousIndex, 1)[0];
+		this.rows.splice(event.currentIndex, 0, row);
+		await this.cellService.moveRow(row, event.currentIndex);
+		await this.reloadAll();
+	}
+
+	async dropColumn(event: CdkDragDrop<TableViewComponent, TableColumnComponent>) {
+		const column = this.columns.splice(event.previousIndex, 1)[0];
+		this.columns.splice(event.currentIndex, 0, column);
+		await this.cellService.moveColumn(column, event.currentIndex);
+		await this.reloadAll();
 	}
 }

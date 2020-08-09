@@ -70,23 +70,27 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 	}
 
 	async getByTable(table: Table): Promise<TableColumn[]> {
-		const result = await this.getDataEntitiesInTable(table);
+		return await this.getByTableId(table.id);
+	}
+
+	async getByTableId(tableId: string): Promise<TableColumn[]> {
+		const result = await this.getDataEntitiesInTable(tableId);
 		return result.map(this.mapToEntity);
 	}
 
 	async deleteAllInTable(table: Table) {
-		const result = await this.getDataEntitiesInTable(table);
+		const result = await this.getDataEntitiesInTable(table.id);
 		for (let column of result) {
 			await this.db.remove(column);
 		}
 	}
 
-	private async getDataEntitiesInTable(table: Table): Promise<TableColumnDataEntity[]> {
+	private async getDataEntitiesInTable(tableId: string): Promise<TableColumnDataEntity[]> {
 		await this.checkIndexesInitialized();
 		const result = await this.db.find({
 			selector: {
 				$and: [
-					{tableId: {$eq: table.id}},
+					{tableId: {$eq: tableId}},
 					{index: {$exists: true}}
 				]
 			},

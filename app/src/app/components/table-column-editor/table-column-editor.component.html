@@ -1,8 +1,6 @@
 <form (submit)="onNameSubmit()" class="uk-form-horizontal"
 	  [ngClass]="newColumn ? '' : 'uk-table-expand-wide'">
 	<div class="uk-grid-small" uk-grid>
-		<button *ngIf="!leftmostInTable && !newColumn"
-				uk-icon="arrow-left" (click)="onMoveLeft()"></button>
 		<div class="uk-inline">
 			<label>
 				<input #columnNameInput
@@ -16,8 +14,8 @@
 			<button type="submit" class="uk-form-icon uk-form-icon-flip" uk-icon="icon: check"></button>
 		</div>
 		<button *ngIf="!newColumn" uk-icon="icon: trash"
-				(click)="onColumnDelete();$event.preventDefault();$event.stopPropagation();"></button>
-		<button *ngIf="!rightmostInTable && !newColumn"
-				uk-icon="arrow-right" (click)="onMoveRight()"></button>
+				(click)="confirmDeleteColumnModal.openDialog();$event.preventDefault();$event.stopPropagation();"></button>
 	</div>
 </form>
+<confirm-delete-table-column-modal [column]="column" (confirmed)="onColumnDelete()">
+</confirm-delete-table-column-modal>

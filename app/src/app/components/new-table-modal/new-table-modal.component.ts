@@ -52,8 +52,8 @@ export class NewTableModalComponent implements OnInit {
 	}
 
 	async onSaveClick() {
-		const name = this.nameInput.value.trim();
-		if (name === '') {
+		const name = this.nameInput?.value?.trim();
+		if (name === null || name === '') {
 			return;
 		}
 		const table = await this.tableService.create(this.deck, this.nameInput.value);

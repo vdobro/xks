@@ -1,16 +1,13 @@
 <div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-3@m"
-     uk-grid="masonry: true">
-    <div *ngIf="decks$ | async as decks">
-        <div *ngIf="decks.length == 0">
-            <h2 class="uk-heading-bullet">No decks</h2>
-            <p class="uk-text-small uk-text-normal">
-                Press <span class="uk-text-uppercase uk-text-light">New deck</span> to create one
-            </p>
-        </div>
-        <div *ngFor="let deck of decks">
-            <app-deck-list-card [deck]="deck"></app-deck-list-card>
-        </div>
-    </div>
+	 uk-grid="masonry: true" *ngIf="decks$ | async as decks">
+	<div *ngIf="decks.length === 0">
+		<h2 class="uk-heading-bullet">No decks</h2>
+		<p class="uk-text-small uk-text-normal">
+			Press <span class="uk-text-uppercase uk-text-light">New deck</span> to create one
+		</p>
+	</div>
+	<app-deck-list-card *ngFor="let deck of decks"
+						[deck]="deck"></app-deck-list-card>
 </div>
 <div #deckListFooter class="uk-margin"></div>
 

@@ -15,26 +15,24 @@
 	</div>
 </div>
 <div class="uk-overflow-auto uk-margin">
-	<table class="uk-table uk-table-striped uk-table-divider uk-text-nowrap uk-table-hover">
+	<table class="uk-table uk-table-divider uk-text-nowrap">
 		<thead>
-		<tr>
-			<th app-table-column class="uk-table-expand"
+		<tr cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)">
+			<th cdkDrag app-table-column class="uk-table-expand"
 				*ngFor="let column of columns; let position = index"
-				[showSwapControls]="showColumnSwapControls"
-				[leftmostInTable]="position === 0"
-				[rightmostInTable]="position === columns.length - 1"
 				[column]="column"
-				(changedPosition)="moveColumn(column, $event)"
-				(columnDeleted)="deleteColumn(column)"></th>
-			<th *ngIf="rows.length > 0">
+				(columnDeleted)="deleteColumn(column)">
+				<ng-template *cdkDragPreview></ng-template>
 			</th>
+			<th *ngIf="rows.length > 0"></th>
 		</tr>
 		</thead>
-		<tbody>
-		<tr table-row *ngFor="let row of rows"
+		<tbody cdkDropList (cdkDropListDropped)="dropRow($event)">
+		<tr table-row cdkDrag *ngFor="let row of rows"
 			[row]="row"
 			[columns]="columns"
 			(rowDeleted)="deleteRow(row)">
+			<ng-template *cdkDragPreview></ng-template>
 		</tr>
 		<tr table-new-row-editor
 			[columns]="columns"

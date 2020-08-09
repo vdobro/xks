@@ -19,38 +19,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import UIkit from 'uikit';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
+import {ConfirmDeleteTableColumnModalComponent} from './confirm-delete-table-column-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.07
+ * @since 2020.08.09
  */
-@Component({
-	selector: 'app-confirm-delete-deck-modal',
-	templateUrl: './confirm-delete-deck-modal.component.html',
-	styleUrls: ['./confirm-delete-deck-modal.component.sass']
-})
-export class ConfirmDeleteDeckModalComponent implements OnInit {
+describe('ConfirmDeleteTableColumnModalComponent', () => {
+	let component: ConfirmDeleteTableColumnModalComponent;
+	let fixture: ComponentFixture<ConfirmDeleteTableColumnModalComponent>;
 
-	@ViewChild("confirmDeleteDeckModal")
-	modal: ElementRef;
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [ConfirmDeleteTableColumnModalComponent]
+		})
+			.compileComponents();
+	}));
 
-	@Input()
-	deck: Deck;
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ConfirmDeleteTableColumnModalComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-	@Output()
-	confirmed = new EventEmitter<void>();
-
-	constructor() {
-	}
-
-	ngOnInit(): void {
-	}
-
-	openDialog() {
-		UIkit.modal(this.modal.nativeElement).show();
-	}
-}
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

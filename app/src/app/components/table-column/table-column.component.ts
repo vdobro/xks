@@ -21,7 +21,6 @@
 
 import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {TableColumn} from "../../models/TableColumn";
-import {ColumnMoveDirection} from "../table-column-editor/table-column-editor.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,17 +36,8 @@ export class TableColumnComponent implements OnInit {
 	@Input()
 	column: TableColumn;
 
-	@Input()
-	showSwapControls: boolean = false;
-	@Input()
-	leftmostInTable: boolean = false;
-	@Input()
-	rightmostInTable: boolean = false;
-
 	@Output()
 	columnChanged = new EventEmitter<TableColumn>();
-	@Output()
-	changedPosition = new EventEmitter<ColumnMoveDirection>();
 	@Output()
 	columnDeleted = new EventEmitter<TableColumn>();
 
@@ -73,13 +63,5 @@ export class TableColumnComponent implements OnInit {
 		this.column.name = value;
 		this.columnChanged.emit(this.column);
 		this.editMode = false;
-	}
-
-	onMoveLeft() {
-
-	}
-
-	onMoveRight() {
-
 	}
 }

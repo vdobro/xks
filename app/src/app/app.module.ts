@@ -45,6 +45,8 @@ import {TableCellEditorComponent} from './components/table-cell-editor/table-cel
 import {TableColumnComponent} from './components/table-column/table-column.component';
 import {ConfirmDeleteDeckModalComponent} from './components/confirm-delete-deck-modal/confirm-delete-deck-modal.component';
 import {TableRowComponent} from './components/table-row/table-row.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
+import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -72,6 +74,7 @@ import {TableRowComponent} from './components/table-row/table-row.component';
 		TableColumnComponent,
 		ConfirmDeleteDeckModalComponent,
 		TableRowComponent,
+		ConfirmDeleteTableColumnModalComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -83,6 +86,7 @@ import {TableRowComponent} from './components/table-row/table-row.component';
 		]),
 		FormsModule,
 		ReactiveFormsModule,
+		DragDropModule,
 	],
 	providers: [],
 	bootstrap: [AppComponent]

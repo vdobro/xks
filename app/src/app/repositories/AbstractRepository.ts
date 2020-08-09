@@ -76,6 +76,23 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		return await this.db.put(dataEntity);
 	}
 
+	async updateAll(entities: Entity[]) {
+		const idMap = new Map<string, DataEntity>();
+		entities.map((entity) => {
+			const dataEntity = this.mapToDataEntity(entity);
+			idMap.set(dataEntity._id, dataEntity);
+		});
+		const revisions = await this.db.allDocs({
+			keys: entities.map(entity => entity.id)
+		});
+		for (let row of revisions.rows) {
+			const id: string = row.id;
+			const doc = idMap.get(id);
+			doc._rev = row.value.rev;
+			await this.db.put(doc);
+		}
+	}
+
 	private async getRevision(id: string): Promise<string> {
 		const dataEntity = await this.getDataEntity(id);
 		return dataEntity._rev;
