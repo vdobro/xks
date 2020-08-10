@@ -38,8 +38,8 @@ import {BaseDataEntity} from "../repositories/BaseRepository";
 })
 export class TableCellService {
 
-	constructor(private rowRepository: TableRowRepository,
-				private columnRepository: TableColumnRepository) {
+	constructor(private readonly rowRepository: TableRowRepository,
+				private readonly columnRepository: TableColumnRepository) {
 	}
 
 	async getColumns(table: Table): Promise<TableColumn[]> {

@@ -37,13 +37,19 @@ import {DeckService} from "../../services/deck.service";
 })
 export class NewDeckModalComponent implements OnInit {
 
-	@ViewChild("newDeckModal") modal: ElementRef;
-	@Output() newDeck = new EventEmitter<Deck>();
+	@ViewChild("newDeckModal")
+	modal: ElementRef;
+
+	@ViewChild("deckNameInput", {static: true})
+	nameInputElement: ElementRef;
+
+	@Output()
+	newDeck = new EventEmitter<Deck>();
 
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');
 
-	constructor(private deckService: DeckService) {
+	constructor(private readonly deckService: DeckService) {
 	}
 
 	ngOnInit(): void {
@@ -54,7 +60,8 @@ export class NewDeckModalComponent implements OnInit {
 		if (name === '') {
 			return;
 		}
-		const newDeck = await this.deckService.create(name, this.descriptionInput.value);
+		const description = this.descriptionInput.value?.trim();
+		const newDeck = await this.deckService.create(name, description ? description : '');
 
 		this.clearForm();
 		UIkit.modal(this.modal.nativeElement).hide();
@@ -64,5 +71,10 @@ export class NewDeckModalComponent implements OnInit {
 	private clearForm() {
 		this.nameInput.reset();
 		this.descriptionInput.reset();
+	}
+
+	openModal() {
+		UIkit.modal(this.modal.nativeElement).show();
+		this.nameInputElement.nativeElement.focus();
 	}
 }

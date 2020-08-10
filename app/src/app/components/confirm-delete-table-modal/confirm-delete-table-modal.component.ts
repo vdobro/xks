@@ -19,22 +19,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {NewDeckModalComponent} from "../new-deck-modal/new-deck-modal.component";
+import UIkit from 'uikit';
 
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Table} from "../../models/Table";
+
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.08.10
+ */
 @Component({
-	selector: 'li [deck-list-navbar]',
-	templateUrl: './deck-list-navbar.component.html',
-	styleUrls: ['./deck-list-navbar.component.sass']
+	selector: 'app-confirm-delete-table-modal',
+	templateUrl: './confirm-delete-table-modal.component.html',
+	styleUrls: ['./confirm-delete-table-modal.component.sass']
 })
-export class DeckListNavbarComponent implements OnInit {
+export class ConfirmDeleteTableModalComponent implements OnInit {
 
-	@ViewChild(NewDeckModalComponent)
-	childModal: NewDeckModalComponent;
+	@ViewChild('confirmDeleteTableModal')
+	modal: ElementRef;
+
+	@Input()
+	table: Table;
+
+	@Output()
+	confirmed = new EventEmitter<void>();
 
 	constructor() {
 	}
 
 	ngOnInit(): void {
+	}
+
+	openModal() {
+		UIkit.modal(this.modal.nativeElement).show();
 	}
 }

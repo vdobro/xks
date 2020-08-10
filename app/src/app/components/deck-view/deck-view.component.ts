@@ -19,13 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {DeckService} from "../../services/deck.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {NavigationService} from "../../services/navigation.service";
-import {Table} from "../../models/Table";
+import {NavigationControlService} from "../../services/navigation-control.service";
 import {TableService} from "../../services/table.service";
+import {NavigationService} from "../../services/navigation.service";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -38,40 +38,31 @@ export const DECK_ID_PARAM: string = 'deckId';
 	templateUrl: './deck-view.component.html',
 	styleUrls: ['./deck-view.component.sass']
 })
-export class DeckViewComponent implements OnInit, OnDestroy {
+export class DeckViewComponent implements OnInit {
 
 	@Output()
 	deck: Deck;
 
-	@Output()
-	selectedTable: Table;
-
-	@Output()
 	anyTablesAvailable: boolean = false;
 
-	constructor(private deckService: DeckService,
-				private router: Router,
-				private route: ActivatedRoute,
-				private navigationService: NavigationService,
-				private tableService: TableService) {
+	constructor(private readonly deckService: DeckService,
+				private readonly router: Router,
+				private readonly route: ActivatedRoute,
+				private readonly navigationService: NavigationService,
+				private readonly navigationControlService: NavigationControlService,
+				private readonly tableService: TableService) {
 	}
 
 	async ngOnInit(): Promise<void> {
 		this.route.paramMap.subscribe(async params => {
 			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
 			if (this.deck === null) {
-				await this.router.navigate(['/']);
+				await this.navigationService.goToDeckList();
 				return;
+			} else {
+				this.navigationControlService.populateSidebar(this.deck);
 			}
-			this.navigationService.populateSidebar(this.deck);
 			this.anyTablesAvailable = await this.tableService.anyExistForDeck(this.deck);
 		});
-		this.navigationService.activeTable().subscribe((table: Table) => {
-			this.selectedTable = table;
-		});
-	}
-
-	ngOnDestroy() {
-		this.navigationService.populateSidebar(null);
 	}
 }

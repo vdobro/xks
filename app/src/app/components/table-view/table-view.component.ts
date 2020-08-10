@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, OnChanges, OnInit, Output} from '@angular/core';
 import {Table} from "../../models/Table";
 import {TableCellService} from "../../services/table-cell.service";
 import {TableColumn} from "../../models/TableColumn";
@@ -27,6 +27,13 @@ import {TableRow} from "../../models/TableRow";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 import {TableRowComponent} from "../table-row/table-row.component";
 import {TableColumnComponent} from "../table-column/table-column.component";
+import {ActivatedRoute} from "@angular/router";
+import {TableService} from "../../services/table.service";
+import {DeckService} from "../../services/deck.service";
+import {NavigationControlService} from "../../services/navigation-control.service";
+import {NavigationService} from "../../services/navigation.service";
+
+export const TABLE_ID_PARAM: string = 'tableId';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -39,15 +46,10 @@ import {TableColumnComponent} from "../table-column/table-column.component";
 })
 export class TableViewComponent implements OnInit, OnChanges {
 
-	@Input()
-	table: Table;
 
-	@Output()
 	columns: TableColumn[] = [];
-	@Output()
 	rows: TableRow[] = [];
-	@Output()
-	rowInEditing: TableRow;
+
 	@Output()
 	columnInCreation: boolean = false;
 	@Output()
@@ -55,11 +57,26 @@ export class TableViewComponent implements OnInit, OnChanges {
 	@Output()
 	showColumnSwapControls: boolean;
 
-	constructor(private cellService: TableCellService) {
+	table: Table;
+
+	constructor(private readonly tableService: TableService,
+				private readonly deckService: DeckService,
+				private readonly cellService: TableCellService,
+				private readonly navigationControlService: NavigationControlService,
+				private readonly navigationService: NavigationService,
+				private readonly activatedRoute: ActivatedRoute) {
 	}
 
 	async ngOnInit() {
-		await this.reloadAll();
+		this.activatedRoute.paramMap.subscribe(async params => {
+			this.table = await this.tableService.getById(params.get(TABLE_ID_PARAM));
+			if (this.table) {
+				await this.navigationControlService.selectTable(this.table);
+				await this.reloadAll();
+			} else {
+				await this.navigationService.goToDeckList();
+			}
+		});
 	}
 
 	async ngOnChanges() {
@@ -100,8 +117,10 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	private async reloadAll() {
-		this.columns = await this.cellService.getColumns(this.table);
-		this.rows = await this.cellService.getRows(this.table);
+		if (this.table) {
+			this.columns = await this.cellService.getColumns(this.table);
+			this.rows = await this.cellService.getRows(this.table);
+		}
 	}
 
 	async dropRow(event: CdkDragDrop<TableViewComponent, TableRowComponent>) {

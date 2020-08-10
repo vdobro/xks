@@ -20,80 +20,68 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable, Subject} from "rxjs";
-import {NavBarItem} from "../components/nav-bar-item";
+import {Router} from "@angular/router";
 import {Deck} from "../models/Deck";
 import {Table} from "../models/Table";
+import {DeckService} from "./deck.service";
+import {TableService} from "./table.service";
+import {NavigationControlService} from "./navigation-control.service";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.20
+ * @since 2020.08.10
  */
 @Injectable({
 	providedIn: 'root'
 })
 export class NavigationService {
 
-	private items: NavBarItem[] = [];
+	private deck: Deck;
+	private table: Table;
 
-	private itemsObservable: Subject<NavBarItem[]> = new Subject();
-	private topBarVisible$: Subject<boolean> = new Subject();
-	private sidebarVisible$: Subject<boolean> = new Subject();
-	private activeDeck$: Subject<Deck> = new Subject();
-	private activeTable$: Subject<Table> = new Subject();
-
-	constructor() {
+	constructor(
+		private readonly deckService: DeckService,
+		private readonly tableService: TableService,
+		private readonly navigationControlService: NavigationControlService,
+		private readonly router: Router) {
 	}
 
-	getAll(): Observable<NavBarItem[]> {
-		return this.itemsObservable;
-	}
-
-	topNavBarVisible(): Observable<boolean> {
-		return this.topBarVisible$;
-	}
-
-	sidebarVisible(): Observable<boolean> {
-		return this.sidebarVisible$;
-	}
-
-	activeDeck(): Observable<Deck> {
-		return this.activeDeck$;
-	}
-
-	activeTable(): Observable<Table> {
-		return this.activeTable$;
-	}
-
-	addItem(item: NavBarItem) {
-		this.items.push(item);
-		this.update();
-	}
-
-	clear() {
-		this.items.length = 0;
-		this.update();
-	}
-
-	populateSidebar(deck: Deck) {
-		const deckIsNull = deck === null;
-		this.setTopBarVisibility(deckIsNull);
-		this.activeDeck$.next(deck);
-		if (deckIsNull) {
-			this.activeTable$.next(null);
+	async navigateToCurrentTable() {
+		if (this.table) {
+			await this.openTable(this.table.id);
 		}
 	}
 
-	selectTable(table: Table) {
-		this.activeTable$.next(table);
+	async openTable(tableId: string) {
+		this.table = await this.tableService.getById(tableId);
+		await this.navigationControlService.selectTable(this.table);
+		await this.router.navigate(['/tables', tableId]);
 	}
 
-	private setTopBarVisibility(show: boolean) {
-		this.sidebarVisible$.next(!show);
-		this.topBarVisible$.next(show);
+	async navigateToCurrentDeck() {
+		if (this.deck) {
+			this.table = null;
+			this.navigationControlService.deselectTable();
+			await this.openDeck(this.deck.id);
+		}
 	}
 
-	private update() {
-		this.itemsObservable.next(this.items);
+	async openDeck(deckId: string) {
+		this.deck = await this.deckService.getById(deckId);
+		await this.navigationControlService.populateSidebar(this.deck);
+		await this.router.navigate(['/decks', deckId]);
+	}
+
+	async goHome() {
+		this.deck = null;
+		this.table = null;
+		await this.router.navigate(['/']);
+	}
+
+	async goToDeckList() {
+		this.deck = null;
+		this.table = null;
+		await this.navigationControlService.populateSidebar(null);
+		await this.router.navigate(['/decks']);
 	}
 }

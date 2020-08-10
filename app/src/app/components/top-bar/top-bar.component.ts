@@ -21,7 +21,7 @@
 
 import {Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {NavBarItemsDirective} from "../nav-bar-items.directive";
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationControlService} from "../../services/navigation-control.service";
 import {NavBarItem} from "../nav-bar-item";
 
 /**
@@ -43,8 +43,8 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
 	private componentRefs: ComponentRef<any>[] = []
 
-	constructor(private componentFactoryResolver: ComponentFactoryResolver,
-				private navigationService: NavigationService) {
+	constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
+				private readonly navigationService: NavigationControlService) {
 	}
 
 	ngOnInit(): void {

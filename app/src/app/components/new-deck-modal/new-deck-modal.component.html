@@ -6,7 +6,8 @@
 			<div class="uk-margin">
 				<label class="uk-form-label" for="deckNameInput">Title</label>
 				<div class="uk-form-controls">
-					<input id="deckNameInput"
+					<input #deckNameInput
+						   id="deckNameInput"
 						   class="uk-input"
 						   type="text"
 						   placeholder="Enter deck name"
@@ -18,7 +19,7 @@
 				<div class="uk-form-controls">
 					<textarea id="deckDescriptionInput"
 							  class="uk-textarea"
-							  placeholder="Describe new deck"
+							  placeholder="Describe the new deck"
 							  [formControl]="descriptionInput"></textarea>
 				</div>
 			</div>

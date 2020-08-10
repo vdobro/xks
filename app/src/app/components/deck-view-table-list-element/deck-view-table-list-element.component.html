@@ -2,7 +2,7 @@
 	{{table.name}}
 	<span class="uk-badge">{{rowCount}}</span>
 	<a class="uk-float-right uk-margin-small-left"
-	   (click)="onDeleteClicked();$event.preventDefault();$event.stopPropagation();"
+	   (click)="confirmDeletion();$event.preventDefault();$event.stopPropagation();"
 	   uk-icon="icon: trash"></a>
 	<a class="uk-float-right uk-margin-small-left"
 	   (click)="onEditClicked();$event.preventDefault();$event.stopPropagation();"
@@ -26,3 +26,4 @@
 		</div>
 	</form>
 </div>
+<app-confirm-delete-table-modal [table]="table" (confirmed)="onDelete()"></app-confirm-delete-table-modal>

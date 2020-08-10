@@ -23,6 +23,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {FormControl} from "@angular/forms";
 import {DeckService} from "../../services/deck.service";
+import {NavigationService} from "../../services/navigation.service";
 
 @Component({
 	selector: 'app-deck-list-card',
@@ -39,7 +40,8 @@ export class DeckListCardComponent implements OnInit {
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');
 
-	constructor(private deckService: DeckService) {
+	constructor(private readonly deckService: DeckService,
+				private readonly navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
@@ -51,11 +53,15 @@ export class DeckListCardComponent implements OnInit {
 		this.editMode = true;
 	}
 
-	onChangesSubmit() {
+	async onChangesSubmit() {
 		this.deck.name = this.nameInput.value;
 		this.deck.description = this.descriptionInput.value;
 		this.editMode = false;
 
-		this.deckService.update(this.deck);
+		await this.deckService.update(this.deck);
+	}
+
+	async openDeckDetails() {
+		await this.navigationService.openDeck(this.deck.id);
 	}
 }

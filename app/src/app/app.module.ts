@@ -37,7 +37,7 @@ import {DeckListNavbarComponent} from './components/deck-list-navbar/deck-list-n
 import {DeckViewTableListElement} from './components/deck-view-table-list-element/deck-view-table-list-element.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {NewTableModalComponent} from './components/new-table-modal/new-table-modal.component';
-import {TableViewComponent} from './components/table-view/table-view.component';
+import {TABLE_ID_PARAM, TableViewComponent} from './components/table-view/table-view.component';
 import {TableColumnEditorComponent} from './components/table-column-editor/table-column-editor.component';
 import {TableCellComponent} from './components/table-cell/table-cell.component';
 import {TableNewRowEditorComponent} from './components/table-new-row-editor/table-new-row-editor.component';
@@ -47,6 +47,7 @@ import {ConfirmDeleteDeckModalComponent} from './components/confirm-delete-deck-
 import {TableRowComponent} from './components/table-row/table-row.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
+import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-table-modal/confirm-delete-table-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -75,6 +76,7 @@ import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delet
 		ConfirmDeleteDeckModalComponent,
 		TableRowComponent,
 		ConfirmDeleteTableColumnModalComponent,
+		ConfirmDeleteTableModalComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -83,6 +85,7 @@ import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delet
 			{path: '', redirectTo: '/decks', pathMatch: 'full'},
 			{path: 'decks', component: DeckListPageComponent},
 			{path: `decks/:${DECK_ID_PARAM}`, component: DeckViewComponent},
+			{path: `tables/:${TABLE_ID_PARAM}`, component: TableViewComponent},
 		]),
 		FormsModule,
 		ReactiveFormsModule,

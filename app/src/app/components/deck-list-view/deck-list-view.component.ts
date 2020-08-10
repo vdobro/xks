@@ -23,6 +23,7 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Deck} from "../../models/Deck";
 
 import UIkit from 'uikit';
+import {NavigationControlService} from "../../services/navigation-control.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,10 +41,11 @@ export class DeckListViewComponent implements OnInit {
 	@Input()
 	decks$: Promise<Deck[]>;
 
-	constructor() {
+	constructor(private readonly navigationService: NavigationControlService) {
 	}
 
 	ngOnInit(): void {
+		this.navigationService.populateSidebar(null);
 	}
 
 	onNewDeckCreated() {

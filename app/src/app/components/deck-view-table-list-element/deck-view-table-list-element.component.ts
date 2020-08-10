@@ -19,11 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {TableService} from "../../services/table.service";
 import {Table} from "../../models/Table";
 import {FormControl} from "@angular/forms";
 import {NavigationService} from "../../services/navigation.service";
+import {ConfirmDeleteTableModalComponent} from "../confirm-delete-table-modal/confirm-delete-table-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,6 +36,9 @@ import {NavigationService} from "../../services/navigation.service";
 	styleUrls: ['./deck-view-table-list-element.component.sass']
 })
 export class DeckViewTableListElement implements OnInit {
+
+	@ViewChild(ConfirmDeleteTableModalComponent)
+	confirmDeleteModal: ConfirmDeleteTableModalComponent;
 
 	@Input()
 	table: Table;
@@ -49,15 +53,15 @@ export class DeckViewTableListElement implements OnInit {
 	editMode: boolean = false;
 	nameInput = new FormControl('');
 
-	constructor(private tableService: TableService,
-				private navigationService: NavigationService) {
+	constructor(private readonly tableService: TableService,
+				private readonly navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
 		this.nameInput.setValue(this.table?.name);
 	}
 
-	async onDeleteClicked(): Promise<void> {
+	async onDelete(): Promise<void> {
 		await this.tableService.delete(this.table.id);
 		this.deleted.emit(this.table);
 	}
@@ -78,6 +82,10 @@ export class DeckViewTableListElement implements OnInit {
 	}
 
 	async onNameClick() {
-		await this.navigationService.selectTable(this.table);
+		await this.navigationService.openTable(this.table.id);
+	}
+
+	confirmDeletion() {
+		this.confirmDeleteModal.openModal();
 	}
 }

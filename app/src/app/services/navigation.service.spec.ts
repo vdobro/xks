@@ -25,7 +25,7 @@ import {NavigationService} from './navigation.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.06.11
+ * @since 2020.08.10
  */
 describe('NavigationService', () => {
 	let service: NavigationService;

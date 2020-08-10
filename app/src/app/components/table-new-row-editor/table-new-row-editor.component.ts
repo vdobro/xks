@@ -52,7 +52,7 @@ export class TableNewRowEditorComponent implements OnInit {
 	@Output()
 	newRow = new Subject<TableRow>();
 
-	constructor(private cellService: TableCellService) {
+	constructor(private readonly cellService: TableCellService) {
 	}
 
 	async ngOnInit() {

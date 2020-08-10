@@ -26,6 +26,6 @@ import {Type} from "@angular/core";
  * @since 2020.06.11
  */
 export class NavBarItem {
-	constructor(public component: Type<any>) {
+	constructor(public readonly component: Type<any>) {
 	}
 }

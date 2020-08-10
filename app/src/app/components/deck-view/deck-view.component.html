@@ -1,14 +1,10 @@
-<div class="uk-container uk-container-small">
-	<div *ngIf="deck && !selectedTable">
-		<h1 class="uk-heading-medium">{{deck.name}}</h1>
-		<p *ngIf="deck.description" class="uk-text-lead">{{deck.description}}</p>
-		<div *ngIf="!anyTablesAvailable">
-			<h2 class="uk-heading-bullet">No tables</h2>
-			<p class="uk-text-small uk-text-normal">
-				Press <span class="uk-text-uppercase uk-text-light">New table</span> to create one
-			</p>
-		</div>
+<div *ngIf="deck">
+	<h1 class="uk-heading-medium">{{deck.name}}</h1>
+	<p *ngIf="deck.description" class="uk-text-lead">{{deck.description}}</p>
+	<div *ngIf="!anyTablesAvailable">
+		<h2 class="uk-heading-bullet">No tables</h2>
+		<p class="uk-text-small uk-text-normal">
+			Press <span class="uk-text-uppercase uk-text-light">New table</span> to create one
+		</p>
 	</div>
-	<app-table-view *ngIf="selectedTable" [table]="selectedTable">
-	</app-table-view>
 </div>

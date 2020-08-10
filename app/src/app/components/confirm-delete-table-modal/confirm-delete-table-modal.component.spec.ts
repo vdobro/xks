@@ -21,53 +21,30 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {TableViewComponent} from './table-view.component';
-import {Component, ViewChild} from "@angular/core";
-import {Table} from "../../models/Table";
-import {v4 as uuid} from 'uuid';
+import {ConfirmDeleteTableModalComponent} from './confirm-delete-table-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.03
+ * @since 2020.08.10
  */
-describe('TableViewComponent', () => {
-	let component: TestHostComponent;
-	let fixture: ComponentFixture<TestHostComponent>;
+describe('ConfirmDeleteTableModalComponent', () => {
+	let component: ConfirmDeleteTableModalComponent;
+	let fixture: ComponentFixture<ConfirmDeleteTableModalComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [TableViewComponent]
-		}).compileComponents();
+			declarations: [ConfirmDeleteTableModalComponent]
+		})
+			.compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(TestHostComponent);
+		fixture = TestBed.createComponent(ConfirmDeleteTableModalComponent);
 		component = fixture.componentInstance;
-		component.table = generateTable();
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
-
-	@Component({
-		selector: 'host-component',
-		template: `
-			<app-table-view></app-table-view>`
-	})
-	class TestHostComponent {
-		@ViewChild(TableViewComponent)
-		public componentUnderTest;
-
-		table: Table;
-	}
 });
-
-function generateTable(): Table {
-	return {
-		id: uuid(),
-		deckId: uuid() + 'as deck ID',
-		name: 'name ' + uuid()
-	};
-}

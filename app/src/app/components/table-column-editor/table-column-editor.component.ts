@@ -63,7 +63,7 @@ export class TableColumnEditorComponent implements OnInit {
 	column: TableColumn;
 	nameInput = new FormControl('');
 
-	constructor(private cellService: TableCellService) {
+	constructor(private readonly cellService: TableCellService) {
 	}
 
 	ngOnInit(): void {

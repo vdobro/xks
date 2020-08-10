@@ -19,22 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {NewDeckModalComponent} from "../new-deck-modal/new-deck-modal.component";
+import {TestBed} from '@angular/core/testing';
 
-@Component({
-	selector: 'li [deck-list-navbar]',
-	templateUrl: './deck-list-navbar.component.html',
-	styleUrls: ['./deck-list-navbar.component.sass']
-})
-export class DeckListNavbarComponent implements OnInit {
+import {NavigationControlService} from './navigation-control.service';
 
-	@ViewChild(NewDeckModalComponent)
-	childModal: NewDeckModalComponent;
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.06.11
+ */
+describe('NavigationControlService', () => {
+	let service: NavigationControlService;
 
-	constructor() {
-	}
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(NavigationControlService);
+	});
 
-	ngOnInit(): void {
-	}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

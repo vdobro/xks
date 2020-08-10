@@ -29,15 +29,13 @@ import {BaseDataEntity, BaseRepository} from "./BaseRepository";
 export abstract class AbstractRepository<Entity extends { id: string }, DataEntity extends BaseDataEntity>
 	implements BaseRepository<Entity> {
 
-	private readonly dbName: string;
 	protected readonly db: any;
 
 	abstract mapToDataEntity(entity: Entity): DataEntity
 
 	abstract mapToEntity(entity: DataEntity): Entity
 
-	protected constructor(dbName: string) {
-		this.dbName = dbName;
+	protected constructor(private readonly dbName: string) {
 		this.db = new PouchDB(this.dbName);
 	}
 

@@ -39,13 +39,18 @@ import UIkit from 'uikit';
 })
 export class NewTableModalComponent implements OnInit {
 
-	@ViewChild("newTableModal") modal: ElementRef;
-	@Input() deck: Deck;
-	@Output() tableCreated: EventEmitter<Table> = new EventEmitter<Table>();
+	@ViewChild("newTableModal")
+	modal: ElementRef;
+
+	@Input()
+	deck: Deck;
+
+	@Output()
+	tableCreated: EventEmitter<Table> = new EventEmitter<Table>();
 
 	nameInput = new FormControl('');
 
-	constructor(private tableService: TableService) {
+	constructor(private readonly tableService: TableService) {
 	}
 
 	ngOnInit(): void {

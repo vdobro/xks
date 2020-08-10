@@ -1,6 +1,7 @@
-<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
+<div *ngIf="table"
+	 class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
 	<div class="uk-width-expand">
-		<h2 class="uk-heading-medium">{{table?.name}}</h2>
+		<h2 class="uk-heading-medium">{{table.name}}</h2>
 	</div>
 	<div class="uk-width-auto">
 		<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
@@ -14,7 +15,7 @@
 		</table-column-editor>
 	</div>
 </div>
-<div class="uk-overflow-auto uk-margin">
+<div class="uk-overflow-auto uk-margin" *ngIf="table">
 	<table class="uk-table uk-table-divider uk-text-nowrap">
 		<thead>
 		<tr cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)">

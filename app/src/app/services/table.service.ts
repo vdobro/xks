@@ -36,8 +36,8 @@ import {TableCellService} from "./table-cell.service";
 })
 export class TableService {
 
-	constructor(private repository: TableRepository,
-				private cellService: TableCellService) {
+	constructor(private readonly repository: TableRepository,
+				private readonly cellService: TableCellService) {
 	}
 
 	public async getById(id: string): Promise<Table> {

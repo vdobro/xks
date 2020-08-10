@@ -29,6 +29,6 @@ import {Directive, ViewContainerRef} from '@angular/core';
 	selector: '[appNavBarItems]'
 })
 export class NavBarItemsDirective {
-	constructor(public viewContainerRef: ViewContainerRef) {
+	constructor(public readonly viewContainerRef: ViewContainerRef) {
 	}
 }

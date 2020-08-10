@@ -43,7 +43,7 @@ export class TableRowComponent implements OnInit {
 	@Output()
 	rowDeleted = new EventEmitter<TableRow>();
 
-	constructor(private cellService: TableCellService) {
+	constructor(private readonly cellService: TableCellService) {
 	}
 
 	ngOnInit(): void {

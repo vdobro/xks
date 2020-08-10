@@ -23,13 +23,13 @@ import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/
 
 import UIkit from 'uikit';
 import {Deck} from "../../models/Deck";
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationControlService} from "../../services/navigation-control.service";
 import {Table} from "../../models/Table";
 import {TableService} from "../../services/table.service";
 import {NewTableModalComponent} from "../new-table-modal/new-table-modal.component";
-import {Router} from "@angular/router";
 import {DeckService} from "../../services/deck.service";
 import {ConfirmDeleteDeckModalComponent} from "../confirm-delete-deck-modal/confirm-delete-deck-modal.component";
+import {NavigationService} from "../../services/navigation.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -53,19 +53,20 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	deck: Deck;
 	tables: Table[] = [];
+	selectedTable: Table;
 	tableSelected: boolean = false;
 
 	private active: boolean;
 
-	constructor(private navigationService: NavigationService,
-				private deckService: DeckService,
-				private tableService: TableService,
-				private router: Router) {
-		this.navigationService.sidebarVisible().subscribe((isVisible: boolean) => {
+	constructor(private readonly navigationControlService: NavigationControlService,
+				private readonly deckService: DeckService,
+				private readonly tableService: TableService,
+				private readonly navigationService: NavigationService) {
+		this.navigationControlService.sidebarVisible().subscribe((isVisible: boolean) => {
 			this.active = (isVisible);
 			this.update();
 		});
-		this.navigationService.activeDeck().subscribe((deck: Deck) => {
+		this.navigationControlService.activeDeck().subscribe((deck: Deck) => {
 			this.deck = deck;
 			if (deck === null) {
 				this.tables = [];
@@ -75,8 +76,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 				});
 			}
 		});
-		this.navigationService.activeTable().subscribe((table: Table) => {
+		this.navigationControlService.activeTable().subscribe((table: Table) => {
 			this.tableSelected = table !== null;
+			this.selectedTable = table;
 		});
 	}
 
@@ -87,14 +89,16 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		UIkit.offcanvas(this.sideBar.nativeElement);
 	}
 
-	onTableDeleted(tableId: string): void {
+	async onTableDeleted(tableId: string) {
 		this.tables = this.tables.filter(item => item.id !== tableId);
-		this.navigationService.selectTable(null);
+		this.navigationControlService.deselectTable();
+		await this.navigationService.navigateToCurrentDeck();
 	}
 
-	onNewTableCreated(table: Table): void {
+	async onNewTableCreated(table: Table) {
 		this.tables.push(table);
-		this.navigationService.selectTable(null);
+		await this.navigationControlService.deselectTable();
+		await this.navigationService.navigateToCurrentDeck();
 	}
 
 	async onDeckDeleted() {
@@ -106,7 +110,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		await this.deckService.delete(this.deck);
 		this.deck = null;
 		this.tables = [];
-		await this.router.navigate(['/']);
+		await this.goHome();
 	}
 
 	private update(): void {
@@ -117,7 +121,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		}
 	}
 
-	openDeckDetails() {
-		this.navigationService.selectTable(null);
+	async openDeckDetails() {
+		this.navigationControlService.deselectTable();
+		await this.navigationService.openDeck(this.deck.id);
+	}
+
+	async goHome() {
+		await this.navigationService.goHome();
 	}
 }
