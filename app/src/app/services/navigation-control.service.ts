@@ -42,7 +42,8 @@ export class NavigationControlService {
 	private readonly activeTable$: Subject<Table> = new Subject();
 
 	private items: NavBarItem[] = [];
-	private currentDeck: Deck;
+	currentDeck: Deck;
+	currentTable: Table;
 
 	constructor(private readonly deckService: DeckService) {
 	}
@@ -77,28 +78,40 @@ export class NavigationControlService {
 		this.update();
 	}
 
+	async populateSidebarWithTable(table: Table) {
+		this.currentTable = table;
+		if (table === null) {
+			this.populateSidebar(null);
+		}
+		const deck = await this.deckService.getById(table.deckId);
+		this.populateSidebar(deck);
+	}
+
 	populateSidebar(deck: Deck) {
 		const deckIsNull = deck === null;
 		this.setTopBarVisibility(deckIsNull);
 		this.activeDeck$.next(deck);
 		this.currentDeck = deck;
 		if (deckIsNull) {
+			this.currentTable = null;
 			this.activeTable$.next(null);
 		}
 	}
 
 	deselectTable() {
+		this.currentTable = null;
 		this.activeTable$.next(null);
 	}
 
 	async selectTable(table: Table) {
+		this.currentTable = table;
+		this.activeTable$.next(table);
 		if (table) {
 			const deck = await this.deckService.getById(table.deckId);
 			if (this.currentDeck?.id !== deck.id) {
 				this.populateSidebar(deck);
 			}
 		}
-		this.activeTable$.next(table);
 	}
 
 	private setTopBarVisibility(show: boolean) {

@@ -21,8 +21,7 @@
 
 import {Component, OnInit} from '@angular/core';
 
-import PouchDB from "pouchdb";
-import PouchFind from 'pouchdb-find';
+import {NavigationControlService} from "./services/navigation-control.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,10 +33,14 @@ import PouchFind from 'pouchdb-find';
 	styleUrls: ['./app.component.sass'],
 })
 export class AppComponent implements OnInit {
-	title = 'xks';
 
-	constructor() {
-		PouchDB.plugin(PouchFind);
+	title = 'xks';
+	sidebarVisible: boolean = false;
+
+	constructor(private readonly navControlService: NavigationControlService) {
+		this.navControlService.sidebarVisible().subscribe((visible) => {
+			this.sidebarVisible = visible;
+		});
 	}
 
 	ngOnInit(): void {

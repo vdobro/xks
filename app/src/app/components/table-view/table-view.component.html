@@ -1,45 +1,46 @@
-<div *ngIf="table"
-	 class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
-	<div class="uk-width-expand">
-		<h2 class="uk-heading-medium">{{table.name}}</h2>
+<div *ngIf="table" class="uk-container">
+	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
+		<div class="uk-width-expand">
+			<h2 class="uk-heading-medium">{{table.name}}</h2>
+		</div>
+		<div class="uk-width-auto">
+			<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
+					(click)="addColumn()">
+				Add column
+			</button>
+			<table-column-editor *ngIf="columnInCreation" class="uk-animation-fade"
+								 [newColumn]="true"
+								 [table]="table"
+								 (nameChanged)="columnAdded($event)">
+			</table-column-editor>
+		</div>
 	</div>
-	<div class="uk-width-auto">
-		<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
-				(click)="addColumn()">
-			Add column
-		</button>
-		<table-column-editor *ngIf="columnInCreation" class="uk-animation-fade"
-							 [newColumn]="true"
-							 [table]="table"
-							 (nameChanged)="columnAdded($event)">
-		</table-column-editor>
-	</div>
-</div>
-<div class="uk-overflow-auto uk-margin" *ngIf="table">
-	<table class="uk-table uk-table-divider uk-text-nowrap">
-		<thead>
-		<tr cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)">
-			<th cdkDrag app-table-column class="uk-table-expand"
-				*ngFor="let column of columns; let position = index"
-				[column]="column"
-				(columnDeleted)="deleteColumn(column)">
+	<div class="uk-overflow-auto uk-margin">
+		<table class="uk-table uk-table-divider uk-text-nowrap">
+			<thead>
+			<tr cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)">
+				<th cdkDrag app-table-column class="uk-table-expand"
+					*ngFor="let column of columns; let position = index"
+					[column]="column"
+					(columnDeleted)="deleteColumn(column)">
+					<ng-template *cdkDragPreview></ng-template>
+				</th>
+				<th *ngIf="rows.length > 0"></th>
+			</tr>
+			</thead>
+			<tbody cdkDropList (cdkDropListDropped)="dropRow($event)">
+			<tr table-row cdkDrag *ngFor="let row of rows"
+				[row]="row"
+				[columns]="columns"
+				(rowDeleted)="deleteRow(row)">
 				<ng-template *cdkDragPreview></ng-template>
-			</th>
-			<th *ngIf="rows.length > 0"></th>
-		</tr>
-		</thead>
-		<tbody cdkDropList (cdkDropListDropped)="dropRow($event)">
-		<tr table-row cdkDrag *ngFor="let row of rows"
-			[row]="row"
-			[columns]="columns"
-			(rowDeleted)="deleteRow(row)">
-			<ng-template *cdkDragPreview></ng-template>
-		</tr>
-		<tr table-new-row-editor
-			[columns]="columns"
-			[table]="table"
-			(newRow)="rowAdded($event)">
-		</tr>
-		</tbody>
-	</table>
+			</tr>
+			<tr table-new-row-editor
+				[columns]="columns"
+				[table]="table"
+				(newRow)="rowAdded($event)">
+			</tr>
+			</tbody>
+		</table>
+	</div>
 </div>

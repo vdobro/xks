@@ -20,8 +20,6 @@
  */
 
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-
-import UIkit from 'uikit';
 import {Deck} from "../../models/Deck";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {Table} from "../../models/Table";
@@ -36,7 +34,7 @@ import {NavigationService} from "../../services/navigation.service";
  * @since 2020.07.12
  */
 @Component({
-	selector: 'app-sidebar',
+	selector: 'div [app-sidebar]',
 	templateUrl: './sidebar.component.html',
 	styleUrls: ['./sidebar.component.sass']
 })
@@ -53,40 +51,47 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	deck: Deck;
 	tables: Table[] = [];
-	selectedTable: Table;
+	selectedTable: Table = null;
 	tableSelected: boolean = false;
 
-	private active: boolean;
+	active: boolean = false;
 
 	constructor(private readonly navigationControlService: NavigationControlService,
 				private readonly deckService: DeckService,
 				private readonly tableService: TableService,
 				private readonly navigationService: NavigationService) {
-		this.navigationControlService.sidebarVisible().subscribe((isVisible: boolean) => {
-			this.active = (isVisible);
-			this.update();
-		});
-		this.navigationControlService.activeDeck().subscribe((deck: Deck) => {
-			this.deck = deck;
-			if (deck === null) {
-				this.tables = [];
-			} else {
-				this.tableService.getByDeck(this.deck).then((tables: Table[]) => {
-					this.tables = tables;
-				});
-			}
-		});
-		this.navigationControlService.activeTable().subscribe((table: Table) => {
-			this.tableSelected = table !== null;
-			this.selectedTable = table;
-		});
+		this.navigationControlService.sidebarVisible().subscribe(value => this.onVisibilityChanged(value));
+		this.navigationControlService.activeDeck().subscribe(value => this.onActiveDeckChanged(value));
+		this.navigationControlService.activeTable().subscribe(value => this.onActiveTableChanged(value));
 	}
 
 	ngAfterViewInit(): void {
 	}
 
 	ngOnInit(): void {
-		UIkit.offcanvas(this.sideBar.nativeElement);
+		this.onActiveTableChanged(this.navigationControlService.currentTable);
+		this.onActiveDeckChanged(this.navigationControlService.currentDeck);
+		this.onVisibilityChanged(this.deck !== null);
+	}
+
+	private onVisibilityChanged(isVisible: boolean) {
+		this.active = isVisible;
+	}
+
+	private onActiveTableChanged(table: Table) {
+		this.tableSelected = table !== null && table !== undefined;
+		this.selectedTable = table;
+	}
+
+	private onActiveDeckChanged(deck: Deck) {
+		this.deck = deck;
+		if (deck === null) {
+			this.tables = [];
+		} else {
+			this.tableService.getByDeck(this.deck).then((tables: Table[]) => {
+				this.tables = tables;
+			});
+		}
 	}
 
 	async onTableDeleted(tableId: string) {
@@ -111,14 +116,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		this.deck = null;
 		this.tables = [];
 		await this.goHome();
-	}
-
-	private update(): void {
-		if (this.active) {
-			UIkit.offcanvas(this.sideBar.nativeElement).show();
-		} else {
-			UIkit.offcanvas(this.sideBar.nativeElement).hide();
-		}
 	}
 
 	async openDeckDetails() {

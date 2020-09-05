@@ -19,10 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavBarItemsDirective} from "../nav-bar-items.directive";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {NavBarItem} from "../nav-bar-item";
+import {NavigationService} from "../../services/navigation.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,20 +39,20 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	@ViewChild(NavBarItemsDirective, {static: true})
 	navBarItems: NavBarItemsDirective;
 
-	@Output()
 	active: boolean = true;
 
 	private componentRefs: ComponentRef<any>[] = []
 
 	constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
-				private readonly navigationService: NavigationControlService) {
+				private readonly navControlService: NavigationControlService,
+				private readonly navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
-		this.navigationService.topNavBarVisible().subscribe((isVisible) => {
+		this.navControlService.topNavBarVisible().subscribe((isVisible) => {
 			this.active = (isVisible);
 		});
-		this.navigationService.getAll().subscribe((items) => {
+		this.navControlService.getAll().subscribe((items) => {
 			this.updateItemsList(items);
 		});
 	}
@@ -70,5 +71,9 @@ export class TopBarComponent implements OnInit, OnDestroy {
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			this.componentRefs.push(componentRef);
 		}
+	}
+
+	async goHome() {
+		await this.navigationService.goHome();
 	}
 }

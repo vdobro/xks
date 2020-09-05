@@ -1,6 +1,5 @@
 <a [hidden]="editMode" class="uk-text-middle uk-animation-fade" (click)="onNameClick()">
 	{{table.name}}
-	<span class="uk-badge">{{rowCount}}</span>
 	<a class="uk-float-right uk-margin-small-left"
 	   (click)="confirmDeletion();$event.preventDefault();$event.stopPropagation();"
 	   uk-icon="icon: trash"></a>

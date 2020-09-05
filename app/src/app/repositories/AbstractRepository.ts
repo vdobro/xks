@@ -21,6 +21,7 @@
 
 import PouchDB from "pouchdb";
 import {BaseDataEntity, BaseRepository} from "./BaseRepository";
+import PouchFind from "pouchdb-find";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -29,6 +30,8 @@ import {BaseDataEntity, BaseRepository} from "./BaseRepository";
 export abstract class AbstractRepository<Entity extends { id: string }, DataEntity extends BaseDataEntity>
 	implements BaseRepository<Entity> {
 
+	private static pouchFindInitialized = false;
+
 	protected readonly db: any;
 
 	abstract mapToDataEntity(entity: Entity): DataEntity
@@ -36,6 +39,10 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	abstract mapToEntity(entity: DataEntity): Entity
 
 	protected constructor(private readonly dbName: string) {
+		if (!AbstractRepository.pouchFindInitialized) {
+			PouchDB.plugin(PouchFind);
+			AbstractRepository.pouchFindInitialized = true;
+		}
 		this.db = new PouchDB(this.dbName);
 	}
 

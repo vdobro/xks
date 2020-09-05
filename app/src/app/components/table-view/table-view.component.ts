@@ -46,7 +46,6 @@ export const TABLE_ID_PARAM: string = 'tableId';
 })
 export class TableViewComponent implements OnInit, OnChanges {
 
-
 	columns: TableColumn[] = [];
 	rows: TableRow[] = [];
 

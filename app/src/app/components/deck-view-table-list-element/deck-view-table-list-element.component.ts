@@ -49,7 +49,6 @@ export class DeckViewTableListElement implements OnInit {
 	@Output()
 	edited: EventEmitter<Table> = new EventEmitter<Table>();
 
-	rowCount: number = 42;
 	editMode: boolean = false;
 	nameInput = new FormControl('');
 
