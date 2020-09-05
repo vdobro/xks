@@ -19,15 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {TestBed} from '@angular/core/testing';
+
+import {TableSessionService} from './table-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.14
  */
-export interface Table extends BaseEntity {
-	deckId: string,
-	name: string,
-	sessionModeIds: string[]
-}
+describe('TableSessionService', () => {
+	let service: TableSessionService;
 
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TableSessionService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

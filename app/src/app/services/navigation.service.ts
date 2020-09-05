@@ -55,7 +55,7 @@ export class NavigationService {
 	async openTable(tableId: string) {
 		this.table = await this.tableService.getById(tableId);
 		await this.navigationControlService.selectTable(this.table);
-		await this.router.navigate(['/tables', tableId]);
+		await this.router.navigate(['/tables', tableId, 'learn']);
 	}
 
 	async navigateToCurrentDeck() {

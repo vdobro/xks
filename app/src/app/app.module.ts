@@ -48,6 +48,7 @@ import {TableRowComponent} from './components/table-row/table-row.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
 import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-table-modal/confirm-delete-table-modal.component';
+import {LearningViewComponent} from './components/learning-view/learning-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -77,6 +78,7 @@ import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-tabl
 		TableRowComponent,
 		ConfirmDeleteTableColumnModalComponent,
 		ConfirmDeleteTableModalComponent,
+		LearningViewComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -85,7 +87,8 @@ import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-tabl
 			{path: '', redirectTo: '/decks', pathMatch: 'full'},
 			{path: 'decks', component: DeckListPageComponent},
 			{path: `decks/:${DECK_ID_PARAM}`, component: DeckViewComponent},
-			{path: `tables/:${TABLE_ID_PARAM}`, component: TableViewComponent},
+			{path: `tables/:${TABLE_ID_PARAM}/edit`, component: TableViewComponent},
+			{path: `tables/:${TABLE_ID_PARAM}/learn`, component: LearningViewComponent}
 		]),
 		FormsModule,
 		ReactiveFormsModule,

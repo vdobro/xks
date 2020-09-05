@@ -23,11 +23,10 @@ import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.14
  */
-export interface Table extends BaseEntity {
-	deckId: string,
-	name: string,
-	sessionModeIds: string[]
+export interface TableLearningSessionMode extends BaseEntity {
+	tableId: string,
+    questionColumnIds: string[],
+    answerColumnId: string,
 }
-

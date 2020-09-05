@@ -19,11 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {BaseEntity} from "./BaseEntity";
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.04.03
  */
-export interface TableRow {
+export interface TableRow extends BaseEntity {
 	id: string;
 	tableId: string;
 	index: number;

@@ -53,8 +53,7 @@ describe('TableViewComponent', () => {
 
 	@Component({
 		selector: 'host-component',
-		template: `
-			<app-table-view></app-table-view>`
+		template: `<app-table-view></app-table-view>`
 	})
 	class TestHostComponent {
 		@ViewChild(TableViewComponent)
@@ -68,6 +67,7 @@ function generateTable(): Table {
 	return {
 		id: uuid(),
 		deckId: uuid() + 'as deck ID',
-		name: 'name ' + uuid()
+		name: 'name ' + uuid(),
+		sessionModeIds: [],
 	};
 }

@@ -53,8 +53,7 @@ describe('DeckViewTableListElementComponent', () => {
 
 	@Component({
 		selector: 'host-component',
-		template: `
-			<li deck-elements [table]="table"></li>`
+		template: `<li deck-elements [table]="table"></li>`
 	})
 	class TestHostComponent {
 		@ViewChild(DeckViewTableListElement)
@@ -68,6 +67,7 @@ function generateTable(): Table {
 	return {
 		id: uuid(),
 		deckId: uuid() + 'as deck ID',
-		name: 'name ' + uuid()
+		name: 'name ' + uuid(),
+		sessionModeIds: [],
 	};
 }

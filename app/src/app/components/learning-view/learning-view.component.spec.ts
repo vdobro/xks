@@ -19,15 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {LearningViewComponent} from './learning-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.19
  */
-export interface Table extends BaseEntity {
-	deckId: string,
-	name: string,
-	sessionModeIds: string[]
-}
+describe('LearningViewComponent', () => {
+	let component: LearningViewComponent;
+	let fixture: ComponentFixture<LearningViewComponent>;
 
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [LearningViewComponent]
+		}).compileComponents();
+	}));
+
+	beforeEach(() => {
+		fixture = TestBed.createComponent(LearningViewComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

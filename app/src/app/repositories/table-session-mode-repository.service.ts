@@ -19,15 +19,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {Injectable} from '@angular/core';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.16
  */
-export interface Table extends BaseEntity {
-	deckId: string,
-	name: string,
-	sessionModeIds: string[]
-}
+@Injectable({
+	providedIn: 'root'
+})
+export class TableSessionModeRepository {
 
+	constructor() {
+	}
+}

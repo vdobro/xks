@@ -56,7 +56,8 @@ export class TableService {
 		const table: Table = {
 			id: uuid(),
 			deckId: deck.id,
-			name: name
+			name: name,
+			sessionModeIds: [],
 		};
 		await this.repository.add(table);
 		return table;

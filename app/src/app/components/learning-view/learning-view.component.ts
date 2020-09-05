@@ -19,15 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {Component, OnInit} from '@angular/core';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.19
  */
-export interface Table extends BaseEntity {
-	deckId: string,
-	name: string,
-	sessionModeIds: string[]
-}
+@Component({
+	selector: 'app-learning-view',
+	templateUrl: './learning-view.component.html',
+	styleUrls: ['./learning-view.component.sass']
+})
+export class LearningViewComponent implements OnInit {
 
+	constructor() {
+	}
+
+	ngOnInit(): void {
+
+	}
+}
