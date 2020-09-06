@@ -20,6 +20,14 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {TABLE_ID_PARAM} from "../table-view/table-view.component";
+import {TableService} from "../../services/table.service";
+import {TableSessionModeService} from "../../services/table-session-mode.service";
+import {Table} from "../../models/Table";
+import {TableSessionMode} from "../../models/TableSessionMode";
+import {LearningSessionState, TableSession, TableSessionService} from "../../services/table-session.service";
+import {TableColumn} from "../../models/TableColumn";
 
 export const TABLE_SESSION_ID_PARAM = "sessionId";
 
@@ -34,9 +42,35 @@ export const TABLE_SESSION_ID_PARAM = "sessionId";
 })
 export class LearningViewComponent implements OnInit {
 
-	constructor() {
+	table: Table;
+	sessionMode: TableSessionMode;
+
+	state: LearningSessionState<TableSession>;
+
+	currentSideIsQuestion: boolean = true;
+	answerFields: TableColumn[] = [];
+
+	constructor(
+		private readonly route: ActivatedRoute,
+		private readonly tableService: TableService,
+		private readonly sessionModeService: TableSessionModeService,
+		private readonly sessionService: TableSessionService,
+	) {
+		this.route.paramMap.subscribe(async params => {
+			this.table = await this.tableService.getById(params.get(TABLE_ID_PARAM));
+			this.sessionMode = await this.sessionModeService.getById(params.get(TABLE_SESSION_ID_PARAM));
+
+			await this.initSession();
+		});
 	}
 
-	ngOnInit(): void {
+	async ngOnInit() {
+		await this.initSession();
+	}
+
+	private async initSession() {
+		if (this.table && this.sessionMode) {
+			this.state = await this.sessionService.startNew(this.table, this.sessionMode);
+		}
 	}
 }

@@ -54,9 +54,11 @@ export class DeckViewTableListElement implements OnInit {
 	nameInput = new FormControl('');
 	rowCount: number;
 
-	constructor(private readonly tableService: TableService,
-				private readonly tableCellService: TableCellService,
-				private readonly navigationService: NavigationService) {
+	constructor(
+		private readonly tableService: TableService,
+		private readonly tableCellService: TableCellService,
+		private readonly navigationService: NavigationService) {
+
 		this.tableCellService.rowCountChanged.subscribe(async table => {
 			if (this.table?.id === table.id) {
 				await this.updateRowCount();

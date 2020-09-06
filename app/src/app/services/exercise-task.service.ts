@@ -51,7 +51,7 @@ export class ExerciseTaskService {
 		return (await this.tableCellService.getRows(table)).map(row => ({
 			id: uuid(),
 			rowId: row.id,
-			columnValues: questionColumns.map(column =>
+			questionValues: questionColumns.map(column =>
 				ExerciseTaskService.mapColumnToFlashcardField(row, column)),
 			answerValues: answerColumns.map(column =>
 				ExerciseTaskService.mapColumnToFlashcardField(row, column)),
@@ -114,7 +114,7 @@ export class ExerciseTaskService {
 export interface ExerciseTask {
 	id: string,
 	rowId: string,
-	columnValues: FlashcardField[],
+	questionValues: FlashcardField[],
 	answerValues: FlashcardField[],
 }
 

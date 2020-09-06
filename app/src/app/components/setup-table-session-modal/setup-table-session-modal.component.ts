@@ -24,7 +24,6 @@ import UIkit from 'uikit';
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Table} from "../../models/Table";
 import {NavigationService} from "../../services/navigation.service";
-import {TableSessionMode} from "../../models/TableSessionMode";
 import {TableSessionModeWizardComponent} from "../table-session-mode-wizard/table-session-mode-wizard.component";
 
 /**
@@ -47,7 +46,7 @@ export class SetupTableSessionModalComponent implements OnInit {
 	@Input()
 	table: Table;
 
-	sessionModes: TableSessionMode[];
+	startSessionEnabled: boolean = false;
 
 	constructor(
 		private readonly navigationService: NavigationService) {

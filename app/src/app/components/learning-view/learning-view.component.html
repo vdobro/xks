@@ -1,15 +1,19 @@
 <div class="uk-container uk-container-small">
-	<div class="uk-child-width-1-1 uk-grid-match" uk-grid>
+	<div class="uk-child-width-1-1 uk-grid-match" uk-grid *ngIf="state">
 		<div>
 			<div class="uk-card uk-card-default uk-card-body">
-				<h3 class="uk-card-title">Question</h3>
-				<p>What is what?</p>
+				<h3 class="uk-card-title">Question:</h3>
+				<p *ngFor="let question of state.currentTask.questionValues">
+					{{question.column.name}}
+					<span uk-icon="icon: arrow-right"></span>
+					{{question.value}}
+				</p>
 			</div>
 		</div>
 		<div>
 			<form>
-				<label>
-					<input class="uk-input" type="text" placeholder="Enter answer">
+				<label *ngFor="let answer of state.currentTask.answerValues">
+					<input class="uk-input" type="text" placeholder="{{answer.column.name}}">
 				</label>
 			</form>
 		</div>

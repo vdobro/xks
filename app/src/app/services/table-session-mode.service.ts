@@ -71,6 +71,10 @@ export class TableSessionModeService {
 		await Promise.all(all.map(mode => this.repository.delete(mode.id)));
 	}
 
+	async getById(id: string): Promise<TableSessionMode> {
+		return await this.repository.getById(id);
+	}
+
 	private unorderedArraysEqual<T>(first: T[], second: T[]): boolean {
 		return first.length === second.length
 			&& first.every(value => second.findIndex(x => x === value) !== -1);

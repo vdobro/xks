@@ -22,7 +22,7 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {DeckService} from "../../services/deck.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {TableService} from "../../services/table.service";
 import {NavigationService} from "../../services/navigation.service";
@@ -45,12 +45,12 @@ export class DeckViewComponent implements OnInit {
 
 	anyTablesAvailable: boolean = true;
 
-	constructor(private readonly deckService: DeckService,
-				private readonly router: Router,
-				private readonly route: ActivatedRoute,
-				private readonly navigationService: NavigationService,
-				private readonly navigationControlService: NavigationControlService,
-				private readonly tableService: TableService) {
+	constructor(
+		private readonly deckService: DeckService,
+		private readonly route: ActivatedRoute,
+		private readonly navigationService: NavigationService,
+		private readonly navigationControlService: NavigationControlService,
+		private readonly tableService: TableService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -61,7 +61,6 @@ export class DeckViewComponent implements OnInit {
 				await this.checkIfAnyTablesExist();
 			} else {
 				await this.navigationService.goToDeckList();
-				return;
 			}
 		});
 		this.tableService.tablesChanged.subscribe(async deck => {
