@@ -79,6 +79,9 @@ export class NavigationControlService {
 	}
 
 	async populateSidebarWithTable(table: Table) {
+		if (this.currentTable?.id === table?.id) {
+			return;
+		}
 		this.currentTable = table;
 		if (table === null) {
 			this.populateSidebar(null);
@@ -104,6 +107,9 @@ export class NavigationControlService {
 	}
 
 	async selectTable(table: Table) {
+		if (this.currentTable?.id === table.id) {
+			return;
+		}
 		this.currentTable = table;
 		this.activeTable$.next(table);
 		if (table) {
@@ -112,6 +118,10 @@ export class NavigationControlService {
 				this.populateSidebar(deck);
 			}
 		}
+	}
+
+	hideSidebar() {
+		this.populateSidebar(null);
 	}
 
 	private setTopBarVisibility(show: boolean) {

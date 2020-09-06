@@ -1,7 +1,9 @@
 <app-top-bar></app-top-bar>
 <div uk-grid class="uk-grid-divider">
-	<div app-sidebar *ngIf="sidebarVisible" class="uk-width-1-4@m"></div>
-	<div class="uk-container uk-container-small uk-width-expand@m">
-		<router-outlet></router-outlet>
+	<div class="uk-width-1-4@m" *ngIf="sidebarVisible" app-sidebar></div>
+	<div class="uk-width-expand">
+		<div class="uk-container uk-container-small">
+			<router-outlet></router-outlet>
+		</div>
 	</div>
 </div>

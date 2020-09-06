@@ -32,19 +32,14 @@ import {BaseDataEntity} from "./BaseRepository";
 	providedIn: 'root'
 })
 export class TableRepository extends AbstractRepository<Table, TableDataEntity> {
+	private indexCreated: boolean = false;
 
 	constructor() {
 		super('table');
-
-		this.db.createIndex({
-			index: {fields: ['deckId']}
-		});
-		this.db.createIndex({
-			index: {fields: ['name']}
-		});
 	}
 
 	async getByDeck(id: string): Promise<Table[]> {
+		await this.checkIndexes();
 		const result = await this.db.find({
 			selector: {
 				deckId: id
@@ -54,6 +49,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 	}
 
 	async existAnyForDeck(id: string): Promise<boolean> {
+		await this.checkIndexes();
 		const result = await this.db.find({
 			selector: {
 				deckId: id
@@ -81,9 +77,19 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 			sessionModeIds: entity.sessionModes,
 		}
 	}
+
+	private async checkIndexes() {
+		if (this.indexCreated) {
+			return;
+		}
+		await this.db.createIndex({
+			index: {fields: ['deckId', 'name']}
+		});
+		this.indexCreated = true;
+	}
 }
 
-export interface TableDataEntity extends BaseDataEntity {
+interface TableDataEntity extends BaseDataEntity {
 	deckId: string;
 	name: string;
 	sessionModes: string[],

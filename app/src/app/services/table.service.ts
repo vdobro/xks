@@ -26,6 +26,9 @@ import {Table} from "../models/Table";
 import {Deck} from "../models/Deck";
 import {TableRepository} from "../repositories/table-repository.service";
 import {TableCellService} from "./table-cell.service";
+import {TableSessionModeService} from "./table-session-mode.service";
+import {Subject, Subscribable} from "rxjs";
+import {DeckRepository} from "../repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,8 +39,14 @@ import {TableCellService} from "./table-cell.service";
 })
 export class TableService {
 
-	constructor(private readonly repository: TableRepository,
-				private readonly cellService: TableCellService) {
+	private readonly _tablesChanged = new Subject<Deck>();
+	readonly tablesChanged: Subscribable<Deck> = this._tablesChanged;
+
+	constructor(
+		private readonly repository: TableRepository,
+		private readonly deckRepository: DeckRepository,
+		private readonly cellService: TableCellService,
+		private readonly sessionModeService: TableSessionModeService) {
 	}
 
 	public async getById(id: string): Promise<Table> {
@@ -60,14 +69,17 @@ export class TableService {
 			sessionModeIds: [],
 		};
 		await this.repository.add(table);
+		this._tablesChanged.next(deck);
 		return table;
 	}
 
 	public async delete(id: string) {
 		const table = await this.getById(id);
+		await this.sessionModeService.deleteAllForTable(table);
 		await this.cellService.deleteAllRowsIn(table);
 		await this.cellService.deleteAllColumnsIn(table);
 		await this.repository.delete(id);
+		this._tablesChanged.next(await this.deckRepository.getById(table.deckId));
 	}
 
 	public async deleteAllInDeck(deck: Deck) {

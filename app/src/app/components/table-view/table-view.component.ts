@@ -86,14 +86,11 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.columnInCreation = true;
 	}
 
-	async columnAdded(column: TableColumn) {
-		for (const value of this.rows) {
-			await this.cellService.appendColumnToRow(value, column);
-		}
+	async columnAdded() {
 		if (this.rows.length > 1) {
 			await this.reloadAll();
 		} else {
-			this.columns = await this.cellService.getColumns(this.table);
+			await this.reloadColumns();
 		}
 		this.columnInCreation = false;
 	}
@@ -112,14 +109,22 @@ export class TableViewComponent implements OnInit, OnChanges {
 
 	async deleteRow(row: TableRow) {
 		await this.cellService.deleteRow(row);
-		await this.reloadAll();
+		await this.reloadRows();
 	}
 
 	private async reloadAll() {
 		if (this.table) {
-			this.columns = await this.cellService.getColumns(this.table);
-			this.rows = await this.cellService.getRows(this.table);
+			await this.reloadColumns();
+			await this.reloadRows();
 		}
+	}
+
+	private async reloadColumns() {
+		this.columns = await this.cellService.getColumns(this.table);
+	}
+
+	private async reloadRows() {
+		this.rows = await this.cellService.getRows(this.table);
 	}
 
 	async dropRow(event: CdkDragDrop<TableViewComponent, TableRowComponent>) {
@@ -134,5 +139,9 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.columns.splice(event.currentIndex, 0, column);
 		await this.cellService.moveColumn(column, event.currentIndex);
 		await this.reloadAll();
+	}
+
+	async columnChanged(column: TableColumn) {
+		await this.cellService.updateColumn(column);
 	}
 }

@@ -100,7 +100,7 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 	}
 }
 
-export interface TableColumnDataEntity extends BaseDataEntity {
+interface TableColumnDataEntity extends BaseDataEntity {
 	tableId: string;
 	index: number;
 	name: string;

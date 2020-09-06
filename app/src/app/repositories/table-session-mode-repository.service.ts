@@ -20,6 +20,10 @@
  */
 
 import {Injectable} from '@angular/core';
+import {AbstractRepository} from "./AbstractRepository";
+import {TableSessionMode} from "../models/TableSessionMode";
+import {BaseDataEntity} from "./BaseRepository";
+import {Table} from "../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -28,8 +32,64 @@ import {Injectable} from '@angular/core';
 @Injectable({
 	providedIn: 'root'
 })
-export class TableSessionModeRepository {
+export class TableSessionModeRepository extends AbstractRepository<TableSessionMode, TableStudySessionModeDataEntity> {
+
+	private indexCreated: boolean = false;
 
 	constructor() {
+		super('table-study-session-mode');
 	}
+
+	async getByTable(table: Table): Promise<TableSessionMode[]> {
+		const result = await this.getDataEntitiesByTable(table.id);
+		return result.map(this.mapToEntity);
+	}
+
+	mapToDataEntity(entity: TableSessionMode): TableStudySessionModeDataEntity {
+		return {
+			_id: entity.id,
+			_rev: '',
+			tableId: entity.tableId,
+			questionColumnIds: entity.questionColumnIds,
+			answerColumnIds: entity.answerColumnIds,
+		};
+	}
+
+	mapToEntity(entity: TableStudySessionModeDataEntity): TableSessionMode {
+		return {
+			id: entity._id,
+			tableId: entity.tableId,
+			questionColumnIds: entity.questionColumnIds,
+			answerColumnIds: entity.answerColumnIds,
+		};
+	}
+
+	private async getDataEntitiesByTable(tableId: string): Promise<TableStudySessionModeDataEntity[]> {
+		await this.checkIndexesInitialized();
+		const results = await this.db.find({
+			selector: {
+				$and: [
+					{tableId: {$eq: tableId}},
+				]
+			},
+			sort: [{tableId: 'asc'}]
+		})
+		return results.docs;
+	}
+
+	private async checkIndexesInitialized(): Promise<void> {
+		if (this.indexCreated) {
+			return;
+		}
+		await this.db.createIndex({
+			index: {fields: ['tableId']}
+		});
+		this.indexCreated = true;
+	}
+}
+
+interface TableStudySessionModeDataEntity extends BaseDataEntity {
+	tableId: string,
+	questionColumnIds: string[],
+	answerColumnIds: string[],
 }

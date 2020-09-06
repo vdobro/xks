@@ -43,7 +43,7 @@ export class DeckViewComponent implements OnInit {
 	@Output()
 	deck: Deck;
 
-	anyTablesAvailable: boolean = false;
+	anyTablesAvailable: boolean = true;
 
 	constructor(private readonly deckService: DeckService,
 				private readonly router: Router,
@@ -56,13 +56,22 @@ export class DeckViewComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		this.route.paramMap.subscribe(async params => {
 			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
-			if (this.deck === null) {
+			if (this.deck) {
+				this.navigationControlService.populateSidebar(this.deck);
+				await this.checkIfAnyTablesExist();
+			} else {
 				await this.navigationService.goToDeckList();
 				return;
-			} else {
-				this.navigationControlService.populateSidebar(this.deck);
 			}
-			this.anyTablesAvailable = await this.tableService.anyExistForDeck(this.deck);
 		});
+		this.tableService.tablesChanged.subscribe(async deck => {
+			if (this.deck?.id === deck.id) {
+				await this.checkIfAnyTablesExist();
+			}
+		})
+	}
+
+	private async checkIfAnyTablesExist() {
+		this.anyTablesAvailable = await this.tableService.anyExistForDeck(this.deck);
 	}
 }

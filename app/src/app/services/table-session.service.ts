@@ -24,7 +24,7 @@ import {Injectable} from '@angular/core';
 import {Table} from "../models/Table";
 import {ExerciseTask, ExerciseTaskService} from "./exercise-task.service";
 import {TableColumnRepository} from "../repositories/table-column-repository.service";
-import {TableLearningSessionMode} from "../models/TableLearningSessionMode";
+import {TableSessionMode} from "../models/TableSessionMode";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -44,13 +44,14 @@ export class TableSessionService {
 		private readonly taskService: ExerciseTaskService) {
 	}
 
-	async startNew(table: Table, sessionMode: TableLearningSessionMode): Promise<LearningSessionState<TableSession>> {
+	async startNew(table: Table, sessionMode: TableSessionMode): Promise<LearningSessionState<TableSession>> {
 		const session: TableSession = TableSessionService.createSession(table);
 
 		const questionColumns = await Promise.all(sessionMode.questionColumnIds
 			.map(async id => await this.columnRepository.getById(id)));
-		const answerColumn = await this.columnRepository.getById(sessionMode.answerColumnId);
-		const allTasks = await this.taskService.getTaskList(table, questionColumns, answerColumn);
+		const answerColumns = await Promise.all(sessionMode.answerColumnIds
+			.map(async id => await this.columnRepository.getById(id)));
+		const allTasks = await this.taskService.getTaskList(table, questionColumns, answerColumns);
 
 		const actualInitialWindowSize = Math.min(allTasks.length, this.defaultTaskWindowSize);
 		const initialWindow = allTasks.slice(0, actualInitialWindowSize);
@@ -72,15 +73,17 @@ export class TableSessionService {
 		};
 	}
 
-	submitAnswer(answer: string, state: LearningSessionState<TableSession>)
+	submitAnswer(answer: string,
+				 columnId: string,
+				 state: LearningSessionState<TableSession>)
 		: LearningSessionState<TableSession> {
 
-		this.taskService.logInAnswer(answer, state.currentTask);
+		this.taskService.logInAnswer(answer, columnId, state.currentTask);
 		this.updateActiveTaskWindow(state);
 		const window = this.getTaskWindow(state);
 
 		const sortedWindow = window
-			.map(task => ({ score: this.taskService.getScore(task), task: task,}))
+			.map(task => ({score: this.taskService.getScore(task), task: task,}))
 			.sort((a, b) =>
 				a.score < b.score ? -1 : (a.score > b.score ? 1 : 0));
 		const lowestScore = sortedWindow[0].score;

@@ -1,0 +1,20 @@
+<div class="uk-child-width-1-3@s" uk-grid>
+	<div>
+		<h4>Available</h4>
+		<div uk-sortable="group: sortable-table-columns">
+			<div class="uk-margin" *ngFor="let column of tableColumns" id="{{column.id}}">
+				<div class="uk-card uk-card-default uk-card-body uk-card-small">
+					{{column.name}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<h4>Question side</h4>
+		<div uk-sortable="group: sortable-table-columns" #tableSessionQuestionColumns></div>
+	</div>
+	<div>
+		<h4>Answer side</h4>
+		<div uk-sortable="group: sortable-table-columns" #tableSessionAnswerColumns></div>
+	</div>
+</div>

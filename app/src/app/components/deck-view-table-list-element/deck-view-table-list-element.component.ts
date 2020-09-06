@@ -25,6 +25,7 @@ import {Table} from "../../models/Table";
 import {FormControl} from "@angular/forms";
 import {NavigationService} from "../../services/navigation.service";
 import {ConfirmDeleteTableModalComponent} from "../confirm-delete-table-modal/confirm-delete-table-modal.component";
+import {TableCellService} from "../../services/table-cell.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -51,13 +52,23 @@ export class DeckViewTableListElement implements OnInit {
 
 	editMode: boolean = false;
 	nameInput = new FormControl('');
+	rowCount: number;
 
 	constructor(private readonly tableService: TableService,
+				private readonly tableCellService: TableCellService,
 				private readonly navigationService: NavigationService) {
+		this.tableCellService.rowCountChanged.subscribe(async table => {
+			if (this.table?.id === table.id) {
+				await this.updateRowCount();
+			}
+		});
 	}
 
-	ngOnInit(): void {
+	async ngOnInit() {
 		this.nameInput.setValue(this.table?.name);
+		if (this.table) {
+			await this.updateRowCount();
+		}
 	}
 
 	async onDelete(): Promise<void> {
@@ -86,5 +97,10 @@ export class DeckViewTableListElement implements OnInit {
 
 	confirmDeletion() {
 		this.confirmDeleteModal.openModal();
+	}
+
+	private async updateRowCount() {
+		const rows = await this.tableCellService.getRows(this.table);
+		this.rowCount = rows.length;
 	}
 }

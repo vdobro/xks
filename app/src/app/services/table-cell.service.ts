@@ -28,6 +28,8 @@ import {TableColumn} from "../models/TableColumn";
 import {v4 as uuid} from 'uuid';
 import {AbstractRepository} from "../repositories/AbstractRepository";
 import {BaseDataEntity} from "../repositories/BaseRepository";
+import {Subject, Subscribable} from "rxjs";
+import {TableRepository} from "../repositories/table-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,8 +40,16 @@ import {BaseDataEntity} from "../repositories/BaseRepository";
 })
 export class TableCellService {
 
-	constructor(private readonly rowRepository: TableRowRepository,
-				private readonly columnRepository: TableColumnRepository) {
+	private readonly _rowCountChanged = new Subject<Table>();
+	private readonly _columnsChanged = new Subject<Table>();
+
+	readonly rowCountChanged: Subscribable<Table> = this._rowCountChanged;
+	readonly columnsChanged: Subscribable<Table> = this._columnsChanged;
+
+	constructor(
+		private readonly rowRepository: TableRowRepository,
+		private readonly columnRepository: TableColumnRepository,
+		private readonly tableRepository: TableRepository,) {
 	}
 
 	async getColumns(table: Table): Promise<TableColumn[]> {
@@ -63,7 +73,13 @@ export class TableCellService {
 		for (const row of rows) {
 			await this.appendColumnToRow(row, column);
 		}
+		this._columnsChanged.next(table);
 		return column;
+	}
+
+	async updateColumn(column: TableColumn) {
+		await this.columnRepository.update(column);
+		this._columnsChanged.next(await this.tableRepository.getById(column.tableId));
 	}
 
 	async createRow(table: Table): Promise<TableRow> {
@@ -80,12 +96,7 @@ export class TableCellService {
 			values: values
 		}
 		await this.rowRepository.add(row);
-		return row;
-	}
-
-	async appendColumnToRow(row: TableRow, column: TableColumn): Promise<TableRow> {
-		row.values.set(column.id, '');
-		await this.rowRepository.update(row);
+		this._rowCountChanged.next(table);
 		return row;
 	}
 
@@ -97,10 +108,12 @@ export class TableCellService {
 
 	async deleteAllRowsIn(table: Table) {
 		await this.rowRepository.deleteAllInTable(table);
+		this._rowCountChanged.next(table);
 	}
 
 	async deleteRow(row: TableRow) {
 		await this.rowRepository.delete(row.id);
+		this._rowCountChanged.next(await this.tableRepository.getById(row.tableId));
 	}
 
 	async moveColumn(oldColumn: TableColumn, newIndex: number) {
@@ -120,10 +133,18 @@ export class TableCellService {
 			await this.rowRepository.update(row);
 		}
 		await this.columnRepository.delete(column.id);
+		this._columnsChanged.next(await this.tableRepository.getById(column.tableId));
 	}
 
 	async deleteAllColumnsIn(table: Table) {
 		await this.columnRepository.deleteAllInTable(table);
+		this._columnsChanged.next(table);
+	}
+
+	private async appendColumnToRow(row: TableRow, column: TableColumn): Promise<TableRow> {
+		row.values.set(column.id, '');
+		await this.rowRepository.update(row);
+		return row;
 	}
 
 	private static async moveElement<T extends { id: string, index: number },

@@ -122,7 +122,7 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 	}
 }
 
-export interface TableRowDataEntity extends BaseDataEntity {
+interface TableRowDataEntity extends BaseDataEntity {
 	tableId: string,
 	index: number,
 	values: string

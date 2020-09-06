@@ -55,7 +55,7 @@ export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 	}
 }
 
-export interface DeckEntity extends BaseDataEntity {
+interface DeckEntity extends BaseDataEntity {
 	name: string;
 	description: string
 }

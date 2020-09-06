@@ -19,24 +19,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-export const TABLE_SESSION_ID_PARAM = "sessionId";
+import {SetupTableSessionModalComponent} from './setup-table-session-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.19
+ * @since 2020.09.06
  */
-@Component({
-	selector: 'app-learning-view',
-	templateUrl: './learning-view.component.html',
-	styleUrls: ['./learning-view.component.sass']
-})
-export class LearningViewComponent implements OnInit {
+describe('SetupTableSessionModalComponent', () => {
+	let component: SetupTableSessionModalComponent;
+	let fixture: ComponentFixture<SetupTableSessionModalComponent>;
 
-	constructor() {
-	}
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [SetupTableSessionModalComponent]
+		})
+			.compileComponents();
+	}));
 
-	ngOnInit(): void {
-	}
-}
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SetupTableSessionModalComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

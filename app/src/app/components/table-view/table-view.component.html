@@ -11,7 +11,7 @@
 			<table-column-editor *ngIf="columnInCreation" class="uk-animation-fade"
 								 [newColumn]="true"
 								 [table]="table"
-								 (nameChanged)="columnAdded($event)">
+								 (nameChanged)="columnAdded()">
 			</table-column-editor>
 		</div>
 	</div>
@@ -22,6 +22,7 @@
 				<th cdkDrag app-table-column class="uk-table-expand"
 					*ngFor="let column of columns; let position = index"
 					[column]="column"
+					(columnChanged)="columnChanged(column)"
 					(columnDeleted)="deleteColumn(column)">
 					<ng-template *cdkDragPreview></ng-template>
 				</th>

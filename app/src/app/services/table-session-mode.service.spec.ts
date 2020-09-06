@@ -19,24 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit} from '@angular/core';
+import {TestBed} from '@angular/core/testing';
 
-export const TABLE_SESSION_ID_PARAM = "sessionId";
+import {TableSessionModeService} from './table-session-mode.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.19
+ * @since 2020.09.06
  */
-@Component({
-	selector: 'app-learning-view',
-	templateUrl: './learning-view.component.html',
-	styleUrls: ['./learning-view.component.sass']
-})
-export class LearningViewComponent implements OnInit {
+describe('TableSessionModeService', () => {
+	let service: TableSessionModeService;
 
-	constructor() {
-	}
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TableSessionModeService);
+	});
 
-	ngOnInit(): void {
-	}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

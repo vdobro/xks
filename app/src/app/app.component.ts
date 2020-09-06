@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 import {NavigationControlService} from "./services/navigation-control.service";
 
@@ -37,9 +37,15 @@ export class AppComponent implements OnInit {
 	title = 'xks';
 	sidebarVisible: boolean = false;
 
-	constructor(private readonly navControlService: NavigationControlService) {
-		this.navControlService.sidebarVisible().subscribe((visible) => {
-			this.sidebarVisible = visible;
+	constructor(
+		private readonly navControlService: NavigationControlService,
+		private readonly cdr: ChangeDetectorRef) {
+
+		this.navControlService.sidebarVisible().subscribe(visible => {
+			if (this.sidebarVisible !== visible) {
+				this.sidebarVisible = visible;
+				this.cdr.detectChanges();
+			}
 		});
 	}
 

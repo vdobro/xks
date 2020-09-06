@@ -24,6 +24,7 @@ import {Injectable} from '@angular/core';
 import {TableCellService} from "./table-cell.service";
 import {Table} from "../models/Table";
 import {TableColumn} from "../models/TableColumn";
+import {TableRow} from "../models/TableRow";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,6 +37,7 @@ export class ExerciseTaskService {
 
 	private readonly taskStates = new Map<string, TaskState>();
 
+	private readonly defaultMinimumScore = 0;
 	private readonly defaultStartScore = 3;
 	private readonly defaultMaximumScore = 8;
 
@@ -45,30 +47,29 @@ export class ExerciseTaskService {
 
 	async getTaskList(table: Table,
 					  questionColumns: TableColumn[],
-					  answerColumn: TableColumn): Promise<ExerciseTask[]> {
+					  answerColumns: TableColumn[]): Promise<ExerciseTask[]> {
 		return (await this.tableCellService.getRows(table)).map(row => ({
 			id: uuid(),
 			rowId: row.id,
 			columnValues: questionColumns.map(column =>
-				({
-					column: column,
-					value: row.values.get(column.id)
-				} as QuestionParam)),
-			answer: row.values.get(answerColumn.id),
+				ExerciseTaskService.mapColumnToFlashcardField(row, column)),
+			answerValues: answerColumns.map(column =>
+				ExerciseTaskService.mapColumnToFlashcardField(row, column)),
 		}));
 	}
 
-	logInAnswer(answerValue: string, task: ExerciseTask) {
+	logInAnswer(answerValue: string, columnId: string, task: ExerciseTask) {
 		if (!this.taskStateExists(task)) {
 			this.registerTask(task);
 		}
 		const currentState = this.taskStates.get(task.id);
-		if (answerValue === task.answer) {
+		const field = task.answerValues.find(field => field.column.id === columnId);
+		if (answerValue === field.value) {
 			if (currentState.score < currentState.maxScore) {
 				currentState.score++;
 			}
 		} else {
-			currentState.score = 0;
+			currentState.score = this.defaultMinimumScore;
 		}
 		this.taskStates.set(task.id, currentState);
 	}
@@ -101,16 +102,23 @@ export class ExerciseTaskService {
 			score: this.defaultStartScore,
 		});
 	}
+
+	private static mapColumnToFlashcardField(row: TableRow, column: TableColumn): FlashcardField {
+		return {
+			column: column,
+			value: row.values.get(column.id),
+		};
+	}
 }
 
 export interface ExerciseTask {
 	id: string,
 	rowId: string,
-	columnValues: QuestionParam[],
-	answer: string,
+	columnValues: FlashcardField[],
+	answerValues: FlashcardField[],
 }
 
-export interface QuestionParam {
+export interface FlashcardField {
 	column: TableColumn,
 	value: string,
 }

@@ -25,8 +25,8 @@ import {BaseEntity} from "./BaseEntity";
  * @author Vitalijus Dobrovolskis
  * @since 2020.08.14
  */
-export interface TableLearningSessionMode extends BaseEntity {
+export interface TableSessionMode extends BaseEntity {
 	tableId: string,
-    questionColumnIds: string[],
-    answerColumnId: string,
+	questionColumnIds: string[],
+	answerColumnIds: string[],
 }

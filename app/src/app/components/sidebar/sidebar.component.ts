@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {Table} from "../../models/Table";
@@ -28,6 +28,7 @@ import {NewTableModalComponent} from "../new-table-modal/new-table-modal.compone
 import {DeckService} from "../../services/deck.service";
 import {ConfirmDeleteDeckModalComponent} from "../confirm-delete-deck-modal/confirm-delete-deck-modal.component";
 import {NavigationService} from "../../services/navigation.service";
+import {SetupTableSessionModalComponent} from "../setup-table-session-modal/setup-table-session-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,7 +39,7 @@ import {NavigationService} from "../../services/navigation.service";
 	templateUrl: './sidebar.component.html',
 	styleUrls: ['./sidebar.component.sass']
 })
-export class SidebarComponent implements OnInit, AfterViewInit {
+export class SidebarComponent implements OnInit {
 
 	@ViewChild("offcanvas", {static: true})
 	sideBar: ElementRef;
@@ -48,6 +49,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	@ViewChild(ConfirmDeleteDeckModalComponent)
 	confirmDeleteDeckModal: ConfirmDeleteDeckModalComponent;
+
+	@ViewChild(SetupTableSessionModalComponent)
+	setupTableSessionModal: SetupTableSessionModalComponent;
 
 	deck: Deck;
 	tables: Table[] = [];
@@ -65,9 +69,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 		this.navigationControlService.activeTable().subscribe(value => this.onActiveTableChanged(value));
 	}
 
-	ngAfterViewInit(): void {
-	}
-
 	ngOnInit(): void {
 		this.onActiveTableChanged(this.navigationControlService.currentTable);
 		this.onActiveDeckChanged(this.navigationControlService.currentDeck);
@@ -75,22 +76,26 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 	}
 
 	private onVisibilityChanged(isVisible: boolean) {
-		this.active = isVisible;
+		if (this.active !== isVisible) {
+			this.active = isVisible;
+		}
 	}
 
 	private onActiveTableChanged(table: Table) {
 		this.tableSelected = table !== null && table !== undefined;
-		this.selectedTable = table;
+		if (this.selectedTable?.id !== table?.id) {
+			this.selectedTable = table;
+		}
 	}
 
 	private onActiveDeckChanged(deck: Deck) {
 		this.deck = deck;
-		if (deck === null) {
-			this.tables = [];
-		} else {
+		if (deck) {
 			this.tableService.getByDeck(this.deck).then((tables: Table[]) => {
 				this.tables = tables;
 			});
+		} else {
+			this.tables = [];
 		}
 	}
 
@@ -125,5 +130,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 	async goHome() {
 		await this.navigationService.goHome();
+	}
+
+	studyCurrent() {
+		if (this.tableSelected) {
+			this.setupTableSessionModal.openDialog();
+		} else {
+
+		}
 	}
 }
