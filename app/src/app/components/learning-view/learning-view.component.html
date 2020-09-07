@@ -1,8 +1,11 @@
 <div class="uk-container uk-container-small">
 	<div class="uk-child-width-1-1 uk-grid-match" uk-grid *ngIf="state">
 		<div>
+			<progress class="uk-progress" value="{{state.progress}}" max="1"></progress>
+		</div>
+		<div>
 			<div class="uk-card uk-card-default uk-card-body">
-				<h3 class="uk-card-title">Question:</h3>
+				<h4 class="uk-card-title">Question:</h4>
 				<p *ngFor="let question of state.currentTask.questionValues">
 					{{question.column.name}}
 					<span uk-icon="icon: arrow-right"></span>
@@ -10,12 +13,10 @@
 				</p>
 			</div>
 		</div>
-		<div>
-			<form>
-				<label *ngFor="let answer of state.currentTask.answerValues">
-					<input class="uk-input" type="text" placeholder="{{answer.column.name}}">
-				</label>
-			</form>
+		<div *ngFor="let answer of state.currentTask.answerValues">
+			<app-session-answer-view [(state)]="state"
+									 [shouldGetFocus]="state.currentTask.pendingAnswerFields[0].column.id === answer.column.id"
+									 [answerField]="answer"></app-session-answer-view>
 		</div>
 	</div>
 </div>

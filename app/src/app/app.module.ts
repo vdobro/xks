@@ -51,6 +51,7 @@ import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-tabl
 import {LearningViewComponent, TABLE_SESSION_ID_PARAM} from './components/learning-view/learning-view.component';
 import {SetupTableSessionModalComponent} from './components/setup-table-session-modal/setup-table-session-modal.component';
 import {TableSessionModeWizardComponent} from './components/table-session-mode-wizard/table-session-mode-wizard.component';
+import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -83,6 +84,7 @@ import {TableSessionModeWizardComponent} from './components/table-session-mode-w
 		LearningViewComponent,
 		SetupTableSessionModalComponent,
 		TableSessionModeWizardComponent,
+		SessionAnswerViewComponent,
 	],
 	imports: [
 		BrowserModule,

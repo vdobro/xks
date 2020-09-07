@@ -38,8 +38,8 @@ export class ExerciseTaskService {
 	private readonly taskStates = new Map<string, TaskState>();
 
 	private readonly defaultMinimumScore = 0;
-	private readonly defaultStartScore = 3;
-	private readonly defaultMaximumScore = 8;
+	private readonly defaultStartScore = 0;
+	readonly defaultMaximumScore = 2;
 
 	constructor(
 		private readonly tableCellService: TableCellService) {
@@ -48,30 +48,31 @@ export class ExerciseTaskService {
 	async getTaskList(table: Table,
 					  questionColumns: TableColumn[],
 					  answerColumns: TableColumn[]): Promise<ExerciseTask[]> {
-		return (await this.tableCellService.getRows(table)).map(row => ({
-			id: uuid(),
-			rowId: row.id,
-			questionValues: questionColumns.map(column =>
-				ExerciseTaskService.mapColumnToFlashcardField(row, column)),
-			answerValues: answerColumns.map(column =>
-				ExerciseTaskService.mapColumnToFlashcardField(row, column)),
-		}));
+		const rows = await this.tableCellService.getRows(table);
+		return rows.map(row => {
+			const answerFields = answerColumns.map(column =>
+				ExerciseTaskService.mapColumnToFlashcardField(row, column));
+			return {
+				id: uuid(),
+				rowId: row.id,
+				questionValues: questionColumns.map(column =>
+					ExerciseTaskService.mapColumnToFlashcardField(row, column)),
+				answerValues: answerFields,
+				pendingAnswerFields: answerFields,
+			};
+		});
 	}
 
-	logInAnswer(answerValue: string, columnId: string, task: ExerciseTask) {
+	logInAnswer(answerValue: string, columnId: string, task: ExerciseTask): boolean {
 		if (!this.taskStateExists(task)) {
 			this.registerTask(task);
 		}
 		const currentState = this.taskStates.get(task.id);
 		const field = task.answerValues.find(field => field.column.id === columnId);
-		if (answerValue === field.value) {
-			if (currentState.score < currentState.maxScore) {
-				currentState.score++;
-			}
-		} else {
-			currentState.score = this.defaultMinimumScore;
-		}
+		const answerCorrect = answerValue === field.value;
+		this.updateScore(currentState, answerCorrect, field);
 		this.taskStates.set(task.id, currentState);
+		return answerCorrect;
 	}
 
 	resetTask(task: ExerciseTask) {
@@ -85,8 +86,31 @@ export class ExerciseTaskService {
 		return this.taskStates.get(task.id).score;
 	}
 
-	isComplete(task: ExerciseTask) : boolean {
+	isComplete(task: ExerciseTask): boolean {
 		return this.getScore(task) >= this.defaultMaximumScore;
+	}
+
+	private updateScore(currentState: TaskState,
+						answerCorrect: boolean,
+						field: FlashcardField): boolean {
+		const columnId = field.column.id;
+		const subscores = currentState.columnSubscores;
+		const oldScore = currentState.score;
+		if (answerCorrect) {
+			const currentSubscore = subscores.get(columnId);
+			if (currentSubscore < currentState.maxScore) {
+				subscores.set(columnId, currentSubscore + 1);
+			}
+			for (let subscore of subscores.values()) {
+				if (subscore <= oldScore) {
+					return;
+				}
+			}
+			currentState.score++;
+		} else {
+			subscores.set(columnId, 0);
+			currentState.score = this.defaultMinimumScore;
+		}
 	}
 
 	private taskStateExists(task: ExerciseTask): boolean {
@@ -97,9 +121,14 @@ export class ExerciseTaskService {
 		if (this.taskStateExists(task)) {
 			return;
 		}
+		const subscores = new Map<string, number>();
+		for (let answerField of task.answerValues) {
+			subscores.set(answerField.column.id, 0);
+		}
 		this.taskStates.set(task.id, {
 			maxScore: this.defaultMaximumScore,
 			score: this.defaultStartScore,
+			columnSubscores: subscores,
 		});
 	}
 
@@ -116,6 +145,7 @@ export interface ExerciseTask {
 	rowId: string,
 	questionValues: FlashcardField[],
 	answerValues: FlashcardField[],
+	pendingAnswerFields: FlashcardField[],
 }
 
 export interface FlashcardField {
@@ -125,5 +155,6 @@ export interface FlashcardField {
 
 interface TaskState {
 	score: number,
+	columnSubscores: Map<string, number>
 	maxScore: number,
 }

@@ -62,34 +62,36 @@ export class TableSessionService {
 				session: session,
 				currentTask: initialWindow[0],
 				progress: 0,
+				lastAnswerCorrect: undefined,
 			},
 			tasksDone: [],
 			taskWindow: initialWindow
 		});
-		return {
+		const state = {
 			currentTask: TableSessionService.randomElement(initialWindow),
 			session: session,
-			progress: 0
+			progress: 0,
+			lastAnswerCorrect: undefined,
 		};
+		state.progress = this.calculateProgress(state);
+		return state;
 	}
 
 	submitAnswer(answer: string,
 				 columnId: string,
 				 state: LearningSessionState<TableSession>)
 		: LearningSessionState<TableSession> {
-
-		this.taskService.logInAnswer(answer, columnId, state.currentTask);
+		this.removePendingAnswerField(columnId, state.currentTask);
+		const answerCorrect = this.taskService.logInAnswer(answer, columnId, state.currentTask);
 		this.updateActiveTaskWindow(state);
-		const window = this.getTaskWindow(state);
 
-		const sortedWindow = window
-			.map(task => ({score: this.taskService.getScore(task), task: task,}))
-			.sort((a, b) =>
-				a.score < b.score ? -1 : (a.score > b.score ? 1 : 0));
-		const lowestScore = sortedWindow[0].score;
-		const lowestTasks = sortedWindow.filter(task => task.score === lowestScore);
-
-		state.currentTask = TableSessionService.randomElement(lowestTasks).task;
+		const allFieldsSubmitted = state.currentTask.pendingAnswerFields.length === 0;
+		state.lastAnswerCorrect = answerCorrect;
+		if ((answerCorrect && allFieldsSubmitted) || allFieldsSubmitted) {
+			state.currentTask.pendingAnswerFields = state.currentTask.answerValues;
+			state.currentTask = this.chooseNextLowestTask(state);
+		}
+		state.progress = this.calculateProgress(state);
 		return state;
 	}
 
@@ -97,14 +99,52 @@ export class TableSessionService {
 		state.session.end = new Date();
 	}
 
+	private removePendingAnswerField(columnId: string, currentTask: ExerciseTask) {
+		const fields = currentTask.pendingAnswerFields;
+		currentTask.pendingAnswerFields = fields.filter(x => x.column.id !== columnId);
+	}
+
+	private chooseNextLowestTask(state: LearningSessionState<TableSession>): ExerciseTask {
+		const window = this.getTaskWindow(state);
+		const sortedWindow = window
+			.map(task => ({score: this.taskService.getScore(task), task: task,}))
+			.sort((a, b) =>
+				a.score < b.score ? -1 : (a.score > b.score ? 1 : 0));
+		const lowestScore = sortedWindow[0].score;
+		const lowestTasks = sortedWindow.filter(task => {
+			return task.task.id !== state.currentTask.id && task.score === lowestScore
+		});
+		return TableSessionService.randomElement(lowestTasks).task;
+	}
+
+	private calculateProgress(state: LearningSessionState<TableSession>): number {
+		const internalState = this.getInternalState(state);
+		const maxScore = this.taskService.defaultMaximumScore;
+
+		const remainingTasks = internalState.remainingTasks.length;
+		const doneTasks = internalState.tasksDone.length;
+		const windowLength = internalState.taskWindow.length;
+
+		const totalTasks = windowLength + remainingTasks + doneTasks;
+
+		const pendingTaskScore = internalState.taskWindow
+			.map(task => this.taskService.getScore(task))
+			.reduce((sum, current) => sum + current, 0);
+
+		return ((doneTasks * maxScore) + pendingTaskScore) / (totalTasks * maxScore);
+	}
+
 	private updateActiveTaskWindow(state: LearningSessionState<TableSession>) {
 		this.removeDoneTasksFromWindow(state);
 
 		while (this.getTaskWindow(state).length < this.defaultTaskWindowSize) {
-			const remainingTasks = this.getRemainingTasks(state);
 			const internalState = this.getInternalState(state);
+			const remainingTasks = internalState.remainingTasks;
+			const doneTasks = internalState.tasksDone;
+			const selectedTask = (remainingTasks.length > 0)
+				? TableSessionService.randomElement(remainingTasks)
+				: TableSessionService.randomElement(doneTasks);
 
-			const selectedTask = TableSessionService.randomElement(remainingTasks);
 			internalState.taskWindow.push(selectedTask);
 			internalState.remainingTasks = remainingTasks.filter(task => task.id !== selectedTask.id);
 		}
@@ -127,11 +167,6 @@ export class TableSessionService {
 	private getTaskWindow(state: LearningSessionState<TableSession>)
 		: ExerciseTask[] {
 		return this.getInternalState(state).taskWindow;
-	}
-
-	private getRemainingTasks(state: LearningSessionState<TableSession>): ExerciseTask[] {
-		const stateInformation = this.getInternalState(state);
-		return stateInformation.remainingTasks;
 	}
 
 	private getInternalState(state: LearningSessionState<TableSession>) {
@@ -179,6 +214,7 @@ export interface LearningSessionState<TSession extends LearningSession> {
 	session: TSession,
 	currentTask: ExerciseTask,
 	progress: number,
+	lastAnswerCorrect: boolean,
 }
 
 interface InternalSessionState {
