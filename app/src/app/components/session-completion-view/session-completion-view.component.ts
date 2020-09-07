@@ -19,31 +19,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {LearningViewComponent} from './learning-view.component';
+import {Component, OnInit} from '@angular/core';
+import {TopBarService} from "../../services/top-bar.service";
+import {NavigationService} from "../../services/navigation.service";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.19
+ * @since 2020.09.07
  */
-describe('LearningViewComponent', () => {
-	let component: LearningViewComponent;
-	let fixture: ComponentFixture<LearningViewComponent>;
+@Component({
+	selector: 'app-session-completion-view',
+	templateUrl: './session-completion-view.component.html',
+	styleUrls: ['./session-completion-view.component.sass']
+})
+export class SessionCompletionViewComponent implements OnInit {
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [LearningViewComponent]
-		}).compileComponents();
-	}));
+	constructor(private readonly topBarService: TopBarService,
+				private readonly navigationService: NavigationService) {
+	}
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(LearningViewComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+	ngOnInit(): void {
+		this.topBarService.clearItems();
+	}
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	async goBack() {
+		await this.navigationService.navigateToCurrentDeck();
+	}
+}

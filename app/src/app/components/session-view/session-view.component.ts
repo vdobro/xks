@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {TABLE_ID_PARAM} from "../table-view/table-view.component";
 import {TableService} from "../../services/table.service";
@@ -28,6 +28,10 @@ import {Table} from "../../models/Table";
 import {TableSessionMode} from "../../models/TableSessionMode";
 import {LearningSessionState, TableSession, TableSessionService} from "../../services/table-session.service";
 import {TableColumn} from "../../models/TableColumn";
+import {SidebarService} from "../../services/sidebar.service";
+import {TopBarService} from "../../services/top-bar.service";
+import {NavBarItem} from "../nav-bar-item";
+import {SessionNavigationComponent} from "../session-navigation/session-navigation.component";
 
 export const TABLE_SESSION_ID_PARAM = "sessionId";
 
@@ -36,11 +40,11 @@ export const TABLE_SESSION_ID_PARAM = "sessionId";
  * @since 2020.08.19
  */
 @Component({
-	selector: 'app-learning-view',
-	templateUrl: './learning-view.component.html',
-	styleUrls: ['./learning-view.component.sass']
+	selector: 'app-session-view',
+	templateUrl: './session-view.component.html',
+	styleUrls: ['./session-view.component.sass']
 })
-export class LearningViewComponent implements OnInit {
+export class SessionViewComponent implements OnInit, OnDestroy {
 
 	table: Table;
 	sessionMode: TableSessionMode;
@@ -55,6 +59,8 @@ export class LearningViewComponent implements OnInit {
 		private readonly tableService: TableService,
 		private readonly sessionModeService: TableSessionModeService,
 		private readonly sessionService: TableSessionService,
+		private readonly sidebarService: SidebarService,
+		private readonly topBarService: TopBarService,
 	) {
 		this.route.paramMap.subscribe(async params => {
 			this.table = await this.tableService.getById(params.get(TABLE_ID_PARAM));
@@ -68,9 +74,16 @@ export class LearningViewComponent implements OnInit {
 		await this.initSession();
 	}
 
+	ngOnDestroy() {
+		this.topBarService.clearItems();
+	}
+
 	private async initSession() {
 		if (this.table && this.sessionMode) {
 			this.state = await this.sessionService.startNew(this.table, this.sessionMode);
 		}
+		this.sidebarService.hide();
+		this.topBarService.clearItems();
+		this.topBarService.addItem(new NavBarItem(SessionNavigationComponent));
 	}
 }

@@ -20,11 +20,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable, Subject} from "rxjs";
-import {NavBarItem} from "../components/nav-bar-item";
-import {Deck} from "../models/Deck";
-import {Table} from "../models/Table";
-import {DeckService} from "./deck.service";
+import {Subject, Subscribable} from "rxjs";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,101 +31,21 @@ import {DeckService} from "./deck.service";
 })
 export class NavigationControlService {
 
-	private readonly itemsObservable: Subject<NavBarItem[]> = new Subject();
-	private readonly topBarVisible$: Subject<boolean> = new Subject();
-	private readonly sidebarVisible$: Subject<boolean> = new Subject();
-	private readonly activeDeck$: Subject<Deck> = new Subject();
-	private readonly activeTable$: Subject<Table> = new Subject();
+	private readonly _topBarVisible$ = new Subject();
+	private readonly _sidebarVisible$ = new Subject();
 
-	private items: NavBarItem[] = [];
-	currentDeck: Deck;
-	currentTable: Table;
+	readonly sidebarVisible: Subscribable<boolean> = this._sidebarVisible$;
+	readonly topBarVisible: Subscribable<boolean> = this._topBarVisible$;
 
-	constructor(private readonly deckService: DeckService) {
+	constructor() {
 	}
 
-	getAll(): Observable<NavBarItem[]> {
-		return this.itemsObservable;
+	setSidebarVisibility(visible: boolean) {
+		this.setTopBarVisibility(!visible);
 	}
 
-	topNavBarVisible(): Observable<boolean> {
-		return this.topBarVisible$;
-	}
-
-	sidebarVisible(): Observable<boolean> {
-		return this.sidebarVisible$;
-	}
-
-	activeDeck(): Observable<Deck> {
-		return this.activeDeck$;
-	}
-
-	activeTable(): Observable<Table> {
-		return this.activeTable$;
-	}
-
-	addItem(item: NavBarItem) {
-		this.items.push(item);
-		this.update();
-	}
-
-	clear() {
-		this.items.length = 0;
-		this.update();
-	}
-
-	async populateSidebarWithTable(table: Table) {
-		if (this.currentTable?.id === table?.id) {
-			return;
-		}
-		this.currentTable = table;
-		if (table === null) {
-			this.populateSidebar(null);
-		}
-		const deck = await this.deckService.getById(table.deckId);
-		this.populateSidebar(deck);
-	}
-
-	populateSidebar(deck: Deck) {
-		const deckIsNull = deck === null;
-		this.setTopBarVisibility(deckIsNull);
-		this.activeDeck$.next(deck);
-		this.currentDeck = deck;
-		if (deckIsNull) {
-			this.currentTable = null;
-			this.activeTable$.next(null);
-		}
-	}
-
-	deselectTable() {
-		this.currentTable = null;
-		this.activeTable$.next(null);
-	}
-
-	async selectTable(table: Table) {
-		if (this.currentTable?.id === table.id) {
-			return;
-		}
-		this.currentTable = table;
-		this.activeTable$.next(table);
-		if (table) {
-			const deck = await this.deckService.getById(table.deckId);
-			if (this.currentDeck?.id !== deck.id) {
-				this.populateSidebar(deck);
-			}
-		}
-	}
-
-	hideSidebar() {
-		this.populateSidebar(null);
-	}
-
-	private setTopBarVisibility(show: boolean) {
-		this.sidebarVisible$.next(!show);
-		this.topBarVisible$.next(show);
-	}
-
-	private update() {
-		this.itemsObservable.next(this.items);
+	setTopBarVisibility(visible: boolean) {
+		this._topBarVisible$.next(visible);
+		this._sidebarVisible$.next(!visible);
 	}
 }

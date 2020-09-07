@@ -29,6 +29,7 @@ import {DeckService} from "../../services/deck.service";
 import {ConfirmDeleteDeckModalComponent} from "../confirm-delete-deck-modal/confirm-delete-deck-modal.component";
 import {NavigationService} from "../../services/navigation.service";
 import {SetupTableSessionModalComponent} from "../setup-table-session-modal/setup-table-session-modal.component";
+import {SidebarService} from "../../services/sidebar.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -60,18 +61,19 @@ export class SidebarComponent implements OnInit {
 
 	active: boolean = false;
 
-	constructor(private readonly navigationControlService: NavigationControlService,
+	constructor(private readonly navControlService: NavigationControlService,
+				private readonly sidebarService: SidebarService,
 				private readonly deckService: DeckService,
 				private readonly tableService: TableService,
 				private readonly navigationService: NavigationService) {
-		this.navigationControlService.sidebarVisible().subscribe(value => this.onVisibilityChanged(value));
-		this.navigationControlService.activeDeck().subscribe(value => this.onActiveDeckChanged(value));
-		this.navigationControlService.activeTable().subscribe(value => this.onActiveTableChanged(value));
+		this.navControlService.sidebarVisible.subscribe(value => this.onVisibilityChanged(value));
+		this.sidebarService.activeDeck.subscribe(value => this.onActiveDeckChanged(value));
+		this.sidebarService.activeTable.subscribe(value => this.onActiveTableChanged(value));
 	}
 
 	ngOnInit(): void {
-		this.onActiveTableChanged(this.navigationControlService.currentTable);
-		this.onActiveDeckChanged(this.navigationControlService.currentDeck);
+		this.onActiveTableChanged(this.sidebarService.currentTable);
+		this.onActiveDeckChanged(this.sidebarService.currentDeck);
 		this.onVisibilityChanged(this.deck !== null);
 	}
 
@@ -101,13 +103,13 @@ export class SidebarComponent implements OnInit {
 
 	async onTableDeleted(tableId: string) {
 		this.tables = this.tables.filter(item => item.id !== tableId);
-		this.navigationControlService.deselectTable();
+		this.sidebarService.deselectTable();
 		await this.navigationService.navigateToCurrentDeck();
 	}
 
 	async onNewTableCreated(table: Table) {
 		this.tables.push(table);
-		await this.navigationControlService.deselectTable();
+		await this.sidebarService.deselectTable();
 		await this.navigationService.navigateToCurrentDeck();
 	}
 
@@ -124,7 +126,7 @@ export class SidebarComponent implements OnInit {
 	}
 
 	async openDeckDetails() {
-		this.navigationControlService.deselectTable();
+		this.sidebarService.deselectTable();
 		await this.navigationService.openDeck(this.deck.id);
 	}
 

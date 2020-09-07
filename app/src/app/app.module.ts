@@ -48,10 +48,12 @@ import {TableRowComponent} from './components/table-row/table-row.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
 import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-table-modal/confirm-delete-table-modal.component';
-import {LearningViewComponent, TABLE_SESSION_ID_PARAM} from './components/learning-view/learning-view.component';
+import {SessionViewComponent, TABLE_SESSION_ID_PARAM} from './components/session-view/session-view.component';
 import {SetupTableSessionModalComponent} from './components/setup-table-session-modal/setup-table-session-modal.component';
 import {TableSessionModeWizardComponent} from './components/table-session-mode-wizard/table-session-mode-wizard.component';
 import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
+import {SessionNavigationComponent} from './components/session-navigation/session-navigation.component';
+import {SessionCompletionViewComponent} from './components/session-completion-view/session-completion-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -81,10 +83,12 @@ import {SessionAnswerViewComponent} from './components/session-answer-view/sessi
 		TableRowComponent,
 		ConfirmDeleteTableColumnModalComponent,
 		ConfirmDeleteTableModalComponent,
-		LearningViewComponent,
+		SessionViewComponent,
 		SetupTableSessionModalComponent,
 		TableSessionModeWizardComponent,
 		SessionAnswerViewComponent,
+		SessionNavigationComponent,
+		SessionCompletionViewComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -94,7 +98,7 @@ import {SessionAnswerViewComponent} from './components/session-answer-view/sessi
 			{path: 'decks', component: DeckListPageComponent},
 			{path: `decks/:${DECK_ID_PARAM}`, component: DeckViewComponent},
 			{path: `tables/:${TABLE_ID_PARAM}/edit`, component: TableViewComponent},
-			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_ID_PARAM}`, component: LearningViewComponent}
+			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_ID_PARAM}`, component: SessionViewComponent}
 		]),
 		FormsModule,
 		ReactiveFormsModule,

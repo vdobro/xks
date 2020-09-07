@@ -23,10 +23,14 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {DeckListViewComponent} from "../deck-list-view/deck-list-view.component";
 import {DeckService} from "../../services/deck.service";
-import {NavigationControlService} from "../../services/navigation-control.service";
 import {DeckListNavbarComponent} from "../deck-list-navbar/deck-list-navbar.component";
 import {NavBarItem} from "../nav-bar-item";
+import {TopBarService} from "../../services/top-bar.service";
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.03.23
+ */
 @Component({
 	selector: 'app-deck-list-page',
 	templateUrl: './deck-list-page.component.html',
@@ -40,12 +44,12 @@ export class DeckListPageComponent implements OnInit {
 	decks: Promise<Deck[]> = this.deckService.getAll();
 
 	constructor(private readonly deckService: DeckService,
-				private readonly navigationService: NavigationControlService) {
+				private readonly topBarService: TopBarService) {
 	}
 
 	ngOnInit(): void {
-		this.navigationService.clear();
-		this.navigationService.addItem(new NavBarItem(DeckListNavbarComponent));
+		this.topBarService.clearItems();
+		this.topBarService.addItem(new NavBarItem(DeckListNavbarComponent));
 		this.deckService.deckCreated().subscribe(_ => this.onNewDeckCreated());
 	}
 

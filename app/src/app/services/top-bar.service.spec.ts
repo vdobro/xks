@@ -19,36 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
+import {TestBed} from '@angular/core/testing';
 
-import UIkit from 'uikit';
-import {SidebarService} from "../../services/sidebar.service";
+import {TopBarService} from './top-bar.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.14
+ * @since 2020.09.07
  */
-@Component({
-	selector: 'app-deck-list-view',
-	templateUrl: './deck-list-view.component.html',
-	styleUrls: ['./deck-list-view.component.sass']
-})
-export class DeckListViewComponent implements OnInit {
+describe('TopBarService', () => {
+	let service: TopBarService;
 
-	@ViewChild("deckListFooter") deckListFooter: ElementRef;
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TopBarService);
+	});
 
-	@Input()
-	decks$: Promise<Deck[]>;
-
-	constructor(private readonly sidebarService: SidebarService) {
-	}
-
-	ngOnInit(): void {
-		this.sidebarService.populate(null);
-	}
-
-	onNewDeckCreated() {
-		UIkit.scroll(0).scrollTo(this.deckListFooter.nativeElement);
-	}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

@@ -19,36 +19,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import UIkit from 'uikit';
-import {SidebarService} from "../../services/sidebar.service";
+import {SessionCompletionViewComponent} from './session-completion-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.14
+ * @since 2020.09.07
  */
-@Component({
-	selector: 'app-deck-list-view',
-	templateUrl: './deck-list-view.component.html',
-	styleUrls: ['./deck-list-view.component.sass']
-})
-export class DeckListViewComponent implements OnInit {
+describe('SessionCompletionViewComponent', () => {
+	let component: SessionCompletionViewComponent;
+	let fixture: ComponentFixture<SessionCompletionViewComponent>;
 
-	@ViewChild("deckListFooter") deckListFooter: ElementRef;
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [SessionCompletionViewComponent]
+		})
+			.compileComponents();
+	}));
 
-	@Input()
-	decks$: Promise<Deck[]>;
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SessionCompletionViewComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-	constructor(private readonly sidebarService: SidebarService) {
-	}
-
-	ngOnInit(): void {
-		this.sidebarService.populate(null);
-	}
-
-	onNewDeckCreated() {
-		UIkit.scroll(0).scrollTo(this.deckListFooter.nativeElement);
-	}
-}
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

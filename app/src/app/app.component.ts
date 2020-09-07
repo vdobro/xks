@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
 		private readonly navControlService: NavigationControlService,
 		private readonly cdr: ChangeDetectorRef) {
 
-		this.navControlService.sidebarVisible().subscribe(visible => {
+		this.navControlService.sidebarVisible.subscribe(visible => {
 			if (this.sidebarVisible !== visible) {
 				this.sidebarVisible = visible;
 				this.cdr.detectChanges();

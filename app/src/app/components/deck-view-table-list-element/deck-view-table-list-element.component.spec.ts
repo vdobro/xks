@@ -53,7 +53,8 @@ describe('DeckViewTableListElementComponent', () => {
 
 	@Component({
 		selector: 'host-component',
-		template: `<li deck-elements [table]="table"></li>`
+		template: `
+			<li deck-elements [table]="table"></li>`
 	})
 	class TestHostComponent {
 		@ViewChild(DeckViewTableListElement)

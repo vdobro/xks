@@ -24,6 +24,7 @@ import {NavBarItemsDirective} from "../nav-bar-items.directive";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {NavBarItem} from "../nav-bar-item";
 import {NavigationService} from "../../services/navigation.service";
+import {TopBarService} from "../../services/top-bar.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -45,14 +46,15 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
 	constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
 				private readonly navControlService: NavigationControlService,
+				private readonly topBarService: TopBarService,
 				private readonly navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
-		this.navControlService.topNavBarVisible().subscribe((isVisible) => {
+		this.navControlService.topBarVisible.subscribe((isVisible) => {
 			this.active = (isVisible);
 		});
-		this.navControlService.getAll().subscribe((items) => {
+		this.topBarService.allItems.subscribe((items) => {
 			this.updateItemsList(items);
 		});
 	}

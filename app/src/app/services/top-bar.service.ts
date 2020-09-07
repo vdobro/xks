@@ -19,36 +19,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
-
-import UIkit from 'uikit';
-import {SidebarService} from "../../services/sidebar.service";
+import {Injectable} from '@angular/core';
+import {NavBarItem} from "../components/nav-bar-item";
+import {Subject, Subscribable} from "rxjs";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.14
+ * @since 2020.09.07
  */
-@Component({
-	selector: 'app-deck-list-view',
-	templateUrl: './deck-list-view.component.html',
-	styleUrls: ['./deck-list-view.component.sass']
+@Injectable({
+	providedIn: 'root'
 })
-export class DeckListViewComponent implements OnInit {
+export class TopBarService {
 
-	@ViewChild("deckListFooter") deckListFooter: ElementRef;
+	private readonly currentItems: NavBarItem[] = [];
+	private readonly items$ = new Subject<NavBarItem[]>();
 
-	@Input()
-	decks$: Promise<Deck[]>;
+	readonly allItems: Subscribable<NavBarItem[]> = this.items$;
 
-	constructor(private readonly sidebarService: SidebarService) {
+	constructor() {
 	}
 
-	ngOnInit(): void {
-		this.sidebarService.populate(null);
+	addItem(item: NavBarItem) {
+		this.currentItems.push(item);
+		this.update();
 	}
 
-	onNewDeckCreated() {
-		UIkit.scroll(0).scrollTo(this.deckListFooter.nativeElement);
+	clearItems() {
+		this.currentItems.splice(0, this.currentItems.length);
+		this.update();
+	}
+
+	private update() {
+		this.items$.next(this.currentItems);
 	}
 }

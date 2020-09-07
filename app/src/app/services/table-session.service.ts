@@ -92,11 +92,17 @@ export class TableSessionService {
 			state.currentTask = this.chooseNextLowestTask(state);
 		}
 		state.progress = this.calculateProgress(state);
+		this.checkCompletion(state);
 		return state;
 	}
 
-	completeSession(state: LearningSessionState<TableSession>) {
-		state.session.end = new Date();
+	private checkCompletion(state: LearningSessionState<TableSession>) {
+		const internalState = this.getInternalState(state);
+		if (internalState.remainingTasks.length === 0
+			&& internalState.taskWindow.every(task => this.taskService.isComplete(task))) {
+			state.session.end = new Date();
+			state.session.complete = true;
+		}
 	}
 
 	private removePendingAnswerField(columnId: string, currentTask: ExerciseTask) {
@@ -109,10 +115,15 @@ export class TableSessionService {
 		const sortedWindow = window
 			.map(task => ({score: this.taskService.getScore(task), task: task,}))
 			.sort((a, b) =>
-				a.score < b.score ? -1 : (a.score > b.score ? 1 : 0));
+				a.score < b.score ? -1 : (a.score > b.score ? 1 : 0))
+			.filter((scoreWithTask, _) =>
+				scoreWithTask.task.id !== state.currentTask.id);
+		if (sortedWindow.length === 0) {
+			return state.currentTask;
+		}
 		const lowestScore = sortedWindow[0].score;
 		const lowestTasks = sortedWindow.filter(task => {
-			return task.task.id !== state.currentTask.id && task.score === lowestScore
+			return task.score === lowestScore
 		});
 		return TableSessionService.randomElement(lowestTasks).task;
 	}
@@ -135,18 +146,19 @@ export class TableSessionService {
 	}
 
 	private updateActiveTaskWindow(state: LearningSessionState<TableSession>) {
+		const defaultWindowSize = this.getTaskWindow(state).length;
 		this.removeDoneTasksFromWindow(state);
 
-		while (this.getTaskWindow(state).length < this.defaultTaskWindowSize) {
+		while (this.getTaskWindow(state).length < defaultWindowSize) {
 			const internalState = this.getInternalState(state);
-			const remainingTasks = internalState.remainingTasks;
-			const doneTasks = internalState.tasksDone;
-			const selectedTask = (remainingTasks.length > 0)
-				? TableSessionService.randomElement(remainingTasks)
-				: TableSessionService.randomElement(doneTasks);
+			const selectedTask = TableSessionService.selectNewTaskFromAvailable(internalState);
 
+			if (!selectedTask) {
+				return;
+			}
 			internalState.taskWindow.push(selectedTask);
-			internalState.remainingTasks = remainingTasks.filter(task => task.id !== selectedTask.id);
+			internalState.remainingTasks = internalState.remainingTasks.filter(task =>
+				task.id !== selectedTask.id);
 		}
 	}
 
@@ -175,6 +187,19 @@ export class TableSessionService {
 
 	private updateInternalState(internalState: InternalSessionState) {
 		this.activeSessions.set(internalState.sessionState.session.id, internalState);
+	}
+
+	private static selectNewTaskFromAvailable(internalState: InternalSessionState): ExerciseTask | null {
+		const remainingTasks = internalState.remainingTasks;
+		const doneTasks = internalState.tasksDone;
+
+		if (remainingTasks.length > 0) {
+			return TableSessionService.randomElement(remainingTasks);
+		} else if (doneTasks.length > 0) {
+			const newTask = TableSessionService.randomElement(doneTasks);
+			doneTasks.splice(doneTasks.indexOf(newTask), 1);
+			return newTask;
+		} else return null;
 	}
 
 	private static createSession(table: Table): TableSession {

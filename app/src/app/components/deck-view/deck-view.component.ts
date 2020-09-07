@@ -26,6 +26,7 @@ import {ActivatedRoute} from "@angular/router";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {TableService} from "../../services/table.service";
 import {NavigationService} from "../../services/navigation.service";
+import {SidebarService} from "../../services/sidebar.service";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -49,6 +50,7 @@ export class DeckViewComponent implements OnInit {
 		private readonly deckService: DeckService,
 		private readonly route: ActivatedRoute,
 		private readonly navigationService: NavigationService,
+		private readonly sidebarService: SidebarService,
 		private readonly navigationControlService: NavigationControlService,
 		private readonly tableService: TableService) {
 	}
@@ -57,7 +59,7 @@ export class DeckViewComponent implements OnInit {
 		this.route.paramMap.subscribe(async params => {
 			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
 			if (this.deck) {
-				this.navigationControlService.populateSidebar(this.deck);
+				this.sidebarService.populate(this.deck);
 				await this.checkIfAnyTablesExist();
 			} else {
 				await this.navigationService.goToDeckList();

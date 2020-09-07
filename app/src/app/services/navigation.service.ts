@@ -25,7 +25,7 @@ import {Deck} from "../models/Deck";
 import {Table} from "../models/Table";
 import {DeckService} from "./deck.service";
 import {TableService} from "./table.service";
-import {NavigationControlService} from "./navigation-control.service";
+import {SidebarService} from "./sidebar.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -42,7 +42,7 @@ export class NavigationService {
 	constructor(
 		private readonly deckService: DeckService,
 		private readonly tableService: TableService,
-		private readonly navigationControlService: NavigationControlService,
+		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
 	}
 
@@ -54,27 +54,27 @@ export class NavigationService {
 
 	async openTable(tableId: string) {
 		this.table = await this.tableService.getById(tableId);
-		await this.navigationControlService.selectTable(this.table);
+		await this.sidebarService.selectTable(this.table);
 		await this.router.navigate(['/tables', tableId, 'edit']);
 	}
 
 	async studyTable(tableId: string, sessionModeId: string) {
 		this.table = await this.tableService.getById(tableId);
-		await this.navigationControlService.selectTable(this.table);
+		await this.sidebarService.selectTable(this.table);
 		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId]);
 	}
 
 	async navigateToCurrentDeck() {
 		if (this.deck) {
 			this.table = null;
-			this.navigationControlService.deselectTable();
+			this.sidebarService.deselectTable();
 			await this.openDeck(this.deck.id);
 		}
 	}
 
 	async openDeck(deckId: string) {
 		this.deck = await this.deckService.getById(deckId);
-		await this.navigationControlService.populateSidebar(this.deck);
+		await this.sidebarService.populate(this.deck);
 		await this.router.navigate(['/decks', deckId]);
 	}
 
@@ -87,7 +87,7 @@ export class NavigationService {
 	async goToDeckList() {
 		this.deck = null;
 		this.table = null;
-		await this.navigationControlService.populateSidebar(null);
+		await this.sidebarService.populate(null);
 		await this.router.navigate(['/decks']);
 	}
 }

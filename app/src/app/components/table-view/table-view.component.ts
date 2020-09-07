@@ -32,6 +32,7 @@ import {TableService} from "../../services/table.service";
 import {DeckService} from "../../services/deck.service";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {NavigationService} from "../../services/navigation.service";
+import {SidebarService} from "../../services/sidebar.service";
 
 export const TABLE_ID_PARAM: string = 'tableId';
 
@@ -61,6 +62,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 	constructor(private readonly tableService: TableService,
 				private readonly deckService: DeckService,
 				private readonly cellService: TableCellService,
+				private readonly sidebarService: SidebarService,
 				private readonly navigationControlService: NavigationControlService,
 				private readonly navigationService: NavigationService,
 				private readonly activatedRoute: ActivatedRoute) {
@@ -70,7 +72,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.activatedRoute.paramMap.subscribe(async params => {
 			this.table = await this.tableService.getById(params.get(TABLE_ID_PARAM));
 			if (this.table) {
-				await this.navigationControlService.selectTable(this.table);
+				await this.sidebarService.selectTable(this.table);
 				await this.reloadAll();
 			} else {
 				await this.navigationService.goToDeckList();

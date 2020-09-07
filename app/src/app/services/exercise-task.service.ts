@@ -79,7 +79,7 @@ export class ExerciseTaskService {
 		this.taskStates.delete(task.id);
 	}
 
-	getScore(task: ExerciseTask) : number {
+	getScore(task: ExerciseTask): number {
 		if (!this.taskStateExists(task)) {
 			this.registerTask(task);
 		}
@@ -87,7 +87,14 @@ export class ExerciseTaskService {
 	}
 
 	isComplete(task: ExerciseTask): boolean {
-		return this.getScore(task) >= this.defaultMaximumScore;
+		return this.getScore(task) >= this.getMaxScore(task);
+	}
+
+	private getMaxScore(task: ExerciseTask): number {
+		if (!this.taskStateExists(task)) {
+			this.registerTask(task);
+		}
+		return this.taskStates.get(task.id).maxScore;
 	}
 
 	private updateScore(currentState: TaskState,
