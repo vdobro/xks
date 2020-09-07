@@ -25,6 +25,8 @@ import {NavigationControlService} from "../../services/navigation-control.servic
 import {NavBarItem} from "../nav-bar-item";
 import {NavigationService} from "../../services/navigation.service";
 import {TopBarService} from "../../services/top-bar.service";
+import {UserSessionService} from "../../services/user-session.service";
+import {LoginModalComponent} from "../login-modal/login-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,14 +42,24 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	@ViewChild(NavBarItemsDirective, {static: true})
 	navBarItems: NavBarItemsDirective;
 
+	@ViewChild(LoginModalComponent, {static: true})
+	loginModal: LoginModalComponent;
+
 	active: boolean = true;
+
+	loginEnabled: boolean = true;
 
 	private componentRefs: ComponentRef<any>[] = []
 
-	constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
-				private readonly navControlService: NavigationControlService,
-				private readonly topBarService: TopBarService,
-				private readonly navigationService: NavigationService) {
+	constructor(
+		private readonly componentFactoryResolver: ComponentFactoryResolver,
+		private readonly navControlService: NavigationControlService,
+		private readonly topBarService: TopBarService,
+		private readonly navigationService: NavigationService,
+		private readonly userSessionService: UserSessionService) {
+
+		this.userSessionService.userLoggedIn.subscribe(value =>
+			this.updateUserSessionControls(value));
 	}
 
 	ngOnInit(): void {
@@ -63,6 +75,20 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		this.componentRefs.forEach(ref => ref.destroy());
 	}
 
+	openLoginDialog() {
+		this.loginModal.existingUser = true;
+		this.loginModal.openDialog();
+	}
+
+	openRegisterDialog() {
+		this.loginModal.existingUser = false;
+		this.loginModal.openDialog();
+	}
+
+	async goHome() {
+		await this.navigationService.goHome();
+	}
+
 	private updateItemsList(items: NavBarItem[]) {
 		const viewContainerRef = this.navBarItems.viewContainerRef;
 		viewContainerRef.clear();
@@ -75,7 +101,10 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	async goHome() {
-		await this.navigationService.goHome();
+	private updateUserSessionControls(userLoggedIn: boolean) {
+		const shouldLoginBeEnabled = !userLoggedIn;
+		if (this.loginEnabled !== shouldLoginBeEnabled) {
+			this.loginEnabled = shouldLoginBeEnabled;
+		}
 	}
 }

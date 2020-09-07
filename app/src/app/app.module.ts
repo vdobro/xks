@@ -54,6 +54,7 @@ import {TableSessionModeWizardComponent} from './components/table-session-mode-w
 import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
 import {SessionNavigationComponent} from './components/session-navigation/session-navigation.component';
 import {SessionCompletionViewComponent} from './components/session-completion-view/session-completion-view.component';
+import {LoginModalComponent} from './components/login-modal/login-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -89,6 +90,7 @@ import {SessionCompletionViewComponent} from './components/session-completion-vi
 		SessionAnswerViewComponent,
 		SessionNavigationComponent,
 		SessionCompletionViewComponent,
+		LoginModalComponent,
 	],
 	imports: [
 		BrowserModule,
