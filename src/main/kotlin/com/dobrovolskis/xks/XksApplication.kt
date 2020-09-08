@@ -23,10 +23,12 @@ package com.dobrovolskis.xks
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.03.11
+ */
 @SpringBootApplication
-@EnableJpaRepositories
 class XksApplication
 
 @Suppress("SpreadOperator") // used only on startup

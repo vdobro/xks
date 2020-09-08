@@ -19,27 +19,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.model
+package com.dobrovolskis.xks.config
 
-import com.dobrovolskis.xks.config.ID_COLUMN_NAME
-import com.dobrovolskis.xks.config.TABLE_TABLE_CELLS
-import org.springframework.lang.NonNull
-import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import com.cloudant.client.api.ClientBuilder
+import com.cloudant.client.api.CloudantClient
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import java.net.URL
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.08
+ * @since 2020.09.08
  */
-@Entity
-@Table(name = TABLE_TABLE_CELLS)
-data class TableCell(
-		@NonNull @Column(name = "value")
-		var value: String,
+@Configuration
+class DatabaseConnector(private val persistenceConfiguration: PersistenceConfiguration) {
 
-		@Id @Column(name = ID_COLUMN_NAME, updatable = false)
-		var id: UUID? = null
-)
+	@Bean
+	fun couchDbClient(): CloudantClient {
+		return ClientBuilder
+				.url(URL(persistenceConfiguration.url))
+				.username("admin")
+				.password(persistenceConfiguration.adminPassword)
+				.build()
+	}
+}

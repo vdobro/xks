@@ -19,16 +19,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.repository
-
-import com.dobrovolskis.xks.model.ItemTable
-import org.springframework.data.repository.CrudRepository
-import org.springframework.data.rest.core.annotation.RepositoryRestResource
-import java.util.*
+package com.dobrovolskis.xks.model
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.08
+ * @since 2020.09.08
  */
-@RepositoryRestResource(collectionResourceRel = "lists", path = "lists")
-interface ItemListRepository : CrudRepository<ItemTable, UUID>
+data class UserData(
+		val name: String,
+		val displayName: String,
+		val deckDbId: String,
+		val tableDbId: String,
+		val tableColumnDbId: String,
+		val tableRowDbId: String,
+		val tableSessionModeDbId: String
+)

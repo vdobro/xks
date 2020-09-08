@@ -21,17 +21,25 @@
 
 package com.dobrovolskis.xks.config
 
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Component
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.04.08
  */
 
-const val ID_COLUMN_NAME = "id"
-private const val TABLE_NAME_PREFIX = "xks_"
+private const val TABLE_NAME_PREFIX = "_xks_"
 
 const val TABLE_DECKS = "${TABLE_NAME_PREFIX}deck"
 const val TABLE_ITEM_TABLES = "${TABLE_NAME_PREFIX}table"
 const val TABLE_TABLE_COLUMNS = "${TABLE_NAME_PREFIX}table_column"
 const val TABLE_TABLE_ROWS = "${TABLE_NAME_PREFIX}table_row"
-const val TABLE_TABLE_ROWS_COLUMNS = "${TABLE_NAME_PREFIX}table_row_column"
-const val TABLE_TABLE_CELLS = "${TABLE_NAME_PREFIX}table_cell"
+const val TABLE_SESSION_MODES = "${TABLE_NAME_PREFIX}table_session_mode"
+
+@Component
+@ConfigurationProperties(prefix = "db")
+data class PersistenceConfiguration(
+		var adminPassword: String = "",
+		var url: String = ""
+)

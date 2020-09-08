@@ -19,20 +19,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.config
+package com.dobrovolskis.xks.web.controller
 
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import com.dobrovolskis.xks.service.UserManagementService
+import com.dobrovolskis.xks.web.model.RegistrationRequest
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.06.11
+ * @since 2020.09.08
  */
-@EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+@RestController
+@RequestMapping(value = ["/register"])
+class UserRegistrationController(private val userManagementService: UserManagementService) {
 
-	override fun configure(http: HttpSecurity) {
-		http.cors().and().csrf().disable()
+	@RequestMapping(method = [RequestMethod.POST])
+	fun createUser(@RequestBody request: RegistrationRequest) {
+		userManagementService.registerUser(
+				username = request.username,
+				password = request.password)
 	}
 }
+
