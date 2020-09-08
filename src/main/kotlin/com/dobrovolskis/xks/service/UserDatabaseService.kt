@@ -22,6 +22,7 @@
 package com.dobrovolskis.xks.service
 
 import com.cloudant.client.api.CloudantClient
+import com.cloudant.client.api.Database
 import com.dobrovolskis.xks.config.*
 import kotlinx.serialization.Serializable
 import org.springframework.stereotype.Service
@@ -33,24 +34,38 @@ import org.springframework.stereotype.Service
 @Service
 class UserDatabaseService(private val client: CloudantClient) {
 
-	fun createDeckDatabase(username: String): String {
-		return createWithPermission(username, TABLE_DECKS)
+	private val userTables: Database =
+			client.database("user_entity_tables", false)
+
+	init {
+		try {
+			client.createDB("user_entity_tables")
+		} catch (_: Throwable) {
+		}
 	}
 
-	fun createTableDatabase(username: String): String {
-		return createWithPermission(username, TABLE_ITEM_TABLES)
+	fun createAll(username: String): UserTableConfiguration {
+		val configuration = UserTableConfiguration(
+				decks = createWithPermission(username, TABLE_DECKS),
+				tables = createWithPermission(username, TABLE_ITEM_TABLES),
+				tableColumns = createWithPermission(username, TABLE_TABLE_COLUMNS),
+				tableRows = createWithPermission(username, TABLE_TABLE_ROWS),
+				tableSessionModes = createWithPermission(username, TABLE_SESSION_MODES),
+				_id = username
+		)
+		userTables.save(configuration)
+		return configuration
 	}
 
-	fun createTableRowDb(username: String): String {
-		return createWithPermission(username, TABLE_TABLE_ROWS)
-	}
+	fun removeAll(username: String) {
+		val configuration = userTables.find(UserTableConfiguration::class.java, username)
+		userTables.remove(configuration)
 
-	fun createTableColumnDb(username: String): String {
-		return createWithPermission(username, TABLE_TABLE_COLUMNS)
-	}
-
-	fun createTableSessionModeDb(username: String): String {
-		return createWithPermission(username, TABLE_SESSION_MODES)
+		client.deleteDB(configuration.tableSessionModes)
+		client.deleteDB(configuration.tableRows)
+		client.deleteDB(configuration.tableColumns)
+		client.deleteDB(configuration.tables)
+		client.deleteDB(configuration.decks)
 	}
 
 	private fun createWithPermission(username: String, dbName: String): String {
@@ -58,7 +73,6 @@ class UserDatabaseService(private val client: CloudantClient) {
 		try {
 			client.deleteDB(name)
 		} catch (_: Throwable) {
-
 		}
 		val database = client.database(name, true)
 		database.save(UserDbSecurityConfiguration(
@@ -70,11 +84,23 @@ class UserDatabaseService(private val client: CloudantClient) {
 }
 
 @Serializable
+data class UserTableConfiguration(
+		val decks: String,
+		val tables: String,
+		val tableColumns: String,
+		val tableRows: String,
+		val tableSessionModes: String,
+
+		val _id: String,
+		val _rev: String? = null,
+)
+
+@Serializable
 data class UserDbSecurityConfiguration(
 		val admins: MemberConfiguration,
 		val members: MemberConfiguration,
 
-		val _id: String = "security",
+		val _id: String = "_security",
 		val _rev: String? = null,
 )
 

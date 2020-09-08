@@ -5,7 +5,7 @@
 		</div>
 		<div class="uk-modal-body">
 			<button class="uk-modal-close-outside" type="button" uk-close></button>
-			<form class="uk-form-stacked" (submit)="tryLogin()">
+			<form class="uk-form-stacked" (submit)="submitCredentials()">
 				<div class="uk-margin">
 					<div class="uk-form-controls">
 						<label>
@@ -14,6 +14,7 @@
 								   class="uk-input"
 								   type="text"
 								   placeholder="Username"
+								   autocomplete="username"
 								   [formControl]="usernameInput">
 						</label>
 					</div>
@@ -25,6 +26,7 @@
 								   class="uk-input"
 								   type="password"
 								   placeholder="Password"
+								   autocomplete="{{existingUser ? 'current-password' : 'new-password'}}"
 								   [formControl]="passwordInput">
 						</label>
 					</div>
@@ -36,6 +38,7 @@
 								   class="uk-input"
 								   type="password"
 								   placeholder="Confirm password"
+								   autocomplete="new-password"
 								   [formControl]="passwordConfirmationInput">
 						</label>
 					</div>

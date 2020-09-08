@@ -20,7 +20,7 @@
  */
 
 import UIkit from 'uikit';
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {UserSessionService} from "../../services/user-session.service";
 
@@ -33,9 +33,9 @@ import {UserSessionService} from "../../services/user-session.service";
 	templateUrl: './login-modal.component.html',
 	styleUrls: ['./login-modal.component.sass']
 })
-export class LoginModalComponent implements OnInit {
+export class LoginModalComponent implements OnInit, AfterViewInit {
 
-	@ViewChild("loginModal")
+	@ViewChild("loginModal", {static: true})
 	modal: ElementRef;
 
 	@ViewChild("userUsernameInput")
@@ -57,6 +57,12 @@ export class LoginModalComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
+	ngAfterViewInit() {
+		UIkit.util.on(this.modal.nativeElement, 'hidden', _ => {
+			this.loginErrorMessage = '';
+		});
+	}
+
 	openDialog() {
 		UIkit.modal(this.modal.nativeElement).show();
 		setTimeout(() => {
@@ -66,12 +72,14 @@ export class LoginModalComponent implements OnInit {
 		this.passwordInput.setValue('');
 	}
 
-	async tryLogin() {
+	async submitCredentials() {
 		const username = this.usernameInput.value.trim().normalize();
 		const password = this.passwordInput.value;
 
 		if (this.validateUsername(username) && this.validatePassword(password)) {
-			const user = this.userSessionService.login(username, password);
+			const user = this.existingUser
+				? await this.userSessionService.login(username, password)
+				: await this.userSessionService.register(username, password);
 			if (user) {
 				UIkit.modal(this.modal.nativeElement).hide();
 			} else {

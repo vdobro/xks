@@ -25,7 +25,7 @@ package com.dobrovolskis.xks.web.model
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.08
  */
-data class RegistrationRequest(
+data class UserCredentialsDto(
 		val username: String,
 		val password: String
 )

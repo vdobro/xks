@@ -22,6 +22,8 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {User} from "../models/User";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../environments/environment";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -32,33 +34,67 @@ import {User} from "../models/User";
 })
 export class UserSessionService {
 
+	private readonly apiRoot = environment.serverUrl + "/api";
+	private readonly registrationUrl = this.apiRoot + "/register";
+	private readonly loginUrl = this.apiRoot + "/login";
+	private readonly forgetUrl = this.apiRoot + "/forget";
+
 	private readonly _userLoggedIn = new Subject<boolean>();
 
 	readonly userLoggedIn: Observable<boolean> = this._userLoggedIn;
 
 	private currentUser: User = null;
 
-	constructor() {
+	constructor(private httpClient: HttpClient) {
 	}
 
-	login(username: string, password: string): User {
-		this.currentUser = null; //TODO: actual logic
+	async login(username: string, password: string): Promise<User> {
+		try {
+			this.updateUser(await this.getUser(username, password));
+			return this.getCurrent();
+		} catch (e) {
+			return null;
+		}
+	}
 
-		this.updateUser();
+	async register(username: string, password: string): Promise<User> {
+		const user = await this.postCredentials(this.registrationUrl, username, password);
+		this.updateUser(user);
 		return this.getCurrent();
 	}
 
 	logout() {
-		this.currentUser = null;
-		this.updateUser();
+		this.updateUser(null);
+	}
+
+	async forget(username: string, password: string) {
+		await this.postCredentials(this.forgetUrl, username, password);
 	}
 
 	getCurrent(): User {
 		return this.currentUser;
 	}
 
-	private updateUser() {
+	private updateUser(user: User) {
+		this.currentUser = user;
 		this._userLoggedIn.next(this.currentUser !== null
 			&& this.currentUser !== undefined);
+	}
+
+	private async getUser(username: string, password: string): Promise<User> {
+		return await this.postCredentials(this.loginUrl, username, password);
+	}
+
+	private async postCredentials(url: string,
+								  username: string,
+								  password: string): Promise<User> {
+		return await this.httpClient.post<User>(url,
+			{
+				username: username,
+				password: password
+			},
+			{
+				responseType: 'json'
+			}).toPromise();
 	}
 }

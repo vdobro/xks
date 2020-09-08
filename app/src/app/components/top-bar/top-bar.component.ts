@@ -89,6 +89,10 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		await this.navigationService.goHome();
 	}
 
+	logout() {
+		this.userSessionService.logout();
+	}
+
 	private updateItemsList(items: NavBarItem[]) {
 		const viewContainerRef = this.navBarItems.viewContainerRef;
 		viewContainerRef.clear();

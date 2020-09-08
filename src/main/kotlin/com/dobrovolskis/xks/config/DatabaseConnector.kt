@@ -35,11 +35,18 @@ import java.net.URL
 class DatabaseConnector(private val persistenceConfiguration: PersistenceConfiguration) {
 
 	@Bean
-	fun couchDbClient(): CloudantClient {
+	fun adminClient(): CloudantClient {
+		return userClient(username = ADMIN_USERNAME,
+				password = persistenceConfiguration.adminPassword)
+	}
+
+	fun userClient(username: String, password: String): CloudantClient {
 		return ClientBuilder
 				.url(URL(persistenceConfiguration.url))
-				.username("admin")
-				.password(persistenceConfiguration.adminPassword)
+				.username(username)
+				.password(password)
 				.build()
 	}
 }
+
+private const val ADMIN_USERNAME = "admin"

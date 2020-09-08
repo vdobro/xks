@@ -19,28 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.web.controller
+package com.dobrovolskis.xks.config
 
-import com.dobrovolskis.xks.service.UserManagementService
-import com.dobrovolskis.xks.web.model.RegistrationRequest
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.08
+ * @since 2020.09.09
  */
-@RestController
-@RequestMapping(value = ["/register"])
-class UserRegistrationController(private val userManagementService: UserManagementService) {
-
-	@RequestMapping(method = [RequestMethod.POST])
-	fun createUser(@RequestBody request: RegistrationRequest) {
-		userManagementService.registerUser(
-				username = request.username,
-				password = request.password)
+@Configuration
+@Profile("development")
+class DevelopmentConfiguration : WebMvcConfigurer {
+	override fun addCorsMappings(registry: CorsRegistry) {
+		registry.addMapping("/api/**")
+				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 	}
 }
-

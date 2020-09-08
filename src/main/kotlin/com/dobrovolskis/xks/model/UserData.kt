@@ -21,16 +21,13 @@
 
 package com.dobrovolskis.xks.model
 
+import com.dobrovolskis.xks.service.UserTableConfiguration
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.08
  */
 data class UserData(
 		val name: String,
-		val displayName: String,
-		val deckDbId: String,
-		val tableDbId: String,
-		val tableColumnDbId: String,
-		val tableRowDbId: String,
-		val tableSessionModeDbId: String
+		val tableConfiguration: UserTableConfiguration
 )

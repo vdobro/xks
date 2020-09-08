@@ -20,5 +20,7 @@
  */
 
 export const environment = {
-	production: true
+	production: true,
+	serverUrl: '',
+	databaseUrl: "https://xks.dobrovolskis.com/api/"
 };

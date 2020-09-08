@@ -24,12 +24,13 @@
  * @since 2020.09.08
  */
 export interface User {
-	username: string,
-	displayName: string,
+	name: string,
 
-	deckDbId: string,
-	tableDbId: string,
-	tableColumnDbId: string,
-	tableRowDbId: string,
-	tableSessionModeDbId: string
+	tableInformation: {
+		decks: string,
+		tables: string,
+		tableColumns: string,
+		tableRows: string,
+		tableSessionModes: string
+	}
 }

@@ -17,7 +17,7 @@
 						<a (click)="openRegisterDialog()">Register</a>
 					</li>
 					<li *ngIf="!loginEnabled">
-						<a>Logout</a>
+						<a (click)="logout()">Logout</a>
 					</li>
 				</ul>
 			</div>
