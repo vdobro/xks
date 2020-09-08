@@ -34,19 +34,51 @@ import org.springframework.stereotype.Service
 @Service
 class UserManagementService(databaseClient: CloudantClient,
                             private val userDatabaseService: UserDatabaseService) {
-
 	private val db: Database =
 			databaseClient.database("_users", false)
+	private val usernamePattern = Regex("[a-zA-Z0-9]*")
+	private val requiredUsernameLength = 5
+	private val requiredPasswordLength = 8
 
 	fun registerUser(username: String, password: String): UserData {
-		val userId = USER_PREFIX + username
-		if (db.contains(userId)) {
-			return db.find(UserData::class.java, userId)
+		validateUsername(username)
+		validatePassword(password)
+		if (userExists(username)) {
+			return getExisting(username)
 		}
-		db.save(UserCreationRequest(_id = userId,
+		createUser(username = username, password = password)
+		return createEntityDatabases(username)
+	}
+
+	private fun createUser(username: String, password: String) {
+
+		db.save(UserCreationRequest(
+				_id = prefixUsername(username),
 				name = username,
 				password = password))
-		return createEntityDatabases(username)
+	}
+
+	private fun userExists(username: String): Boolean {
+		return db.contains(prefixUsername(username))
+	}
+
+	private fun getExisting(username: String): UserData {
+		return db.find(UserData::class.java, prefixUsername(username))
+	}
+
+	private fun validateUsername(username: String) {
+		require(usernamePattern.matches(username)) {
+			"Username can only contain letters and numbers"
+		}
+		require(username.length >= requiredUsernameLength) {
+			"Username must be at least 5 characters long"
+		}
+	}
+
+	private fun validatePassword(password: String) {
+		require(password.length >= requiredPasswordLength) {
+			"Password must be at least $requiredPasswordLength characters long"
+		}
 	}
 
 	private fun createEntityDatabases(username: String): UserData {
@@ -78,6 +110,10 @@ class UserManagementService(databaseClient: CloudantClient,
 		)
 	}
 
+	private fun prefixUsername(username: String): String {
+		return USER_PREFIX + username
+	}
+
 	@Serializable
 	data class CouchUserData(
 			val displayName: String,
@@ -93,18 +129,18 @@ class UserManagementService(databaseClient: CloudantClient,
 			val roles: List<String> = emptyList(),
 			val type: String = "user",
 	)
+
+	@Serializable
+	data class UserCreationRequest(
+			val _id: String,
+			val name: String,
+			val password: String,
+
+			val roles: List<String> = emptyList(),
+			val type: String = "user",
+
+			val _rev: String? = null,
+	)
 }
-
-@Serializable
-data class UserCreationRequest(
-		val _id: String,
-		val name: String,
-		val password: String,
-
-		val roles: List<String> = emptyList(),
-		val type: String = "user",
-
-		val _rev: String? = null,
-)
 
 private const val USER_PREFIX = "org.couchdb.user:"
