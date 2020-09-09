@@ -34,7 +34,6 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 
-
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.08
@@ -88,7 +87,11 @@ class UserManagementService(databaseClient: CloudantClient,
 		val user = db.find(UserCreationRequest::class.java,
 				USER_PREFIX + username)
 		db.remove(user)
-		userDatabaseService.removeAll(username)
+		try {
+			userDatabaseService.removeAll(username)
+		} catch (_: Throwable) {
+			//User could be deleted, but their database information could not - this is tolerable
+		}
 	}
 
 	private fun createUser(username: String, password: String) {

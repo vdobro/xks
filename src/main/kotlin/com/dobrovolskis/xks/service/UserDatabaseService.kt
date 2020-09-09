@@ -26,6 +26,7 @@ import com.cloudant.client.api.Database
 import com.dobrovolskis.xks.config.*
 import kotlinx.serialization.Serializable
 import org.springframework.stereotype.Service
+import java.util.*
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -73,10 +74,11 @@ class UserDatabaseService(private val client: CloudantClient) {
 	}
 
 	private fun createWithPermission(username: String, dbName: String): String {
-		val name = username + dbName
+		val name = "xks_${UUID.randomUUID()}_$dbName"
 		try {
 			client.deleteDB(name)
 		} catch (_: Throwable) {
+			//Database didn't exist, so no problem
 		}
 		val database = client.database(name, true)
 		database.save(UserDbSecurityConfiguration(

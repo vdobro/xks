@@ -29,13 +29,11 @@ import org.springframework.stereotype.Component
  * @since 2020.04.08
  */
 
-private const val TABLE_NAME_PREFIX = "_xks_"
-
-const val TABLE_DECKS = "${TABLE_NAME_PREFIX}deck"
-const val TABLE_ITEM_TABLES = "${TABLE_NAME_PREFIX}table"
-const val TABLE_TABLE_COLUMNS = "${TABLE_NAME_PREFIX}table_column"
-const val TABLE_TABLE_ROWS = "${TABLE_NAME_PREFIX}table_row"
-const val TABLE_SESSION_MODES = "${TABLE_NAME_PREFIX}table_session_mode"
+const val TABLE_DECKS = "deck"
+const val TABLE_ITEM_TABLES = "table"
+const val TABLE_TABLE_COLUMNS = "table_column"
+const val TABLE_TABLE_ROWS = "table_row"
+const val TABLE_SESSION_MODES = "table_session_mode"
 
 @Component
 @ConfigurationProperties(prefix = "db")
