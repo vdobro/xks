@@ -43,7 +43,7 @@
 						</label>
 					</div>
 				</div>
-				<div class="uk-alert-danger uk-margin" uk-alert *ngIf="loginErrorMessage.length > 0">
+				<div class="uk-alert-danger uk-margin" uk-alert *ngIf="loginErrorMessage?.length">
 					<a class="uk-alert-close" uk-close></a>
 					<p>{{loginErrorMessage}}</p>
 				</div>

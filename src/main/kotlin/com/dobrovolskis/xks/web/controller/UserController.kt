@@ -24,12 +24,14 @@ package com.dobrovolskis.xks.web.controller
 import com.dobrovolskis.xks.model.UserData
 import com.dobrovolskis.xks.service.UserManagementService
 import com.dobrovolskis.xks.web.model.UserCredentialsDto
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod.POST
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -48,13 +50,13 @@ class UserController(private val userManagementService: UserManagementService) {
 	}
 
 	@RequestMapping(value = ["/login"], method = [POST])
-	fun getUserDetails(@RequestBody dto: UserCredentialsDto): ResponseEntity<UserData> {
-		if (!userManagementService.credentialsCorrect(
-						username = dto.username,
-						password = dto.password)) {
-			return ResponseEntity(UNAUTHORIZED)
+	fun getUserDetails(@RequestBody dto: UserCredentialsDto): UserData {
+		check(userManagementService.credentialsCorrect(
+				username = dto.username,
+				password = dto.password)) {
+			"Wrong username or password"
 		}
-		return ResponseEntity.ok(userManagementService.getExisting(dto.username))
+		return userManagementService.getExisting(dto.username)
 	}
 
 	@RequestMapping(value = ["/forget"], method = [POST])
@@ -68,16 +70,5 @@ class UserController(private val userManagementService: UserManagementService) {
 			ResponseEntity(OK)
 		}
 	}
-
-	@ExceptionHandler(IllegalArgumentException::class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	fun handleException(exception: IllegalArgumentException): ValidationResponse {
-		return ValidationResponse(exception.message ?: "Unknown error")
-	}
-
-	data class ValidationResponse(
-			val error: String,
-	)
 }
 

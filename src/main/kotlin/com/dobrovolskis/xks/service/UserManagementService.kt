@@ -23,11 +23,17 @@ package com.dobrovolskis.xks.service
 
 import com.cloudant.client.api.CloudantClient
 import com.cloudant.client.api.Database
-import com.dobrovolskis.xks.config.DatabaseConnector
-import com.dobrovolskis.xks.config.TABLE_DECKS
+import com.dobrovolskis.xks.config.PersistenceConfiguration
 import com.dobrovolskis.xks.model.UserData
 import kotlinx.serialization.Serializable
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.client.RestTemplate
+
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,8 +41,9 @@ import org.springframework.stereotype.Service
  */
 @Service
 class UserManagementService(databaseClient: CloudantClient,
-                            private val databaseConnector: DatabaseConnector,
+                            persistenceConfiguration: PersistenceConfiguration,
                             private val userDatabaseService: UserDatabaseService) {
+	private val sessionUrl = persistenceConfiguration.url + "_session"
 	private val db: Database = databaseClient.database("_users", false)
 
 	private val usernamePattern = Regex("[a-zA-Z0-9]*")
@@ -46,8 +53,8 @@ class UserManagementService(databaseClient: CloudantClient,
 	fun registerUser(username: String, password: String): UserData {
 		validateUsername(username)
 		validatePassword(password)
-		if (userExists(username)) {
-			return getExisting(username)
+		require(!userExists(username)) {
+			"User with given name already exists."
 		}
 		createUser(username = username, password = password)
 		return UserData(name = username,
@@ -56,8 +63,16 @@ class UserManagementService(databaseClient: CloudantClient,
 
 	fun credentialsCorrect(username: String, password: String): Boolean {
 		return try {
-			val client = databaseConnector.userClient(username, password)
-			client.database(USER_PREFIX + TABLE_DECKS, false)
+			val restTemplate = RestTemplate()
+			val headers = HttpHeaders()
+			headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
+
+			val map: MultiValueMap<String, String> = LinkedMultiValueMap()
+			map.add("name", username)
+			map.add("password", password)
+
+			val request = HttpEntity(map, headers)
+			restTemplate.postForEntity(sessionUrl, request, String::class.java)
 			true
 		} catch (e: Throwable) {
 			false

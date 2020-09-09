@@ -51,13 +51,9 @@ export class UserSessionService {
 	}
 
 	async login(username: string, password: string): Promise<User> {
-		try {
-			const user = await this.getUser(username, password);
-			this.updateUser(user, password);
-			return this.getCurrent();
-		} catch (e) {
-			return null;
-		}
+		const user = await this.getUser(username, password);
+		this.updateUser(user, password);
+		return this.getCurrent();
 	}
 
 	async register(username: string, password: string): Promise<User> {
@@ -104,14 +100,19 @@ export class UserSessionService {
 	private async postCredentials(url: string,
 								  username: string,
 								  password: string): Promise<User> {
-		return await this.httpClient.post<User>(url,
-			{
-				username: username,
-				password: password
-			},
-			{
-				responseType: 'json'
-			}).toPromise();
+		try {
+			return await this.httpClient.post<User>(url,
+				{
+					username: username,
+					password: password
+				},
+				{
+					responseType: 'json'
+				}).toPromise();
+		} catch (e) {
+			const responseObject = e.error;
+			throw new Error(responseObject.error);
+		}
 	}
 }
 

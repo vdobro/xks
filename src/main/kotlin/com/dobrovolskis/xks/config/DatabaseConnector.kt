@@ -40,7 +40,7 @@ class DatabaseConnector(private val persistenceConfiguration: PersistenceConfigu
 				password = persistenceConfiguration.adminPassword)
 	}
 
-	fun userClient(username: String, password: String): CloudantClient {
+	private fun userClient(username: String, password: String): CloudantClient {
 		return ClientBuilder
 				.url(URL(persistenceConfiguration.url))
 				.username(username)

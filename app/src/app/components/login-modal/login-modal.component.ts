@@ -70,6 +70,7 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 		});
 		this.usernameInput.setValue('');
 		this.passwordInput.setValue('');
+		this.passwordConfirmationInput.setValue('');
 	}
 
 	async submitCredentials() {
@@ -77,13 +78,15 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 		const password = this.passwordInput.value;
 
 		if (this.validateUsername(username) && this.validatePassword(password)) {
-			const user = this.existingUser
-				? await this.userSessionService.login(username, password)
-				: await this.userSessionService.register(username, password);
-			if (user) {
+			try {
+				if (this.existingUser) {
+					await this.userSessionService.login(username, password);
+				} else {
+					await this.userSessionService.register(username, password);
+				}
 				UIkit.modal(this.modal.nativeElement).hide();
-			} else {
-				this.loginErrorMessage = 'Nope';
+			} catch (e) {
+				this.loginErrorMessage = e.message;
 			}
 		}
 	}
@@ -91,15 +94,15 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 	private validatePassword(password: string): boolean {
 		if (this.existingUser) {
 			if (password.length === 0) {
-				this.loginErrorMessage = 'Password cannot be empty';
+				this.loginErrorMessage = 'Password cannot be empty.';
 				return false;
 			}
 		} else {
 			if (password.length < 8) {
-				this.loginErrorMessage = 'Password has to be at least 8 characters long';
+				this.loginErrorMessage = 'Password has to be at least 8 characters long.';
 				return false;
 			} else if (this.passwordConfirmationInput.value !== password) {
-				this.loginErrorMessage = 'Passwords do not match';
+				this.loginErrorMessage = 'Passwords do not match.';
 				return false;
 			}
 		}
@@ -108,17 +111,17 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 
 	private validateUsername(username: string): boolean {
 		if (username.includes(' ')) {
-			this.loginErrorMessage = 'Username cannot contain spaces';
+			this.loginErrorMessage = 'Username cannot contain spaces.';
 			return false;
 		}
 		if (this.existingUser) {
 			if (username.length === 0) {
-				this.loginErrorMessage = 'Username cannot be empty';
+				this.loginErrorMessage = 'Username cannot be empty.';
 				return false;
 			}
 		} else {
 			if (username.length < 5) {
-				this.loginErrorMessage = 'Usernames must be at least 5 characters long';
+				this.loginErrorMessage = 'Usernames must be at least 5 characters long.';
 				return false;
 			}
 		}
