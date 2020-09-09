@@ -39,7 +39,7 @@ export class DeckListViewComponent implements OnInit {
 	@ViewChild("deckListFooter") deckListFooter: ElementRef;
 
 	@Input()
-	decks$: Promise<Deck[]>;
+	decks: Deck[];
 
 	constructor(private readonly sidebarService: SidebarService) {
 	}

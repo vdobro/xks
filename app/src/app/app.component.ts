@@ -22,6 +22,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 import {NavigationControlService} from "./services/navigation-control.service";
+import {NavigationService} from "./services/navigation.service";
+import {DeckRepository} from "./repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,6 +40,8 @@ export class AppComponent implements OnInit {
 	sidebarVisible: boolean = false;
 
 	constructor(
+		private readonly deckRepository: DeckRepository,
+		private readonly navigationService: NavigationService,
 		private readonly navControlService: NavigationControlService,
 		private readonly cdr: ChangeDetectorRef) {
 
@@ -46,6 +50,9 @@ export class AppComponent implements OnInit {
 				this.sidebarVisible = visible;
 				this.cdr.detectChanges();
 			}
+		});
+		this.deckRepository.sourceChanged.subscribe(async () => {
+			await this.navigationService.goHome();
 		});
 	}
 

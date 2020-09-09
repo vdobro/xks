@@ -26,6 +26,7 @@ import {DeckService} from "../../services/deck.service";
 import {DeckListNavbarComponent} from "../deck-list-navbar/deck-list-navbar.component";
 import {NavBarItem} from "../nav-bar-item";
 import {TopBarService} from "../../services/top-bar.service";
+import {DeckRepository} from "../../repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,20 +42,30 @@ export class DeckListPageComponent implements OnInit {
 	@ViewChild(DeckListViewComponent)
 	deckListView: DeckListViewComponent;
 
-	decks: Promise<Deck[]> = this.deckService.getAll();
+	decks: Deck[];
 
 	constructor(private readonly deckService: DeckService,
+				deckRepository: DeckRepository,
 				private readonly topBarService: TopBarService) {
+		deckRepository.sourceChanged.subscribe(async () => {
+			await this.reloadDecks();
+		});
 	}
 
-	ngOnInit(): void {
+	async ngOnInit() {
+		await this.reloadDecks();
+
 		this.topBarService.clearItems();
 		this.topBarService.addItem(new NavBarItem(DeckListNavbarComponent));
 		this.deckService.deckCreated().subscribe(_ => this.onNewDeckCreated());
 	}
 
-	onNewDeckCreated() {
+	async onNewDeckCreated() {
 		this.deckListView.onNewDeckCreated();
-		this.decks = this.deckService.getAll();
+		await this.reloadDecks();
+	}
+
+	private async reloadDecks() {
+		this.decks = await this.deckService.getAll();
 	}
 }

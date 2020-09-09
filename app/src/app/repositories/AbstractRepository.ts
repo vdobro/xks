@@ -25,6 +25,7 @@ import PouchFind from "pouchdb-find";
 import {UserAuth, UserSessionService} from "../services/user-session.service";
 import {environment} from "../../environments/environment";
 import {TableConfiguration} from "../models/TableConfiguration";
+import {Subject, Subscribable} from "rxjs";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,6 +35,9 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	implements BaseRepository<Entity> {
 
 	private static pouchFindInitialized = false;
+
+	private readonly _sourceChanged = new Subject();
+	readonly sourceChanged: Subscribable<void> = this._sourceChanged;
 
 	protected db: any;
 	private remoteSyncHandler: any;
@@ -54,11 +58,10 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 			AbstractRepository.pouchFindInitialized = true;
 		}
 		this.anonDb = new PouchDB("anon-" + this.localDbName);
-		this.db = this.anonDb;
+		this.switchToAnonDatabase().then(_ => this._sourceChanged.next());
+
 		this.userSessionService.userAuthChanged.subscribe(async auth => {
-			const user = await this.userSessionService.getCurrent();
-			const tableConfig = user.tableConfiguration;
-			await this.userAuthChangedHandler(tableConfig, auth);
+			await this.userAuthChangedHandler(auth);
 		});
 	}
 
@@ -130,25 +133,35 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		}
 	}
 
-	private async userAuthChangedHandler(tableConfig: TableConfiguration, auth: UserAuth) {
+	private async userAuthChangedHandler(auth: UserAuth) {
 		if (auth) {
-			this.userDb = new PouchDB("user-" + this.localDbName);
-			const name = this.resolveRemoteDatabaseName(tableConfig);
+			this.createUserDatabase();
+			const user = await this.userSessionService.getCurrent();
+			const name = this.resolveRemoteDatabaseName(user.tableConfiguration);
 			const url = environment.databaseUrl + name;
-			const remoteDb = new PouchDB(url, {
-				auth: auth
-			});
+			const remoteDb = new PouchDB(url, {auth: auth});
 			this.remoteSyncHandler = this.userDb.sync(remoteDb, {
 				live: true,
 				retry: true,
 			}).on('error', error => {
-				console.log(error);
+				console.log('(P|C)ouchDB sync error: ' + error);
+			}).on('change', _ => {
+				this._sourceChanged.next();
 			});
 			this.db = this.userDb;
 		} else {
-			this.remoteSyncHandler?.cancel();
-			await this.userDb?.destroy();
-			this.db = this.anonDb;
+			await this.switchToAnonDatabase();
 		}
+		this._sourceChanged.next();
+	}
+
+	private createUserDatabase() {
+		this.userDb = new PouchDB("user-" + this.localDbName);
+	}
+
+	private async switchToAnonDatabase() {
+		this.remoteSyncHandler?.cancel();
+		await this.userDb?.destroy();
+		this.db = this.anonDb;
 	}
 }
