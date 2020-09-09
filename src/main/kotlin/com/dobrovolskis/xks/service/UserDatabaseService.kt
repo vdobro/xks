@@ -68,6 +68,10 @@ class UserDatabaseService(private val client: CloudantClient) {
 		client.deleteDB(configuration.decks)
 	}
 
+	fun getAll(username: String): UserTableConfiguration {
+		return userTables.find(UserTableConfiguration::class.java, username)
+	}
+
 	private fun createWithPermission(username: String, dbName: String): String {
 		val name = username + dbName
 		try {

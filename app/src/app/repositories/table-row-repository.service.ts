@@ -24,6 +24,8 @@ import {AbstractRepository} from "./AbstractRepository";
 import {TableRow} from "../models/TableRow";
 import {BaseDataEntity} from "./BaseRepository";
 import {Table} from "../models/Table";
+import {UserSessionService} from "../services/user-session.service";
+import {TableConfiguration} from "../models/TableConfiguration";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,8 +38,8 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 
 	private indexCreated: boolean = false;
 
-	constructor() {
-		super('table-row');
+	constructor(userSessionService: UserSessionService) {
+		super('table-row', userSessionService);
 	}
 
 	mapToDataEntity(entity: TableRow): TableRowDataEntity {
@@ -95,6 +97,10 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 		for (const row of all) {
 			await this.db.remove(row);
 		}
+	}
+
+	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
+		return tableConfig.tableRows;
 	}
 
 	private async checkIndexesInitialized(): Promise<void> {

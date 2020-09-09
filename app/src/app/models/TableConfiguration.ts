@@ -19,14 +19,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TableConfiguration} from "./TableConfiguration";
-
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.08
+ * @since 2020.09.09
  */
-export interface User {
-	name: string,
-	tableConfiguration: TableConfiguration
+export interface TableConfiguration {
+	decks: string,
+	tables: string,
+	tableColumns: string,
+	tableRows: string,
+	tableSessionModes: string
 }
-

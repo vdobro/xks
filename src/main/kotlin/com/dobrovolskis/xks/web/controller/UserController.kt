@@ -40,8 +40,9 @@ import org.springframework.web.bind.annotation.RequestMethod.POST
 class UserController(private val userManagementService: UserManagementService) {
 
 	@RequestMapping(value = ["/register"], method = [POST])
-	fun createUser(@RequestBody dto: UserCredentialsDto) {
-		userManagementService.registerUser(
+	@ResponseBody
+	fun createUser(@RequestBody dto: UserCredentialsDto): UserData {
+		return userManagementService.registerUser(
 				username = dto.username,
 				password = dto.password)
 	}

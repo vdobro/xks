@@ -23,6 +23,8 @@ import {Injectable} from '@angular/core';
 import {Deck} from "../models/Deck";
 import {BaseDataEntity} from "./BaseRepository";
 import {AbstractRepository} from "./AbstractRepository";
+import {UserSessionService} from "../services/user-session.service";
+import {TableConfiguration} from "../models/TableConfiguration";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,8 +35,8 @@ import {AbstractRepository} from "./AbstractRepository";
 })
 export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 
-	constructor() {
-		super('deck');
+	constructor(userSessionService: UserSessionService) {
+		super('deck', userSessionService);
 	}
 
 	mapToDataEntity(entity: Deck): DeckEntity {
@@ -52,6 +54,10 @@ export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 			name: entity.name,
 			description: entity.description,
 		};
+	}
+
+	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
+		return tableConfig.decks;
 	}
 }
 

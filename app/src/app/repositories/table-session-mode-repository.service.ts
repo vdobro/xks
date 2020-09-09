@@ -24,6 +24,8 @@ import {AbstractRepository} from "./AbstractRepository";
 import {TableSessionMode} from "../models/TableSessionMode";
 import {BaseDataEntity} from "./BaseRepository";
 import {Table} from "../models/Table";
+import {UserSessionService} from "../services/user-session.service";
+import {TableConfiguration} from "../models/TableConfiguration";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,8 +38,8 @@ export class TableSessionModeRepository extends AbstractRepository<TableSessionM
 
 	private indexCreated: boolean = false;
 
-	constructor() {
-		super('table-study-session-mode');
+	constructor(userSessionService: UserSessionService) {
+		super('table-study-session-mode', userSessionService);
 	}
 
 	async getByTable(table: Table): Promise<TableSessionMode[]> {
@@ -62,6 +64,10 @@ export class TableSessionModeRepository extends AbstractRepository<TableSessionM
 			questionColumnIds: entity.questionColumnIds,
 			answerColumnIds: entity.answerColumnIds,
 		};
+	}
+
+	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
+		return tableConfig.tableSessionModes;
 	}
 
 	private async getDataEntitiesByTable(tableId: string): Promise<TableStudySessionModeDataEntity[]> {

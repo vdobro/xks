@@ -65,7 +65,8 @@ class UserManagementService(databaseClient: CloudantClient,
 	}
 
 	fun getExisting(username: String): UserData {
-		return db.find(UserData::class.java, prefixUsername(username))
+		return UserData(name = username,
+				tableConfiguration = this.userDatabaseService.getAll(username))
 	}
 
 	fun forget(username: String) {

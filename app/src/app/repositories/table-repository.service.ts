@@ -23,6 +23,8 @@ import {Injectable} from '@angular/core';
 import {AbstractRepository} from "./AbstractRepository";
 import {Table} from "../models/Table";
 import {BaseDataEntity} from "./BaseRepository";
+import {UserSessionService} from "../services/user-session.service";
+import {TableConfiguration} from "../models/TableConfiguration";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,8 +36,8 @@ import {BaseDataEntity} from "./BaseRepository";
 export class TableRepository extends AbstractRepository<Table, TableDataEntity> {
 	private indexCreated: boolean = false;
 
-	constructor() {
-		super('table');
+	constructor(userSessionService: UserSessionService) {
+		super('table', userSessionService);
 	}
 
 	async getByDeck(id: string): Promise<Table[]> {
@@ -76,6 +78,10 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 			name: entity.name,
 			sessionModeIds: entity.sessionModes,
 		}
+	}
+
+	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
+		return tableConfig.tables;
 	}
 
 	private async checkIndexes() {

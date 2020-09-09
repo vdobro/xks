@@ -24,6 +24,8 @@ import {AbstractRepository} from "./AbstractRepository";
 import {TableColumn} from "../models/TableColumn";
 import {BaseDataEntity} from "./BaseRepository";
 import {Table} from "../models/Table";
+import {UserSessionService} from "../services/user-session.service";
+import {TableConfiguration} from "../models/TableConfiguration";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,8 +38,12 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 
 	private indexCreated: boolean = false;
 
-	constructor() {
-		super('table-column');
+	constructor(userSessionService: UserSessionService) {
+		super('table-column', userSessionService);
+	}
+
+	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
+		return tableConfig.tableColumns;
 	}
 
 	private async checkIndexesInitialized(): Promise<void> {

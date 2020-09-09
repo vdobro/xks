@@ -22,6 +22,9 @@
 import PouchDB from "pouchdb";
 import {BaseDataEntity, BaseRepository} from "./BaseRepository";
 import PouchFind from "pouchdb-find";
+import {UserAuth, UserSessionService} from "../services/user-session.service";
+import {environment} from "../../environments/environment";
+import {TableConfiguration} from "../models/TableConfiguration";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -32,18 +35,31 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 
 	private static pouchFindInitialized = false;
 
-	protected readonly db: any;
+	protected db: any;
+	private remoteSyncHandler: any;
+
+	private readonly anonDb: any;
+	private userDb: any;
 
 	abstract mapToDataEntity(entity: Entity): DataEntity
 
 	abstract mapToEntity(entity: DataEntity): Entity
 
-	protected constructor(private readonly dbName: string) {
+	protected constructor(
+		private readonly localDbName: string,
+		private readonly userSessionService: UserSessionService) {
+
 		if (!AbstractRepository.pouchFindInitialized) {
 			PouchDB.plugin(PouchFind);
 			AbstractRepository.pouchFindInitialized = true;
 		}
-		this.db = new PouchDB(this.dbName);
+		this.anonDb = new PouchDB("anon-" + this.localDbName);
+		this.db = this.anonDb;
+		this.userSessionService.userAuthChanged.subscribe(async auth => {
+			const user = await this.userSessionService.getCurrent();
+			const tableConfig = user.tableConfiguration;
+			await this.userAuthChangedHandler(tableConfig, auth);
+		});
 	}
 
 	async add(entity: Entity): Promise<void> {
@@ -98,6 +114,8 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		}
 	}
 
+	protected abstract resolveRemoteDatabaseName(tableConfig: TableConfiguration): string;
+
 	private async getRevision(id: string): Promise<string> {
 		const dataEntity = await this.getDataEntity(id);
 		return dataEntity._rev;
@@ -109,6 +127,28 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		} catch (e) {
 			console.log('Could not get document ' + id);
 			return null;
+		}
+	}
+
+	private async userAuthChangedHandler(tableConfig: TableConfiguration, auth: UserAuth) {
+		if (auth) {
+			this.userDb = new PouchDB("user-" + this.localDbName);
+			const name = this.resolveRemoteDatabaseName(tableConfig);
+			const url = environment.databaseUrl + name;
+			const remoteDb = new PouchDB(url, {
+				auth: auth
+			});
+			this.remoteSyncHandler = this.userDb.sync(remoteDb, {
+				live: true,
+				retry: true,
+			}).on('error', error => {
+				console.log(error);
+			});
+			this.db = this.userDb;
+		} else {
+			this.remoteSyncHandler?.cancel();
+			await this.userDb?.destroy();
+			this.db = this.anonDb;
 		}
 	}
 }

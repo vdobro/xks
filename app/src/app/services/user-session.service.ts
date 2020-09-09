@@ -20,7 +20,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable, Subject} from "rxjs";
+import {Subject, Subscribable} from "rxjs";
 import {User} from "../models/User";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
@@ -40,8 +40,10 @@ export class UserSessionService {
 	private readonly forgetUrl = this.apiRoot + "/forget";
 
 	private readonly _userLoggedIn = new Subject<boolean>();
+	private readonly _userAuthChanged = new Subject<UserAuth>();
 
-	readonly userLoggedIn: Observable<boolean> = this._userLoggedIn;
+	readonly userLoggedIn: Subscribable<boolean> = this._userLoggedIn;
+	readonly userAuthChanged: Subscribable<UserAuth> = this._userAuthChanged;
 
 	private currentUser: User = null;
 
@@ -50,7 +52,8 @@ export class UserSessionService {
 
 	async login(username: string, password: string): Promise<User> {
 		try {
-			this.updateUser(await this.getUser(username, password));
+			const user = await this.getUser(username, password);
+			this.updateUser(user, password);
 			return this.getCurrent();
 		} catch (e) {
 			return null;
@@ -59,12 +62,17 @@ export class UserSessionService {
 
 	async register(username: string, password: string): Promise<User> {
 		const user = await this.postCredentials(this.registrationUrl, username, password);
-		this.updateUser(user);
+		this.updateUser(user, password);
+		this._userAuthChanged.next({
+			username: username,
+			password: password
+		});
 		return this.getCurrent();
 	}
 
 	logout() {
-		this.updateUser(null);
+		this.updateUser(null, null);
+		this._userAuthChanged.next(null);
 	}
 
 	async forget(username: string, password: string) {
@@ -75,10 +83,18 @@ export class UserSessionService {
 		return this.currentUser;
 	}
 
-	private updateUser(user: User) {
+	private updateUser(user: User, password: string) {
 		this.currentUser = user;
 		this._userLoggedIn.next(this.currentUser !== null
 			&& this.currentUser !== undefined);
+		if (password) {
+			this._userAuthChanged.next({
+				username: user.name,
+				password: password
+			});
+		} else {
+			this._userAuthChanged.next(null);
+		}
 	}
 
 	private async getUser(username: string, password: string): Promise<User> {
@@ -97,4 +113,9 @@ export class UserSessionService {
 				responseType: 'json'
 			}).toPromise();
 	}
+}
+
+export interface UserAuth {
+	username: string,
+	password: string
 }
