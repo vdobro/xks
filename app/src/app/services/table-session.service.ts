@@ -88,6 +88,10 @@ export class TableSessionService {
 		return this.handleAnswerFeedback(columnId, answerFeedback, state);
 	}
 
+	cleanup() {
+		this.taskService.resetTasks();
+	}
+
 	private handleAnswerFeedback(columnId: string,
 								 answerFeedback: AnswerFeedback,
 								 state: LearningSessionState<TableSession>): LearningSessionState<TableSession> {
@@ -147,7 +151,8 @@ export class TableSessionService {
 
 	private calculateProgress(state: LearningSessionState<TableSession>): number {
 		const internalState = this.getInternalState(state);
-		const maxScore = this.taskService.defaultMaximumScore;
+		const startScore = this.taskService.defaultStartScore;
+		const maxScore = this.taskService.defaultMaximumScore - startScore;
 
 		const remainingTasks = internalState.remainingTasks.length;
 		const doneTasks = internalState.tasksDone.length;
@@ -156,10 +161,11 @@ export class TableSessionService {
 		const totalTasks = windowLength + remainingTasks + doneTasks;
 
 		const pendingTaskScore = internalState.taskWindow
-			.map(task => this.taskService.getCurrentScore(task))
+			.map(task => this.taskService.getCurrentScore(task) - startScore)
 			.reduce((sum, current) => sum + current, 0);
 
-		return ((doneTasks * maxScore) + pendingTaskScore) / (totalTasks * maxScore);
+		const progress = ((doneTasks * maxScore) + pendingTaskScore) / (totalTasks * maxScore);
+		return Math.max(progress, 0);
 	}
 
 	private updateActiveTaskWindow(state: LearningSessionState<TableSession>) {

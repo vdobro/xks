@@ -37,9 +37,9 @@ export class ExerciseTaskService {
 
 	private readonly taskStates = new Map<string, TaskState>();
 
-	private readonly defaultMinimumScore = 0;
-	private readonly defaultStartScore = 0;
-	readonly defaultMaximumScore = 2;
+	readonly defaultMinimumScore = 0;
+	readonly defaultStartScore = 3;
+	readonly defaultMaximumScore = 8;
 
 	constructor(
 		private readonly tableCellService: TableCellService) {
@@ -94,8 +94,8 @@ export class ExerciseTaskService {
 		}
 	}
 
-	resetTask(task: ExerciseTask) {
-		this.taskStates.delete(task.id);
+	resetTasks() {
+		this.taskStates.clear();
 	}
 
 	getCurrentScore(task: ExerciseTask): number {
@@ -123,12 +123,14 @@ export class ExerciseTaskService {
 		if (answerCorrect) {
 			const subscores = currentState.columnSubscores;
 			const subscore = subscores.get(columnId);
-			if (subscore.value < currentState.maxScore) {
+			const globalMaxScore = currentState.maxScore;
+			const localMaxScore = currentState.score.value + 2;
+			if (subscore.value < globalMaxScore && subscore.value < localMaxScore) {
 				ExerciseTaskService.incrementSubscore(currentState, columnId);
 			}
 			ExerciseTaskService.incrementMainScoreIfPossible(currentState);
 		} else {
-			ExerciseTaskService.incrementSubscore(currentState, columnId);
+			ExerciseTaskService.changeSubscore(currentState, columnId, 0);
 			currentState.score = ExerciseTaskService.changeScore(currentState.score, this.defaultMinimumScore);
 		}
 	}
@@ -175,18 +177,21 @@ export class ExerciseTaskService {
 	private static incrementMainScoreIfPossible(state: TaskState) {
 		const old = state.score.value;
 		const subscores = state.columnSubscores;
-		for (let subscoreValue of subscores.values()) {
-			if (subscoreValue.value <= old) {
-				return;
-			}
+		if (Array.from(subscores.values()).every(score => score.value > old)) {
+			state.score = this.incrementScore(state.score);
 		}
-		state.score = this.incrementScore(state.score);
 	}
 
 	private static incrementSubscore(state: TaskState, columnId: string) {
 		const subscores = state.columnSubscores;
 		const subscore = subscores.get(columnId);
 		subscores.set(columnId, this.incrementScore(subscore));
+	}
+
+	private static changeSubscore(state: TaskState, columnId: string, value: number) {
+		const subscores = state.columnSubscores;
+		const subscore = subscores.get(columnId);
+		subscores.set(columnId, this.changeScore(subscore, value));
 	}
 
 	private static incrementScore(score: TaskScore): TaskScore {

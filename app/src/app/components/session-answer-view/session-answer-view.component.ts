@@ -57,6 +57,8 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 
 	@Input()
 	shouldGetFocus: boolean = false;
+	@Input()
+	allowOverride: boolean = false;
 
 	@Input()
 	state: LearningSessionState<TableSession>;
@@ -67,7 +69,6 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 
 	answerWrong: boolean = false;
 	answerCorrect: boolean = false;
-	allowOverride: boolean = false;
 	disableInput: boolean = false;
 
 	constructor(
@@ -81,11 +82,12 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 
 	ngOnChanges() {
 		setTimeout(() => {
-			if (this.state.currentTask.id !== this.state.lastAnswer?.task.id) {
+			const currentTask = this.state.currentTask.id;
+			const previousTask = this.state.lastAnswer?.task.id;
+			if (currentTask !== previousTask) {
 				this.answerInput.setValue('');
 				this.disableInput = false;
 				this.resetAnswerCorrect();
-				this.allowOverride = false;
 			}
 			this.focusIfNeeded();
 		});
@@ -113,8 +115,7 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 			});
 		} else {
 			this.setAnswerCorrect(false);
-			this.allowOverride = true;
-			UIkit.notification("Incorrect, correct answer was: \n"
+			UIkit.notification("Incorrect, correct answer was:\n"
 				+ nextState?.lastAnswer?.actualValue, {
 				status: 'danger',
 				timeout: 1000,
@@ -139,7 +140,6 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	}
 
 	async forceAcceptAnswer() {
-		this.allowOverride = false;
 		UIkit.notification.closeAll();
 		const nextState = await this.taskService.acceptLastAnswer(this.state);
 		this.setAnswerCorrect(true);

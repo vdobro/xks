@@ -75,6 +75,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.topBarService.clearItems();
+		this.sessionService.cleanup();
 	}
 
 	private async initSession() {
@@ -85,5 +86,4 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		this.topBarService.clearItems();
 		this.topBarService.addItem(new NavBarItem(SessionNavigationComponent));
 	}
-
 }

@@ -18,6 +18,9 @@
 		<div *ngFor="let answer of state.currentTask.answerValues">
 			<app-session-answer-view
 				[(state)]="state"
+				[allowOverride]="state.lastAnswer?.task.id === state.currentTask.id
+								&& state.lastAnswer?.columnId === answer.column.id
+								&& !state.lastAnswer?.correct"
 				[shouldGetFocus]="state.currentTask.pendingAnswerFields[0]?.column.id === answer.column.id"
 				[answerField]="answer"></app-session-answer-view>
 		</div>

@@ -11,6 +11,7 @@
 	</div>
 	<div *ngIf="answerWrong && allowOverride" class="uk-width-auto">
 		<button type="button" class="uk-button uk-button-primary"
+				uk-tooltip="title: Shortcut: Shift+F"
 				(click)="forceAcceptAnswer()">Accept answer
 		</button>
 	</div>
