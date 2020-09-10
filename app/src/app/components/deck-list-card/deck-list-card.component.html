@@ -1,0 +1,43 @@
+<a *ngIf="deck"
+   class="uk-card uk-card-small uk-display-block uk-card-default uk-link-toggle uk-card-body uk-animation-fade"
+   [hidden]="editMode" (click)="openDeckDetails()">
+	<div class="uk-grid-small uk-flex-middle" uk-grid>
+		<div class="uk-width-expand">
+			<div class="uk-card-title">
+				<span class="uk-link-heading">
+					{{ deck.name }}
+				</span>
+			</div>
+		</div>
+		<div class="uk-width-auto">
+			<a (click)="onEditClicked();$event.preventDefault();$event.stopPropagation();"
+			   uk-icon="icon: pencil"></a>
+		</div>
+	</div>
+	<p *ngIf="deck.description?.length > 0">
+		{{ deck.description }}
+	</p>
+</a>
+<div *ngIf="deck" class="uk-card uk-card-small uk-display-block uk-card-default uk-card-body uk-animation-fade"
+	 [hidden]="!editMode">
+	<form (submit)="onChangesSubmit()">
+		<div class="uk-grid-small uk-flex-middle" uk-grid>
+			<div class="uk-width-expand">
+				<label>
+					<input class="uk-input" type="text" placeholder="Title"
+						   [formControl]="nameInput"
+						   [value]="deck.name">
+				</label>
+			</div>
+			<div class="uk-width-auto">
+				<button type="submit" uk-icon="icon: check"></button>
+			</div>
+		</div>
+		<label>
+			<textarea class="uk-textarea uk-margin-top" placeholder="Description"
+					  [formControl]="descriptionInput"
+					  [value]="deck.description">
+			</textarea>
+		</label>
+	</form>
+</div>

@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "db.adminPassword",
+      "type": "java.lang.String",
+      "description": "Administrator password of the CouchDB instance."
+    },
+    {
+      "name": "db.url",
+      "type": "java.lang.String",
+      "description": "Full URL of the CouchDB instance."
+    }
+  ]
+}

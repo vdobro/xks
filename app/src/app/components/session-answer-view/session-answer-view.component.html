@@ -1,0 +1,10 @@
+<form (ngSubmit)="submitAnswer()">
+	<label>
+		<input #answerFieldElement
+			   class="uk-input"
+			   type="text"
+			   placeholder="{{answerField.column.name}}"
+			   [formControl]="answerInput"
+			   [ngClass]="{'uk-form-danger': answerWrong, 'uk-form-success': answerCorrect}">
+	</label>
+</form>

@@ -1,0 +1,12 @@
+<div #confirmDeleteTableColumnModal id="confirm-delete-deck-modal" uk-modal>
+	<div class="uk-modal-dialog uk-modal-body">
+		<p>Do you really want to delete column "{{column?.name}}"?</p>
+		<p class="uk-text-right">
+			<button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+			<button (click)="confirmed.emit()"
+					class="uk-button uk-button-danger uk-modal-close uk-margin-small-left"
+					type="button">Confirm
+			</button>
+		</p>
+	</div>
+</div>

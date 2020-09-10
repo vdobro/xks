@@ -1,0 +1,7 @@
+<td table-cell *ngFor="let column of columns"
+	[row]="rowInEditing"
+	[column]="column"
+	[newCell]="newColumnIndex === column.index"
+	(cellValueChanged)="onCellSubmitted($event, column)">
+</td>
+<td></td>
