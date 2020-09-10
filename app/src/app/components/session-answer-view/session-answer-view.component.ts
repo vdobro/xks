@@ -27,6 +27,7 @@ import {
 	Component,
 	ElementRef,
 	EventEmitter,
+	HostListener,
 	Input,
 	OnChanges,
 	OnInit,
@@ -66,6 +67,8 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 
 	answerWrong: boolean = false;
 	answerCorrect: boolean = false;
+	allowOverride: boolean = false;
+	disableInput: boolean = false;
 
 	constructor(
 		private readonly cdr: ChangeDetectorRef,
@@ -78,10 +81,11 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 
 	ngOnChanges() {
 		setTimeout(() => {
-			if (this.state.taskChanged) {
+			if (this.state.currentTask.id !== this.state.lastAnswer?.task.id) {
 				this.answerInput.setValue('');
-				this.answerCorrect = false;
-				this.answerWrong = false;
+				this.disableInput = false;
+				this.resetAnswerCorrect();
+				this.allowOverride = false;
 			}
 			this.focusIfNeeded();
 		});
@@ -92,20 +96,26 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	}
 
 	async submitAnswer() {
+		if (this.disableInput) {
+			return;
+		}
 		UIkit.notification.closeAll();
 		const nextState = await this.taskService.submitAnswer(
 			this.answerInput.value,
 			this.answerField.column.id,
 			this.state);
-		if (nextState?.lastAnswerCorrect) {
-			this.answerCorrect = true;
+		if (nextState?.lastAnswer?.correct) {
+			this.disableInput = true;
+			this.setAnswerCorrect(true);
 			UIkit.notification("Correct", {
 				status: 'success',
 				timeout: 1000,
 			});
 		} else {
-			this.answerWrong = true;
-			UIkit.notification("Incorrect, correct answer was: \n" + nextState?.lastAnswerValue, {
+			this.setAnswerCorrect(false);
+			this.allowOverride = true;
+			UIkit.notification("Incorrect, correct answer was: \n"
+				+ nextState?.lastAnswer?.actualValue, {
 				status: 'danger',
 				timeout: 1000,
 			});
@@ -116,6 +126,38 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	private focusIfNeeded() {
 		if (this.shouldGetFocus) {
 			this.answerInputElement.nativeElement.focus();
+			this.answerInput.setValue('');
 		}
+	}
+
+	@HostListener('document:keypress', ['$event'])
+	async handleKeyboardEvent(event: KeyboardEvent) {
+		if (event.shiftKey && event.key == "F"
+			&& this.answerWrong && this.allowOverride) {
+			await this.forceAcceptAnswer();
+		}
+	}
+
+	async forceAcceptAnswer() {
+		this.allowOverride = false;
+		UIkit.notification.closeAll();
+		const nextState = await this.taskService.acceptLastAnswer(this.state);
+		this.setAnswerCorrect(true);
+		UIkit.notification("Answer accepted", {
+			status: 'warning',
+			timeout: 1000,
+		});
+
+		this.stateChange.emit(nextState);
+	}
+
+	private setAnswerCorrect(value: boolean) {
+		this.answerCorrect = value;
+		this.answerWrong = !value;
+	}
+
+	private resetAnswerCorrect() {
+		this.answerCorrect = false;
+		this.answerWrong = false;
 	}
 }

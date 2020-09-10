@@ -1,10 +1,17 @@
-<form (ngSubmit)="submitAnswer()">
-	<label>
-		<input #answerFieldElement
-			   class="uk-input"
-			   type="text"
-			   placeholder="{{answerField.column.name}}"
-			   [formControl]="answerInput"
-			   [ngClass]="{'uk-form-danger': answerWrong, 'uk-form-success': answerCorrect}">
-	</label>
+<form (ngSubmit)="submitAnswer()" class="uk-grid-small" uk-grid>
+	<div class="uk-width-expand">
+		<label>
+			<input #answerFieldElement
+				   class="uk-input"
+				   type="text"
+				   placeholder="{{answerField.column.name}}"
+				   [formControl]="answerInput"
+				   [ngClass]="{'uk-form-danger': answerWrong, 'uk-form-success': answerCorrect}">
+		</label>
+	</div>
+	<div *ngIf="answerWrong && allowOverride" class="uk-width-auto">
+		<button type="button" class="uk-button uk-button-primary"
+				(click)="forceAcceptAnswer()">Accept answer
+		</button>
+	</div>
 </form>

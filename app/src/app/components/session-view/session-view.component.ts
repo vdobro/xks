@@ -51,7 +51,6 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 
 	state: LearningSessionState<TableSession>;
 
-	currentSideIsQuestion: boolean = true;
 	answerFields: TableColumn[] = [];
 
 	constructor(
@@ -86,4 +85,5 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		this.topBarService.clearItems();
 		this.topBarService.addItem(new NavBarItem(SessionNavigationComponent));
 	}
+
 }

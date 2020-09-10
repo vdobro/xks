@@ -18,7 +18,7 @@
 		<div *ngFor="let answer of state.currentTask.answerValues">
 			<app-session-answer-view
 				[(state)]="state"
-				[shouldGetFocus]="state.currentTask.pendingAnswerFields[0].column.id === answer.column.id"
+				[shouldGetFocus]="state.currentTask.pendingAnswerFields[0]?.column.id === answer.column.id"
 				[answerField]="answer"></app-session-answer-view>
 		</div>
 	</div>

@@ -22,7 +22,7 @@
 import {v4 as uuid} from 'uuid';
 import {Injectable} from '@angular/core';
 import {Table} from "../models/Table";
-import {ExerciseTask, ExerciseTaskService} from "./exercise-task.service";
+import {AnswerFeedback, ExerciseTask, ExerciseTaskService} from "./exercise-task.service";
 import {TableColumnRepository} from "../repositories/table-column-repository.service";
 import {TableSessionMode} from "../models/TableSessionMode";
 
@@ -56,13 +56,11 @@ export class TableSessionService {
 		const actualInitialWindowSize = Math.min(allTasks.length, this.defaultTaskWindowSize);
 		const initialWindow = allTasks.slice(0, actualInitialWindowSize);
 		const remainingTasks = allTasks.slice(actualInitialWindowSize);
-		const state = {
+		const state: LearningSessionState<TableSession> = {
 			currentTask: TableSessionService.randomElement(initialWindow),
 			session: session,
 			progress: 0,
-			taskChanged: true,
-			lastAnswerCorrect: undefined,
-			lastAnswerValue: undefined,
+			lastAnswer: undefined
 		};
 		this.updateInternalState({
 			remainingTasks: remainingTasks,
@@ -80,16 +78,35 @@ export class TableSessionService {
 		: LearningSessionState<TableSession> {
 		this.removePendingAnswerField(columnId, state.currentTask);
 		const answerFeedback = this.taskService.logInAnswer(answer, columnId, state.currentTask);
-		this.updateActiveTaskWindow(state);
+		return this.handleAnswerFeedback(columnId, answerFeedback, state);
+	}
 
+	acceptLastAnswer(state: LearningSessionState<TableSession>): LearningSessionState<TableSession> {
+		const columnId = state.lastAnswer.columnId;
+		const lastTask = state.lastAnswer.task;
+		const answerFeedback = this.taskService.forceAcceptAnswer(columnId, lastTask);
+		return this.handleAnswerFeedback(columnId, answerFeedback, state);
+	}
+
+	private handleAnswerFeedback(columnId: string,
+								 answerFeedback: AnswerFeedback,
+								 state: LearningSessionState<TableSession>): LearningSessionState<TableSession> {
+		this.updateActiveTaskWindow(state);
 		const allFieldsSubmitted = state.currentTask.pendingAnswerFields.length === 0;
-		state.lastAnswerCorrect = answerFeedback.correct;
-		state.lastAnswerValue = answerFeedback.actualValue;
-		state.taskChanged = false;
-		if ((answerFeedback.correct && allFieldsSubmitted) || allFieldsSubmitted) {
+
+		const lastColumnAndTaskEqual = (columnId === state.lastAnswer?.columnId
+			&& state.lastAnswer?.task.id === state.currentTask.id);
+
+		state.lastAnswer = {
+			correct: answerFeedback.correct,
+			actualValue: answerFeedback.actualValue,
+			task: state.currentTask,
+			columnId: columnId
+		};
+
+		if (allFieldsSubmitted && (answerFeedback.correct || lastColumnAndTaskEqual)) {
 			state.currentTask.pendingAnswerFields = state.currentTask.answerValues;
 			state.currentTask = this.chooseNextLowestTask(state);
-			state.taskChanged = true;
 		}
 		state.progress = this.calculateProgress(state);
 		this.checkCompletion(state);
@@ -113,7 +130,7 @@ export class TableSessionService {
 	private chooseNextLowestTask(state: LearningSessionState<TableSession>): ExerciseTask {
 		const window = this.getTaskWindow(state);
 		const sortedWindow = window
-			.map(task => ({score: this.taskService.getScore(task), task: task,}))
+			.map(task => ({score: this.taskService.getCurrentScore(task), task: task,}))
 			.sort((a, b) =>
 				a.score < b.score ? -1 : (a.score > b.score ? 1 : 0))
 			.filter((scoreWithTask, _) =>
@@ -139,7 +156,7 @@ export class TableSessionService {
 		const totalTasks = windowLength + remainingTasks + doneTasks;
 
 		const pendingTaskScore = internalState.taskWindow
-			.map(task => this.taskService.getScore(task))
+			.map(task => this.taskService.getCurrentScore(task))
 			.reduce((sum, current) => sum + current, 0);
 
 		return ((doneTasks * maxScore) + pendingTaskScore) / (totalTasks * maxScore);
@@ -238,10 +255,13 @@ export interface TableSession extends LearningSession {
 export interface LearningSessionState<TSession extends LearningSession> {
 	session: TSession,
 	currentTask: ExerciseTask,
-	taskChanged: boolean;
 	progress: number,
-	lastAnswerCorrect: boolean,
-	lastAnswerValue: string,
+	lastAnswer: {
+		correct: boolean,
+		actualValue: string,
+		columnId: string,
+		task: ExerciseTask
+	}
 }
 
 interface InternalSessionState {
