@@ -56,23 +56,20 @@ export class TableSessionService {
 		const actualInitialWindowSize = Math.min(allTasks.length, this.defaultTaskWindowSize);
 		const initialWindow = allTasks.slice(0, actualInitialWindowSize);
 		const remainingTasks = allTasks.slice(actualInitialWindowSize);
-		this.updateInternalState({
-			remainingTasks: remainingTasks,
-			sessionState: {
-				session: session,
-				currentTask: initialWindow[0],
-				progress: 0,
-				lastAnswerCorrect: undefined,
-			},
-			tasksDone: [],
-			taskWindow: initialWindow
-		});
 		const state = {
 			currentTask: TableSessionService.randomElement(initialWindow),
 			session: session,
 			progress: 0,
+			taskChanged: true,
 			lastAnswerCorrect: undefined,
+			lastAnswerValue: undefined,
 		};
+		this.updateInternalState({
+			remainingTasks: remainingTasks,
+			sessionState: state,
+			tasksDone: [],
+			taskWindow: initialWindow
+		});
 		state.progress = this.calculateProgress(state);
 		return state;
 	}
@@ -82,14 +79,17 @@ export class TableSessionService {
 				 state: LearningSessionState<TableSession>)
 		: LearningSessionState<TableSession> {
 		this.removePendingAnswerField(columnId, state.currentTask);
-		const answerCorrect = this.taskService.logInAnswer(answer, columnId, state.currentTask);
+		const answerFeedback = this.taskService.logInAnswer(answer, columnId, state.currentTask);
 		this.updateActiveTaskWindow(state);
 
 		const allFieldsSubmitted = state.currentTask.pendingAnswerFields.length === 0;
-		state.lastAnswerCorrect = answerCorrect;
-		if ((answerCorrect && allFieldsSubmitted) || allFieldsSubmitted) {
+		state.lastAnswerCorrect = answerFeedback.correct;
+		state.lastAnswerValue = answerFeedback.actualValue;
+		state.taskChanged = false;
+		if ((answerFeedback.correct && allFieldsSubmitted) || allFieldsSubmitted) {
 			state.currentTask.pendingAnswerFields = state.currentTask.answerValues;
 			state.currentTask = this.chooseNextLowestTask(state);
+			state.taskChanged = true;
 		}
 		state.progress = this.calculateProgress(state);
 		this.checkCompletion(state);
@@ -238,8 +238,10 @@ export interface TableSession extends LearningSession {
 export interface LearningSessionState<TSession extends LearningSession> {
 	session: TSession,
 	currentTask: ExerciseTask,
+	taskChanged: boolean;
 	progress: number,
 	lastAnswerCorrect: boolean,
+	lastAnswerValue: string,
 }
 
 interface InternalSessionState {

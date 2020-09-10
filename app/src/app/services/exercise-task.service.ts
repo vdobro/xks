@@ -63,16 +63,20 @@ export class ExerciseTaskService {
 		});
 	}
 
-	logInAnswer(answerValue: string, columnId: string, task: ExerciseTask): boolean {
+	logInAnswer(answerValue: string, columnId: string, task: ExerciseTask): AnswerFeedback {
 		if (!this.taskStateExists(task)) {
 			this.registerTask(task);
 		}
 		const currentState = this.taskStates.get(task.id);
 		const field = task.answerValues.find(field => field.column.id === columnId);
-		const answerCorrect = answerValue === field.value;
+		const expectedAnswer = field.value;
+		const answerCorrect = answerValue === expectedAnswer;
 		this.updateScore(currentState, answerCorrect, field);
 		this.taskStates.set(task.id, currentState);
-		return answerCorrect;
+		return {
+			correct: answerCorrect,
+			actualValue: expectedAnswer
+		};
 	}
 
 	resetTask(task: ExerciseTask) {
@@ -164,4 +168,9 @@ interface TaskState {
 	score: number,
 	columnSubscores: Map<string, number>
 	maxScore: number,
+}
+
+export interface AnswerFeedback {
+	correct: boolean,
+	actualValue: string,
 }

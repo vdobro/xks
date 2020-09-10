@@ -73,10 +73,18 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	}
 
 	ngOnInit(): void {
+		this.answerInput.setValue('');
 	}
 
 	ngOnChanges() {
-		setTimeout(() => this.focusIfNeeded());
+		setTimeout(() => {
+			if (this.state.taskChanged) {
+				this.answerInput.setValue('');
+				this.answerCorrect = false;
+				this.answerWrong = false;
+			}
+			this.focusIfNeeded();
+		});
 	}
 
 	ngAfterContentInit(): void {
@@ -94,13 +102,13 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 			UIkit.notification("Correct", {
 				status: 'success',
 				timeout: 1000,
-			})
+			});
 		} else {
 			this.answerWrong = true;
-			UIkit.notification("Incorrect", {
+			UIkit.notification("Incorrect, correct answer was: \n" + nextState?.lastAnswerValue, {
 				status: 'danger',
 				timeout: 1000,
-			})
+			});
 		}
 		this.stateChange.emit(nextState);
 	}
