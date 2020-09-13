@@ -19,24 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NewDeckModalComponent} from './new-deck-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.13
+ * @since 2020.03.14
  */
 describe('DeckDetailsComponent', () => {
 	let component: NewDeckModalComponent;
 	let fixture: ComponentFixture<NewDeckModalComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			declarations: [NewDeckModalComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(NewDeckModalComponent);

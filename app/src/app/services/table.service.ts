@@ -79,7 +79,7 @@ export class TableService {
 		await this.cellService.deleteAllRowsIn(table);
 		await this.cellService.deleteAllColumnsIn(table);
 		await this.repository.delete(id);
-		this._tablesChanged.next(await this.deckRepository.getById(table.deckId));
+		this._tablesChanged.next(await this.getDeck(table));
 	}
 
 	public async deleteAllInDeck(deck: Deck) {
@@ -87,9 +87,14 @@ export class TableService {
 		for (let table of tables) {
 			await this.delete(table.id);
 		}
+		this._tablesChanged.next(deck);
 	}
 
 	public async update(table: Table) {
 		await this.repository.update(table);
+	}
+
+	private async getDeck(table: Table): Promise<Deck> {
+		return await this.deckRepository.getById(table.deckId);
 	}
 }

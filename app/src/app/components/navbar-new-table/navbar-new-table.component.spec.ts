@@ -19,32 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-import {Subject, Subscribable} from "rxjs";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {NavbarNewTableComponent} from './navbar-new-table.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.20
+ * @since 2020.09.13
  */
-@Injectable({
-	providedIn: 'root'
-})
-export class NavigationControlService {
+describe('NavbarNewTableComponent', () => {
+	let component: NavbarNewTableComponent;
+	let fixture: ComponentFixture<NavbarNewTableComponent>;
 
-	private readonly _topBarVisible$ = new Subject();
-	private readonly _sidebarVisible$ = new Subject();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [NavbarNewTableComponent]
+		}).compileComponents();
+	});
 
-	readonly sidebarVisible: Subscribable<boolean> = this._sidebarVisible$;
-	readonly topBarVisible: Subscribable<boolean> = this._topBarVisible$;
+	beforeEach(() => {
+		fixture = TestBed.createComponent(NavbarNewTableComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-	constructor() {
-	}
-
-	setSidebarVisibility(visible: boolean) {
-		this._sidebarVisible$.next(visible);
-	}
-
-	setTopBarVisibility(visible: boolean) {
-		this._topBarVisible$.next(visible);
-	}
-}
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

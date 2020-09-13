@@ -19,38 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import UIkit from 'uikit';
-
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Table} from "../../models/Table";
+import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.10
+ * @since 2020.09.12
  */
-@Component({
-	selector: 'app-confirm-delete-table-modal',
-	templateUrl: './confirm-delete-table-modal.component.html',
-	styleUrls: ['./confirm-delete-table-modal.component.sass']
-})
-export class ConfirmDeleteTableModalComponent implements OnInit {
-
-	@ViewChild('confirmDeleteTableModal')
-	modal: ElementRef;
-
-	@Input()
-	table: Table;
-
-	@Output()
-	confirmed = new EventEmitter<void>();
-
-	constructor() {
-	}
-
-	ngOnInit(): void {
-	}
-
-	openModal() {
-		UIkit.modal(this.modal.nativeElement).show();
-	}
+export interface GraphEdge extends BaseEntity {
+	graphId: string,
+	sourceNodeId: string,
+	name: string,
+	targetNodeId: string,
 }

@@ -21,20 +21,24 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {DeckListPageComponent} from './deck-list-page.component';
+import {SidebarDeckElement, SidebarDeckElementComponent} from './sidebar-deck-element.component';
 
-describe('DeckListPageComponent', () => {
-	let component: DeckListPageComponent;
-	let fixture: ComponentFixture<DeckListPageComponent>;
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.09.12
+ */
+describe('SidebarDeckElementComponent', () => {
+	let component: TestComponent;
+	let fixture: ComponentFixture<TestComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [DeckListPageComponent]
+			declarations: [SidebarDeckElementComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(DeckListPageComponent);
+		fixture = TestBed.createComponent(TestComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
@@ -43,3 +47,19 @@ describe('DeckListPageComponent', () => {
 		expect(component).toBeTruthy();
 	});
 });
+
+class TestComponent extends SidebarDeckElementComponent {
+
+	constructor() {
+		super();
+	}
+
+	protected async onClickHandler(id: string) {
+	}
+
+	protected async onDeleteHandler(id: string) {
+	}
+
+	protected async onUpdateHandler(element: SidebarDeckElement) {
+	}
+}

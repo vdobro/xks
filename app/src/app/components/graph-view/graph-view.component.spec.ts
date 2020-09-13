@@ -19,32 +19,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-import {Subject, Subscribable} from "rxjs";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-/**
- * @author Vitalijus Dobrovolskis
- * @since 2020.03.20
- */
-@Injectable({
-	providedIn: 'root'
-})
-export class NavigationControlService {
+import {GraphViewComponent} from './graph-view.component';
 
-	private readonly _topBarVisible$ = new Subject();
-	private readonly _sidebarVisible$ = new Subject();
+describe('GraphViewComponent', () => {
+	let component: GraphViewComponent;
+	let fixture: ComponentFixture<GraphViewComponent>;
 
-	readonly sidebarVisible: Subscribable<boolean> = this._sidebarVisible$;
-	readonly topBarVisible: Subscribable<boolean> = this._topBarVisible$;
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [GraphViewComponent]
+		})
+			.compileComponents();
+	});
 
-	constructor() {
-	}
+	beforeEach(() => {
+		fixture = TestBed.createComponent(GraphViewComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-	setSidebarVisibility(visible: boolean) {
-		this._sidebarVisible$.next(visible);
-	}
-
-	setTopBarVisibility(visible: boolean) {
-		this._topBarVisible$.next(visible);
-	}
-}
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

@@ -19,17 +19,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {Table} from "../../models/Table";
 import {TableService} from "../../services/table.service";
-import {NewTableModalComponent} from "../new-table-modal/new-table-modal.component";
+import {NewDeckElementModalComponent} from "../new-deck-element-modal/new-deck-element-modal.component";
 import {DeckService} from "../../services/deck.service";
-import {ConfirmDeleteDeckModalComponent} from "../confirm-delete-deck-modal/confirm-delete-deck-modal.component";
 import {NavigationService} from "../../services/navigation.service";
 import {SetupTableSessionModalComponent} from "../setup-table-session-modal/setup-table-session-modal.component";
 import {SidebarService} from "../../services/sidebar.service";
+import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
+import {Graph} from "../../models/Graph";
+import {GraphService} from "../../services/graph.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -42,22 +44,25 @@ import {SidebarService} from "../../services/sidebar.service";
 })
 export class SidebarComponent implements OnInit {
 
-	@ViewChild("offcanvas", {static: true})
-	sideBar: ElementRef;
+	@ViewChild(NewDeckElementModalComponent)
+	newTableModal: NewDeckElementModalComponent;
 
-	@ViewChild(NewTableModalComponent)
-	newTableModal: NewTableModalComponent;
-
-	@ViewChild(ConfirmDeleteDeckModalComponent)
-	confirmDeleteDeckModal: ConfirmDeleteDeckModalComponent;
+	@ViewChild(ConfirmDeleteElementModalComponent)
+	confirmDeleteDeckModal: ConfirmDeleteElementModalComponent;
 
 	@ViewChild(SetupTableSessionModalComponent)
 	setupTableSessionModal: SetupTableSessionModalComponent;
 
 	deck: Deck;
+
 	tables: Table[] = [];
+	graphs: Graph[] = [];
+
 	selectedTable: Table = null;
 	tableSelected: boolean = false;
+
+	selectedGraph: Graph = null;
+	graphSelected: boolean = false;
 
 	active: boolean = false;
 
@@ -65,14 +70,19 @@ export class SidebarComponent implements OnInit {
 				private readonly sidebarService: SidebarService,
 				private readonly deckService: DeckService,
 				private readonly tableService: TableService,
+				private readonly graphService: GraphService,
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe(value => this.onVisibilityChanged(value));
 		this.sidebarService.activeDeck.subscribe(value => this.onActiveDeckChanged(value));
 		this.sidebarService.activeTable.subscribe(value => this.onActiveTableChanged(value));
+		this.sidebarService.activeGraph.subscribe(value => this.onActiveGraphChanged(value));
+		this.tableService.tablesChanged.subscribe(value => this.onTablesChanged(value));
+		this.graphService.graphsChanged.subscribe(value => this.onGraphsChanged(value));
 	}
 
 	ngOnInit(): void {
 		this.onActiveTableChanged(this.sidebarService.currentTable);
+		this.onActiveGraphChanged(this.sidebarService.currentGraph);
 		this.onActiveDeckChanged(this.sidebarService.currentDeck);
 		this.onVisibilityChanged(this.deck !== null);
 	}
@@ -84,9 +94,16 @@ export class SidebarComponent implements OnInit {
 	}
 
 	private onActiveTableChanged(table: Table) {
-		this.tableSelected = table !== null && table !== undefined;
+		this.tableSelected = !!table;
 		if (this.selectedTable?.id !== table?.id) {
 			this.selectedTable = table;
+		}
+	}
+
+	private onActiveGraphChanged(graph: Graph) {
+		this.graphSelected = !!graph;
+		if (this.selectedGraph?.id !== graph?.id) {
+			this.selectedGraph = graph;
 		}
 	}
 
@@ -96,37 +113,32 @@ export class SidebarComponent implements OnInit {
 			this.tableService.getByDeck(this.deck).then((tables: Table[]) => {
 				this.tables = tables;
 			});
+			this.graphService.getByDeck(this.deck).then((graphs: Graph[]) => {
+				this.graphs = graphs;
+			});
 		} else {
 			this.tables = [];
+			this.graphs = [];
 		}
 	}
 
-	async onTableDeleted(tableId: string) {
-		this.tables = this.tables.filter(item => item.id !== tableId);
-		this.sidebarService.deselectTable();
-		await this.navigationService.navigateToCurrentDeck();
-	}
-
-	async onNewTableCreated(table: Table) {
-		this.tables.push(table);
-		await this.sidebarService.deselectTable();
-		await this.navigationService.navigateToCurrentDeck();
-	}
-
 	async onDeckDeleted() {
-		if (this.deck === null) {
+		if (!this.deck) {
 			this.tables = [];
+			this.graphs = [];
 			return;
 		}
 
 		await this.deckService.delete(this.deck);
 		this.deck = null;
 		this.tables = [];
+		this.graphs = [];
 		await this.goHome();
 	}
 
 	async openDeckDetails() {
 		this.sidebarService.deselectTable();
+		this.sidebarService.deselectGraph();
 		await this.navigationService.openDeck(this.deck.id);
 	}
 
@@ -137,8 +149,22 @@ export class SidebarComponent implements OnInit {
 	studyCurrent() {
 		if (this.tableSelected) {
 			this.setupTableSessionModal.openDialog();
-		} else {
+		} else if (this.graphSelected) {
 
+		}
+	}
+
+	private async onTablesChanged(deck: Deck) {
+		this.tables = await this.tableService.getByDeck(deck);
+		if (this.selectedTable && !this.tables.find(x => x.id === this.selectedTable.id)) {
+			this.sidebarService.deselectTable();
+		}
+	}
+
+	private async onGraphsChanged(deck: Deck) {
+		this.graphs = await this.graphService.getByDeck(deck);
+		if (this.selectedGraph && !this.graphs.find(x => x.id === this.selectedTable.id)) {
+			this.sidebarService.deselectTable();
 		}
 	}
 }

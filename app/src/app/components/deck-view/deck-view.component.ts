@@ -27,6 +27,11 @@ import {NavigationControlService} from "../../services/navigation-control.servic
 import {TableService} from "../../services/table.service";
 import {NavigationService} from "../../services/navigation.service";
 import {SidebarService} from "../../services/sidebar.service";
+import {GraphService} from "../../services/graph.service";
+import {TopBarService} from "../../services/top-bar.service";
+import {NavbarNewTableComponent} from "../navbar-new-table/navbar-new-table.component";
+import {NavBarItem} from "../nav-bar-item";
+import {NavbarNewGraphComponent} from "../navbar-new-graph/navbar-new-graph.component";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -44,15 +49,17 @@ export class DeckViewComponent implements OnInit {
 	@Output()
 	deck: Deck;
 
-	anyTablesAvailable: boolean = true;
+	anyElementsAvailable: boolean = true;
 
 	constructor(
 		private readonly deckService: DeckService,
 		private readonly route: ActivatedRoute,
 		private readonly navigationService: NavigationService,
 		private readonly sidebarService: SidebarService,
+		private readonly topBarService: TopBarService,
 		private readonly navigationControlService: NavigationControlService,
-		private readonly tableService: TableService) {
+		private readonly tableService: TableService,
+		private readonly graphService: GraphService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -60,19 +67,26 @@ export class DeckViewComponent implements OnInit {
 			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
 			if (this.deck) {
 				this.sidebarService.populate(this.deck);
-				await this.checkIfAnyTablesExist();
+				await this.checkIfAnyElementsAvailable();
 			} else {
 				await this.navigationService.goToDeckList();
 			}
 		});
 		this.tableService.tablesChanged.subscribe(async deck => {
 			if (this.deck?.id === deck.id) {
-				await this.checkIfAnyTablesExist();
+				await this.checkIfAnyElementsAvailable();
 			}
-		})
+		});
+
+		this.topBarService.clearItems();
+		this.topBarService.addItem(new NavBarItem(NavbarNewTableComponent));
+		this.topBarService.addItem(new NavBarItem(NavbarNewGraphComponent));
+		this.navigationControlService.setTopBarVisibility(true);
 	}
 
-	private async checkIfAnyTablesExist() {
-		this.anyTablesAvailable = await this.tableService.anyExistForDeck(this.deck);
+	private async checkIfAnyElementsAvailable() {
+		this.anyElementsAvailable =
+			await this.tableService.anyExistForDeck(this.deck)
+			|| await this.graphService.anyExistForDeck(this.deck);
 	}
 }

@@ -1,6 +1,6 @@
 <a [hidden]="editMode" class="uk-text-middle uk-animation-fade" (click)="onNameClick()">
-	{{table.name}}
-	<span class="uk-badge">{{rowCount}}</span>
+	{{element.name}}
+	<span class="uk-badge">{{elementCount}}</span>
 	<a class="uk-float-right uk-margin-small-left"
 	   (click)="confirmDeletion();$event.preventDefault();$event.stopPropagation();"
 	   uk-icon="icon: trash"></a>
@@ -17,7 +17,7 @@
 						   type="text"
 						   placeholder="Title"
 						   [formControl]="nameInput"
-						   [value]="table.name">
+						   [value]="element.name">
 				</label>
 			</div>
 			<div class="uk-width-auto">
@@ -26,4 +26,7 @@
 		</div>
 	</form>
 </div>
-<app-confirm-delete-table-modal [table]="table" (confirmed)="onDelete()"></app-confirm-delete-table-modal>
+<app-confirm-delete-element-modal [type]="'table'"
+								  [name]="element.name"
+								  (confirmed)="onDelete()">
+</app-confirm-delete-element-modal>

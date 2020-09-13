@@ -26,6 +26,8 @@ import {Table} from "../models/Table";
 import {DeckService} from "./deck.service";
 import {TableService} from "./table.service";
 import {SidebarService} from "./sidebar.service";
+import {Graph} from "../models/Graph";
+import {GraphService} from "./graph.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,10 +40,12 @@ export class NavigationService {
 
 	private deck: Deck;
 	private table: Table;
+	private graph: Graph;
 
 	constructor(
 		private readonly deckService: DeckService,
 		private readonly tableService: TableService,
+		private readonly graphService: GraphService,
 		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
 	}
@@ -64,10 +68,17 @@ export class NavigationService {
 		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId]);
 	}
 
+	async openGraph(graphId: string) {
+		this.graph = await this.graphService.getById(graphId);
+		await this.sidebarService.selectGraph(this.graph);
+		await this.router.navigate(['/graphs', graphId, 'edit']);
+	}
+
 	async navigateToCurrentDeck() {
 		if (this.deck) {
 			this.table = null;
 			this.sidebarService.deselectTable();
+			this.sidebarService.deselectGraph();
 			await this.openDeck(this.deck.id);
 		}
 	}

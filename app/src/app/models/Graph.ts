@@ -19,32 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-import {Subject, Subscribable} from "rxjs";
+import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.20
+ * @since 2020.09.12
  */
-@Injectable({
-	providedIn: 'root'
-})
-export class NavigationControlService {
-
-	private readonly _topBarVisible$ = new Subject();
-	private readonly _sidebarVisible$ = new Subject();
-
-	readonly sidebarVisible: Subscribable<boolean> = this._sidebarVisible$;
-	readonly topBarVisible: Subscribable<boolean> = this._topBarVisible$;
-
-	constructor() {
-	}
-
-	setSidebarVisibility(visible: boolean) {
-		this._sidebarVisible$.next(visible);
-	}
-
-	setTopBarVisibility(visible: boolean) {
-		this._topBarVisible$.next(visible);
-	}
+export interface Graph extends BaseEntity {
+	deckId: string,
+	name: string,
 }

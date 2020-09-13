@@ -24,7 +24,7 @@ import {Deck} from "../models/Deck";
 import {v4 as uuid} from 'uuid';
 import {DeckRepository} from "../repositories/deck-repository.service";
 import {TableService} from "./table.service";
-import {Observable, Subject} from "rxjs";
+import {Subject, Subscribable} from "rxjs";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,14 +35,11 @@ import {Observable, Subject} from "rxjs";
 })
 export class DeckService {
 
-	private readonly deckCreated$ = new Subject<Deck>();
+	private readonly _decksChanged = new Subject<void>();
+	readonly decksChanged: Subscribable<void> = this._decksChanged;
 
 	constructor(private readonly repository: DeckRepository,
 				private readonly tableService: TableService) {
-	}
-
-	deckCreated(): Observable<Deck> {
-		return this.deckCreated$;
 	}
 
 	async getById(id: string): Promise<Deck> {
@@ -60,7 +57,7 @@ export class DeckService {
 			description: description
 		};
 		await this.repository.add(newDeck);
-		this.deckCreated$.next(newDeck);
+		this._decksChanged.next();
 		return newDeck;
 	}
 
@@ -71,5 +68,6 @@ export class DeckService {
 	async delete(deck: Deck) {
 		await this.tableService.deleteAllInDeck(deck);
 		await this.repository.delete(deck.id);
+		this._decksChanged.next();
 	}
 }

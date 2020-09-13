@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckViewComponent} from './deck-view.component';
 import {RouterModule} from "@angular/router";
@@ -32,12 +32,12 @@ describe('DeckViewComponent', () => {
 	let component: DeckViewComponent;
 	let fixture: ComponentFixture<DeckViewComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			declarations: [DeckViewComponent],
 			imports: [RouterModule.forRoot([])]
 		}).compileComponents();
-	}));
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(DeckViewComponent);

@@ -19,38 +19,42 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import UIkit from 'uikit';
+
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {TableService} from "../../services/table.service";
 import {FormControl} from "@angular/forms";
 
 import {Deck} from "../../models/Deck";
-import {Table} from "../../models/Table";
-
-import UIkit from 'uikit';
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.07.12
  */
 @Component({
-	selector: 'app-new-table-modal',
-	templateUrl: './new-table-modal.component.html',
-	styleUrls: ['./new-table-modal.component.sass']
+	selector: 'app-new-deck-element-modal',
+	templateUrl: './new-deck-element-modal.component.html',
+	styleUrls: ['./new-deck-element-modal.component.sass']
 })
-export class NewTableModalComponent implements OnInit {
+export class NewDeckElementModalComponent implements OnInit {
 
-	@ViewChild("newTableModal")
+	@ViewChild("modal")
 	modal: ElementRef;
+
+	@ViewChild("nameInputElement")
+	nameInputElement: ElementRef;
 
 	@Input()
 	deck: Deck;
 
-	@Output()
-	tableCreated: EventEmitter<Table> = new EventEmitter<Table>();
+	@Input()
+	type: String;
 
 	nameInput = new FormControl('');
 
-	constructor(private readonly tableService: TableService) {
+	@Output()
+	nameSubmitted = new EventEmitter<string>();
+
+	constructor() {
 	}
 
 	ngOnInit(): void {
@@ -61,14 +65,17 @@ export class NewTableModalComponent implements OnInit {
 		if (name === null || name === '') {
 			return;
 		}
-		const table = await this.tableService.create(this.deck, this.nameInput.value);
+		this.nameSubmitted.emit(name);
 
 		this.nameInput.reset();
 		UIkit.modal(this.modal.nativeElement).hide();
-		this.tableCreated.emit(table);
 	}
 
 	openDialog() {
 		UIkit.modal(this.modal.nativeElement).show();
+		setTimeout(() => {
+			this.nameInputElement.nativeElement.focus()
+		});
+		this.nameInput.setValue('');
 	}
 }

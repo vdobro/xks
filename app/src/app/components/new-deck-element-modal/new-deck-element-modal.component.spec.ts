@@ -19,27 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ConfirmDeleteDeckModalComponent} from './confirm-delete-deck-modal.component';
+import {NewDeckElementModalComponent} from './new-deck-element-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.07
+ * @since 2020.07.12
  */
-describe('ConfirmDeleteDeckModalComponent', () => {
-	let component: ConfirmDeleteDeckModalComponent;
-	let fixture: ComponentFixture<ConfirmDeleteDeckModalComponent>;
+describe('NewTableModalComponent', () => {
+	let component: NewDeckElementModalComponent;
+	let fixture: ComponentFixture<NewDeckElementModalComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [ConfirmDeleteDeckModalComponent]
-		})
-			.compileComponents();
-	}));
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [NewDeckElementModalComponent]
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(ConfirmDeleteDeckModalComponent);
+		fixture = TestBed.createComponent(NewDeckElementModalComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
