@@ -1,4 +1,5 @@
-<div *ngIf="active" class="uk-container uk-container-expand" uk-sticky="offset: 100; top: #navigation-top-bar">
+<div *ngIf="active" class="uk-container uk-container-expand"
+	 uk-sticky="offset: 100; top: #navigation-top-bar; show-on-up: true">
 	<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav>
 		<li *ngIf="deck && tables.length > 0 && !graphSelected && !tableSelected"
 			class="uk-parent uk-open">
