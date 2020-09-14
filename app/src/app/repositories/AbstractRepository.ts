@@ -45,9 +45,9 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	private readonly anonDb: any;
 	private userDb: any;
 
-	abstract mapToDataEntity(entity: Entity): DataEntity
+	protected abstract mapToDataEntity(entity: Entity): DataEntity
 
-	abstract mapToEntity(entity: DataEntity): Entity
+	protected abstract mapToEntity(entity: DataEntity): Entity
 
 	protected constructor(
 		private readonly localDbName: string,

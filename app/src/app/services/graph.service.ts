@@ -27,6 +27,7 @@ import {Subject, Subscribable} from "rxjs";
 import {GraphRepository} from "../repositories/graph-repository.service";
 import {Graph} from "../models/Graph";
 import {DeckRepository} from "../repositories/deck-repository.service";
+import {GraphElementService} from "./graph-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,6 +42,7 @@ export class GraphService {
 	readonly graphsChanged: Subscribable<Deck> = this._graphsChanged;
 
 	constructor(private readonly repository: GraphRepository,
+				private readonly elementService: GraphElementService,
 				private readonly deckRepository: DeckRepository) {
 	}
 
@@ -67,8 +69,8 @@ export class GraphService {
 
 	public async delete(id: string) {
 		const graph = await this.getById(id);
+		await this.elementService.removeAll(graph);
 		await this.repository.delete(id);
-		//TODO Delete related entities here
 
 		this._graphsChanged.next(await this.getDeck(graph));
 	}

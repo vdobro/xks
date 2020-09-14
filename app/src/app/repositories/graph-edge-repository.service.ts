@@ -25,6 +25,8 @@ import {AbstractRepository} from "./AbstractRepository";
 import {GraphEdge} from "../models/GraphEdge";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
+import {GraphNode} from "../models/GraphNode";
+import {Graph} from "../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,25 +43,41 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 		super('graph-edge', userSessionService);
 	}
 
-	mapToDataEntity(entity: GraphEdge): GraphEdgeDataEntity {
-		return {
-			_id: entity.id,
-			_rev: '',
-			graphId: entity.graphId,
-			name: entity.name,
-			sourceNodeId: entity.sourceNodeId,
-			targetNodeId: entity.targetNodeId
-		};
+	async getAllInGraph(graph: Graph): Promise<GraphEdge[]> {
+		await this.checkIndexes();
+		const result = await this.db.find({
+			selector: {
+				graphId: graph.id
+			}
+		});
+		return result.docs.map(this.mapToEntity);
 	}
 
-	mapToEntity(entity: GraphEdgeDataEntity): GraphEdge {
-		return {
-			id: entity._id,
-			graphId: entity.graphId,
-			name: entity.name,
-			sourceNodeId: entity.sourceNodeId,
-			targetNodeId: entity.targetNodeId
-		};
+	async getAllTo(node: GraphNode): Promise<GraphEdge[]> {
+		await this.checkIndexes();
+		const result = await this.db.find({
+			selector: {
+				sourceNodeId: node.id
+			}
+		});
+		return result.docs.map(this.mapToEntity);
+	}
+
+	async getAllFrom(node: GraphNode): Promise<GraphEdge[]> {
+		await this.checkIndexes();
+		const result = await this.db.find({
+			selector: {
+				targetNodeId: node.id
+			}
+		});
+		return result.docs.map(this.mapToEntity);
+	}
+
+	async deleteAllInGraph(graph: Graph) {
+		const all = await this.getAllInGraph(graph);
+		for (let edge of all) {
+			await this.delete(edge.id);
+		}
 	}
 
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
@@ -71,9 +89,36 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 			return;
 		}
 		await this.db.createIndex({
-			index: {fields: ['graphId', 'sourceNodeId']}
+			index: {fields: ['graphId']}
+		});
+		await this.db.createIndex({
+			index: {fields: ['sourceNodeId']}
+		});
+		await this.db.createIndex({
+			index: {fields: ['targetNodeId']}
 		});
 		this.indexCreated = true;
+	}
+
+	protected mapToDataEntity(entity: GraphEdge): GraphEdgeDataEntity {
+		return {
+			_id: entity.id,
+			_rev: '',
+			graphId: entity.graphId,
+			name: entity.name,
+			sourceNodeId: entity.sourceNodeId,
+			targetNodeId: entity.targetNodeId
+		};
+	}
+
+	protected mapToEntity(entity: GraphEdgeDataEntity): GraphEdge {
+		return {
+			id: entity._id,
+			graphId: entity.graphId,
+			name: entity.name,
+			sourceNodeId: entity.sourceNodeId,
+			targetNodeId: entity.targetNodeId
+		};
 	}
 }
 

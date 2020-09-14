@@ -42,7 +42,7 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 		super('table-row', userSessionService);
 	}
 
-	mapToDataEntity(entity: TableRow): TableRowDataEntity {
+	protected mapToDataEntity(entity: TableRow): TableRowDataEntity {
 		const values = {};
 		entity.values.forEach((value, key) => {
 			values[key] = value;
@@ -56,7 +56,7 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 		}
 	}
 
-	mapToEntity(entity: TableRowDataEntity): TableRow {
+	protected mapToEntity(entity: TableRowDataEntity): TableRow {
 		const values = new Map<string, string>();
 		for (let [key, value] of Object.entries(JSON.parse(entity.values))) {
 			values.set(key, value as string);
@@ -76,20 +76,6 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 	async getByTableId(tableId: string): Promise<TableRow[]> {
 		const result = await this.getDataEntitiesByTable(tableId);
 		return result.map(this.mapToEntity);
-	}
-
-	async getInIndexRange(tableId: string, from: number, to: number): Promise<TableRow[]> {
-		await this.checkIndexesInitialized();
-		const results = await this.db.find({
-			selector: {
-				$and: [
-					{tableId: {$eq: tableId}},
-					{index: {$gte: from, $lte: to}}
-				]
-			},
-			sort: [{index: 'asc'}, {tableId: 'asc'}]
-		});
-		return results.docs.map(this.mapToEntity);
 	}
 
 	async deleteAllInTable(table: Table) {

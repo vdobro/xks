@@ -47,7 +47,7 @@ export class TableSessionModeRepository extends AbstractRepository<TableSessionM
 		return result.map(this.mapToEntity);
 	}
 
-	mapToDataEntity(entity: TableSessionMode): TableStudySessionModeDataEntity {
+	protected mapToDataEntity(entity: TableSessionMode): TableStudySessionModeDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -57,7 +57,7 @@ export class TableSessionModeRepository extends AbstractRepository<TableSessionM
 		};
 	}
 
-	mapToEntity(entity: TableStudySessionModeDataEntity): TableSessionMode {
+	protected mapToEntity(entity: TableStudySessionModeDataEntity): TableSessionMode {
 		return {
 			id: entity._id,
 			tableId: entity.tableId,

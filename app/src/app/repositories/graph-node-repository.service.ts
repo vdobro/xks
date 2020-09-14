@@ -25,6 +25,7 @@ import {AbstractRepository} from "./AbstractRepository";
 import {GraphNode} from "../models/GraphNode";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
+import {Graph} from "../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,7 +42,24 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 		super('graph-node', userSessionService);
 	}
 
-	mapToDataEntity(entity: GraphNode): GraphNodeDataEntity {
+	async getByGraph(graphId: string): Promise<GraphNode[]> {
+		await this.checkIndexes();
+		const results = await this.db.find({
+			selector: {
+				graphId: graphId
+			},
+		})
+		return results.docs.map(this.mapToEntity);
+	}
+
+	async deleteAllInGraph(graph: Graph) {
+		const all = await this.getByGraph(graph.id);
+		for (let node of all) {
+			await this.delete(node.id);
+		}
+	}
+
+	protected mapToDataEntity(entity: GraphNode): GraphNodeDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -50,7 +68,7 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 		};
 	}
 
-	mapToEntity(entity: GraphNodeDataEntity): GraphNode {
+	protected mapToEntity(entity: GraphNodeDataEntity): GraphNode {
 		return {
 			id: entity._id,
 			graphId: entity.graphId,
@@ -67,10 +85,14 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 			return;
 		}
 		await this.db.createIndex({
-			index: {fields: ['graphId', 'value']}
+			index: {fields: ['graphId']}
+		});
+		await this.db.createIndex({
+			index: {fields: ['graphId', 'node']}
 		});
 		this.indexCreated = true;
 	}
+
 }
 
 interface GraphNodeDataEntity extends BaseDataEntity {

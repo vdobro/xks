@@ -62,7 +62,7 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 		return result.docs.length > 0;
 	}
 
-	mapToDataEntity(entity: Graph): GraphDataEntity {
+	protected mapToDataEntity(entity: Graph): GraphDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -71,7 +71,7 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 		};
 	}
 
-	mapToEntity(entity: GraphDataEntity): Graph {
+	protected mapToEntity(entity: GraphDataEntity): Graph {
 		return {
 			id: entity._id,
 			deckId: entity.deckId,
