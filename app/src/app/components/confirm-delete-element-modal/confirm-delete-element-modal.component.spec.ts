@@ -21,25 +21,24 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ConfirmDeleteTableModalComponent} from './confirm-delete-table-modal.component';
+import {ConfirmDeleteElementModalComponent} from './confirm-delete-element-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.08.10
  */
-describe('ConfirmDeleteTableModalComponent', () => {
-	let component: ConfirmDeleteTableModalComponent;
-	let fixture: ComponentFixture<ConfirmDeleteTableModalComponent>;
+describe('ConfirmDeleteElementModalComponent', () => {
+	let component: ConfirmDeleteElementModalComponent;
+	let fixture: ComponentFixture<ConfirmDeleteElementModalComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [ConfirmDeleteTableModalComponent]
-		})
-			.compileComponents();
+			declarations: [ConfirmDeleteElementModalComponent]
+		}).compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(ConfirmDeleteTableModalComponent);
+		fixture = TestBed.createComponent(ConfirmDeleteElementModalComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

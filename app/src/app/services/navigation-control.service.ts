@@ -41,11 +41,10 @@ export class NavigationControlService {
 	}
 
 	setSidebarVisibility(visible: boolean) {
-		this.setTopBarVisibility(!visible);
+		this._sidebarVisible$.next(visible);
 	}
 
 	setTopBarVisibility(visible: boolean) {
 		this._topBarVisible$.next(visible);
-		this._sidebarVisible$.next(!visible);
 	}
 }

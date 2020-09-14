@@ -1,0 +1,9 @@
+<form (submit)="submitValue()">
+	<label>
+		<input #labelInputElement
+			   class="uk-input uk-form-width-medium uk-form-small" type="text"
+			   placeholder="{{selectedNode && !shouldAppend ? 'Change' : 'Input new'}} name"
+			   [formControl]="labelInput"
+			   autofocus>
+	</label>
+</form>

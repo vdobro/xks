@@ -1,15 +1,16 @@
-<div #newTableModal id="new-table-modal" uk-modal>
+<div #modal uk-modal>
 	<div class="uk-modal-dialog uk-modal-body">
 		<button class="uk-modal-close-default" type="button" uk-close></button>
-		<h2 class="uk-modal-title">New table</h2>
+		<h2 class="uk-modal-title">New {{type}}</h2>
 		<form class="uk-form-stacked" (submit)="onSaveClick()">
 			<div class="uk-margin">
 				<label class="uk-form-label" for="deckNameInput">Name</label>
 				<div class="uk-form-controls">
-					<input id="deckNameInput"
+					<input #nameInputElement
+						   id="deckNameInput"
 						   class="uk-input"
 						   type="text"
-						   placeholder="Enter table name"
+						   placeholder="Enter {{type}} name"
 						   [formControl]="nameInput">
 				</div>
 			</div>

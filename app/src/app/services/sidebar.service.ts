@@ -25,6 +25,7 @@ import {Table} from "../models/Table";
 import {NavigationControlService} from "./navigation-control.service";
 import {Subject, Subscribable} from "rxjs";
 import {DeckService} from "./deck.service";
+import {Graph} from "../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,14 +36,17 @@ import {DeckService} from "./deck.service";
 })
 export class SidebarService {
 
-	private readonly _activeDeck$ = new Subject();
-	private readonly _activeTable$ = new Subject();
+	private readonly _activeDeck$ = new Subject<Deck>();
+	private readonly _activeTable$ = new Subject<Table>();
+	private readonly _activeGraph$ = new Subject<Graph>();
 
 	readonly activeDeck: Subscribable<Deck> = this._activeDeck$;
 	readonly activeTable: Subscribable<Table> = this._activeTable$;
+	readonly activeGraph: Subscribable<Graph> = this._activeGraph$;
 
 	currentDeck: Deck;
 	currentTable: Table;
+	currentGraph: Graph;
 
 	constructor(
 		private readonly deckService: DeckService,
@@ -57,10 +61,22 @@ export class SidebarService {
 		this.updateTable(null);
 	}
 
+	deselectGraph() {
+		this.updateGraph(null);
+	}
+
 	async selectTable(table: Table) {
 		this.updateTable(table);
 		if (table) {
 			const deck = await this.deckService.getById(table.deckId);
+			this.populate(deck);
+		}
+	}
+
+	async selectGraph(graph: Graph) {
+		this.updateGraph(graph);
+		if (graph) {
+			const deck = await this.deckService.getById(graph.deckId);
 			this.populate(deck);
 		}
 	}
@@ -71,6 +87,7 @@ export class SidebarService {
 		this.updateDeck(deck);
 		if (deckIsNull) {
 			this.deselectTable();
+			this.deselectGraph();
 		}
 	}
 
@@ -89,5 +106,13 @@ export class SidebarService {
 
 		this.currentDeck = deck;
 		this._activeDeck$.next(this.currentDeck);
+	}
+
+	private updateGraph(graph: Graph) {
+		if (this.currentGraph?.id === graph?.id) {
+			return;
+		}
+		this.currentGraph = graph;
+		this._activeGraph$.next(this.currentGraph);
 	}
 }

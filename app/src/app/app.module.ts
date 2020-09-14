@@ -34,20 +34,19 @@ import {DeckListPageComponent} from './components/deck-list-page/deck-list-page.
 import {TopBarComponent} from './components/top-bar/top-bar.component';
 import {NavBarItemsDirective} from './components/nav-bar-items.directive';
 import {DeckListNavbarComponent} from './components/deck-list-navbar/deck-list-navbar.component';
-import {DeckViewTableListElement} from './components/deck-view-table-list-element/deck-view-table-list-element.component';
+import {SidebarTableListElementComponent} from './components/sidebar-deck-element/sidebar-table-list-element.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
-import {NewTableModalComponent} from './components/new-table-modal/new-table-modal.component';
+import {NewDeckElementModalComponent} from './components/new-deck-element-modal/new-deck-element-modal.component';
 import {TABLE_ID_PARAM, TableViewComponent} from './components/table-view/table-view.component';
 import {TableColumnEditorComponent} from './components/table-column-editor/table-column-editor.component';
 import {TableCellComponent} from './components/table-cell/table-cell.component';
 import {TableNewRowEditorComponent} from './components/table-new-row-editor/table-new-row-editor.component';
 import {TableCellEditorComponent} from './components/table-cell-editor/table-cell-editor.component';
 import {TableColumnComponent} from './components/table-column/table-column.component';
-import {ConfirmDeleteDeckModalComponent} from './components/confirm-delete-deck-modal/confirm-delete-deck-modal.component';
 import {TableRowComponent} from './components/table-row/table-row.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
-import {ConfirmDeleteTableModalComponent} from './components/confirm-delete-table-modal/confirm-delete-table-modal.component';
+import {ConfirmDeleteElementModalComponent} from './components/confirm-delete-element-modal/confirm-delete-element-modal.component';
 import {SessionViewComponent, TABLE_SESSION_ID_PARAM} from './components/session-view/session-view.component';
 import {SetupTableSessionModalComponent} from './components/setup-table-session-modal/setup-table-session-modal.component';
 import {TableSessionModeWizardComponent} from './components/table-session-mode-wizard/table-session-mode-wizard.component';
@@ -55,6 +54,12 @@ import {SessionAnswerViewComponent} from './components/session-answer-view/sessi
 import {SessionNavigationComponent} from './components/session-navigation/session-navigation.component';
 import {SessionCompletionViewComponent} from './components/session-completion-view/session-completion-view.component';
 import {LoginModalComponent} from './components/login-modal/login-modal.component';
+import {SidebarGraphListElementComponent} from './components/sidebar-deck-element/sidebar-graph-list-element.component';
+import {NavbarNewGraphComponent} from './components/navbar-new-graph/navbar-new-graph.component';
+import {NavbarNewTableComponent} from "./components/navbar-new-table/navbar-new-table.component";
+import {GRAPH_ID_PARAM, GraphViewComponent} from './components/graph-view/graph-view.component';
+import {GraphToolbarComponent} from './components/graph-toolbar/graph-toolbar.component';
+import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-label-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -71,19 +76,18 @@ import {LoginModalComponent} from './components/login-modal/login-modal.componen
 		TopBarComponent,
 		NavBarItemsDirective,
 		DeckListNavbarComponent,
-		DeckViewTableListElement,
+		SidebarTableListElementComponent,
 		SidebarComponent,
-		NewTableModalComponent,
+		NewDeckElementModalComponent,
 		TableViewComponent,
 		TableColumnEditorComponent,
 		TableCellComponent,
 		TableNewRowEditorComponent,
 		TableCellEditorComponent,
 		TableColumnComponent,
-		ConfirmDeleteDeckModalComponent,
 		TableRowComponent,
 		ConfirmDeleteTableColumnModalComponent,
-		ConfirmDeleteTableModalComponent,
+		ConfirmDeleteElementModalComponent,
 		SessionViewComponent,
 		SetupTableSessionModalComponent,
 		TableSessionModeWizardComponent,
@@ -91,6 +95,13 @@ import {LoginModalComponent} from './components/login-modal/login-modal.componen
 		SessionNavigationComponent,
 		SessionCompletionViewComponent,
 		LoginModalComponent,
+		SidebarGraphListElementComponent,
+		SidebarTableListElementComponent,
+		NavbarNewTableComponent,
+		NavbarNewGraphComponent,
+		GraphViewComponent,
+		GraphToolbarComponent,
+		GraphLabelEditorComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -100,7 +111,8 @@ import {LoginModalComponent} from './components/login-modal/login-modal.componen
 			{path: 'decks', component: DeckListPageComponent},
 			{path: `decks/:${DECK_ID_PARAM}`, component: DeckViewComponent},
 			{path: `tables/:${TABLE_ID_PARAM}/edit`, component: TableViewComponent},
-			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_ID_PARAM}`, component: SessionViewComponent}
+			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_ID_PARAM}`, component: SessionViewComponent},
+			{path: `graphs/:${GRAPH_ID_PARAM}/edit`, component: GraphViewComponent},
 		]),
 		FormsModule,
 		ReactiveFormsModule,

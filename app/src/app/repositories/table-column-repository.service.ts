@@ -56,7 +56,7 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 		this.indexCreated = true;
 	}
 
-	mapToDataEntity(entity: TableColumn): TableColumnDataEntity {
+	protected mapToDataEntity(entity: TableColumn): TableColumnDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -66,7 +66,7 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 		}
 	}
 
-	mapToEntity(entity: TableColumnDataEntity): TableColumn {
+	protected mapToEntity(entity: TableColumnDataEntity): TableColumn {
 		return {
 			id: entity._id,
 			tableId: entity.tableId,

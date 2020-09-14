@@ -1,11 +1,20 @@
-<div *ngIf="active" class="uk-container uk-container-expand" uk-sticky="offset: 100; top: #navigation-top-bar">
+<div *ngIf="active" class="uk-container uk-container-expand"
+	 uk-sticky="offset: 100; top: #navigation-top-bar; show-on-up: true">
 	<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav>
-		<li *ngIf="deck && tables.length > 0 && !tableSelected" class="uk-parent uk-open">
+		<li *ngIf="deck && tables.length > 0 && !graphSelected && !tableSelected"
+			class="uk-parent uk-open">
 			<a href="#">Tables</a>
 			<ul class="uk-nav-sub">
-				<li deck-elements *ngFor="let table of tables"
-					[table]="table"
-					(deleted)="onTableDeleted(table.id)"></li>
+				<li deck-element-table *ngFor="let table of tables"
+					[element]="table"></li>
+			</ul>
+		</li>
+		<li *ngIf="deck && graphs.length > 0 && !graphSelected && !tableSelected"
+			class="uk-parent uk-open">
+			<a href="#">Graphs</a>
+			<ul class="uk-nav-sub">
+				<li deck-element-graph *ngFor="let graph of graphs"
+					[element]="graph"></li>
 			</ul>
 		</li>
 		<li class="uk-nav-header">Actions</li>
@@ -16,30 +25,23 @@
 				Study
 			</a>
 		</li>
-		<li *ngIf="tableSelected">
+		<li *ngIf="graphSelected || tableSelected">
 			<a (click)="openDeckDetails()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: album"></span>
 				Deck details
 			</a>
 		</li>
-		<li *ngIf="!tableSelected">
-			<a (click)="newTableModal.openDialog()">
-					<span class="uk-margin-small-right"
-						  uk-icon="icon: plus"></span>
-				New table
-			</a>
-		</li>
-		<li *ngIf="!tableSelected">
+		<li *ngIf="!(graphSelected || tableSelected)">
 			<a (click)="goHome()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: table"></span>
 				All decks
 			</a>
 		</li>
-		<li *ngIf="!tableSelected" class="uk-nav-divider"></li>
-		<li *ngIf="!tableSelected">
-			<a (click)="confirmDeleteDeckModal.openDialog()">
+		<li *ngIf="!(graphSelected || tableSelected)" class="uk-nav-divider"></li>
+		<li *ngIf="!(graphSelected || tableSelected)">
+			<a (click)="confirmDeleteDeckModal.openModal()">
 				<span class="uk-margin-small-right" uk-icon="icon: trash"></span>
 				Delete deck
 			</a>
@@ -47,9 +49,15 @@
 	</ul>
 </div>
 <div *ngIf="deck">
-	<app-new-table-modal [deck]="deck"
-						 (tableCreated)="onNewTableCreated($event)"></app-new-table-modal>
-	<app-confirm-delete-deck-modal [deck]="deck"
-								   (confirmed)="onDeckDeleted()"></app-confirm-delete-deck-modal>
-	<app-setup-table-session-modal [table]="selectedTable"></app-setup-table-session-modal>
+	<app-new-deck-element-modal
+		[deck]="deck">
+	</app-new-deck-element-modal>
+	<app-confirm-delete-element-modal
+		[type]="'deck'"
+		[name]="deck?.name"
+		[explanation]="'All tables belonging to this deck will be deleted as well.'"
+		(confirmed)="onDeckDeleted()">
+	</app-confirm-delete-element-modal>
+	<app-setup-table-session-modal [table]="selectedTable">
+	</app-setup-table-session-modal>
 </div>

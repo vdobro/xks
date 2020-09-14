@@ -19,27 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {NewTableModalComponent} from './new-table-modal.component';
+import {NavbarNewGraphComponent} from './navbar-new-graph.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.07.12
+ * @since 2020.09.13
  */
-describe('NewTableModalComponent', () => {
-	let component: NewTableModalComponent;
-	let fixture: ComponentFixture<NewTableModalComponent>;
+describe('NavbarNewGraphComponent', () => {
+	let component: NavbarNewGraphComponent;
+	let fixture: ComponentFixture<NavbarNewGraphComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [NewTableModalComponent]
-		})
-			.compileComponents();
-	}));
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [NavbarNewGraphComponent]
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(NewTableModalComponent);
+		fixture = TestBed.createComponent(NavbarNewGraphComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

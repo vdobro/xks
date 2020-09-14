@@ -25,7 +25,7 @@ import PouchFind from "pouchdb-find";
 import {UserAuth, UserSessionService} from "../services/user-session.service";
 import {environment} from "../../environments/environment";
 import {TableConfiguration} from "../models/TableConfiguration";
-import {Subject, Subscribable} from "rxjs";
+import {Observable, Subject, Subscribable} from "rxjs";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -45,9 +45,17 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	private readonly anonDb: any;
 	private userDb: any;
 
-	abstract mapToDataEntity(entity: Entity): DataEntity
+	private readonly _entityCreated = new Subject<Entity>();
+	private readonly _entityDeletedId = new Subject<string>();
+	private readonly _entityUpdated = new Subject<Entity>();
 
-	abstract mapToEntity(entity: DataEntity): Entity
+	readonly entityCreated: Observable<Entity> = this._entityCreated;
+	readonly entityDeletedId: Observable<string> = this._entityDeletedId;
+	readonly entityUpdated: Observable<Entity> = this._entityUpdated;
+
+	protected abstract mapToDataEntity(entity: Entity): DataEntity
+
+	protected abstract mapToEntity(entity: DataEntity): Entity
 
 	protected constructor(
 		private readonly localDbName: string,
@@ -69,11 +77,13 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		const dataEntity = this.mapToDataEntity(entity);
 		delete dataEntity._rev;
 		await this.db.put(dataEntity);
+		this._entityCreated.next(entity);
 	}
 
 	async delete(id: string): Promise<void> {
 		const revision = await this.getRevision(id);
 		await this.db.remove(id, revision);
+		this._entityDeletedId.next(id);
 	}
 
 	async getAll(): Promise<Entity[]> {
@@ -97,7 +107,9 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		const dataEntity = this.mapToDataEntity(entity);
 		dataEntity._rev = revision;
 
-		return await this.db.put(dataEntity);
+		const result = await this.db.put(dataEntity);
+		this._entityUpdated.next(this.mapToEntity(dataEntity));
+		return result;
 	}
 
 	async updateAll(entities: Entity[]) {

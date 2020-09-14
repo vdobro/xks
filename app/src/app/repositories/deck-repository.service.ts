@@ -39,7 +39,7 @@ export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 		super('deck', userSessionService);
 	}
 
-	mapToDataEntity(entity: Deck): DeckEntity {
+	protected mapToDataEntity(entity: Deck): DeckEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -48,7 +48,7 @@ export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 		};
 	}
 
-	mapToEntity(entity: DeckEntity): Deck {
+	protected mapToEntity(entity: DeckEntity): Deck {
 		return {
 			id: entity._id,
 			name: entity.name,

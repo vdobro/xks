@@ -34,6 +34,9 @@ const val TABLE_ITEM_TABLES = "table"
 const val TABLE_TABLE_COLUMNS = "table_column"
 const val TABLE_TABLE_ROWS = "table_row"
 const val TABLE_SESSION_MODES = "table_session_mode"
+const val TABLE_GRAPHS = "graph"
+const val TABLE_GRAPH_NODES = "graph-node"
+const val TABLE_GRAPH_EDGES = "graph-edges"
 
 @Component
 @ConfigurationProperties(prefix = "db")

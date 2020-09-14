@@ -22,24 +22,29 @@
 import UIkit from 'uikit';
 
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.07
+ * @since 2020.08.10
  */
 @Component({
-	selector: 'app-confirm-delete-deck-modal',
-	templateUrl: './confirm-delete-deck-modal.component.html',
-	styleUrls: ['./confirm-delete-deck-modal.component.sass']
+	selector: 'app-confirm-delete-element-modal',
+	templateUrl: './confirm-delete-element-modal.component.html',
+	styleUrls: ['./confirm-delete-element-modal.component.sass']
 })
-export class ConfirmDeleteDeckModalComponent implements OnInit {
+export class ConfirmDeleteElementModalComponent implements OnInit {
 
-	@ViewChild("confirmDeleteDeckModal")
+	@ViewChild('confirmElementModal')
 	modal: ElementRef;
 
 	@Input()
-	deck: Deck;
+	type: string;
+
+	@Input()
+	name: string;
+
+	@Input()
+	explanation: string;
 
 	@Output()
 	confirmed = new EventEmitter<void>();
@@ -50,7 +55,7 @@ export class ConfirmDeleteDeckModalComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	openDialog() {
+	openModal() {
 		UIkit.modal(this.modal.nativeElement).show();
 	}
 }

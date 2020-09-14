@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckListPageComponent} from './deck-list-page.component';
 
@@ -27,12 +27,11 @@ describe('DeckListPageComponent', () => {
 	let component: DeckListPageComponent;
 	let fixture: ComponentFixture<DeckListPageComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			declarations: [DeckListPageComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(DeckListPageComponent);

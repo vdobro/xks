@@ -19,8 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import UIkit from 'uikit';
 import {FormControl} from "@angular/forms";
@@ -28,7 +27,7 @@ import {DeckService} from "../../services/deck.service";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.13
+ * @since 2020.03.14
  */
 @Component({
 	selector: 'app-new-deck-modal',
@@ -42,9 +41,6 @@ export class NewDeckModalComponent implements OnInit {
 
 	@ViewChild("deckNameInput", {static: true})
 	nameInputElement: ElementRef;
-
-	@Output()
-	newDeck = new EventEmitter<Deck>();
 
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');
@@ -61,11 +57,10 @@ export class NewDeckModalComponent implements OnInit {
 			return;
 		}
 		const description = this.descriptionInput.value?.trim();
-		const newDeck = await this.deckService.create(name, description ? description : '');
+		await this.deckService.create(name, description ? description : '');
 
 		this.clearForm();
 		UIkit.modal(this.modal.nativeElement).hide();
-		this.newDeck.emit(newDeck);
 	}
 
 	private clearForm() {
@@ -75,6 +70,9 @@ export class NewDeckModalComponent implements OnInit {
 
 	openModal() {
 		UIkit.modal(this.modal.nativeElement).show();
-		this.nameInputElement.nativeElement.focus();
+		setTimeout(() => {
+			this.nameInputElement.nativeElement.focus()
+		});
+		this.nameInput.setValue('');
 	}
 }

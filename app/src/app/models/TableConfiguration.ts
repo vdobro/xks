@@ -29,4 +29,7 @@ export interface TableConfiguration {
 	tableColumns: string,
 	tableRows: string,
 	tableSessionModes: string
+	graphs: string,
+	graphNodes: string,
+	graphEdges: string
 }

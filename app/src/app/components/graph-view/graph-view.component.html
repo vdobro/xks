@@ -1,0 +1,16 @@
+<div class="uk-container" uk-height-viewport="offset-top: true; expand=true">
+	<div class="uk-grid-divider uk-margin uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
+		<div class="uk-width-expand">
+			<h2 class="uk-heading-medium">{{graph?.name}}</h2>
+		</div>
+		<div class="uk-width-auto">
+			<div class="uk-margin uk-flex uk-flex-bottom" *ngIf="graph">
+				<app-graph-toolbar [selectedNode]="selectedNode"
+								   [graph]="graph"></app-graph-toolbar>
+			</div>
+		</div>
+	</div>
+	<div #networkContainer uk-height-viewport="offset-top: true; expand=true">
+	</div>
+</div>
+

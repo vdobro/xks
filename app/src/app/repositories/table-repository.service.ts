@@ -61,7 +61,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 		return result.docs.length > 0;
 	}
 
-	mapToDataEntity(entity: Table): TableDataEntity {
+	protected mapToDataEntity(entity: Table): TableDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -71,7 +71,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 		}
 	}
 
-	mapToEntity(entity: TableDataEntity): Table {
+	protected mapToEntity(entity: TableDataEntity): Table {
 		return {
 			id: entity._id,
 			deckId: entity.deckId,

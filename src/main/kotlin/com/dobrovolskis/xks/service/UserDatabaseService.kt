@@ -52,6 +52,9 @@ class UserDatabaseService(private val client: CloudantClient) {
 				tableColumns = createWithPermission(username, TABLE_TABLE_COLUMNS),
 				tableRows = createWithPermission(username, TABLE_TABLE_ROWS),
 				tableSessionModes = createWithPermission(username, TABLE_SESSION_MODES),
+				graphs = createWithPermission(username, TABLE_GRAPHS),
+				graphNodes = createWithPermission(username, TABLE_GRAPH_NODES),
+				graphEdges = createWithPermission(username, TABLE_GRAPH_EDGES),
 				_id = username
 		)
 		userTables.save(configuration)
@@ -62,6 +65,9 @@ class UserDatabaseService(private val client: CloudantClient) {
 		val configuration = userTables.find(UserTableConfiguration::class.java, username)
 		userTables.remove(configuration)
 
+		client.deleteDB(configuration.graphEdges)
+		client.deleteDB(configuration.graphNodes)
+		client.deleteDB(configuration.graphs)
 		client.deleteDB(configuration.tableSessionModes)
 		client.deleteDB(configuration.tableRows)
 		client.deleteDB(configuration.tableColumns)
@@ -92,10 +98,15 @@ class UserDatabaseService(private val client: CloudantClient) {
 @Serializable
 data class UserTableConfiguration(
 		val decks: String,
+
 		val tables: String,
 		val tableColumns: String,
 		val tableRows: String,
 		val tableSessionModes: String,
+
+		val graphs: String,
+		val graphNodes: String,
+		val graphEdges: String,
 
 		val _id: String,
 		val _rev: String? = null,
