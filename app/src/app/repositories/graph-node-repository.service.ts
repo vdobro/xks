@@ -42,18 +42,18 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 		super('graph-node', userSessionService);
 	}
 
-	async getByGraph(graphId: string): Promise<GraphNode[]> {
+	async getAllInGraph(graph: Graph): Promise<GraphNode[]> {
 		await this.checkIndexes();
 		const results = await this.db.find({
 			selector: {
-				graphId: graphId
+				graphId: graph.id
 			},
 		})
 		return results.docs.map(this.mapToEntity);
 	}
 
 	async deleteAllInGraph(graph: Graph) {
-		const all = await this.getByGraph(graph.id);
+		const all = await this.getAllInGraph(graph);
 		for (let node of all) {
 			await this.delete(node.id);
 		}
@@ -86,9 +86,6 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 		}
 		await this.db.createIndex({
 			index: {fields: ['graphId']}
-		});
-		await this.db.createIndex({
-			index: {fields: ['graphId', 'node']}
 		});
 		this.indexCreated = true;
 	}

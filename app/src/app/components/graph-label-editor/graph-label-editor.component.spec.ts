@@ -21,24 +21,24 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {GraphViewComponent} from './graph-view.component';
+import {GraphLabelEditorComponent} from './graph-label-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.14
  */
-describe('GraphViewComponent', () => {
-	let component: GraphViewComponent;
-	let fixture: ComponentFixture<GraphViewComponent>;
+describe('GraphLabelEditorComponent', () => {
+	let component: GraphLabelEditorComponent;
+	let fixture: ComponentFixture<GraphLabelEditorComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [GraphViewComponent]
+			declarations: [GraphLabelEditorComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(GraphViewComponent);
+		fixture = TestBed.createComponent(GraphLabelEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

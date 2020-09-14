@@ -21,24 +21,24 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {GraphViewComponent} from './graph-view.component';
+import {GraphToolbarComponent} from './graph-toolbar.component';
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.14
  */
-describe('GraphViewComponent', () => {
-	let component: GraphViewComponent;
-	let fixture: ComponentFixture<GraphViewComponent>;
+describe('GraphToolbarComponent', () => {
+	let component: GraphToolbarComponent;
+	let fixture: ComponentFixture<GraphToolbarComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [GraphViewComponent]
+			declarations: [GraphToolbarComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(GraphViewComponent);
+		fixture = TestBed.createComponent(GraphToolbarComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

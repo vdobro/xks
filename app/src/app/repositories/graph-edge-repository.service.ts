@@ -57,7 +57,7 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 		await this.checkIndexes();
 		const result = await this.db.find({
 			selector: {
-				sourceNodeId: node.id
+				targetNodeId: node.id
 			}
 		});
 		return result.docs.map(this.mapToEntity);
@@ -67,7 +67,7 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 		await this.checkIndexes();
 		const result = await this.db.find({
 			selector: {
-				targetNodeId: node.id
+				sourceNodeId: node.id
 			}
 		});
 		return result.docs.map(this.mapToEntity);
@@ -89,13 +89,7 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 			return;
 		}
 		await this.db.createIndex({
-			index: {fields: ['graphId']}
-		});
-		await this.db.createIndex({
-			index: {fields: ['sourceNodeId']}
-		});
-		await this.db.createIndex({
-			index: {fields: ['targetNodeId']}
+			index: {fields: ['graphId', 'sourceNodeId', 'targetNodeId']}
 		});
 		this.indexCreated = true;
 	}

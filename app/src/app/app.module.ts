@@ -58,6 +58,8 @@ import {SidebarGraphListElementComponent} from './components/sidebar-deck-elemen
 import {NavbarNewGraphComponent} from './components/navbar-new-graph/navbar-new-graph.component';
 import {NavbarNewTableComponent} from "./components/navbar-new-table/navbar-new-table.component";
 import {GRAPH_ID_PARAM, GraphViewComponent} from './components/graph-view/graph-view.component';
+import {GraphToolbarComponent} from './components/graph-toolbar/graph-toolbar.component';
+import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-label-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -98,6 +100,8 @@ import {GRAPH_ID_PARAM, GraphViewComponent} from './components/graph-view/graph-
 		NavbarNewTableComponent,
 		NavbarNewGraphComponent,
 		GraphViewComponent,
+		GraphToolbarComponent,
+		GraphLabelEditorComponent,
 	],
 	imports: [
 		BrowserModule,

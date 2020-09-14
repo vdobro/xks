@@ -24,6 +24,8 @@ import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-el
 import {Graph} from "../../models/Graph";
 import {NavigationService} from "../../services/navigation.service";
 import {GraphService} from "../../services/graph.service";
+import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
+import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,6 +42,8 @@ export class SidebarGraphListElementComponent
 
 	constructor(
 		private readonly graphService: GraphService,
+		private readonly nodeRepository: GraphNodeRepository,
+		private readonly edgeRepository: GraphEdgeRepository,
 		private readonly navigationService: NavigationService) {
 		super();
 	}
@@ -47,7 +51,7 @@ export class SidebarGraphListElementComponent
 	async ngOnInit() {
 		await super.ngOnInit();
 
-		this.elementCount = 42;
+		await this.refreshCounter();
 	}
 
 	protected async onClickHandler(id: string): Promise<void> {
@@ -60,5 +64,20 @@ export class SidebarGraphListElementComponent
 
 	protected async onUpdateHandler(element: SidebarDeckElement): Promise<void> {
 		await this.graphService.update(element as Graph);
+	}
+
+	private async refreshCounter() {
+		if (this.element) {
+			const graph = this.element as Graph;
+			const edges = (await this.edgeRepository.getAllInGraph(graph)).length;
+			const nodes = (await this.nodeRepository.getAllInGraph(graph)).length;
+			if (edges && nodes) {
+				this.elementCount = `${nodes} + ${edges}`;
+			} else if (nodes) {
+				this.elementCount = nodes;
+			} else {
+				this.elementCount = 0;
+			}
+		}
 	}
 }

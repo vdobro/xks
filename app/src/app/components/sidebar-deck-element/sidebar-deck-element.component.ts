@@ -40,7 +40,7 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 
 	editMode: boolean = false;
 	nameInput = new FormControl('');
-	elementCount: number;
+	elementCount: string | number;
 
 	protected constructor() {
 	}

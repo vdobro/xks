@@ -26,6 +26,7 @@ import {GraphNodeRepository} from "../repositories/graph-node-repository.service
 import {GraphEdgeRepository} from "../repositories/graph-edge-repository.service";
 import {Graph} from "../models/Graph";
 import {GraphNode} from "../models/GraphNode";
+import {GraphEdge} from "../models/GraphEdge";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -63,8 +64,32 @@ export class GraphElementService {
 		await this.nodeRepository.delete(node.id);
 	}
 
+	async addEdge(graph: Graph, from: GraphNode, to: GraphNode, label: string = ''): Promise<GraphEdge> {
+		const edge: GraphEdge = {
+			graphId: graph.id,
+			id: uuid(),
+			name: label,
+			sourceNodeId: from.id,
+			targetNodeId: to.id
+		};
+		await this.edgeRepository.add(edge);
+		return edge;
+	}
+
 	async removeAll(graph: Graph) {
 		await this.edgeRepository.deleteAllInGraph(graph);
 		await this.nodeRepository.deleteAllInGraph(graph);
+	}
+
+	async getNodes(graph: Graph): Promise<GraphNode[]> {
+		return await this.nodeRepository.getAllInGraph(graph);
+	}
+
+	async getEdges(graph: Graph): Promise<GraphEdge[]> {
+		return await this.edgeRepository.getAllInGraph(graph);
+	}
+
+	async getNodeById(id: string): Promise<GraphNode> {
+		return await this.nodeRepository.getById(id);
 	}
 }

@@ -1,0 +1,20 @@
+<div class="uk-grid-match" uk-grid>
+	<div *ngIf="!showToolbar">
+		<app-graph-label-editor [graph]="graph"
+								[shouldAppend]="connectNewNode"
+								[selectedNode]="selectedNode"></app-graph-label-editor>
+	</div>
+	<div *ngIf="showToolbar">
+		<ul class="uk-iconnav">
+			<li>
+				<a (click)="selectedNode ? appendNewNode() : openEditor()" uk-icon="icon: plus"></a>
+			</li>
+			<li *ngIf="selectedNode">
+				<a (click)="openEditor()" uk-icon="icon: file-edit"></a>
+			</li>
+			<li *ngIf="selectedNode">
+				<a (click)="deleteNode()" uk-icon="icon: trash"></a>
+			</li>
+		</ul>
+	</div>
+</div>
