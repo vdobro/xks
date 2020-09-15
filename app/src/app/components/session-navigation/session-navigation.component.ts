@@ -42,6 +42,6 @@ export class SessionNavigationComponent implements OnInit {
 	}
 
 	async quitSession() {
-		await this.navigationService.navigateToCurrentTable();
+		await this.navigationService.navigateToCurrentDeck();
 	}
 }

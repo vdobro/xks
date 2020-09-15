@@ -1,18 +1,10 @@
-<form (ngSubmit)="submitAnswer()" class="uk-grid-small" uk-grid>
+<form class="uk-grid-small" uk-grid>
 	<div class="uk-width-expand">
 		<label>
-			<input #answerFieldElement
-				   class="uk-input"
+			<input readonly
+				   class="uk-input uk-form-success"
 				   type="text"
-				   placeholder="{{answerField.column.name}}"
-				   [formControl]="answerInput"
-				   [ngClass]="{'uk-form-danger': answerWrong, 'uk-form-success': answerCorrect}">
+				   value="{{answerField?.value}}">
 		</label>
-	</div>
-	<div *ngIf="answerWrong && allowOverride" class="uk-width-auto">
-		<button type="button" class="uk-button uk-button-primary"
-				uk-tooltip="title: Shortcut: Shift+F"
-				(click)="forceAcceptAnswer()">Accept answer
-		</button>
 	</div>
 </form>

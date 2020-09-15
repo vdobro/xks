@@ -19,32 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionAnswerViewComponent} from './session-answer-view.component';
+import {Injectable} from '@angular/core';
+import {LearningSessionState, StudySessionService} from "./study-session.service";
+import {ExerciseTaskService} from "./exercise-task.service";
+import {Graph} from "../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.15
  */
-describe('SessionAnswerViewComponent', () => {
-	let component: SessionAnswerViewComponent;
-	let fixture: ComponentFixture<SessionAnswerViewComponent>;
+@Injectable({
+	providedIn: 'root'
+})
+export class GraphSessionService extends StudySessionService {
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [SessionAnswerViewComponent]
-		})
-			.compileComponents();
-	});
+	constructor(taskService: ExerciseTaskService) {
+		super(taskService);
+	}
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(SessionAnswerViewComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
-
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	async startNew(graph: Graph): Promise<LearningSessionState> {
+		const allTasks = await this.taskService.getGraphTaskList(graph);
+		return this.createSessionFromTasks(allTasks);
+	}
+}

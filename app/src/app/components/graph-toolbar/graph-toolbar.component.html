@@ -7,13 +7,19 @@
 	<div *ngIf="showToolbar">
 		<ul class="uk-iconnav">
 			<li>
-				<a (click)="selectedNode ? appendNewNode() : openEditor()" uk-icon="icon: plus"></a>
+				<a (click)="selectedNode ? appendNewNode() : openEditor()"
+				   uk-tooltip="New node"
+				   uk-icon="icon: plus"></a>
 			</li>
 			<li *ngIf="selectedNode">
-				<a (click)="openEditor()" uk-icon="icon: file-edit"></a>
+				<a (click)="openEditor()"
+				   uk-icon="icon: file-edit"
+				   uk-tooltip="Edit selected node"></a>
 			</li>
 			<li *ngIf="selectedNode">
-				<a (click)="deleteNode()" uk-icon="icon: trash"></a>
+				<a (click)="deleteNode()"
+				   uk-tooltip="Delete selected node"
+				   uk-icon="icon: trash"></a>
 			</li>
 		</ul>
 	</div>

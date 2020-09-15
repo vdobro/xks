@@ -19,32 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import {SessionAnswerViewComponent} from './session-answer-view.component';
+import {GraphSessionService} from './graph-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.15
  */
-describe('SessionAnswerViewComponent', () => {
-	let component: SessionAnswerViewComponent;
-	let fixture: ComponentFixture<SessionAnswerViewComponent>;
-
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [SessionAnswerViewComponent]
-		})
-			.compileComponents();
-	});
+describe('GraphSessionService', () => {
+	let service: GraphSessionService;
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SessionAnswerViewComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(GraphSessionService);
 	});
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
+	it('should be created', () => {
+		expect(service).toBeTruthy();
 	});
 });

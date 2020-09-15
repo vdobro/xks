@@ -47,10 +47,10 @@ import {TableRowComponent} from './components/table-row/table-row.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
 import {ConfirmDeleteElementModalComponent} from './components/confirm-delete-element-modal/confirm-delete-element-modal.component';
-import {SessionViewComponent, TABLE_SESSION_ID_PARAM} from './components/session-view/session-view.component';
+import {SessionViewComponent, TABLE_SESSION_MODE_ID_PARAM} from './components/session-view/session-view.component';
 import {SetupTableSessionModalComponent} from './components/setup-table-session-modal/setup-table-session-modal.component';
 import {TableSessionModeWizardComponent} from './components/table-session-mode-wizard/table-session-mode-wizard.component';
-import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
+import {SessionAnswerEditorComponent} from './components/session-answer-editor/session-answer-editor.component';
 import {SessionNavigationComponent} from './components/session-navigation/session-navigation.component';
 import {SessionCompletionViewComponent} from './components/session-completion-view/session-completion-view.component';
 import {LoginModalComponent} from './components/login-modal/login-modal.component';
@@ -60,6 +60,7 @@ import {NavbarNewTableComponent} from "./components/navbar-new-table/navbar-new-
 import {GRAPH_ID_PARAM, GraphViewComponent} from './components/graph-view/graph-view.component';
 import {GraphToolbarComponent} from './components/graph-toolbar/graph-toolbar.component';
 import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-label-editor.component';
+import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -91,7 +92,7 @@ import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-l
 		SessionViewComponent,
 		SetupTableSessionModalComponent,
 		TableSessionModeWizardComponent,
-		SessionAnswerViewComponent,
+		SessionAnswerEditorComponent,
 		SessionNavigationComponent,
 		SessionCompletionViewComponent,
 		LoginModalComponent,
@@ -102,6 +103,7 @@ import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-l
 		GraphViewComponent,
 		GraphToolbarComponent,
 		GraphLabelEditorComponent,
+		SessionAnswerViewComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -111,8 +113,9 @@ import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-l
 			{path: 'decks', component: DeckListPageComponent},
 			{path: `decks/:${DECK_ID_PARAM}`, component: DeckViewComponent},
 			{path: `tables/:${TABLE_ID_PARAM}/edit`, component: TableViewComponent},
-			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_ID_PARAM}`, component: SessionViewComponent},
+			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
 			{path: `graphs/:${GRAPH_ID_PARAM}/edit`, component: GraphViewComponent},
+			{path: `graphs/:${GRAPH_ID_PARAM}/learn`, component: SessionViewComponent}
 		]),
 		FormsModule,
 		ReactiveFormsModule,

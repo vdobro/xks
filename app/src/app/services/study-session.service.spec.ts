@@ -19,32 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionAnswerViewComponent} from './session-answer-view.component';
-
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.15
  */
-describe('SessionAnswerViewComponent', () => {
-	let component: SessionAnswerViewComponent;
-	let fixture: ComponentFixture<SessionAnswerViewComponent>;
+import {TestBed} from '@angular/core/testing';
+import {StudySessionService} from "./study-session.service";
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [SessionAnswerViewComponent]
-		})
-			.compileComponents();
-	});
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.06.11
+ */
+describe('StudySessionService', () => {
+	let service: StudySessionService;
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SessionAnswerViewComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(StudySessionService);
 	});
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
+	it('should be created', () => {
+		expect(service).toBeTruthy();
 	});
 });

@@ -8,21 +8,27 @@
 		<div>
 			<div class="uk-card uk-card-default uk-card-body">
 				<h4 class="uk-card-title">Question:</h4>
-				<p *ngFor="let question of state.currentTask.questionValues">
-					{{question.column.name}}
-					<span uk-icon="icon: arrow-right"></span>
+				<p *ngFor="let question of state.currentTask.questions">
+					{{question.identifier.name}}
+					<span *ngIf="question.identifier.name.length > 0" uk-icon="icon: arrow-right"></span>
 					{{question.value}}
 				</p>
 			</div>
 		</div>
-		<div *ngFor="let answer of state.currentTask.answerValues">
-			<app-session-answer-view
-				[(state)]="state"
-				[allowOverride]="state.lastAnswer?.task.id === state.currentTask.id
-								&& state.lastAnswer?.columnId === answer.column.id
-								&& !state.lastAnswer?.correct"
-				[shouldGetFocus]="state.currentTask.pendingAnswerFields[0]?.column.id === answer.column.id"
-				[answerField]="answer"></app-session-answer-view>
+		<div *ngFor="let answer of state.currentTask.doneAnswers">
+			<session-answer-view [answerField]="answer"></session-answer-view>
+		</div>
+		<div *ngFor="let answer of state.currentTask.pendingAnswers; index as i">
+			<session-answer-editor
+				(submitted)="onAnswer($event)"
+				(forceAcceptRequest)="onForceAcceptAnswer()"
+				[lastAnswerAccepted]="state.lastAnswer?.correct"
+				[indexNumber]="i + 1 + state.currentTask.doneAnswers.length"
+				[answerField]="answer"
+				[allowOverride]="state.lastAnswer?.correct === false && answer.identifier.id === state.lastAnswer?.fieldId"
+				[shouldGetFocus]="state.lastAnswer?.correct === false && answer.identifier.id === state.lastAnswer?.fieldId
+								|| state.currentTask.pendingAnswers[0].identifier.id === answer.identifier.id">
+			</session-answer-editor>
 		</div>
 	</div>
 	<app-session-completion-view *ngIf="state.session.complete"></app-session-completion-view>
