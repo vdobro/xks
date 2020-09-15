@@ -50,27 +50,31 @@ export class NavigationService {
 		private readonly router: Router) {
 	}
 
-	async navigateToCurrentTable() {
+	async navigateToCurrentDeckElement() {
 		if (this.table) {
 			await this.openTable(this.table.id);
+		} else if (this.graph) {
+			await this.openGraph(this.graph.id);
 		}
 	}
 
 	async openTable(tableId: string) {
-		this.table = await this.tableService.getById(tableId);
-		await this.sidebarService.selectTable(this.table);
+		await this.selectTable(tableId);
 		await this.router.navigate(['/tables', tableId, 'edit']);
 	}
 
 	async studyTable(tableId: string, sessionModeId: string) {
-		this.table = await this.tableService.getById(tableId);
-		await this.sidebarService.selectTable(this.table);
+		await this.selectTable(tableId);
 		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId]);
 	}
 
+	async studyGraph(graphId: string) {
+		await this.selectGraph(graphId);
+		await this.router.navigate(['/graphs', graphId, 'learn']);
+	}
+
 	async openGraph(graphId: string) {
-		this.graph = await this.graphService.getById(graphId);
-		await this.sidebarService.selectGraph(this.graph);
+		await this.selectGraph(graphId);
 		await this.router.navigate(['/graphs', graphId, 'edit']);
 	}
 
@@ -100,5 +104,15 @@ export class NavigationService {
 		this.table = null;
 		await this.sidebarService.populate(null);
 		await this.router.navigate(['/decks']);
+	}
+
+	private async selectTable(tableId: string) {
+		this.table = await this.tableService.getById(tableId);
+		await this.sidebarService.selectTable(this.table);
+	}
+
+	private async selectGraph(graphId: string) {
+		this.graph = await this.graphService.getById(graphId);
+		await this.sidebarService.selectGraph(this.graph);
 	}
 }

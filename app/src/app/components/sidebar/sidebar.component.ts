@@ -146,11 +146,11 @@ export class SidebarComponent implements OnInit {
 		await this.navigationService.goHome();
 	}
 
-	studyCurrent() {
+	async studyCurrent() {
 		if (this.tableSelected) {
 			this.setupTableSessionModal.openDialog();
 		} else if (this.graphSelected) {
-
+			await this.navigationService.studyGraph(this.selectedGraph.id);
 		}
 	}
 

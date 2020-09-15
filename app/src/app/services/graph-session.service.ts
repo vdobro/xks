@@ -20,33 +20,25 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Table} from "../models/Table";
-import {ExerciseTaskService} from "./exercise-task.service";
-import {TableColumnRepository} from "../repositories/table-column-repository.service";
-import {TableSessionMode} from "../models/TableSessionMode";
 import {LearningSessionState, StudySessionService} from "./study-session.service";
+import {ExerciseTaskService} from "./exercise-task.service";
+import {Graph} from "../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.14
+ * @since 2020.09.15
  */
 @Injectable({
 	providedIn: 'root'
 })
-export class TableSessionService extends StudySessionService {
+export class GraphSessionService extends StudySessionService {
 
-	constructor(
-		taskService: ExerciseTaskService,
-		private readonly columnRepository: TableColumnRepository) {
+	constructor(taskService: ExerciseTaskService) {
 		super(taskService);
 	}
 
-	async startNew(table: Table, sessionMode: TableSessionMode): Promise<LearningSessionState> {
-		const questionColumns = await Promise.all(sessionMode.questionColumnIds
-			.map(async id => await this.columnRepository.getById(id)));
-		const answerColumns = await Promise.all(sessionMode.answerColumnIds
-			.map(async id => await this.columnRepository.getById(id)));
-		const allTasks = await this.taskService.getTableTaskList(table, questionColumns, answerColumns);
+	async startNew(graph: Graph): Promise<LearningSessionState> {
+		const allTasks = await this.taskService.getGraphTaskList(graph);
 		return this.createSessionFromTasks(allTasks);
 	}
 }

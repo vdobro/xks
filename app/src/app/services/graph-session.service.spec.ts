@@ -19,29 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit} from '@angular/core';
-import {NavigationService} from "../../services/navigation.service";
+import {TestBed} from '@angular/core/testing';
+
+import {GraphSessionService} from './graph-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.07
+ * @since 2020.09.15
  */
-@Component({
-	selector: 'li [app-session-navigation]',
-	templateUrl: './session-navigation.component.html',
-	styleUrls: ['./session-navigation.component.sass']
-})
-export class SessionNavigationComponent implements OnInit {
+describe('GraphSessionService', () => {
+	let service: GraphSessionService;
 
-	constructor(
-		private readonly navigationService: NavigationService
-	) {
-	}
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(GraphSessionService);
+	});
 
-	ngOnInit(): void {
-	}
-
-	async quitSession() {
-		await this.navigationService.navigateToCurrentDeck();
-	}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

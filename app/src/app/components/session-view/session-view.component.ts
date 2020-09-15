@@ -26,14 +26,19 @@ import {TableService} from "../../services/table.service";
 import {TableSessionModeService} from "../../services/table-session-mode.service";
 import {Table} from "../../models/Table";
 import {TableSessionMode} from "../../models/TableSessionMode";
-import {LearningSessionState, TableSession, TableSessionService} from "../../services/table-session.service";
+import {TableSessionService} from "../../services/table-session.service";
 import {TableColumn} from "../../models/TableColumn";
 import {SidebarService} from "../../services/sidebar.service";
 import {TopBarService} from "../../services/top-bar.service";
 import {NavBarItem} from "../nav-bar-item";
 import {SessionNavigationComponent} from "../session-navigation/session-navigation.component";
+import {LearningSessionState} from "../../services/study-session.service";
+import {Graph} from "../../models/Graph";
+import {GraphSessionService} from "../../services/graph-session.service";
+import {GRAPH_ID_PARAM} from "../graph-view/graph-view.component";
+import {GraphService} from "../../services/graph.service";
 
-export const TABLE_SESSION_ID_PARAM = "sessionId";
+export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -46,25 +51,34 @@ export const TABLE_SESSION_ID_PARAM = "sessionId";
 })
 export class SessionViewComponent implements OnInit, OnDestroy {
 
-	table: Table;
-	sessionMode: TableSessionMode;
-
-	state: LearningSessionState<TableSession>;
-
+	state: LearningSessionState;
 	answerFields: TableColumn[] = [];
+
+	private table: Table;
+	private sessionMode: TableSessionMode;
+
+	graph: Graph;
 
 	constructor(
 		private readonly route: ActivatedRoute,
 		private readonly tableService: TableService,
+		private readonly graphService: GraphService,
 		private readonly sessionModeService: TableSessionModeService,
-		private readonly sessionService: TableSessionService,
+		private readonly tableSessionService: TableSessionService,
+		private readonly graphSessionService: GraphSessionService,
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService,
 	) {
 		this.route.paramMap.subscribe(async params => {
-			this.table = await this.tableService.getById(params.get(TABLE_ID_PARAM));
-			this.sessionMode = await this.sessionModeService.getById(params.get(TABLE_SESSION_ID_PARAM));
-
+			const tableId = params.get(TABLE_ID_PARAM);
+			const tableSessionModeId = params.get(TABLE_SESSION_MODE_ID_PARAM);
+			const graphId = params.get(GRAPH_ID_PARAM);
+			if (tableId && tableSessionModeId) {
+				this.table = await this.tableService.getById(tableId);
+				this.sessionMode = await this.sessionModeService.getById(tableSessionModeId);
+			} else if (graphId) {
+				this.graph = await this.graphService.getById(graphId);
+			}
 			await this.initSession();
 		});
 	}
@@ -75,13 +89,17 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.topBarService.clearItems();
-		this.sessionService.cleanup();
+		this.tableSessionService.cleanup();
+		this.graphSessionService.cleanup();
 	}
 
 	private async initSession() {
 		if (this.table && this.sessionMode) {
-			this.state = await this.sessionService.startNew(this.table, this.sessionMode);
+			this.state = await this.tableSessionService.startNew(this.table, this.sessionMode);
+		} else if (this.graph) {
+			this.state = await this.graphSessionService.startNew(this.graph);
 		}
+
 		this.sidebarService.hide();
 		this.topBarService.clearItems();
 		this.topBarService.addItem(new NavBarItem(SessionNavigationComponent));

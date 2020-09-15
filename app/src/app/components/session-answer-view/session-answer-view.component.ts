@@ -23,7 +23,6 @@ import UIkit from 'uikit';
 
 import {
 	AfterContentInit,
-	ChangeDetectorRef,
 	Component,
 	ElementRef,
 	EventEmitter,
@@ -35,8 +34,10 @@ import {
 	ViewChild
 } from '@angular/core';
 import {FlashcardField} from "../../services/exercise-task.service";
-import {LearningSessionState, TableSession, TableSessionService} from "../../services/table-session.service";
+import {TableSessionService} from "../../services/table-session.service";
 import {FormControl} from "@angular/forms";
+import {LearningSessionState, StudySessionService} from "../../services/study-session.service";
+import {GraphSessionService} from "../../services/graph-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -56,14 +57,16 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	answerField: FlashcardField;
 
 	@Input()
+	graphAnswer: boolean = false;
+	@Input()
 	shouldGetFocus: boolean = false;
 	@Input()
 	allowOverride: boolean = false;
 
 	@Input()
-	state: LearningSessionState<TableSession>;
+	state: LearningSessionState;
 	@Output()
-	stateChange = new EventEmitter<LearningSessionState<TableSession>>();
+	stateChange = new EventEmitter<LearningSessionState>();
 
 	answerInput = new FormControl('');
 
@@ -71,9 +74,11 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	answerCorrect: boolean = false;
 	disableInput: boolean = false;
 
+	private taskService: StudySessionService = null;
+
 	constructor(
-		private readonly cdr: ChangeDetectorRef,
-		private readonly taskService: TableSessionService) {
+		private readonly tableTaskService: TableSessionService,
+		private readonly graphTaskService: GraphSessionService) {
 	}
 
 	ngOnInit(): void {
@@ -81,6 +86,11 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 	}
 
 	ngOnChanges() {
+		if (this.graphAnswer) {
+			this.taskService = this.graphTaskService;
+		} else {
+			this.taskService = this.tableTaskService;
+		}
 		setTimeout(() => {
 			const currentTask = this.state.currentTask.id;
 			const previousTask = this.state.lastAnswer?.task.id;
@@ -104,10 +114,12 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 		UIkit.notification.closeAll();
 		const nextState = await this.taskService.submitAnswer(
 			this.answerInput.value,
-			this.answerField.column.id,
+			this.answerField?.identifier.id,
 			this.state);
 		if (nextState?.lastAnswer?.correct) {
-			this.disableInput = true;
+			if (nextState.currentTask.pendingAnswerFields.length > 0) {
+				this.disableInput = true;
+			}
 			this.setAnswerCorrect(true);
 			UIkit.notification("Correct", {
 				status: 'success',
@@ -115,8 +127,7 @@ export class SessionAnswerViewComponent implements OnInit, AfterContentInit, OnC
 			});
 		} else {
 			this.setAnswerCorrect(false);
-			UIkit.notification("Incorrect, correct answer was:\n"
-				+ nextState?.lastAnswer?.actualValue, {
+			UIkit.notification("Incorrect, correct answer was:\n" + nextState?.lastAnswer?.expectedAnswer, {
 				status: 'danger',
 				timeout: 1000,
 			});

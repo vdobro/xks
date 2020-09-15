@@ -9,8 +9,8 @@
 			<div class="uk-card uk-card-default uk-card-body">
 				<h4 class="uk-card-title">Question:</h4>
 				<p *ngFor="let question of state.currentTask.questionValues">
-					{{question.column.name}}
-					<span uk-icon="icon: arrow-right"></span>
+					{{question.identifier.name}}
+					<span *ngIf="question.identifier.name.length > 0" uk-icon="icon: arrow-right"></span>
 					{{question.value}}
 				</p>
 			</div>
@@ -18,11 +18,13 @@
 		<div *ngFor="let answer of state.currentTask.answerValues">
 			<app-session-answer-view
 				[(state)]="state"
+				[graphAnswer]="!!graph"
 				[allowOverride]="state.lastAnswer?.task.id === state.currentTask.id
-								&& state.lastAnswer?.columnId === answer.column.id
+								&& state.lastAnswer?.fieldId === answer.identifier.id
 								&& !state.lastAnswer?.correct"
-				[shouldGetFocus]="state.currentTask.pendingAnswerFields[0]?.column.id === answer.column.id"
-				[answerField]="answer"></app-session-answer-view>
+				[shouldGetFocus]="state.currentTask.pendingAnswerFields[0]?.identifier.id === answer.identifier.id"
+				[answerField]="answer">
+			</app-session-answer-view>
 		</div>
 	</div>
 	<app-session-completion-view *ngIf="state.session.complete"></app-session-completion-view>

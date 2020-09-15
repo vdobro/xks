@@ -41,7 +41,8 @@
 							"./node_modules/uikit/dist/js/uikit-icons.min.js"
 						],
 						"allowedCommonJsDependencies": [
-							"immediate"
+							"immediate",
+							"fast-levenshtein"
 						]
 					},
 					"configurations": {
