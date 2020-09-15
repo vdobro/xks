@@ -9,5 +9,5 @@ then
   echo "\$DB_ADMIN_PASSWORD must not be empty."
   exit
 fi
-envsubst < BOOT-INF/classes/static/assets/env.template.js > BOOT-INF/classes/static/assets/assets/env.js
+envsubst < BOOT-INF/classes/static/assets/env.template.js > BOOT-INF/classes/static/assets/env.js
 java org.springframework.boot.loader.JarLauncher
