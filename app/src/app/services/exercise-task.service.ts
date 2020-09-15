@@ -64,10 +64,11 @@ export class ExerciseTaskService {
 				id: uuid(),
 				ignoreAnswerOrder: false,
 				elementId: row.id,
-				questionValues: questionColumns.map(column =>
+				questions: questionColumns.map(column =>
 					ExerciseTaskService.mapColumnToFlashcardField(row, column)),
-				answerValues: answerFields,
-				pendingAnswerFields: answerFields,
+				answers: answerFields,
+				pendingAnswers: answerFields,
+				doneAnswers: [],
 			};
 		});
 	}
@@ -83,9 +84,10 @@ export class ExerciseTaskService {
 				exercises.push({
 					id: uuid(),
 					ignoreAnswerOrder: true,
-					answerValues: answerFields,
-					pendingAnswerFields: answerFields,
-					questionValues: [ExerciseTaskService.mapNodeToFlashcardField(node)],
+					answers: answerFields,
+					pendingAnswers: answerFields,
+					questions: [ExerciseTaskService.mapNodeToFlashcardField(node)],
+					doneAnswers: []
 				});
 			}
 		}
@@ -97,11 +99,7 @@ export class ExerciseTaskService {
 			this.registerTask(task);
 		}
 		const currentState = this.taskStates.get(task.id);
-		const field = task.ignoreAnswerOrder && task.pendingAnswerFields.length > 0
-			? this.getFieldWithClosestValue(answerValue, task.pendingAnswerFields)
-			: (!task.ignoreAnswerOrder
-				? task.answerValues.find(field => field.identifier.id === fieldId)
-				: task.answerValues.find(field => field.identifier.id === lastAnswerFieldId));
+		const field = this.determineFieldToCheck(answerValue, fieldId, task, lastAnswerFieldId);
 		const expectedAnswer = field.value;
 		const answerCorrect = answerValue === expectedAnswer;
 		this.updateScore(currentState, answerCorrect, field);
@@ -114,7 +112,7 @@ export class ExerciseTaskService {
 
 	forceAcceptAnswer(fieldId: string, task: ExerciseTask): AnswerFeedback {
 		const currentState = this.taskStates.get(task.id);
-		const field = task.answerValues.find(field => field.identifier.id === fieldId);
+		const field = task.answers.find(field => field.identifier.id === fieldId);
 
 		ExerciseTaskService.revertTaskState(currentState, field);
 
@@ -140,6 +138,19 @@ export class ExerciseTaskService {
 
 	isComplete(task: ExerciseTask): boolean {
 		return this.getCurrentScore(task) >= this.getMaxScore(task);
+	}
+
+	private determineFieldToCheck(answerValue: string,
+								  fieldId: string,
+								  task: ExerciseTask,
+								  lastAnswerFieldId: string) {
+		if (task.ignoreAnswerOrder && task.pendingAnswers.length > 0) {
+			return this.getFieldWithClosestValue(answerValue, task.pendingAnswers);
+		} else if (!task.ignoreAnswerOrder) {
+			return task.answers.find(field => field.identifier.id === fieldId);
+		} else {
+			return task.answers.find(field => field.identifier.id === lastAnswerFieldId);
+		}
 	}
 
 	private getFieldWithClosestValue(value: string, fields: FlashcardField[]): FlashcardField {
@@ -190,7 +201,7 @@ export class ExerciseTaskService {
 			value: this.defaultStartScore,
 			previous: undefined
 		};
-		for (let answerField of task.answerValues) {
+		for (let answerField of task.answers) {
 			subscores.set(answerField.identifier.id, startScore);
 		}
 		this.taskStates.set(task.id, {
@@ -268,9 +279,10 @@ export class ExerciseTaskService {
 export interface ExerciseTask {
 	id: string,
 	ignoreAnswerOrder: boolean,
-	questionValues: FlashcardField[],
-	answerValues: FlashcardField[],
-	pendingAnswerFields: FlashcardField[],
+	questions: FlashcardField[],
+	answers: FlashcardField[],
+	pendingAnswers: FlashcardField[],
+	doneAnswers: FlashcardField[],
 }
 
 export interface FlashcardField {

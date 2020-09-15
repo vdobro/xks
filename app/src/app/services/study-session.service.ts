@@ -39,7 +39,6 @@ export class StudySessionService {
 				 state: LearningSessionState): LearningSessionState {
 		const answerFeedback = this.taskService.logInAnswer(answer, fieldId,
 			state.currentTask, state.lastAnswer?.fieldId);
-		this.removeAnswerFieldFromPending(answerFeedback, state);
 		return this.handleAnswerFeedback(answerFeedback.actualField.identifier.id,
 			answerFeedback, state);
 	}
@@ -77,15 +76,21 @@ export class StudySessionService {
 	}
 
 	private removeAnswerFieldFromPending(answerFeedback: AnswerFeedback, state: LearningSessionState) {
-		state.currentTask.pendingAnswerFields = state.currentTask.pendingAnswerFields
-			.filter(x => x.identifier.id !== answerFeedback.actualField.identifier.id);
+		if (!answerFeedback.correct) {
+			return;
+		}
+		const doneAnswer = answerFeedback.actualField;
+		state.currentTask.pendingAnswers = state.currentTask.pendingAnswers
+			.filter(x => x.identifier.id !== doneAnswer.identifier.id);
+		state.currentTask.doneAnswers.push(doneAnswer);
 	}
 
 	private handleAnswerFeedback(fieldId: string,
 								 answerFeedback: AnswerFeedback,
 								 state: LearningSessionState): LearningSessionState {
+		this.removeAnswerFieldFromPending(answerFeedback, state);
 		this.updateActiveTaskWindow(state);
-		const allFieldsSubmitted = state.currentTask.pendingAnswerFields.length === 0;
+		const allFieldsSubmitted = state.currentTask.pendingAnswers.length === 0;
 
 		const lastColumnAndTaskEqual = (fieldId === state.lastAnswer?.fieldId
 			&& state.lastAnswer?.task.id === state.currentTask.id);
@@ -98,7 +103,8 @@ export class StudySessionService {
 		};
 
 		if (allFieldsSubmitted && (answerFeedback.correct || lastColumnAndTaskEqual)) {
-			state.currentTask.pendingAnswerFields = state.currentTask.answerValues;
+			state.currentTask.pendingAnswers = state.currentTask.answers;
+			state.currentTask.doneAnswers = [];
 			state.currentTask = this.chooseNextLowestTask(state);
 		}
 		state.progress = this.calculateProgress(state);

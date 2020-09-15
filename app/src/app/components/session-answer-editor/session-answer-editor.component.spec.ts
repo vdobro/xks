@@ -19,27 +19,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {SessionAnswerViewComponent} from './session-answer-view.component';
+import {SessionAnswerEditorComponent} from './session-answer-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.15
+ * @since 2020.09.07
  */
 describe('SessionAnswerViewComponent', () => {
-	let component: SessionAnswerViewComponent;
-	let fixture: ComponentFixture<SessionAnswerViewComponent>;
+	let component: SessionAnswerEditorComponent;
+	let fixture: ComponentFixture<SessionAnswerEditorComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [SessionAnswerViewComponent]
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [SessionAnswerEditorComponent]
 		})
 			.compileComponents();
-	});
+	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SessionAnswerViewComponent);
+		fixture = TestBed.createComponent(SessionAnswerEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

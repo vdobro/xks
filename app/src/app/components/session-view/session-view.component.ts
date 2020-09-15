@@ -19,7 +19,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import UIkit from 'uikit';
+
+import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {TABLE_ID_PARAM} from "../table-view/table-view.component";
 import {TableService} from "../../services/table.service";
@@ -32,11 +34,12 @@ import {SidebarService} from "../../services/sidebar.service";
 import {TopBarService} from "../../services/top-bar.service";
 import {NavBarItem} from "../nav-bar-item";
 import {SessionNavigationComponent} from "../session-navigation/session-navigation.component";
-import {LearningSessionState} from "../../services/study-session.service";
+import {LearningSessionState, StudySessionService} from "../../services/study-session.service";
 import {Graph} from "../../models/Graph";
 import {GraphSessionService} from "../../services/graph-session.service";
 import {GRAPH_ID_PARAM} from "../graph-view/graph-view.component";
 import {GraphService} from "../../services/graph.service";
+import {FlashcardField} from "../../services/exercise-task.service";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 
@@ -49,15 +52,17 @@ export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 	templateUrl: './session-view.component.html',
 	styleUrls: ['./session-view.component.sass']
 })
-export class SessionViewComponent implements OnInit, OnDestroy {
+export class SessionViewComponent implements OnInit, OnDestroy, OnChanges {
 
-	state: LearningSessionState;
+	state: LearningSessionState = null;
 	answerFields: TableColumn[] = [];
 
 	private table: Table;
 	private sessionMode: TableSessionMode;
 
 	graph: Graph;
+
+	private sessionService: StudySessionService = null;
 
 	constructor(
 		private readonly route: ActivatedRoute,
@@ -76,15 +81,20 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 			if (tableId && tableSessionModeId) {
 				this.table = await this.tableService.getById(tableId);
 				this.sessionMode = await this.sessionModeService.getById(tableSessionModeId);
+				this.sessionService = this.tableSessionService;
 			} else if (graphId) {
 				this.graph = await this.graphService.getById(graphId);
+				this.sessionService = this.graphSessionService;
 			}
 			await this.initSession();
 		});
 	}
 
 	async ngOnInit() {
-		await this.initSession();
+	}
+
+	async ngOnChanges() {
+
 	}
 
 	ngOnDestroy() {
@@ -103,5 +113,27 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		this.sidebarService.hide();
 		this.topBarService.clearItems();
 		this.topBarService.addItem(new NavBarItem(SessionNavigationComponent));
+	}
+
+	async onAnswer(event: { value: string, field: FlashcardField }) {
+		UIkit.notification.closeAll();
+		this.state = await this.sessionService
+			.submitAnswer(event.value, event.field.identifier.id, this.state);
+
+		if (this.state.lastAnswer.correct) {
+			UIkit.notification("Correct", {status: 'success',});
+		} else {
+			UIkit.notification("Incorrect, correct answer was:\n"
+				+ this.state?.lastAnswer?.expectedAnswer, {status: 'danger'});
+		}
+	}
+
+	async onForceAcceptAnswer() {
+		UIkit.notification.closeAll();
+		this.state = await this.sessionService.acceptLastAnswer(this.state);
+		UIkit.notification("Answer accepted", {
+			status: 'warning',
+			timeout: 1000,
+		});
 	}
 }

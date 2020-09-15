@@ -1,0 +1,17 @@
+<form (ngSubmit)="submitAnswer()" class="uk-grid-small" uk-grid>
+	<div class="uk-width-expand">
+		<label>
+			<input #answerFieldElement
+				   class="uk-input"
+				   type="text"
+				   [placeholder]="answerField.identifier.name ? answerField.identifier.name : indexNumber"
+				   [formControl]="answerInput">
+		</label>
+	</div>
+	<div *ngIf="allowOverride" class="uk-width-auto">
+		<button type="button" class="uk-button uk-button-primary"
+				uk-tooltip="title: Shortcut: Shift+Enter"
+				(click)="forceAcceptAnswer()">Accept answer
+		</button>
+	</div>
+</form>
