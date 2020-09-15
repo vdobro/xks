@@ -19,8 +19,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const environment = {
-	production: true,
-	serverUrl: window["env"]["apiUrl"] || "",
-	databaseUrl: window["env"]["dbUrl"] || "https://xks.dobrovolskis.com/api/"
-};
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {NotFoundViewComponent} from './not-found-view.component';
+
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.09.15
+ */
+describe('NotFoundViewComponent', () => {
+	let component: NotFoundViewComponent;
+	let fixture: ComponentFixture<NotFoundViewComponent>;
+
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [NotFoundViewComponent]
+		})
+			.compileComponents();
+	});
+
+	beforeEach(() => {
+		fixture = TestBed.createComponent(NotFoundViewComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

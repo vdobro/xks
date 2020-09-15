@@ -25,8 +25,8 @@
 
 export const environment = {
 	production: false,
-	serverUrl: 'http://localhost:8080',
-	databaseUrl: 'http://172.17.0.5:5984/'
+	serverUrl: window["env"]["apiUrl"] || "http://localhost:8080",
+	databaseUrl: window["env"]["dbUrl"] || "http://172.17.0.5:5984/"
 };
 
 /*
