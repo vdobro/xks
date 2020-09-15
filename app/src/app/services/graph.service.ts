@@ -58,6 +58,18 @@ export class GraphService {
 		return this.repository.existAnyForDeck(deck.id);
 	}
 
+	async anyNodesAndEdgesExist(graph: Graph): Promise<boolean> {
+		const nodes = await this.elementService.getNodes(graph);
+		if (nodes.length === 0) {
+			return false;
+		}
+		const edges = await this.elementService.getEdges(graph);
+		if (edges.length === 0) {
+			return false;
+		}
+		return true;
+	}
+
 	async create(deck: Deck, name: string) {
 		await this.repository.add({
 			deckId: deck.id,

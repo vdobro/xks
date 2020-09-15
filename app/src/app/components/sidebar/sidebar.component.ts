@@ -19,6 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import UIkit from 'uikit';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {NavigationControlService} from "../../services/navigation-control.service";
@@ -150,7 +151,11 @@ export class SidebarComponent implements OnInit {
 		if (this.tableSelected) {
 			this.setupTableSessionModal.openDialog();
 		} else if (this.graphSelected) {
-			await this.navigationService.studyGraph(this.selectedGraph.id);
+			if (await this.graphService.anyNodesAndEdgesExist(this.selectedGraph)) {
+				await this.navigationService.studyGraph(this.selectedGraph.id);
+			} else {
+				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
+			}
 		}
 	}
 

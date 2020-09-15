@@ -61,6 +61,7 @@ import {GRAPH_ID_PARAM, GraphViewComponent} from './components/graph-view/graph-
 import {GraphToolbarComponent} from './components/graph-toolbar/graph-toolbar.component';
 import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-label-editor.component';
 import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
+import {NotFoundViewComponent} from './components/not-found-view/not-found-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -104,6 +105,7 @@ import {SessionAnswerViewComponent} from './components/session-answer-view/sessi
 		GraphToolbarComponent,
 		GraphLabelEditorComponent,
 		SessionAnswerViewComponent,
+		NotFoundViewComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -115,8 +117,9 @@ import {SessionAnswerViewComponent} from './components/session-answer-view/sessi
 			{path: `tables/:${TABLE_ID_PARAM}/edit`, component: TableViewComponent},
 			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
 			{path: `graphs/:${GRAPH_ID_PARAM}/edit`, component: GraphViewComponent},
-			{path: `graphs/:${GRAPH_ID_PARAM}/learn`, component: SessionViewComponent}
-		]),
+			{path: `graphs/:${GRAPH_ID_PARAM}/learn`, component: SessionViewComponent},
+			{path: '**', component: NotFoundViewComponent},
+		], {useHash: true}),
 		FormsModule,
 		ReactiveFormsModule,
 		DragDropModule,
