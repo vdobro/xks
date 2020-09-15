@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DataSet, Network} from "vis-network/standalone";
+import {DataSet, Network, Options} from "vis-network/standalone";
 import ResizeObserver from 'resize-observer-polyfill';
 import {AfterContentChecked, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
@@ -55,6 +55,11 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	graph: Graph;
 	network: Network;
+	renderingOptions: Options = {
+		nodes: {
+			shape: "box"
+		}
+	};
 
 	selectedEdge: GraphEdge = null;
 	selectedNode: GraphNode = null;
@@ -135,6 +140,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	private setUpDataEvents() {
 		this.nodeRepository.entityCreated.subscribe(entity => {
 			this.nodes.add(GraphViewComponent.mapToNodeView(entity));
+			this.network?.fit();
 		});
 		this.nodeRepository.entityUpdated.subscribe(entity => {
 			this.nodes.update(GraphViewComponent.mapToNodeView(entity));
@@ -158,8 +164,9 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	private async setUpNetworkView() {
 		await this.loadGraphElements();
+
 		this.network = new Network(this.networkContainer.nativeElement,
-			{nodes: this.nodes, edges: this.edges}, {});
+			{nodes: this.nodes, edges: this.edges}, this.renderingOptions);
 		this.network.on('deselectNode', async (args: NetworkDeselection) => {
 			await this.onDeselectNode(args);
 		});
@@ -239,6 +246,20 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		return {
 			id: node.id,
 			label: node.value,
+			color: {
+				border: "#303030",
+				background: "#ffffff",
+				highlight: {
+					border: "#1e87f0",
+					background: "#fafafa",
+				}
+			},
+			font: {
+				color: "#000000",
+				face: "IBM Plex Sans",
+				size: 13
+			},
+			shadow: true,
 		};
 	}
 
@@ -248,6 +269,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 			from: edge.sourceNodeId,
 			to: edge.targetNodeId,
 			arrows: "to",
+			color: "#000000",
 		};
 	}
 }
@@ -257,11 +279,26 @@ export interface EdgeView {
 	from: string,
 	to: string,
 	arrows: string,
+	color: string,
 }
 
 export interface NodeView {
 	id: string,
-	label: string
+	label: string,
+	color: {
+		border: string,
+		background: string,
+		highlight: {
+			border: string,
+			background: string,
+		},
+	},
+	font: {
+		size: number,
+		face: string,
+		color: string,
+	},
+	shadow: boolean,
 }
 
 interface NetworkDeselection extends NetworkSelection {
