@@ -20,5 +20,9 @@ COPY --from=builder spring-boot-loader/ ./
 RUN true
 COPY --from=builder application/ ./
 
+USER root
+RUN chown spring:spring /BOOT-INF/classes/static/assets/env.js
+USER spring:spring
+
 EXPOSE 8080
 ENTRYPOINT ["/bin/sh", "setup_env.sh"]
