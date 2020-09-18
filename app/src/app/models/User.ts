@@ -27,6 +27,6 @@ import {TableConfiguration} from "./TableConfiguration";
  */
 export interface User {
 	name: string,
-	tableConfiguration: TableConfiguration
+	tableConfig: TableConfiguration
 }
 

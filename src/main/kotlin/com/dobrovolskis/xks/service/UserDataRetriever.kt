@@ -23,86 +23,64 @@ package com.dobrovolskis.xks.service
 
 import com.cloudant.client.api.CloudantClient
 import com.cloudant.client.api.Database
-import com.dobrovolskis.xks.config.PersistenceConfiguration
-import com.dobrovolskis.xks.model.UserData
+import com.dobrovolskis.xks.model.UserTableConfiguration
 import kotlinx.serialization.Serializable
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
-import org.springframework.web.client.RestTemplate
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.08
+ * @since 2020.09.17
  */
 @Service
-class UserManagementService(databaseClient: CloudantClient,
-                            persistenceConfiguration: PersistenceConfiguration,
-                            private val userDatabaseService: UserDatabaseService) {
-	private val sessionUrl = persistenceConfiguration.url + "_session"
-	private val db: Database = databaseClient.database("_users", false)
+class UserDataRetriever(databaseClient: CloudantClient,
+                        private val userDatabaseService: UserDatabaseService) {
+	private val usersDb: Database = databaseClient.database("_users", false)
 
 	private val usernamePattern = Regex("[a-zA-Z0-9]*")
 	private val requiredUsernameLength = 5
 	private val requiredPasswordLength = 8
 
-	fun registerUser(username: String, password: String): UserData {
+	fun createUser(username: String, password: String) {
 		validateUsername(username)
 		validatePassword(password)
 		require(!userExists(username)) {
 			"User with given name already exists."
 		}
-		createUser(username = username, password = password)
-		return UserData(name = username,
-				tableConfiguration = userDatabaseService.createAll(username))
+		usersDb.save(CreationRequest(
+				_id = prefixUsername(username),
+				name = username,
+				roles = emptyList(),
+				password = password))
+		usersDb.ensureFullCommit()
+		val newUser = getUser(username)
+		usersDb.update(newUser.copy(tableConfig = userDatabaseService.createAll(username)))
 	}
 
-	fun credentialsCorrect(username: String, password: String): Boolean {
-		return try {
-			val restTemplate = RestTemplate()
-			val headers = HttpHeaders()
-			headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-
-			val map: MultiValueMap<String, String> = LinkedMultiValueMap()
-			map.add("name", username)
-			map.add("password", password)
-
-			val request = HttpEntity(map, headers)
-			restTemplate.postForEntity(sessionUrl, request, String::class.java)
-			true
-		} catch (e: Throwable) {
-			false
-		}
+	fun getUserTableConfiguration(username: String): UserTableConfiguration {
+		val user = usersDb.find(FullUser::class.java, prefixUsername(username))
+		return user.tableConfig!!
 	}
 
-	fun getExisting(username: String): UserData {
-		return UserData(name = username,
-				tableConfiguration = this.userDatabaseService.getAll(username))
-	}
+	fun removeUser(username: String) {
+		val user = getUser(username)
+		usersDb.remove(user)
 
-	fun forget(username: String) {
-		val user = db.find(UserCreationRequest::class.java,
-				USER_PREFIX + username)
-		db.remove(user)
 		try {
-			userDatabaseService.removeAll(username)
+			userDatabaseService.removeAll(user.tableConfig!!)
 		} catch (_: Throwable) {
 			//User could be deleted, but their database information could not - this is tolerable
 		}
 	}
 
-	private fun createUser(username: String, password: String) {
-		db.save(UserCreationRequest(
-				_id = prefixUsername(username),
-				name = username,
-				password = password))
+	private fun getUser(username: String): FullUser {
+		require(userExists(username)) {
+			"User not found"
+		}
+		return usersDb.find(FullUser::class.java, prefixUsername(username))
 	}
 
 	private fun userExists(username: String): Boolean {
-		return db.contains(prefixUsername(username))
+		return usersDb.contains(prefixUsername(username))
 	}
 
 	private fun validateUsername(username: String) {
@@ -125,15 +103,28 @@ class UserManagementService(databaseClient: CloudantClient,
 	}
 
 	@Serializable
-	data class UserCreationRequest(
+	data class CreationRequest(
 			val _id: String,
 			val name: String,
 			val password: String,
-
 			val roles: List<String> = emptyList(),
-			val type: String = "user",
+			val type: String = "user"
+	)
 
+	@Serializable
+	data class FullUser(
+			val _id: String,
 			val _rev: String? = null,
+			val name: String,
+			val roles: List<String>,
+
+			val type: String? = null,
+			val password_scheme: String? = null,
+			val iterations: Int? = null,
+			val derived_key: String? = null,
+			val salt: String? = null,
+
+			val tableConfig: UserTableConfiguration?
 	)
 }
 

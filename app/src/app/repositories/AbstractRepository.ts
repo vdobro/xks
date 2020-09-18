@@ -22,10 +22,11 @@
 import PouchDB from "pouchdb";
 import {BaseDataEntity, BaseRepository} from "./BaseRepository";
 import PouchFind from "pouchdb-find";
-import {UserAuth, UserSessionService} from "../services/user-session.service";
+import {UserSessionService} from "../services/user-session.service";
 import {environment} from "../../environments/environment";
 import {TableConfiguration} from "../models/TableConfiguration";
 import {Observable, Subject, Subscribable} from "rxjs";
+import {User} from "../models/User";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -68,8 +69,8 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		this.anonDb = new PouchDB("anon-" + this.localDbName);
 		this.switchToAnonDatabase().then(_ => this._sourceChanged.next());
 
-		this.userSessionService.userAuthChanged.subscribe(async auth => {
-			await this.userAuthChangedHandler(auth);
+		this.userSessionService.userChanged.subscribe(async user => {
+			await this.userChangedHandler(user);
 		});
 	}
 
@@ -145,21 +146,18 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		}
 	}
 
-	private async userAuthChangedHandler(auth: UserAuth) {
-		if (auth) {
-			this.createUserDatabase();
-			const user = await this.userSessionService.getCurrent();
-			const name = this.resolveRemoteDatabaseName(user.tableConfiguration);
-			const url = environment.databaseUrl + name;
-			const remoteDb = new PouchDB(url, {auth: auth});
-			this.remoteSyncHandler = this.userDb.sync(remoteDb, {
-				live: true,
-				retry: true,
-			}).on('error', error => {
-				console.log('(P|C)ouchDB sync error: ' + error);
-			}).on('change', _ => {
-				this._sourceChanged.next();
+	private async userChangedHandler(user: User) {
+		if (user) {
+			const remoteName = this.resolveRemoteDatabaseName(user.tableConfig);
+			this.userDb = new PouchDB(remoteName);
+			const remoteUrl = environment.databaseUrl + remoteName;
+			const remoteDb = new PouchDB(remoteUrl, {
+				fetch(url, opts) {
+					opts.credentials = 'include';
+					return PouchDB.fetch(url, opts);
+				}
 			});
+			this.syncRemoteDb(remoteDb);
 			this.db = this.userDb;
 		} else {
 			await this.switchToAnonDatabase();
@@ -167,13 +165,20 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		this._sourceChanged.next();
 	}
 
-	private createUserDatabase() {
-		this.userDb = new PouchDB("user-" + this.localDbName);
+	private syncRemoteDb(remoteDb) {
+		this.remoteSyncHandler = this.userDb.sync(remoteDb, {
+			live: true,
+			retry: true,
+		}).on('error', err => {
+			console.log('(P|C)ouchDB sync error: ' + err);
+		}).on('change', _ => {
+			this._sourceChanged.next();
+		});
 	}
 
 	private async switchToAnonDatabase() {
 		this.remoteSyncHandler?.cancel();
-		await this.userDb?.destroy();
 		this.db = this.anonDb;
+		this.userDb = null;
 	}
 }

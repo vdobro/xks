@@ -21,13 +21,14 @@
 
 package com.dobrovolskis.xks.model
 
-import com.dobrovolskis.xks.service.UserTableConfiguration
+import kotlinx.serialization.Serializable
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.08
  */
-data class UserData(
-		val name: String,
-		val tableConfiguration: UserTableConfiguration
+@Serializable
+data class MemberConfiguration(
+		val names: List<String> = emptyList(),
+		val roles: List<String> = emptyList()
 )

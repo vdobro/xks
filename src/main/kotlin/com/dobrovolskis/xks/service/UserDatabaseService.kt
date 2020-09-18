@@ -22,9 +22,9 @@
 package com.dobrovolskis.xks.service
 
 import com.cloudant.client.api.CloudantClient
-import com.cloudant.client.api.Database
-import com.dobrovolskis.xks.config.*
-import kotlinx.serialization.Serializable
+import com.dobrovolskis.xks.model.MemberConfiguration
+import com.dobrovolskis.xks.model.UserDbSecurityConfiguration
+import com.dobrovolskis.xks.model.UserTableConfiguration
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -35,36 +35,20 @@ import java.util.*
 @Service
 class UserDatabaseService(private val client: CloudantClient) {
 
-	private val userTables: Database =
-			client.database("user_entity_tables", false)
-
-	init {
-		try {
-			client.createDB("user_entity_tables")
-		} catch (_: Throwable) {
-		}
-	}
-
 	fun createAll(username: String): UserTableConfiguration {
-		val configuration = UserTableConfiguration(
-				decks = createWithPermission(username, TABLE_DECKS),
-				tables = createWithPermission(username, TABLE_ITEM_TABLES),
-				tableColumns = createWithPermission(username, TABLE_TABLE_COLUMNS),
-				tableRows = createWithPermission(username, TABLE_TABLE_ROWS),
-				tableSessionModes = createWithPermission(username, TABLE_SESSION_MODES),
-				graphs = createWithPermission(username, TABLE_GRAPHS),
-				graphNodes = createWithPermission(username, TABLE_GRAPH_NODES),
-				graphEdges = createWithPermission(username, TABLE_GRAPH_EDGES),
-				_id = username
+		return UserTableConfiguration(
+				decks = createWithPermission(username),
+				tables = createWithPermission(username),
+				tableColumns = createWithPermission(username),
+				tableRows = createWithPermission(username),
+				tableSessionModes = createWithPermission(username),
+				graphs = createWithPermission(username),
+				graphNodes = createWithPermission(username),
+				graphEdges = createWithPermission(username)
 		)
-		userTables.save(configuration)
-		return configuration
 	}
 
-	fun removeAll(username: String) {
-		val configuration = userTables.find(UserTableConfiguration::class.java, username)
-		userTables.remove(configuration)
-
+	fun removeAll(configuration: UserTableConfiguration) {
 		client.deleteDB(configuration.graphEdges)
 		client.deleteDB(configuration.graphNodes)
 		client.deleteDB(configuration.graphs)
@@ -75,12 +59,8 @@ class UserDatabaseService(private val client: CloudantClient) {
 		client.deleteDB(configuration.decks)
 	}
 
-	fun getAll(username: String): UserTableConfiguration {
-		return userTables.find(UserTableConfiguration::class.java, username)
-	}
-
-	private fun createWithPermission(username: String, dbName: String): String {
-		val name = "xks_${UUID.randomUUID()}_$dbName"
+	private fun createWithPermission(username: String): String {
+		val name = "xks_${UUID.randomUUID()}"
 		try {
 			client.deleteDB(name)
 		} catch (_: Throwable) {
@@ -94,35 +74,3 @@ class UserDatabaseService(private val client: CloudantClient) {
 		return name
 	}
 }
-
-@Serializable
-data class UserTableConfiguration(
-		val decks: String,
-
-		val tables: String,
-		val tableColumns: String,
-		val tableRows: String,
-		val tableSessionModes: String,
-
-		val graphs: String,
-		val graphNodes: String,
-		val graphEdges: String,
-
-		val _id: String,
-		val _rev: String? = null,
-)
-
-@Serializable
-data class UserDbSecurityConfiguration(
-		val admins: MemberConfiguration,
-		val members: MemberConfiguration,
-
-		val _id: String = "_security",
-		val _rev: String? = null,
-)
-
-@Serializable
-data class MemberConfiguration(
-		val names: List<String> = emptyList(),
-		val roles: List<String> = emptyList()
-)
