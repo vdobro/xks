@@ -2,6 +2,6 @@
 	window["env"] = window["env"] || {};
 
 	// Environment variables
-	window["env"]["apiUrl"] = "";
-	window["env"]["dbUrl"] = "https://xks.dobrovolskis.com/api/";
+	window["env"]["apiUrl"] = "http://localhost:8080";
+	window["env"]["dbUrl"] = "http://localhost:32770/";
 })(this);

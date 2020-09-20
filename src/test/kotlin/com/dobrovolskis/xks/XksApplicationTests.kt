@@ -23,8 +23,14 @@ package com.dobrovolskis.xks
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.03.11
+ */
 @SpringBootTest
+@Import(ApplicationTestConfig::class)
 class XksApplicationTests {
 
 	@Test

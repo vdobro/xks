@@ -22,8 +22,11 @@
 import {Injectable} from '@angular/core';
 import {Subject, Subscribable} from "rxjs";
 import {User} from "../models/User";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../environments/environment";
+import {stripTrailingSlash} from "../../environments/utils";
+
+const USERNAME_KEY = "current_user_name";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,89 +37,134 @@ import {environment} from "../../environments/environment";
 })
 export class UserSessionService {
 
-	private readonly apiRoot = environment.serverUrl + "/api";
-	private readonly registrationUrl = this.apiRoot + "/register";
-	private readonly loginUrl = this.apiRoot + "/login";
-	private readonly forgetUrl = this.apiRoot + "/forget";
+	private readonly httpOptions = {
+		withCredentials: true
+	}
+
+	private readonly apiRoot = stripTrailingSlash(environment.serverUrl);
+	private readonly databaseRoot = stripTrailingSlash(environment.databaseUrl);
+
+	private readonly userApiRoot = this.apiRoot + "/api/user";
+	private readonly registrationUrl = this.userApiRoot + "/register";
+	private readonly forgetUrl = this.userApiRoot + "/forget";
+
+	private readonly sessionUrl = this.databaseRoot + "/_session";
+	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:"
 
 	private readonly _userLoggedIn = new Subject<boolean>();
-	private readonly _userAuthChanged = new Subject<UserAuth>();
+	private readonly _currentUserChanged = new Subject<User>();
 
 	readonly userLoggedIn: Subscribable<boolean> = this._userLoggedIn;
-	readonly userAuthChanged: Subscribable<UserAuth> = this._userAuthChanged;
+	readonly userChanged: Subscribable<User> = this._currentUserChanged;
 
 	private currentUser: User = null;
 
 	constructor(private httpClient: HttpClient) {
-	}
-
-	async login(username: string, password: string): Promise<User> {
-		const user = await this.getUser(username, password);
-		this.updateUser(user, password);
-		return this.getCurrent();
-	}
-
-	async register(username: string, password: string): Promise<User> {
-		const user = await this.postCredentials(this.registrationUrl, username, password);
-		this.updateUser(user, password);
-		this._userAuthChanged.next({
-			username: username,
-			password: password
+		this.getUser().then(async () => {
+			const user = await this.getUser();
+			await this.updateCurrentUser(user);
+		}).catch(async () => {
+			await this.logout();
 		});
-		return this.getCurrent();
 	}
 
-	logout() {
-		this.updateUser(null, null);
-		this._userAuthChanged.next(null);
-	}
+	async login(username: string, password: string) {
+		try {
+			await this.httpClient.post(
+				this.sessionUrl,
+				UserSessionService.authRequest(username, password),
+				this.httpOptions).toPromise();
 
-	async forget(username: string, password: string) {
-		await this.postCredentials(this.forgetUrl, username, password);
-	}
-
-	getCurrent(): User {
-		return this.currentUser;
-	}
-
-	private updateUser(user: User, password: string) {
-		this.currentUser = user;
-		this._userLoggedIn.next(this.currentUser !== null
-			&& this.currentUser !== undefined);
-		if (password) {
-			this._userAuthChanged.next({
-				username: user.name,
-				password: password
-			});
-		} else {
-			this._userAuthChanged.next(null);
+			UserSessionService.saveUsername(username);
+			const user = await this.getUser();
+			this.updateCurrentUser(user);
+		} catch (e) {
+			await this.handleCredentialException(e);
 		}
 	}
 
-	private async getUser(username: string, password: string): Promise<User> {
-		return await this.postCredentials(this.loginUrl, username, password);
+	async register(username: string, password: string) {
+		try {
+			await this.httpClient.post(this.registrationUrl,
+				UserSessionService.authRequest(username, password)).toPromise();
+			await this.logout();
+			await this.login(username, password);
+		} catch (e) {
+			await this.handleCredentialException(e);
+		}
 	}
 
-	private async postCredentials(url: string,
-								  username: string,
-								  password: string): Promise<User> {
+	async logout() {
+		this.updateCurrentUser(null);
+		await this.deleteSession();
+	}
+
+	async deleteUser(username: string, password: string) {
+		await this.logout();
+		await this.httpClient.post(this.forgetUrl,
+			UserSessionService.authRequest(username, password),
+			this.httpOptions).toPromise();
+	}
+
+	private updateCurrentUser(user: User) {
+		if (user) {
+			UserSessionService.saveUsername(user.name);
+		} else {
+			UserSessionService.forgetUsername();
+		}
+		this.currentUser = user;
+		this._userLoggedIn.next(this.currentUser !== null
+			&& this.currentUser !== undefined);
+		this._currentUserChanged.next(user);
+	}
+
+	private static authRequest(username: string, password: string): UserAuth {
+		return {
+			name: username,
+			password: password
+		};
+	}
+
+	private async deleteSession() {
 		try {
-			return await this.httpClient.post<User>(url,
-				{
-					username: username,
-					password: password
-				},
-				{
-					responseType: 'json'
-				}).toPromise();
+			UserSessionService.forgetUsername();
+			await this.httpClient.delete(this.sessionUrl).toPromise();
 		} catch (e) {
-			const responseObject = e.error;
-			throw new Error(responseObject.error);
+		}
+	}
+
+	private async getUser(): Promise<User> {
+		const username = localStorage.getItem(USERNAME_KEY);
+		if (username) {
+			return await this.httpClient.get<User>(this.infoUrlPrefix + username,
+				this.httpOptions).toPromise();
+		} else {
+			return null;
+		}
+	}
+
+	private static saveUsername(username: string) {
+		localStorage.setItem(USERNAME_KEY, username);
+	}
+
+	private static forgetUsername() {
+		localStorage.removeItem(USERNAME_KEY);
+	}
+
+	private async handleCredentialException(e: HttpErrorResponse) {
+		await this.logout();
+		switch (e.status) {
+			case 401:
+				throw new Error("Wrong username and/or password.");
+			case 400:
+				throw new Error(e?.error?.error || "Unknown error occurred.");
+			default:
+				throw new Error("Unknown error occurred.");
 		}
 	}
 }
 
 export interface UserAuth {
-	username: string,
+	name: string,
 	password: string
 }

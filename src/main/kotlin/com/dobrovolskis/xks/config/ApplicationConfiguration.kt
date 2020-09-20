@@ -26,11 +26,10 @@ import org.springframework.stereotype.Component
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.08
+ * @since 2020.09.20
  */
 @Component
-@ConfigurationProperties(prefix = "db")
-data class PersistenceConfiguration(
-		var adminPassword: String = "",
-		var url: String = ""
+@ConfigurationProperties(prefix = "xks")
+data class ApplicationConfiguration(
+		var host: String = ""
 )

@@ -21,8 +21,8 @@
 
 package com.dobrovolskis.xks.web.controller
 
-import com.dobrovolskis.xks.model.UserData
-import com.dobrovolskis.xks.service.UserManagementService
+import com.dobrovolskis.xks.service.UserCredentialsService
+import com.dobrovolskis.xks.service.UserDataRetriever
 import com.dobrovolskis.xks.web.model.UserCredentialsDto
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.HttpStatus.UNAUTHORIZED
@@ -38,35 +38,26 @@ import org.springframework.web.bind.annotation.RestController
  * @since 2020.09.08
  */
 @RestController
-@RequestMapping(value = ["/api"])
-class UserController(private val userManagementService: UserManagementService) {
+@RequestMapping(value = ["/api/user"])
+class UserController(private val userDataRetriever: UserDataRetriever,
+                     private val userCredentialsService: UserCredentialsService) {
 
 	@RequestMapping(value = ["/register"], method = [POST])
 	@ResponseBody
-	fun createUser(@RequestBody dto: UserCredentialsDto): UserData {
-		return userManagementService.registerUser(
-				username = dto.username,
+	fun createUser(@RequestBody dto: UserCredentialsDto) {
+		return userDataRetriever.createUser(
+				username = dto.name,
 				password = dto.password)
-	}
-
-	@RequestMapping(value = ["/login"], method = [POST])
-	fun getUserDetails(@RequestBody dto: UserCredentialsDto): UserData {
-		check(userManagementService.credentialsCorrect(
-				username = dto.username,
-				password = dto.password)) {
-			"Wrong username or password"
-		}
-		return userManagementService.getExisting(dto.username)
 	}
 
 	@RequestMapping(value = ["/forget"], method = [POST])
 	fun forgetUser(@RequestBody dto: UserCredentialsDto): ResponseEntity<Void> {
-		return if (!userManagementService.credentialsCorrect(
-						username = dto.username,
+		return if (!userCredentialsService.credentialsCorrect(
+						username = dto.name,
 						password = dto.password)) {
 			ResponseEntity(UNAUTHORIZED)
 		} else {
-			userManagementService.forget(dto.username)
+			userDataRetriever.removeUser(dto.name)
 			ResponseEntity(OK)
 		}
 	}

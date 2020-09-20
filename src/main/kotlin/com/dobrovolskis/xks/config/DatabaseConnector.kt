@@ -36,17 +36,10 @@ class DatabaseConnector(private val persistenceConfiguration: PersistenceConfigu
 
 	@Bean
 	fun adminClient(): CloudantClient {
-		return userClient(username = ADMIN_USERNAME,
-				password = persistenceConfiguration.adminPassword)
-	}
-
-	private fun userClient(username: String, password: String): CloudantClient {
 		return ClientBuilder
 				.url(URL(persistenceConfiguration.url))
-				.username(username)
-				.password(password)
+				.username("admin")
+				.password(persistenceConfiguration.adminPassword)
 				.build()
 	}
 }
-
-private const val ADMIN_USERNAME = "admin"

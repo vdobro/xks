@@ -19,15 +19,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.model
+package com.dobrovolskis.xks
 
-import com.dobrovolskis.xks.service.UserTableConfiguration
+import com.dobrovolskis.xks.service.DatabaseSetupService
+import org.mockito.Mockito.mock
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Primary
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.08
+ * @since 2020.09.20
  */
-data class UserData(
-		val name: String,
-		val tableConfiguration: UserTableConfiguration
-)
+@TestConfiguration
+class ApplicationTestConfig {
+
+	@Bean
+	@Primary
+	fun databaseSetupService(): DatabaseSetupService {
+		val service = mock(DatabaseSetupService::class.java)
+		return service
+	}
+}

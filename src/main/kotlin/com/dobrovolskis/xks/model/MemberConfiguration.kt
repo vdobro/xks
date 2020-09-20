@@ -19,18 +19,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.config
+package com.dobrovolskis.xks.model
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import kotlinx.serialization.Serializable
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.08
+ * @since 2020.09.08
  */
-@Component
-@ConfigurationProperties(prefix = "db")
-data class PersistenceConfiguration(
-		var adminPassword: String = "",
-		var url: String = ""
+@Serializable
+data class MemberConfiguration(
+		val names: List<String> = emptyList(),
+		val roles: List<String> = emptyList()
 )

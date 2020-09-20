@@ -49,6 +49,7 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 	passwordConfirmationInput = new FormControl('');
 
 	loginErrorMessage: string = '';
+	requestInProgress: boolean = false;
 
 	constructor(
 		private readonly userSessionService: UserSessionService) {
@@ -74,6 +75,7 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 	}
 
 	async submitCredentials() {
+		this.requestInProgress = true;
 		const username = this.usernameInput.value.trim().normalize();
 		const password = this.passwordInput.value;
 
@@ -89,6 +91,7 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 				this.loginErrorMessage = e.message;
 			}
 		}
+		this.requestInProgress = false;
 	}
 
 	private validatePassword(password: string): boolean {
