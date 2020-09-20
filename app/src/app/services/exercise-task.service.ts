@@ -19,7 +19,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as levenshtein from 'fast-levenshtein';
 import {v4 as uuid} from 'uuid';
 import {Injectable} from '@angular/core';
 import {TableCellService} from "./table-cell.service";
@@ -31,6 +30,7 @@ import {GraphElementService} from "./graph-element.service";
 import {GraphEdgeRepository} from "../repositories/graph-edge-repository.service";
 import {BaseEntity} from "../models/BaseEntity";
 import {GraphNode} from "../models/GraphNode";
+import {levenshtein} from "../../environments/utils";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -155,8 +155,8 @@ export class ExerciseTaskService {
 
 	private getFieldWithClosestValue(value: string, fields: FlashcardField[]): FlashcardField {
 		const sorted = fields.sort((a, b) => {
-			const distanceA = levenshtein.get(value, a.value);
-			const distanceB = levenshtein.get(value, b.value);
+			const distanceA = levenshtein(value, a.value);
+			const distanceB = levenshtein(value, b.value);
 			return distanceA < distanceB ? -1 : (distanceA > distanceB ? 1 : 0);
 		});
 		return sorted[0];

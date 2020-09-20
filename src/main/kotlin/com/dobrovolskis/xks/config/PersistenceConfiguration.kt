@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties(prefix = "db")
 data class PersistenceConfiguration(
-		var adminPassword: String = "",
+		var username: String = "",
+		var password: String = "",
 		var url: String = ""
 )

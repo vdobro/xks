@@ -57,7 +57,9 @@ class DatabaseSetupService(
 		configure(USERS_SECURITY_EDITABLE, TRUE)
 		request(USERS_SECURITY, "{}")
 
-		val origins = arrayOf("http://localhost",
+		val origins = arrayOf(
+				"http://localhost:4200",
+				"http://localhost:8080",
 				"https://${applicationConfiguration.host}").joinToString()
 		configure(CORS_ORIGINS, origins)
 		configure(ENABLE_CORS, TRUE)
@@ -70,10 +72,18 @@ class DatabaseSetupService(
 
 	private fun request(path: String, body: String) {
 		val connection = HttpConnection(HttpMethod.PUT.name,
-				URL(persistenceConfiguration.url + path),
+				resolveAndFormatUrl(path),
 				MediaType.APPLICATION_JSON_VALUE)
 		connection.setRequestBody(body)
 		client.executeRequest(connection)
+	}
+
+	private fun resolveAndFormatUrl(path: String): URL {
+		val base = persistenceConfiguration.url
+		val slash = "/"
+		val separator = if (!base.endsWith(slash)) slash else ""
+
+		return URL(base + separator + path)
 	}
 }
 

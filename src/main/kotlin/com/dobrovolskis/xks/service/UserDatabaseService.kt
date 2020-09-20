@@ -22,6 +22,7 @@
 package com.dobrovolskis.xks.service
 
 import com.cloudant.client.api.CloudantClient
+import com.dobrovolskis.xks.config.PersistenceConfiguration
 import com.dobrovolskis.xks.model.MemberConfiguration
 import com.dobrovolskis.xks.model.UserDbSecurityConfiguration
 import com.dobrovolskis.xks.model.UserTableConfiguration
@@ -33,7 +34,9 @@ import java.util.*
  * @since 2020.09.08
  */
 @Service
-class UserDatabaseService(private val client: CloudantClient) {
+class UserDatabaseService(
+		private val dbConfig: PersistenceConfiguration,
+		private val client: CloudantClient) {
 
 	fun createAll(username: String): UserTableConfiguration {
 		return UserTableConfiguration(
@@ -68,7 +71,7 @@ class UserDatabaseService(private val client: CloudantClient) {
 		}
 		val database = client.database(name, true)
 		database.save(UserDbSecurityConfiguration(
-				admins = MemberConfiguration(),
+				admins = MemberConfiguration(names = listOf(dbConfig.username)),
 				members = MemberConfiguration(names = listOf(username))
 		))
 		return name

@@ -1,7 +1,12 @@
 {
   "properties": [
     {
-      "name": "db.adminPassword",
+      "name": "db.username",
+      "type": "java.lang.String",
+      "description": "Username of the CouchDB admin user."
+    },
+    {
+      "name": "db.password",
       "type": "java.lang.String",
       "description": "Administrator password of the CouchDB instance."
     },
@@ -13,7 +18,7 @@
     {
       "name": "xks.host",
       "type": "java.lang.String",
-      "description": "Host URL of the application, needed for CORS."
+      "description": "Host URL of the application (required for CORS)."
     }
   ]
 }
