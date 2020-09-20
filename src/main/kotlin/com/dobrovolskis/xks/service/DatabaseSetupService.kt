@@ -25,8 +25,8 @@ import com.cloudant.http.HttpConnection
 import com.dobrovolskis.xks.config.ApplicationConfiguration
 import com.dobrovolskis.xks.config.DatabaseConnector
 import com.dobrovolskis.xks.config.PersistenceConfiguration
+import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
-import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -42,11 +42,11 @@ import java.net.URL
 class DatabaseSetupService(
 		private val applicationConfiguration: ApplicationConfiguration,
 		private val persistenceConfiguration: PersistenceConfiguration,
-		databaseConnector: DatabaseConnector) : ApplicationListener<ContextRefreshedEvent> {
+		databaseConnector: DatabaseConnector) : ApplicationListener<ApplicationReadyEvent> {
 	private val client = databaseConnector.adminClient()
 
 	@EventListener
-	override fun onApplicationEvent(event: ContextRefreshedEvent) {
+	override fun onApplicationEvent(event: ApplicationReadyEvent) {
 		fixUsersTablePermission()
 	}
 

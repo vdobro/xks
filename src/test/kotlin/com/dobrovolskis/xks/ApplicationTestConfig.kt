@@ -21,20 +21,23 @@
 
 package com.dobrovolskis.xks
 
-import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
+import com.dobrovolskis.xks.service.DatabaseSetupService
+import org.mockito.Mockito.mock
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Primary
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.11
+ * @since 2020.09.20
  */
-@SpringBootTest
-@Import(ApplicationTestConfig::class)
-class XksApplicationTests {
+@TestConfiguration
+class ApplicationTestConfig {
 
-	@Test
-	fun contextLoads() {
+	@Bean
+	@Primary
+	fun databaseSetupService(): DatabaseSetupService {
+		val service = mock(DatabaseSetupService::class.java)
+		return service
 	}
-
 }
