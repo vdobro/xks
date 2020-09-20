@@ -22,8 +22,9 @@
 import {Injectable} from '@angular/core';
 import {Subject, Subscribable} from "rxjs";
 import {User} from "../models/User";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../environments/environment";
+import {stripTrailingSlash} from "../../environments/utils";
 
 const USERNAME_KEY = "current_user_name";
 
@@ -40,12 +41,15 @@ export class UserSessionService {
 		withCredentials: true
 	}
 
-	private readonly userApiRoot = environment.serverUrl + "/api/user";
+	private readonly apiRoot = stripTrailingSlash(environment.serverUrl);
+	private readonly databaseRoot = stripTrailingSlash(environment.databaseUrl);
+
+	private readonly userApiRoot = this.apiRoot + "/api/user";
 	private readonly registrationUrl = this.userApiRoot + "/register";
 	private readonly forgetUrl = this.userApiRoot + "/forget";
 
-	private readonly sessionUrl = environment.databaseUrl + "_session";
-	private readonly infoUrlPrefix = environment.databaseUrl + "_users/org.couchdb.user:"
+	private readonly sessionUrl = this.databaseRoot + "/_session";
+	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:"
 
 	private readonly _userLoggedIn = new Subject<boolean>();
 	private readonly _currentUserChanged = new Subject<User>();
@@ -66,16 +70,16 @@ export class UserSessionService {
 
 	async login(username: string, password: string) {
 		try {
-			await this.httpClient.post(this.sessionUrl,
+			await this.httpClient.post(
+				this.sessionUrl,
 				UserSessionService.authRequest(username, password),
 				this.httpOptions).toPromise();
+
 			UserSessionService.saveUsername(username);
 			const user = await this.getUser();
 			this.updateCurrentUser(user);
 		} catch (e) {
-			await this.logout();
-			const responseObject = e.error;
-			throw new Error(responseObject.error);
+			await this.handleCredentialException(e);
 		}
 	}
 
@@ -86,9 +90,7 @@ export class UserSessionService {
 			await this.logout();
 			await this.login(username, password);
 		} catch (e) {
-			await this.logout();
-			const responseObject = e.error;
-			throw new Error(responseObject.error);
+			await this.handleCredentialException(e);
 		}
 	}
 
@@ -147,6 +149,18 @@ export class UserSessionService {
 
 	private static forgetUsername() {
 		localStorage.removeItem(USERNAME_KEY);
+	}
+
+	private async handleCredentialException(e: HttpErrorResponse) {
+		await this.logout();
+		switch (e.status) {
+			case 401:
+				throw new Error("Wrong username and/or password.");
+			case 400:
+				throw new Error(e?.error?.error || "Unknown error occurred.");
+			default:
+				throw new Error("Unknown error occurred.");
+		}
 	}
 }
 

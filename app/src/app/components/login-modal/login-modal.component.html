@@ -43,11 +43,13 @@
 						</label>
 					</div>
 				</div>
-				<div class="uk-alert-danger uk-margin" uk-alert *ngIf="loginErrorMessage?.length">
+				<div uk-spinner class="uk-animation-slide-bottom" *ngIf="requestInProgress"></div>
+				<div class="uk-alert-danger uk-margin" uk-alert *ngIf="!requestInProgress && loginErrorMessage?.length">
 					<a class="uk-alert-close" uk-close></a>
 					<p>{{loginErrorMessage}}</p>
 				</div>
 				<button class="uk-float-right uk-button uk-button-primary"
+						[disabled]="requestInProgress"
 						type="submit">{{existingUser ? 'Login' : 'Register'}}
 				</button>
 			</form>

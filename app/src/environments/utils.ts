@@ -19,18 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.config
-
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
-
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.08
+ * @since 2020.09.20
  */
-@Component
-@ConfigurationProperties(prefix = "db")
-data class PersistenceConfiguration(
-		var adminPassword: String = "",
-		var url: String = ""
-)
+export const stripTrailingSlash = (str) => {
+	return str.endsWith('/') ?
+		str.slice(0, -1) :
+		str;
+};

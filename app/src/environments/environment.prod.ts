@@ -22,5 +22,5 @@
 export const environment = {
 	production: true,
 	serverUrl: window["env"]["apiUrl"] || "",
-	databaseUrl: window["env"]["dbUrl"] || "https://xks.dobrovolskis.com/api/"
+	databaseUrl: window["env"]["dbUrl"] || "https://xks.dobrovolskis.com/api"
 };

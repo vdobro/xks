@@ -27,6 +27,7 @@ import {environment} from "../../environments/environment";
 import {TableConfiguration} from "../models/TableConfiguration";
 import {Observable, Subject, Subscribable} from "rxjs";
 import {User} from "../models/User";
+import {stripTrailingSlash} from "../../environments/utils";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -150,7 +151,7 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		if (user) {
 			const remoteName = this.resolveRemoteDatabaseName(user.tableConfig);
 			this.userDb = new PouchDB(remoteName);
-			const remoteUrl = environment.databaseUrl + remoteName;
+			const remoteUrl = stripTrailingSlash(environment.databaseUrl) + "/" + remoteName;
 			const remoteDb = new PouchDB(remoteUrl, {
 				fetch(url, opts) {
 					opts.credentials = 'include';

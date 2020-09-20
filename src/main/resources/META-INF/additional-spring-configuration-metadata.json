@@ -9,6 +9,11 @@
       "name": "db.url",
       "type": "java.lang.String",
       "description": "Full URL of the CouchDB instance."
+    },
+    {
+      "name": "xks.host",
+      "type": "java.lang.String",
+      "description": "Host URL of the application, needed for CORS."
     }
   ]
 }
