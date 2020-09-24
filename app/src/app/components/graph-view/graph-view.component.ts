@@ -139,7 +139,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	private adjustCanvasSize(containerHeight: number, containerWidth: number) {
 		const toolbarHeight = this.graphToolbar.nativeElement.offsetHeight + 20;
-		const height = Math.min(containerHeight - toolbarHeight, this.rootContainerWidth);
+		const height = Math.max(containerHeight - toolbarHeight, 400);
 		this.network?.setSize(`${containerWidth}px`, `${height}px`);
 		this.network?.redraw();
 	}
