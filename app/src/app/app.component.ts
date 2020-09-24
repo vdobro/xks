@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import {NavigationControlService} from "./services/navigation-control.service";
 import {NavigationService} from "./services/navigation.service";
@@ -34,10 +34,13 @@ import {DeckRepository} from "./repositories/deck-repository.service";
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.sass'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterContentChecked {
 
 	title = 'xks';
 	sidebarVisible: boolean = false;
+
+	@ViewChild('rootContainer', {static: true})
+	rootContainer: ElementRef;
 
 	constructor(
 		private readonly deckRepository: DeckRepository,
@@ -56,6 +59,11 @@ export class AppComponent implements OnInit {
 		});
 	}
 
-	ngOnInit(): void {
+	ngOnInit() {
+	}
+
+	ngAfterContentChecked() {
+		const width = this.rootContainer.nativeElement.offsetWidth;
+		this.navControlService.notifyRootContainerChange(width);
 	}
 }
