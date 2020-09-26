@@ -54,8 +54,12 @@ export class DeckListCardComponent implements OnInit {
 	}
 
 	async onChangesSubmit() {
-		this.deck.name = this.nameInput.value;
-		this.deck.description = this.descriptionInput.value;
+		const title = this.nameInput.value.trim();
+		if (!title) {
+			return;
+		}
+		this.deck.name = title;
+		this.deck.description = this.descriptionInput.value.trim();
 		this.editMode = false;
 
 		await this.deckService.update(this.deck);
