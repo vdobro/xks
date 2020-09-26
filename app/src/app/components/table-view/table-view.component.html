@@ -8,7 +8,8 @@
 					(click)="addColumn()">
 				Add column
 			</button>
-			<table-column-editor *ngIf="columnInCreation" class="uk-animation-fade"
+			<table-column-editor *ngIf="columnInCreation"
+								 class="uk-animation-fade uk-animation-fast"
 								 [newColumn]="true"
 								 [table]="table"
 								 (nameChanged)="columnAdded()">

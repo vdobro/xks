@@ -74,17 +74,17 @@ export class SidebarComponent implements OnInit {
 				private readonly graphService: GraphService,
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe(value => this.onVisibilityChanged(value));
-		this.sidebarService.activeDeck.subscribe(value => this.onActiveDeckChanged(value));
+		this.sidebarService.activeDeck.subscribe(async value => this.onActiveDeckChanged(value));
 		this.sidebarService.activeTable.subscribe(value => this.onActiveTableChanged(value));
 		this.sidebarService.activeGraph.subscribe(value => this.onActiveGraphChanged(value));
 		this.tableService.tablesChanged.subscribe(value => this.onTablesChanged(value));
 		this.graphService.graphsChanged.subscribe(value => this.onGraphsChanged(value));
 	}
 
-	ngOnInit(): void {
+	async ngOnInit() {
 		this.onActiveTableChanged(this.sidebarService.currentTable);
 		this.onActiveGraphChanged(this.sidebarService.currentGraph);
-		this.onActiveDeckChanged(this.sidebarService.currentDeck);
+		await this.onActiveDeckChanged(this.sidebarService.currentDeck);
 		this.onVisibilityChanged(this.deck !== null);
 	}
 
@@ -95,6 +95,9 @@ export class SidebarComponent implements OnInit {
 	}
 
 	private onActiveTableChanged(table: Table) {
+		if (this.selectedTable?.id === table?.id) {
+			return;
+		}
 		this.tableSelected = !!table;
 		if (this.selectedTable?.id !== table?.id) {
 			this.selectedTable = table;
@@ -102,38 +105,35 @@ export class SidebarComponent implements OnInit {
 	}
 
 	private onActiveGraphChanged(graph: Graph) {
+		if (this.selectedGraph?.id === graph?.id) {
+			return;
+		}
 		this.graphSelected = !!graph;
 		if (this.selectedGraph?.id !== graph?.id) {
 			this.selectedGraph = graph;
 		}
 	}
 
-	private onActiveDeckChanged(deck: Deck) {
+	private async onActiveDeckChanged(deck: Deck) {
+		if (this.deck?.id === deck?.id) {
+			return;
+		}
 		this.deck = deck;
 		if (deck) {
-			this.tableService.getByDeck(this.deck).then((tables: Table[]) => {
-				this.tables = tables;
-			});
-			this.graphService.getByDeck(this.deck).then((graphs: Graph[]) => {
-				this.graphs = graphs;
-			});
+			this.tables = await this.tableService.getByDeck(this.deck);
+			this.graphs = await this.graphService.getByDeck(this.deck);
 		} else {
-			this.tables = [];
-			this.graphs = [];
+			this.resetCurrentDeckElements();
 		}
 	}
 
 	async onDeckDeleted() {
+		this.resetCurrentDeckElements();
 		if (!this.deck) {
-			this.tables = [];
-			this.graphs = [];
 			return;
 		}
-
 		await this.deckService.delete(this.deck);
 		this.deck = null;
-		this.tables = [];
-		this.graphs = [];
 		await this.goHome();
 	}
 
@@ -171,5 +171,14 @@ export class SidebarComponent implements OnInit {
 		if (this.selectedGraph && !this.graphs.find(x => x.id === this.selectedTable.id)) {
 			this.sidebarService.deselectTable();
 		}
+	}
+
+	private resetCurrentDeckElements() {
+		this.graphSelected = false;
+		this.tableSelected = false;
+		this.tables = [];
+		this.graphs = [];
+		this.selectedTable = null;
+		this.selectedGraph = null;
 	}
 }

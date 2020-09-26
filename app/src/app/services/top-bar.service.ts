@@ -21,7 +21,7 @@
 
 import {Injectable} from '@angular/core';
 import {NavBarItem} from "../components/nav-bar-item";
-import {Subject, Subscribable} from "rxjs";
+import {Observable, Subject, Subscribable} from "rxjs";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,9 +33,11 @@ import {Subject, Subscribable} from "rxjs";
 export class TopBarService {
 
 	private readonly currentItems: NavBarItem[] = [];
-	private readonly items$ = new Subject<NavBarItem[]>();
+	private readonly _items$ = new Subject<NavBarItem[]>();
+	private readonly _backNavigationEnabled$ = new Subject<boolean>();
 
-	readonly allItems: Subscribable<NavBarItem[]> = this.items$;
+	readonly allItems: Observable<NavBarItem[]> = this._items$;
+	readonly backNavigationEnabled : Subscribable<boolean> = this._backNavigationEnabled$;
 
 	constructor() {
 	}
@@ -46,11 +48,16 @@ export class TopBarService {
 	}
 
 	clearItems() {
+		this._backNavigationEnabled$.next(true);
 		this.currentItems.splice(0, this.currentItems.length);
 		this.update();
 	}
 
+	disableBackButton() {
+		this._backNavigationEnabled$.next(false);
+	}
+
 	private update() {
-		this.items$.next(this.currentItems);
+		this._items$.next(this.currentItems);
 	}
 }
