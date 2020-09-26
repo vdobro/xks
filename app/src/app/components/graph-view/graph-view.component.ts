@@ -138,7 +138,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	}
 
 	private adjustCanvasSize(containerHeight: number, containerWidth: number) {
-		const toolbarHeight = this.graphToolbar.nativeElement.offsetHeight + 20;
+		const toolbarHeight = this.graphToolbar.nativeElement.offsetHeight + 21;
 		const height = Math.max(containerHeight - toolbarHeight, 400);
 		this.network?.setSize(`${containerWidth}px`, `${height}px`);
 		this.network?.redraw();
@@ -167,6 +167,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		})
 		this.nodeRepository.entityDeletedId.subscribe(id => {
 			this.nodes.remove(id);
+			this.network?.fit();
 			this.selectedSourceNode = null;
 			this.selectedNode = null;
 		});

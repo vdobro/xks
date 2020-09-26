@@ -2,9 +2,13 @@
 	<div class="uk-width-expand">
 		<label>
 			<input readonly
-				   class="uk-input uk-form-success"
+				   uk-tooltip="pos: bottom-left; title: You must first submit the fields above."
+				   [ngClass]="{'uk-form-success': !pending}"
+				   [attr.disabled]="pending ? '' : null"
+				   class="uk-input"
 				   type="text"
-				   value="{{answerField?.value}}">
+				   [placeholder]="answerField?.identifier.name || indexNumber"
+				   value="{{pending ? '' : answerField?.value}}">
 		</label>
 	</div>
 </form>

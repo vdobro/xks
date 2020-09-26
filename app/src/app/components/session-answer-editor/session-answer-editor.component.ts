@@ -91,7 +91,7 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 	}
 
 	ngOnChanges() {
-		this.focusIfNeeded();
+		this.answerInputElement.nativeElement.focus();
 		this.resetInput();
 	}
 
@@ -124,12 +124,6 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 		} else {
 			this.answerInput.setValue(this.lastAnswer);
 			this.lastAnswer = '';
-		}
-	}
-
-	private focusIfNeeded() {
-		if (this.shouldGetFocus) {
-			this.answerInputElement.nativeElement.focus();
 		}
 	}
 }

@@ -36,6 +36,12 @@ export class SessionAnswerViewComponent implements OnInit {
 	@Input()
 	answerField: FlashcardField;
 
+	@Input()
+	indexNumber: number;
+
+	@Input()
+	pending: boolean;
+
 	constructor() {
 	}
 

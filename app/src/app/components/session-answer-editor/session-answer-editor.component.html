@@ -2,16 +2,24 @@
 	<div class="uk-width-expand">
 		<label>
 			<input #answerFieldElement
+				   [ngClass]="{'uk-form-danger': !lastAnswerAccepted}"
 				   class="uk-input"
 				   type="text"
-				   [placeholder]="answerField.identifier.name ? answerField.identifier.name : indexNumber"
+				   [placeholder]="answerField?.identifier.name || indexNumber"
 				   [formControl]="answerInput">
 		</label>
 	</div>
-	<div *ngIf="allowOverride" class="uk-width-auto">
-		<button type="button" class="uk-button uk-button-primary"
+	<div class="uk-width-auto">
+		<button type="button"
+				class="uk-button uk-button-primary"
+				uk-tooltip="title: Shortcut: Enter"
+				(click)="submitAnswer()">Submit
+		</button>
+		<button *ngIf="allowOverride"
+				type="button"
+				class="uk-button uk-button-secondary uk-margin-small-left"
 				uk-tooltip="title: Shortcut: Shift+Enter"
-				(click)="forceAcceptAnswer()">Accept answer
+				(click)="forceAcceptAnswer()">Accept as correct
 		</button>
 	</div>
 </form>

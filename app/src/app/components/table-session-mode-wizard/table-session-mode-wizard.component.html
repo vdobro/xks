@@ -4,6 +4,7 @@
 		<div uk-sortable="group: sortable-table-columns">
 			<div class="uk-margin" *ngFor="let column of tableColumns" id="{{column.id}}">
 				<div class="uk-card uk-card-default uk-card-body uk-card-small">
+					<span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
 					{{column.name}}
 				</div>
 			</div>
