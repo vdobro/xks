@@ -19,7 +19,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {AfterContentInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {
+	AfterContentInit,
+	Component,
+	ElementRef,
+	EventEmitter,
+	HostListener,
+	Input,
+	OnInit,
+	Output,
+	ViewChild
+} from '@angular/core';
 import {GraphElementService} from "../../services/graph-element.service";
 import {GraphNode} from "../../models/GraphNode";
 import {FormControl} from "@angular/forms";
@@ -48,6 +58,9 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	@Input()
 	shouldAppend: boolean;
 
+	@Output()
+	editingAborted = new EventEmitter();
+
 	labelInput = new FormControl('');
 
 	constructor(
@@ -68,8 +81,13 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 		});
 	}
 
+	@HostListener("document:keydown.escape")
+	onEscapeClick(_: KeyboardEvent) {
+		this.editingAborted.emit();
+	}
+
 	async submitValue() {
-		if (!this.graph) {
+		if (!this.graph || !this.labelInput.value) {
 			return;
 		}
 		const label = this.labelInput.value.trim();

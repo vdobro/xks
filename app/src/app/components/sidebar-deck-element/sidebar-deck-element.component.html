@@ -9,20 +9,17 @@
 	   uk-icon="icon: pencil"></a>
 </a>
 <div [hidden]="!editMode">
-	<form (submit)="onChangesSubmit()">
-		<div class="uk-grid-small uk-flex-middle" uk-grid>
-			<div class="uk-width-expand">
-				<label>
-					<input class="uk-input uk-form-small"
-						   type="text"
-						   placeholder="Title"
-						   [formControl]="nameInput"
-						   [value]="element.name">
-				</label>
-			</div>
-			<div class="uk-width-auto">
-				<button type="submit" uk-icon="icon: check"></button>
-			</div>
+	<form class="uk-grid-small" uk-grid>
+		<div class="uk-inline uk-width-expand">
+			<a (click)="onChangesSubmit()"
+			   class="uk-form-icon uk-form-icon-flip"
+			   uk-icon="check"></a>
+			<input #inputElement
+				   class="uk-input uk-form-small"
+				   type="text"
+				   placeholder="Title"
+				   [formControl]="nameInput"
+				   [value]="element.name">
 		</div>
 	</form>
 </div>
