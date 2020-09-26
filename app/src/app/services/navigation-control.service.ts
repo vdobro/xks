@@ -31,11 +31,13 @@ import {Subject, Subscribable} from "rxjs";
 })
 export class NavigationControlService {
 
-	private readonly _topBarVisible$ = new Subject();
-	private readonly _sidebarVisible$ = new Subject();
+	private readonly _topBarVisible$ = new Subject<boolean>();
+	private readonly _sidebarVisible$ = new Subject<boolean>();
+	private readonly _rootContainerWidth$ = new Subject<number>();
 
 	readonly sidebarVisible: Subscribable<boolean> = this._sidebarVisible$;
 	readonly topBarVisible: Subscribable<boolean> = this._topBarVisible$;
+	readonly rootContainerWidth: Subscribable<number> = this._rootContainerWidth$;
 
 	constructor() {
 	}
@@ -46,5 +48,9 @@ export class NavigationControlService {
 
 	setTopBarVisibility(visible: boolean) {
 		this._topBarVisible$.next(visible);
+	}
+
+	notifyRootContainerChange(width: number) {
+		this._rootContainerWidth$.next(width);
 	}
 }

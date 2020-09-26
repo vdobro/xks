@@ -1,0 +1,19 @@
+:host ::ng-deep .vis-network
+	outline: none
+
+@import "variables"
+
+@media (min-width: $breakpoint-medium)
+	:host ::ng-deep > *:last-child
+		left: calc(25% - #{$global-margin} + 1px)
+		width: calc(75% - #{$global-margin} - 1px)
+
+@media (max-width: $breakpoint-medium - 1)
+	:host ::ng-deep > *:last-child
+		left: 0px
+		width: 100%
+
+:host ::ng-deep > *:last-child
+	position: fixed
+	bottom: 0px
+	min-height: 0px !important

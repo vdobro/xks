@@ -1,5 +1,8 @@
-<div class="uk-container" uk-height-viewport="offset-top: true; expand=true">
-	<div class="uk-grid-divider uk-margin uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
+<div class="uk-container"
+	 #graphViewContainer
+	 uk-height-viewport="offset-top: true; expand=true">
+	<div #graphToolbar class="uk-grid-divider uk-margin uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid
+		 uk-height-match>
 		<div class="uk-width-expand">
 			<h2 class="uk-heading-medium">{{graph?.name}}</h2>
 		</div>
@@ -10,7 +13,6 @@
 			</div>
 		</div>
 	</div>
-	<div #networkContainer uk-height-viewport="offset-top: true; expand=true">
-	</div>
 </div>
-
+<div #networkContainer uk-height-viewport="offset-top: true; expand=true">
+</div>

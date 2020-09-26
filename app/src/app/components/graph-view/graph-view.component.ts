@@ -34,6 +34,7 @@ import {GraphEdge} from "../../models/GraphEdge";
 import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
 import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
 import {GraphToolbarComponent} from "../graph-toolbar/graph-toolbar.component";
+import {NavigationControlService} from "../../services/navigation-control.service";
 
 export const GRAPH_ID_PARAM: string = 'graphId';
 
@@ -47,11 +48,18 @@ export const GRAPH_ID_PARAM: string = 'graphId';
 	styleUrls: ['./graph-view.component.sass']
 })
 export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecked {
+
 	@ViewChild(GraphToolbarComponent)
 	toolbar: GraphToolbarComponent;
 
 	@ViewChild('networkContainer', {static: true})
 	networkContainer: ElementRef;
+
+	@ViewChild('graphToolbar', {static: true})
+	graphToolbar: ElementRef;
+
+	@ViewChild('graphViewContainer', {static: true})
+	container: ElementRef;
 
 	graph: Graph;
 	network: Network;
@@ -65,6 +73,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	selectedNode: GraphNode = null;
 	selectedSourceNode: GraphNode = null;
 
+	private rootContainerWidth: number = 0;
 	private sizeObserver: ResizeObserver = null;
 
 	private readonly nodes = new DataSet<any>();
@@ -76,9 +85,13 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		private readonly nodeRepository: GraphNodeRepository,
 		private readonly edgeRepository: GraphEdgeRepository,
 		private readonly navigationService: NavigationService,
+		private readonly navControlService: NavigationControlService,
 		private readonly topBarService: TopBarService,
 		private readonly sidebarService: SidebarService,
 		private readonly activatedRoute: ActivatedRoute) {
+		this.navControlService.rootContainerWidth.subscribe((value) => {
+			this.rootContainerWidth = value;
+		})
 	}
 
 	async ngOnInit() {
@@ -86,8 +99,8 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 		await this.setUpNetworkView();
 		this.setUpDataLoading();
-		this.setUpSizeHandler();
 		this.setUpDataEvents();
+		this.adjustGraphViewSize();
 	}
 
 	ngOnDestroy() {
@@ -97,7 +110,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	}
 
 	ngAfterContentChecked() {
-		this.network?.redraw();
+		this.adjustGraphViewSize();
 	}
 
 	@HostListener("document:keydown.escape")
@@ -115,14 +128,20 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		}
 	}
 
-	private setUpSizeHandler() {
-		this.sizeObserver = new ResizeObserver(entries => {
-			const entry = entries[0].contentRect;
-			const height = Math.max(entry.height - 50, 400);
-			const width = entry.width;
-			this.network?.setSize(`${width}px`, `${height}px`);
-		});
-		this.sizeObserver.observe(this.networkContainer.nativeElement);
+	private adjustGraphViewSize() {
+		const containerSize = this.container.nativeElement.getBoundingClientRect();
+		const containerWidth = containerSize.width;
+		const containerHeight = containerSize.height;
+		const rootContainerWidth = this.rootContainerWidth - 40;
+		this.adjustCanvasSize(containerHeight, containerWidth < 900
+			? containerWidth : rootContainerWidth);
+	}
+
+	private adjustCanvasSize(containerHeight: number, containerWidth: number) {
+		const toolbarHeight = this.graphToolbar.nativeElement.offsetHeight + 20;
+		const height = Math.max(containerHeight - toolbarHeight, 400);
+		this.network?.setSize(`${containerWidth}px`, `${height}px`);
+		this.network?.redraw();
 	}
 
 	private setUpDataLoading() {
@@ -259,7 +278,10 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 				face: "IBM Plex Sans",
 				size: 13
 			},
-			shadow: true,
+			shadow: {
+				enabled: true,
+				size: 2
+			},
 		};
 	}
 
@@ -298,7 +320,10 @@ export interface NodeView {
 		face: string,
 		color: string,
 	},
-	shadow: boolean,
+	shadow: {
+		enabled: boolean,
+		size: number
+	},
 }
 
 interface NetworkDeselection extends NetworkSelection {
