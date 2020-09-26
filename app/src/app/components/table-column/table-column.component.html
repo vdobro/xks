@@ -4,6 +4,6 @@
 					 (nameChanged)="onNameSubmit($event.name)"
 					 (columnDeleted)="columnDeleted.emit()">
 </table-column-editor>
-<span *ngIf="!editMode" class="uk-animation-fade">
+<span *ngIf="!editMode" class="uk-animation-fade uk-animation-fast">
 	{{column.name}}
 </span>

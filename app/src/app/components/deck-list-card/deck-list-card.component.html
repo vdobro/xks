@@ -1,5 +1,5 @@
 <a *ngIf="deck"
-   class="uk-card uk-card-small uk-display-block uk-card-default uk-link-toggle uk-card-body uk-animation-fade"
+   class="uk-card uk-card-small uk-display-block uk-card-default uk-link-toggle uk-card-body uk-animation-fade uk-animation-fast"
    [hidden]="editMode" (click)="openDeckDetails()">
 	<div class="uk-grid-small uk-flex-middle" uk-grid>
 		<div class="uk-width-expand">
@@ -18,7 +18,7 @@
 		{{ deck.description }}
 	</p>
 </a>
-<div *ngIf="deck" class="uk-card uk-card-small uk-display-block uk-card-default uk-card-body uk-animation-fade"
+<div *ngIf="deck" class="uk-card uk-card-small uk-display-block uk-card-default uk-card-body uk-animation-fade uk-animation-fast"
 	 [hidden]="!editMode">
 	<form (submit)="onChangesSubmit()">
 		<div class="uk-grid-small uk-flex-middle" uk-grid>

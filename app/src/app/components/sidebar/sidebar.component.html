@@ -1,19 +1,21 @@
 <div *ngIf="active" class="uk-container uk-container-expand"
 	 uk-sticky="offset: 100; top: #navigation-top-bar; show-on-up: true">
-	<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav>
-		<li *ngIf="deck && tables.length > 0 && !graphSelected && !tableSelected"
+	<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav="multiple: true">
+		<li *ngIf="deck && !graphSelected && !tableSelected"
 			class="uk-parent uk-open">
 			<a href="#">Tables</a>
 			<ul class="uk-nav-sub">
-				<li deck-element-table *ngFor="let table of tables"
+				<li deck-element-table
+					*ngFor="let table of tables"
 					[element]="table"></li>
 			</ul>
 		</li>
-		<li *ngIf="deck && graphs.length > 0 && !graphSelected && !tableSelected"
+		<li *ngIf="deck && !graphSelected && !tableSelected"
 			class="uk-parent uk-open">
 			<a href="#">Graphs</a>
 			<ul class="uk-nav-sub">
-				<li deck-element-graph *ngFor="let graph of graphs"
+				<li deck-element-graph
+					*ngFor="let graph of graphs"
 					[element]="graph"></li>
 			</ul>
 		</li>

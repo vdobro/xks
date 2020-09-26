@@ -19,6 +19,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import UIkit from 'uikit';
+
 import {Component, OnInit} from '@angular/core';
 import {NavigationService} from "../../services/navigation.service";
 
@@ -33,15 +35,15 @@ import {NavigationService} from "../../services/navigation.service";
 })
 export class SessionNavigationComponent implements OnInit {
 
-	constructor(
-		private readonly navigationService: NavigationService
-	) {
+	constructor(private readonly navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
 	}
 
 	async quitSession() {
-		await this.navigationService.navigateToCurrentDeck();
+		UIkit.modal.confirm('Do you want to abort current study session? All progress will be lost.').then(async () => {
+			await this.navigationService.navigateToCurrentDeck();
+		}, () => {});
 	}
 }

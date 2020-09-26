@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {TABLE_ID_PARAM} from "../table-view/table-view.component";
 import {TableService} from "../../services/table.service";
@@ -52,7 +52,7 @@ export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 	templateUrl: './session-view.component.html',
 	styleUrls: ['./session-view.component.sass']
 })
-export class SessionViewComponent implements OnInit, OnDestroy, OnChanges {
+export class SessionViewComponent implements OnInit, OnDestroy {
 
 	state: LearningSessionState = null;
 	answerFields: TableColumn[] = [];
@@ -93,10 +93,6 @@ export class SessionViewComponent implements OnInit, OnDestroy, OnChanges {
 	async ngOnInit() {
 	}
 
-	async ngOnChanges() {
-
-	}
-
 	ngOnDestroy() {
 		this.topBarService.clearItems();
 		this.tableSessionService.cleanup();
@@ -112,6 +108,7 @@ export class SessionViewComponent implements OnInit, OnDestroy, OnChanges {
 
 		this.sidebarService.hide();
 		this.topBarService.clearItems();
+		this.topBarService.disableBackButton();
 		this.topBarService.addItem(new NavBarItem(SessionNavigationComponent));
 	}
 

@@ -33,9 +33,13 @@ import {Subject, Subscribable} from "rxjs";
 export class TopBarService {
 
 	private readonly currentItems: NavBarItem[] = [];
-	private readonly items$ = new Subject<NavBarItem[]>();
+	private readonly _items$ = new Subject<NavBarItem[]>();
+	private readonly _backNavigationEnabled$ = new Subject<boolean>();
+	private readonly _backButtonLabel$ = new Subject<string>();
 
-	readonly allItems: Subscribable<NavBarItem[]> = this.items$;
+	readonly allItems: Subscribable<NavBarItem[]> = this._items$;
+	readonly backNavigationEnabled : Subscribable<boolean> = this._backNavigationEnabled$;
+	readonly backButtonLabel : Subscribable<string> = this._backButtonLabel$;
 
 	constructor() {
 	}
@@ -46,11 +50,22 @@ export class TopBarService {
 	}
 
 	clearItems() {
+		this._backNavigationEnabled$.next(true);
+		this._backButtonLabel$.next('');
 		this.currentItems.splice(0, this.currentItems.length);
 		this.update();
 	}
 
+	disableBackButton() {
+		this._backButtonLabel$.next('');
+		this._backNavigationEnabled$.next(false);
+	}
+
+	setBackButtonLabel(value: string) {
+		this._backButtonLabel$.next(value);
+	}
+
 	private update() {
-		this.items$.next(this.currentItems);
+		this._items$.next(this.currentItems);
 	}
 }

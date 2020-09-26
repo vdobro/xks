@@ -47,6 +47,9 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
 	active: boolean = true;
 
+	backNavigationEnabled = true;
+	backButtonLabel = '';
+
 	loginEnabled: boolean = true;
 
 	private componentRefs: ComponentRef<any>[] = []
@@ -64,10 +67,22 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.navControlService.topBarVisible.subscribe((isVisible) => {
-			this.active = (isVisible);
+			if (this.active !== isVisible) {
+				this.active = isVisible;
+			}
 		});
 		this.topBarService.allItems.subscribe((items) => {
 			this.updateItemsList(items);
+		});
+		this.topBarService.backNavigationEnabled.subscribe((value) => {
+			if (this.backNavigationEnabled !== value) {
+				this.backNavigationEnabled = value;
+			}
+		});
+		this.topBarService.backButtonLabel.subscribe(value => {
+			if (this.backButtonLabel !== value) {
+				this.backButtonLabel = value;
+			}
 		});
 	}
 
@@ -89,8 +104,12 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		await this.navigationService.goHome();
 	}
 
-	logout() {
-		this.userSessionService.logout();
+	async goBack() {
+		await this.navigationService.goBack();
+	}
+
+	async logout() {
+		await this.userSessionService.logout();
 	}
 
 	private updateItemsList(items: NavBarItem[]) {

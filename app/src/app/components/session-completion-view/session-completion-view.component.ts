@@ -40,6 +40,7 @@ export class SessionCompletionViewComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.topBarService.clearItems();
+		this.topBarService.disableBackButton();
 	}
 
 	async goBack() {

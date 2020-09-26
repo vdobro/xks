@@ -1,4 +1,4 @@
-<a [hidden]="editMode" class="uk-text-middle uk-animation-fade" (click)="onNameClick()">
+<a [hidden]="editMode" class="uk-text-middle" (click)="onNameClick()">
 	{{element.name}}
 	<span class="uk-badge">{{elementCount}}</span>
 	<a class="uk-float-right uk-margin-small-left"
@@ -8,7 +8,7 @@
 	   (click)="onEditClicked();$event.preventDefault();$event.stopPropagation();"
 	   uk-icon="icon: pencil"></a>
 </a>
-<div [hidden]="!editMode" class="uk-animation-fade">
+<div [hidden]="!editMode">
 	<form (submit)="onChangesSubmit()">
 		<div class="uk-grid-small uk-flex-middle" uk-grid>
 			<div class="uk-width-expand">

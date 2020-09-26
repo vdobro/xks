@@ -38,9 +38,10 @@ import {GraphService} from "./graph.service";
 })
 export class NavigationService {
 
-	private deck: Deck;
-	private table: Table;
-	private graph: Graph;
+	private deck: Deck = null;
+	private table: Table = null;
+	private graph: Graph = null;
+	private studySessionActive: boolean = false;
 
 	constructor(
 		private readonly deckService: DeckService,
@@ -48,6 +49,22 @@ export class NavigationService {
 		private readonly graphService: GraphService,
 		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
+	}
+
+	async goBack() {
+		if (this.deck) {
+			if (this.table || this.graph) {
+				if (this.studySessionActive) {
+					await this.navigateToCurrentDeckElement();
+				} else {
+					await this.navigateToCurrentDeck();
+				}
+			} else {
+				await this.goHome();
+			}
+		} else {
+			await this.goHome();
+		}
 	}
 
 	async navigateToCurrentDeckElement() {
@@ -60,27 +77,32 @@ export class NavigationService {
 
 	async openTable(tableId: string) {
 		await this.selectTable(tableId);
+		this.studySessionActive = false;
 		await this.router.navigate(['/tables', tableId, 'edit']);
 	}
 
 	async studyTable(tableId: string, sessionModeId: string) {
 		await this.selectTable(tableId);
+		this.studySessionActive = true;
 		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId]);
 	}
 
 	async studyGraph(graphId: string) {
 		await this.selectGraph(graphId);
+		this.studySessionActive = true;
 		await this.router.navigate(['/graphs', graphId, 'learn']);
 	}
 
 	async openGraph(graphId: string) {
 		await this.selectGraph(graphId);
+		this.studySessionActive = false;
 		await this.router.navigate(['/graphs', graphId, 'edit']);
 	}
 
 	async navigateToCurrentDeck() {
 		if (this.deck) {
 			this.table = null;
+			this.graph = null;
 			this.sidebarService.deselectTable();
 			this.sidebarService.deselectGraph();
 			await this.openDeck(this.deck.id);
@@ -88,18 +110,21 @@ export class NavigationService {
 	}
 
 	async openDeck(deckId: string) {
+		this.studySessionActive = false;
 		this.deck = await this.deckService.getById(deckId);
 		await this.sidebarService.populate(this.deck);
 		await this.router.navigate(['/decks', deckId]);
 	}
 
 	async goHome() {
+		this.studySessionActive = false;
 		this.deck = null;
 		this.table = null;
 		await this.router.navigate(['/']);
 	}
 
 	async goToDeckList() {
+		this.studySessionActive = false;
 		this.deck = null;
 		this.table = null;
 		await this.sidebarService.populate(null);

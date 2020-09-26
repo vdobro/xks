@@ -81,6 +81,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 			}
 		});
 		this.topBarService.clearItems();
+		this.topBarService.setBackButtonLabel('Back to deck');
 	}
 
 	async ngOnChanges() {
