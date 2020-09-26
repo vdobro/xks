@@ -2,25 +2,46 @@
 	<div *ngIf="!showToolbar">
 		<app-graph-label-editor [graph]="graph"
 								[shouldAppend]="connectNewNode"
-								[selectedNode]="selectedNode"></app-graph-label-editor>
+								[selectedNode]="selectedNode"
+								(editingAborted)="closeEditor()"
+								(focusout)="closeEditor()"
+		></app-graph-label-editor>
 	</div>
 	<div *ngIf="showToolbar">
+		<ul class="uk-iconnav uk-margin-bottom">
+			<li>
+				<a uk-toggle="target: #graph-editor-tutorial-modal"
+				   uk-icon="question"></a>
+			</li>
+		</ul>
 		<ul class="uk-iconnav">
 			<li>
 				<a (click)="selectedNode ? appendNewNode() : openEditor()"
 				   uk-tooltip="New node"
-				   uk-icon="icon: plus"></a>
+				   uk-icon="plus"></a>
 			</li>
 			<li *ngIf="selectedNode">
 				<a (click)="openEditor()"
-				   uk-icon="icon: file-edit"
+				   uk-icon="file-edit"
 				   uk-tooltip="Edit selected node"></a>
 			</li>
 			<li *ngIf="selectedNode">
 				<a (click)="deleteNode()"
 				   uk-tooltip="Delete selected node"
-				   uk-icon="icon: trash"></a>
+				   uk-icon="trash"></a>
 			</li>
 		</ul>
+	</div>
+</div>
+<div id="graph-editor-tutorial-modal" uk-modal>
+	<div class="uk-modal-dialog uk-modal-body">
+		<button class="uk-modal-close-outside" type="button" uk-close></button>
+		<h2 class="uk-modal-title">Tutorial: Graph editor</h2>
+		<p>Click <span uk-icon="plus"></span> to create a new node. Click a node once to select it.<br>
+			To connect two nodes, double-click the first node, and then click the destination.<br>
+			Select a node and click <span uk-icon="plus"></span> to create a node that will be connected to the selected one.<br>
+			To alter an existing node, select it and click <span uk-icon="file-edit"></span> to change its label.<br>
+			Press Escape or click anywhere else to deselect a node or to cancel any editing.
+		</p>
 	</div>
 </div>

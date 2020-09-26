@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Graph} from "../../models/Graph";
 import {GraphNode} from "../../models/GraphNode";
 import {GraphElementService} from "../../services/graph-element.service";
@@ -35,6 +35,9 @@ import {GraphNodeRepository} from "../../repositories/graph-node-repository.serv
 	styleUrls: ['./graph-toolbar.component.sass']
 })
 export class GraphToolbarComponent implements OnInit {
+
+	@ViewChild('graphEditorTutorialModal', { static: true })
+	tutorialModal: ElementRef;
 
 	@Input()
 	graph: Graph;
@@ -71,5 +74,9 @@ export class GraphToolbarComponent implements OnInit {
 	closeEditor() {
 		this.connectNewNode = false;
 		this.showToolbar = true;
+	}
+
+	openTutorial() {
+
 	}
 }
