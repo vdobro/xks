@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Directive, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, Directive, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
 
@@ -30,7 +30,10 @@ import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-moda
 @Directive({
 	selector: 'li [sidebar-deck-element]',
 })
-export abstract class SidebarDeckElementComponent implements OnInit {
+export abstract class SidebarDeckElementComponent implements OnInit, AfterContentChecked {
+
+	@ViewChild('inputElement', {static: true})
+	inputElement: ElementRef;
 
 	@ViewChild(ConfirmDeleteElementModalComponent)
 	confirmDeleteModal: ConfirmDeleteElementModalComponent;
@@ -49,12 +52,16 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 		this.nameInput.setValue(this.element?.name);
 	}
 
+	ngAfterContentChecked() {
+	}
+
 	async onDelete(): Promise<void> {
 		await this.onDeleteHandler(this.element.id);
 	}
 
 	onEditClicked(): void {
 		this.editMode = true;
+		setTimeout(() => this.inputElement.nativeElement.focus());
 	}
 
 	async onChangesSubmit() {

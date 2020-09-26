@@ -60,20 +60,19 @@ export class TableCellComponent implements OnInit, OnChanges {
 		this.editMode = this.newCell;
 	}
 
-	switchToEditMode() {
+	@HostListener("click")
+	onClick() {
 		this.editMode = true;
 	}
 
-	@HostListener("click")
-	onClick() {
-		this.switchToEditMode();
+	@HostListener("focusout")
+	onFocusOut() {
+		this.cancelEditingIfExisting();
 	}
 
 	@HostListener("document:keydown.escape")
 	onEscapeClick(_: KeyboardEvent) {
-		if (!this.newCell) {
-			this.editMode = false;
-		}
+		this.cancelEditingIfExisting();
 	}
 
 	async onSubmit(value: string) {
@@ -87,6 +86,12 @@ export class TableCellComponent implements OnInit, OnChanges {
 			this.currentValue = this.row.values.get(this.column.id);
 		} else {
 			this.currentValue = '';
+		}
+	}
+
+	private cancelEditingIfExisting() {
+		if (!this.newCell) {
+			this.editMode = false;
 		}
 	}
 }

@@ -33,7 +33,7 @@
 		<div *ngFor="let answerField of state.currentTask.pendingAnswers.slice(1); index as i">
 			<session-answer-view
 				[answerField]="answerField"
-				[indexNumber]="i + 1 + state.currentTask.doneAnswers.length"
+				[indexNumber]="i + 2 + state.currentTask.doneAnswers.length"
 				[pending]="true"></session-answer-view>
 		</div>
 	</div>

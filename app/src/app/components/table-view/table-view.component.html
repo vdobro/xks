@@ -6,13 +6,15 @@
 		<div class="uk-width-auto">
 			<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
 					(click)="addColumn()">
-				Add column
+				New column
 			</button>
 			<table-column-editor *ngIf="columnInCreation"
 								 class="uk-animation-fade uk-animation-fast"
 								 [newColumn]="true"
 								 [table]="table"
-								 (nameChanged)="columnAdded()">
+								 (nameChanged)="columnAdded()"
+								 (keydown.escape)="columnInCreation = false"
+								 (focusout)="columnInCreation = false">
 			</table-column-editor>
 		</div>
 	</div>
