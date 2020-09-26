@@ -81,6 +81,7 @@ export class DeckViewComponent implements OnInit {
 		this.topBarService.clearItems();
 		this.topBarService.addItem(new NavBarItem(NavbarNewTableComponent));
 		this.topBarService.addItem(new NavBarItem(NavbarNewGraphComponent));
+		this.topBarService.setBackButtonLabel('Deck list');
 		this.navigationControlService.setTopBarVisibility(true);
 	}
 

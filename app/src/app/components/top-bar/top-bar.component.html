@@ -4,11 +4,16 @@
 		<nav class="uk-navbar-container uk-navbar-transparent uk-margin" uk-navbar="mode: click">
 			<div class="uk-navbar-left">
 				<a (click)="goHome()" class="uk-navbar-item uk-logo uk-padding-remove-left uk-margin-small-right">
-					<img width="32" height="32" alt="xks" uk-img="data-src:assets/logo.svg" uk-svg>
+					<img width="32" height="32" alt="xks"
+						 uk-img="data-src:assets/logo.svg" uk-svg>
 				</a>
 				<ul [hidden]="!active" class="uk-navbar-nav">
 					<li *ngIf="backNavigationEnabled">
-						<a (click)="goBack()" uk-icon="chevron-left"></a>
+						<a (click)="goBack()">
+							<span uk-icon="chevron-left"
+								  [ngClass]="{'uk-margin-small-right': backButtonLabel}"></span>
+							{{backButtonLabel}}
+						</a>
 					</li>
 					<ng-template appNavBarItems></ng-template>
 				</ul>

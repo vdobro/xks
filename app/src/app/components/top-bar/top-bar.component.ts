@@ -48,6 +48,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	active: boolean = true;
 
 	backNavigationEnabled = true;
+	backButtonLabel = '';
 
 	loginEnabled: boolean = true;
 
@@ -77,7 +78,12 @@ export class TopBarComponent implements OnInit, OnDestroy {
 			if (this.backNavigationEnabled !== value) {
 				this.backNavigationEnabled = value;
 			}
-		})
+		});
+		this.topBarService.backButtonLabel.subscribe(value => {
+			if (this.backButtonLabel !== value) {
+				this.backButtonLabel = value;
+			}
+		});
 	}
 
 	ngOnDestroy() {

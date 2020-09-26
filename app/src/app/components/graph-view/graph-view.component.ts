@@ -96,6 +96,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	async ngOnInit() {
 		this.topBarService.clearItems();
+		this.topBarService.setBackButtonLabel('Back to deck');
 
 		await this.setUpNetworkView();
 		this.setUpDataLoading();

@@ -102,6 +102,7 @@ export class NavigationService {
 	async navigateToCurrentDeck() {
 		if (this.deck) {
 			this.table = null;
+			this.graph = null;
 			this.sidebarService.deselectTable();
 			this.sidebarService.deselectGraph();
 			await this.openDeck(this.deck.id);
