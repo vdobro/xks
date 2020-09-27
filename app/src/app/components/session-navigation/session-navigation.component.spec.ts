@@ -19,9 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {SessionNavigationComponent} from './session-navigation.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,12 +33,12 @@ describe('SessionNavigationComponent', () => {
 	let component: SessionNavigationComponent;
 	let fixture: ComponentFixture<SessionNavigationComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule, RouterTestingModule],
 			declarations: [SessionNavigationComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionNavigationComponent);

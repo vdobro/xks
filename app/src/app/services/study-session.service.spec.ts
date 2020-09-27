@@ -25,6 +25,9 @@
  */
 import {TestBed} from '@angular/core/testing';
 import {StudySessionService} from "./study-session.service";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
+import {ExerciseTaskService} from "./exercise-task.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,8 +37,22 @@ describe('StudySessionService', () => {
 	let service: StudySessionService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
-		service = TestBed.inject(StudySessionService);
+		TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule,
+			],
+			providers: [
+				{
+					provide: ExerciseTaskService,
+					useValue: jasmine.createSpyObj('ExerciseTaskService', [
+						'getTableTaskList',
+						'getGraphTaskList',
+					])
+				},
+			],
+		});
+		service = new StudySessionService(TestBed.inject(ExerciseTaskService));
 	});
 
 	it('should be created', () => {

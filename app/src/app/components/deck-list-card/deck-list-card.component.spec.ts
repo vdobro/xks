@@ -25,6 +25,8 @@ import {DeckListCardComponent} from './deck-list-card.component';
 import {Component, ViewChild} from "@angular/core";
 import {Deck} from "../../models/Deck";
 import {v4 as uuid} from 'uuid';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('DeckListCardComponent', () => {
 	let component: TestHostComponent;
@@ -32,6 +34,10 @@ describe('DeckListCardComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule,
+			],
 			declarations: [DeckListCardComponent, TestHostComponent]
 		}).compileComponents();
 	});

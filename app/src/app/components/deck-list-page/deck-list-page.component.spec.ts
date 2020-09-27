@@ -22,6 +22,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckListPageComponent} from './deck-list-page.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('DeckListPageComponent', () => {
 	let component: DeckListPageComponent;
@@ -29,6 +30,7 @@ describe('DeckListPageComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [DeckListPageComponent]
 		}).compileComponents();
 	});

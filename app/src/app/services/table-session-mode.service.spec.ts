@@ -22,6 +22,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {TableSessionModeService} from './table-session-mode.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,7 +32,9 @@ describe('TableSessionModeService', () => {
 	let service: TableSessionModeService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
 		service = TestBed.inject(TableSessionModeService);
 	});
 

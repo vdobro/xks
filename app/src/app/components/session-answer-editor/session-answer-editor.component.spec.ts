@@ -19,9 +19,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {SessionAnswerEditorComponent} from './session-answer-editor.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,12 +32,12 @@ describe('SessionAnswerViewComponent', () => {
 	let component: SessionAnswerEditorComponent;
 	let fixture: ComponentFixture<SessionAnswerEditorComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [SessionAnswerEditorComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionAnswerEditorComponent);

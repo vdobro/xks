@@ -22,17 +22,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NewDeckModalComponent} from './new-deck-modal.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.03.14
  */
-describe('DeckDetailsComponent', () => {
+describe('NewDeckModalComponent', () => {
 	let component: NewDeckModalComponent;
 	let fixture: ComponentFixture<NewDeckModalComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [NewDeckModalComponent]
 		}).compileComponents();
 	});

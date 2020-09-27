@@ -22,6 +22,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NavbarNewGraphComponent} from './navbar-new-graph.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,6 +34,7 @@ describe('NavbarNewGraphComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [NavbarNewGraphComponent]
 		}).compileComponents();
 	});

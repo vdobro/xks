@@ -25,6 +25,7 @@ import {DeckListViewComponent} from './deck-list-view.component';
 import {Component, ViewChild} from "@angular/core";
 import {Deck} from "../../models/Deck";
 import {MockData} from "../../services/mock-data";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,6 +37,7 @@ describe('DeckListViewComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [DeckListViewComponent, TestHostComponent]
 		}).compileComponents();
 	});

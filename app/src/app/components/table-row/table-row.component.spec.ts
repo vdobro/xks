@@ -22,6 +22,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TableRowComponent} from './table-row.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,6 +34,7 @@ describe('TableRowComponent', () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [TableRowComponent]
 		}).compileComponents();
 	}));

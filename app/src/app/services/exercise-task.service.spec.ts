@@ -22,6 +22,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {ExerciseTaskService} from './exercise-task.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,7 +32,9 @@ describe('ExerciseTaskService', () => {
 	let service: ExerciseTaskService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule]
+		});
 		service = TestBed.inject(ExerciseTaskService);
 	});
 

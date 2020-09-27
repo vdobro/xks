@@ -19,9 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {SessionViewComponent} from './session-view.component';
+import {RouterTestingModule} from "@angular/router/testing";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,11 +33,15 @@ describe('SessionViewComponent', () => {
 	let component: SessionViewComponent;
 	let fixture: ComponentFixture<SessionViewComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				RouterTestingModule,
+				HttpClientTestingModule,
+			],
 			declarations: [SessionViewComponent]
 		}).compileComponents();
-	}));
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionViewComponent);

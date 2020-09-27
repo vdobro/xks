@@ -19,9 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {SetupTableSessionModalComponent} from './setup-table-session-modal.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,12 +33,15 @@ describe('SetupTableSessionModalComponent', () => {
 	let component: SetupTableSessionModalComponent;
 	let fixture: ComponentFixture<SetupTableSessionModalComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule,
+			],
 			declarations: [SetupTableSessionModalComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SetupTableSessionModalComponent);

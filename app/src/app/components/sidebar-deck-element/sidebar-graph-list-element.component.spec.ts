@@ -20,25 +20,30 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SidebarDeckElement, SidebarDeckElementComponent} from './sidebar-deck-element.component';
+import {SidebarGraphListElementComponent} from "./sidebar-graph-list-element.component";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
-describe('SidebarDeckElementComponent', () => {
-	let component: TestComponent;
-	let fixture: ComponentFixture<TestComponent>;
+describe('SidebarGraphListElementComponent', () => {
+	let component: SidebarGraphListElementComponent;
+	let fixture: ComponentFixture<SidebarGraphListElementComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [SidebarDeckElementComponent]
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule
+			],
+			declarations: [SidebarGraphListElementComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(TestComponent);
+		fixture = TestBed.createComponent(SidebarGraphListElementComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
@@ -47,19 +52,3 @@ describe('SidebarDeckElementComponent', () => {
 		expect(component).toBeTruthy();
 	});
 });
-
-class TestComponent extends SidebarDeckElementComponent {
-
-	constructor() {
-		super();
-	}
-
-	protected async onClickHandler(id: string) {
-	}
-
-	protected async onDeleteHandler(id: string) {
-	}
-
-	protected async onUpdateHandler(element: SidebarDeckElement) {
-	}
-}

@@ -19,9 +19,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TableNewRowEditorComponent} from './table-new-row-editor.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,12 +32,12 @@ describe('TableNewRowEditorComponent', () => {
 	let component: TableNewRowEditorComponent;
 	let fixture: ComponentFixture<TableNewRowEditorComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async() => {
+		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [TableNewRowEditorComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(TableNewRowEditorComponent);

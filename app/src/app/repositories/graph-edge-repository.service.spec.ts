@@ -22,6 +22,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {GraphEdgeRepository} from './graph-edge-repository.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,7 +32,9 @@ describe('GraphEdgeRepository', () => {
 	let service: GraphEdgeRepository;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
 		service = TestBed.inject(GraphEdgeRepository);
 	});
 

@@ -19,27 +19,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {TableSessionService} from './table-session.service';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
+import {SidebarTableListElementComponent} from "./sidebar-table-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.14
+ * @since 2020.09.12
  */
-describe('TableSessionService', () => {
-	let service: TableSessionService;
+describe('SidebarTableListElementComponent', () => {
+	let component: SidebarTableListElementComponent;
+	let fixture: ComponentFixture<SidebarTableListElementComponent>;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			providers: [TableSessionService]
-		});
-		service = TestBed.inject(TableSessionService);
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule
+			],
+			declarations: [SidebarTableListElementComponent]
+		}).compileComponents();
 	});
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SidebarTableListElementComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
 	});
 });

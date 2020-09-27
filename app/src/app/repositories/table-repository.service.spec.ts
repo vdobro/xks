@@ -22,6 +22,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {TableRepository} from './table-repository.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,7 +32,9 @@ describe('TableRepository', () => {
 	let service: TableRepository;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
 		service = TestBed.inject(TableRepository);
 	});
 

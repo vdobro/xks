@@ -22,6 +22,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NotFoundViewComponent} from './not-found-view.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,9 +35,12 @@ describe('NotFoundViewComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule,
+			],
 			declarations: [NotFoundViewComponent]
-		})
-			.compileComponents();
+		}).compileComponents();
 	});
 
 	beforeEach(() => {

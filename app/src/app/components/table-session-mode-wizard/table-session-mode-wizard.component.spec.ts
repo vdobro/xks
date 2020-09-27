@@ -19,20 +19,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TableSessionModeWizardComponent} from './table-session-mode-wizard.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('TableSessionModeWizardComponent', () => {
 	let component: TableSessionModeWizardComponent;
 	let fixture: ComponentFixture<TableSessionModeWizardComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
 			declarations: [TableSessionModeWizardComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(TableSessionModeWizardComponent);

@@ -10,7 +10,9 @@
 		"test-headless": "ng test --watch=false --browsers=ChromeHeadless",
 		"lint": "ng lint",
 		"e2e": "ng e2e",
-		"webdriver-update": "webdriver-manager update"
+		"webdriver-update": "webdriver-manager update",
+		"analyze": "ng build --prod --stats-json",
+		"stats": "npx webpack-bundle-analyzer ../src/main/resources/static/stats.json"
 	},
 	"private": true,
 	"dependencies": {
@@ -61,6 +63,7 @@
 		"resize-observer-polyfill": "^1.5.1",
 		"ts-node": "~8.3.0",
 		"tslint": "~6.1.0",
-		"typescript": "~3.9.6"
+		"typescript": "~3.9.6",
+		"webpack-bundle-analyzer": "^3.9.0"
 	}
 }

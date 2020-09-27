@@ -19,9 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TableColumnEditorComponent} from './table-column-editor.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {UserSessionService} from "../../services/user-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,12 +33,13 @@ describe('TableColumnEditorComponent', () => {
 	let component: TableColumnEditorComponent;
 	let fixture: ComponentFixture<TableColumnEditorComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [TableColumnEditorComponent]
-		})
-			.compileComponents();
-	}));
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+			declarations: [TableColumnEditorComponent],
+			providers: [UserSessionService]
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(TableColumnEditorComponent);

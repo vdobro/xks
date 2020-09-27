@@ -22,7 +22,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckViewComponent} from './deck-view.component';
-import {RouterModule} from "@angular/router";
+import {RouterTestingModule} from "@angular/router/testing";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,7 +36,10 @@ describe('DeckViewComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			declarations: [DeckViewComponent],
-			imports: [RouterModule.forRoot([])]
+			imports: [
+				RouterTestingModule,
+				HttpClientTestingModule,
+			]
 		}).compileComponents();
 	});
 

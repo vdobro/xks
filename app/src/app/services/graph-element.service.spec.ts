@@ -22,6 +22,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {GraphElementService} from './graph-element.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,7 +32,9 @@ describe('GraphElementService', () => {
 	let service: GraphElementService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
 		service = TestBed.inject(GraphElementService);
 	});
 
