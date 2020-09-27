@@ -1,9 +1,11 @@
 <form (submit)="submitValue()">
-	<label>
+	<div class="uk-inline">
+		<a (click)="submitValue()"
+		   class="uk-form-icon uk-form-icon-flip" uk-icon="check"></a>
 		<input #labelInputElement
 			   class="uk-input uk-form-width-medium uk-form-small" type="text"
 			   placeholder="{{selectedNode && !shouldAppend ? 'Change' : 'Input new'}} name"
 			   [formControl]="labelInput"
 			   autofocus>
-	</label>
+	</div>
 </form>
