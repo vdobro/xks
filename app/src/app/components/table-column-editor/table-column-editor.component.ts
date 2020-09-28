@@ -59,6 +59,8 @@ export class TableColumnEditorComponent implements OnInit {
 	nameChanged = new EventEmitter<TableColumn>();
 	@Output()
 	columnDeleted = new EventEmitter<TableColumn>();
+	@Output()
+	editingCancelled = new EventEmitter();
 
 	column: TableColumn;
 	nameInput = new FormControl('');
@@ -89,5 +91,13 @@ export class TableColumnEditorComponent implements OnInit {
 
 	onColumnDelete() {
 		this.columnDeleted.emit(this.column);
+	}
+
+	confirmDeletion() {
+		this.confirmDeleteColumnModal.openDialog();
+	}
+
+	cancelEditing() {
+		setTimeout(() => this.editingCancelled.emit(), 100);
 	}
 }

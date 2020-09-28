@@ -1,19 +1,23 @@
 <form (submit)="onNameSubmit()"
-	  class="uk-form-horizontal uk-grid-small" uk-grid
+	  class="uk-form-horizontal uk-flex uk-flex-nowrap uk-flex-middle"
 	  [ngClass]="newColumn ? '' : 'uk-table-expand-wide'">
 	<div class="uk-inline">
-		<a (click)="onNameSubmit()"
-		   class="uk-form-icon uk-form-icon-flip" uk-icon="check"></a>
+		<a (click)="onNameSubmit();$event.preventDefault();$event.stopPropagation();"
+		   class="uk-form-icon uk-form-icon-flip"
+		   uk-icon="check"></a>
 		<input #columnNameInput
-			   class="uk-input uk-width-auto"
+			   class="uk-input uk-width-expand"
 			   [ngClass]="newColumn ? 'uk-form-large' : 'uk-form-small'"
 			   type="text"
 			   placeholder="Column title"
 			   [formControl]="nameInput"
 			   [value]="column?.name">
 	</div>
-	<button *ngIf="!newColumn" uk-icon="icon: trash"
-			(click)="confirmDeleteColumnModal.openDialog();$event.preventDefault();$event.stopPropagation();"></button>
+	<a *ngIf="!newColumn"
+	   class="uk-margin-small-left uk-icon uk-animation-fade uk-animation-fast"
+	   uk-icon="trash"
+	   (click)="confirmDeleteColumnModal.openDialog();$event.preventDefault();$event.stopPropagation();">
+	</a>
 </form>
 <confirm-delete-table-column-modal [column]="column" (confirmed)="onColumnDelete()">
 </confirm-delete-table-column-modal>
