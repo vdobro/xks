@@ -42,6 +42,10 @@ export class TableRowComponent implements OnInit {
 
 	@Output()
 	rowDeleted = new EventEmitter<TableRow>();
+	@Output()
+	editingStarted = new EventEmitter();
+	@Output()
+	editingStopped = new EventEmitter();
 
 	constructor(private readonly cellService: TableCellService) {
 	}
@@ -51,5 +55,6 @@ export class TableRowComponent implements OnInit {
 
 	async cellChanged(value: string, row: TableRow, column: TableColumn) {
 		await this.cellService.changeCellValue(value, row, column);
+		this.editingStopped.emit();
 	}
 }

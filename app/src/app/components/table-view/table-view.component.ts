@@ -58,6 +58,9 @@ export class TableViewComponent implements OnInit, OnChanges {
 	@Output()
 	showColumnSwapControls: boolean;
 
+	columnDragEnabled : boolean = true;
+	rowDragEnabled : boolean = true;
+
 	table: Table;
 
 	constructor(private readonly tableService: TableService,
@@ -93,6 +96,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	async columnAdded() {
+		this.columnDragEnabled = true;
 		if (this.rows.length > 1) {
 			await this.reloadAll();
 		} else {
@@ -102,6 +106,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	rowAdded(row: TableRow) {
+		this.rowDragEnabled = true;
 		this.rows.push(row);
 	}
 
@@ -148,6 +153,22 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	async columnChanged(column: TableColumn) {
+		this.columnDragEnabled = true;
 		await this.cellService.updateColumn(column);
+	}
+
+	cancelColumnCreation() {
+		setTimeout(() => {
+			this.columnInCreation = false;
+			this.columnDragEnabled = true;
+		}, 500);
+	}
+
+	disableColumnDrag() {
+		this.columnDragEnabled = false;
+	}
+
+	disableRowDrag() {
+		this.rowDragEnabled = false;
 	}
 }

@@ -2,7 +2,7 @@
 	<div class="uk-width-expand">
 		<label>
 			<input readonly
-				   uk-tooltip="pos: bottom-left; title: You must first submit the fields above."
+				   [attr.uk-tooltip]="pending ? 'pos: bottom-left; title: You must first submit the fields above.' : null"
 				   [ngClass]="{'uk-form-success': !pending}"
 				   [attr.disabled]="pending ? '' : null"
 				   class="uk-input"

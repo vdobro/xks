@@ -1,7 +1,6 @@
 <div #confirmElementModal uk-modal>
 	<div class="uk-modal-dialog uk-modal-body">
-		<p>Do you really want to delete {{type}} "{{name}}
-			"? {{explanation ? explanation : 'All data within it will be lost.'}}</p>
+		<p class="uk-text-break">Do you really want to delete {{type}} "{{name}}"? {{explanation || 'All data within it will be lost.'}}</p>
 		<p class="uk-text-right">
 			<button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
 			<button (click)="confirmed.emit()"

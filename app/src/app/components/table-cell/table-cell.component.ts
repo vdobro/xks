@@ -43,6 +43,10 @@ export class TableCellComponent implements OnInit, OnChanges {
 
 	@Output()
 	cellValueChanged = new EventEmitter<string>();
+	@Output()
+	editingStarted = new EventEmitter();
+	@Output()
+	editingStopped = new EventEmitter();
 
 	editMode: boolean = false;
 	currentValue: string = '';
@@ -63,11 +67,7 @@ export class TableCellComponent implements OnInit, OnChanges {
 	@HostListener("click")
 	onClick() {
 		this.editMode = true;
-	}
-
-	@HostListener("focusout")
-	onFocusOut() {
-		this.cancelEditingIfExisting();
+		this.editingStarted.emit();
 	}
 
 	@HostListener("document:keydown.escape")
@@ -89,9 +89,12 @@ export class TableCellComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private cancelEditingIfExisting() {
+	cancelEditingIfExisting() {
 		if (!this.newCell) {
-			this.editMode = false;
+			setTimeout(() => {
+				this.editMode = false;
+				this.editingStopped.emit();
+			}, 100);
 		}
 	}
 }

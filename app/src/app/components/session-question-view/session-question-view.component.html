@@ -1,0 +1,8 @@
+<div class="uk-card uk-card-default uk-card-body">
+	<h4 class="uk-card-title">Question:</h4>
+	<p *ngFor="let question of task?.questions">
+		{{question.identifier.name}}
+		<span *ngIf="question.identifier.name.length > 0" uk-icon="icon: arrow-right"></span>
+		{{question.value}}
+	</p>
+</div>

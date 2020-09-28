@@ -1,20 +1,21 @@
 <div *ngIf="table" class="uk-container">
 	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
 		<div class="uk-width-expand">
-			<h2 class="uk-heading-medium">{{table.name}}</h2>
+			<h2 class="uk-heading-medium uk-text-truncate">{{table.name}}</h2>
 		</div>
 		<div class="uk-width-auto">
 			<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
 					(click)="addColumn()">
 				New column
 			</button>
-			<table-column-editor *ngIf="columnInCreation"
-								 class="uk-animation-fade uk-animation-fast"
-								 [newColumn]="true"
-								 [table]="table"
-								 (nameChanged)="columnAdded()"
-								 (keydown.escape)="columnInCreation = false"
-								 (focusout)="columnInCreation = false">
+			<table-column-editor
+				*ngIf="columnInCreation"
+				class="uk-animation-fade uk-animation-fast"
+				[newColumn]="true"
+				[table]="table"
+				(nameChanged)="columnAdded()"
+				(focusout)="cancelColumnCreation()"
+				(keydown.escape)="columnInCreation = false">
 			</table-column-editor>
 		</div>
 	</div>
@@ -22,21 +23,30 @@
 		<table class="uk-table uk-table-divider uk-text-nowrap">
 			<thead>
 			<tr cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)">
-				<th cdkDrag app-table-column class="uk-table-expand"
+				<th cdkDrag app-table-column
+					[cdkDragDisabled]="!columnDragEnabled"
+					class="uk-table-expand"
 					*ngFor="let column of columns; let position = index"
 					[column]="column"
+					(editingStarted)="disableColumnDrag()"
 					(columnChanged)="columnChanged(column)"
 					(columnDeleted)="deleteColumn(column)">
 					<ng-template *cdkDragPreview></ng-template>
 				</th>
-				<th *ngIf="rows.length > 0"></th>
+				<th *ngIf="rows.length > 0">
+					<span uk-icon="grid" class="uk-icon"></span>
+				</th>
 			</tr>
 			</thead>
 			<tbody cdkDropList (cdkDropListDropped)="dropRow($event)">
-			<tr table-row cdkDrag *ngFor="let row of rows"
+			<tr table-row cdkDrag
+				*ngFor="let row of rows"
+				[cdkDragDisabled]="!rowDragEnabled"
 				[row]="row"
 				[columns]="columns"
-				(rowDeleted)="deleteRow(row)">
+				(rowDeleted)="deleteRow(row)"
+				(editingStarted)="disableRowDrag()"
+				(editingStopped)="rowDragEnabled = true">
 				<ng-template *cdkDragPreview></ng-template>
 			</tr>
 			<tr table-new-row-editor

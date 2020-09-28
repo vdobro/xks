@@ -2,7 +2,7 @@
 	<div class="uk-width-expand">
 		<label>
 			<input #answerFieldElement
-				   [ngClass]="{'uk-form-danger': !lastAnswerAccepted}"
+				   [ngClass]="{'uk-form-danger': !lastAnswerAccepted, 'uk-animation-shake': !lastAnswerAccepted}"
 				   class="uk-input"
 				   type="text"
 				   [placeholder]="answerField?.identifier.name || indexNumber"

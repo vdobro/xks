@@ -1,4 +1,4 @@
-<a [hidden]="editMode" class="uk-text-middle" (click)="onNameClick()">
+<a [hidden]="editMode" class="uk-text-middle uk-text-truncate" (click)="onNameClick()">
 	{{element?.name}}
 	<span class="uk-badge">{{elementCount}}</span>
 	<a class="uk-float-right uk-margin-small-left"
@@ -9,7 +9,7 @@
 	   uk-icon="icon: pencil"></a>
 </a>
 <div [hidden]="!editMode">
-	<form class="uk-grid-small" uk-grid>
+	<form (submit)="onChangesSubmit()" class="uk-grid-small" uk-grid>
 		<div class="uk-inline uk-width-expand">
 			<a (click)="onChangesSubmit()"
 			   class="uk-form-icon uk-form-icon-flip"
@@ -18,6 +18,7 @@
 				   class="uk-input uk-form-small"
 				   type="text"
 				   placeholder="Title"
+				   (focusout)="cancelEditing()"
 				   [formControl]="nameInput"
 				   [value]="element?.name">
 		</div>

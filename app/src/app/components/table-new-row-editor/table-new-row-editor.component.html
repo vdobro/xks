@@ -2,6 +2,7 @@
 	[row]="rowInEditing"
 	[column]="column"
 	[newCell]="newColumnIndex === column.index"
-	(cellValueChanged)="onCellSubmitted($event, column)">
+	(cellValueChanged)="onCellSubmitted($event, column)"
+	(editingStarted)="editingStarted.emit()">
 </td>
 <td></td>

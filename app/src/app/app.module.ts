@@ -62,6 +62,7 @@ import {GraphToolbarComponent} from './components/graph-toolbar/graph-toolbar.co
 import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-label-editor.component';
 import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
 import {NotFoundViewComponent} from './components/not-found-view/not-found-view.component';
+import {SessionQuestionViewComponent} from './components/session-question-view/session-question-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -106,6 +107,7 @@ import {NotFoundViewComponent} from './components/not-found-view/not-found-view.
 		GraphLabelEditorComponent,
 		SessionAnswerViewComponent,
 		NotFoundViewComponent,
+		SessionQuestionViewComponent,
 	],
 	imports: [
 		BrowserModule,

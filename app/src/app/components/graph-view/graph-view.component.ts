@@ -267,6 +267,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		return {
 			id: node.id,
 			label: node.value,
+			margin: 10,
 			color: {
 				border: "#303030",
 				background: "#ffffff",
@@ -278,11 +279,11 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 			font: {
 				color: "#000000",
 				face: "IBM Plex Sans",
-				size: 13
+				size: 13,
 			},
 			shadow: {
 				enabled: true,
-				size: 2
+				size: 1,
 			},
 		};
 	}
@@ -294,6 +295,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 			to: edge.targetNodeId,
 			arrows: "to",
 			color: "#000000",
+			arrowStrikethrough: false,
 		};
 	}
 }
@@ -304,11 +306,13 @@ export interface EdgeView {
 	to: string,
 	arrows: string,
 	color: string,
+	arrowStrikethrough: boolean,
 }
 
 export interface NodeView {
 	id: string,
 	label: string,
+	margin: number,
 	color: {
 		border: string,
 		background: string,

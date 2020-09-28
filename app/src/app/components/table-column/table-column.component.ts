@@ -40,6 +40,8 @@ export class TableColumnComponent implements OnInit {
 	columnChanged = new EventEmitter<TableColumn>();
 	@Output()
 	columnDeleted = new EventEmitter<TableColumn>();
+	@Output()
+	editingStarted = new EventEmitter();
 
 	editMode: boolean = false;
 
@@ -51,7 +53,10 @@ export class TableColumnComponent implements OnInit {
 
 	@HostListener("click")
 	onClick() {
-		this.editMode = true;
+		if (!this.editMode) {
+			this.editMode = true;
+			this.editingStarted.emit();
+		}
 	}
 
 	@HostListener("document:keydown.escape")
@@ -62,6 +67,10 @@ export class TableColumnComponent implements OnInit {
 	async onNameSubmit(value: string) {
 		this.column.name = value;
 		this.columnChanged.emit(this.column);
+		this.editMode = false;
+	}
+
+	cancelEditing() {
 		this.editMode = false;
 	}
 }

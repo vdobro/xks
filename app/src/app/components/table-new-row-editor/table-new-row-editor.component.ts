@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TableColumn} from "../../models/TableColumn";
 import {Table} from "../../models/Table";
 import {TableRow} from "../../models/TableRow";
@@ -38,8 +38,6 @@ import {TableCellService} from "../../services/table-cell.service";
 export class TableNewRowEditorComponent implements OnInit {
 
 	@Input()
-	firstRow: boolean;
-	@Input()
 	columns: TableColumn[] = [];
 	@Input()
 	table: Table;
@@ -48,6 +46,8 @@ export class TableNewRowEditorComponent implements OnInit {
 	rowInEditing: TableRow;
 	@Output()
 	newColumnIndex: number = 0;
+	@Output()
+	editingStarted = new EventEmitter();
 
 	@Output()
 	newRow = new Subject<TableRow>();
