@@ -78,12 +78,20 @@ export class ExerciseTaskService {
 		const exercises: ExerciseTask[] = [];
 		for (let node of nodes) {
 			const edges = await this.graphEdgeRepository.getAllFrom(node);
-			const targetNodes = await Promise.all(edges.map(edge => this.graphElementService.getNodeById(edge.targetNodeId)));
-			const answerFields = targetNodes.map(ExerciseTaskService.mapNodeToFlashcardField);
+			const transitions : EdgeWithDestinationNode[] = [];
+			for (let edge of edges) {
+				const targetNode = await this.graphElementService.getNodeById(edge.targetNodeId);
+				transitions.push({
+					edgeName: edge.name,
+					node: targetNode,
+				});
+			}
+			const answerFields = transitions.map(ExerciseTaskService.mapEdgeToFlashcardField);
+			const ignoreAnswerOrder = edges.every(x => x.name === '');
 			if (answerFields.length > 0) {
 				exercises.push({
 					id: uuid(),
-					ignoreAnswerOrder: true,
+					ignoreAnswerOrder: ignoreAnswerOrder,
 					answers: answerFields,
 					pendingAnswers: answerFields,
 					questions: [ExerciseTaskService.mapNodeToFlashcardField(node)],
@@ -265,14 +273,24 @@ export class ExerciseTaskService {
 		};
 	}
 
-	private static mapNodeToFlashcardField(graphNode: GraphNode): FlashcardField {
+	private static mapEdgeToFlashcardField(transition: EdgeWithDestinationNode): FlashcardField {
 		return {
 			identifier: {
-				id: graphNode.id,
+				id: transition.node.id,
+				name: transition.edgeName,
+			},
+			value: transition.node.value,
+		};
+	}
+
+	private static mapNodeToFlashcardField(node: GraphNode) : FlashcardField {
+		return {
+			identifier: {
+				id: node.id,
 				name: '',
 			},
-			value: graphNode.value,
-		};
+			value: node.value,
+		}
 	}
 }
 
@@ -308,4 +326,9 @@ interface TaskState {
 interface TaskScore {
 	value: number,
 	previous: TaskScore,
+}
+
+interface EdgeWithDestinationNode {
+	node: GraphNode,
+	edgeName: string,
 }

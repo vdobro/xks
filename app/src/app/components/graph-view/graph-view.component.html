@@ -9,7 +9,10 @@
 		<div class="uk-width-auto">
 			<div class="uk-margin uk-flex uk-flex-bottom" *ngIf="graph">
 				<app-graph-toolbar [selectedNode]="selectedNode"
-								   [graph]="graph"></app-graph-toolbar>
+								   [selectedEdge]="selectedEdge"
+								   [graph]="graph"
+								   (currentlyInEdit)="editMode = $event">
+				</app-graph-toolbar>
 			</div>
 		</div>
 	</div>
