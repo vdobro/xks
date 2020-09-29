@@ -63,15 +63,28 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	graph: Graph;
 	network: Network;
+
 	renderingOptions: Options = {
 		nodes: {
 			shape: "box"
+		},
+		interaction: {
+			selectConnectedEdges: false
+		},
+		physics: {
+			repulsion: {
+				nodeDistance: 300,
+				springConstant: 0.01,
+				centralGravity: 0.01,
+			}
 		}
 	};
 
 	selectedEdge: GraphEdge = null;
 	selectedNode: GraphNode = null;
 	selectedSourceNode: GraphNode = null;
+
+	editMode : boolean = false;
 
 	private rootContainerWidth: number = 0;
 	private sizeObserver: ResizeObserver = null;
@@ -122,10 +135,13 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	@HostListener("document:keydown.delete")
 	async onDeleteClick(_: KeyboardEvent) {
+		if (this.editMode) {
+			return;
+		}
 		if (this.selectedNode) {
 			await this.graphElementService.removeNode(this.selectedNode);
 		} else if (this.selectedEdge) {
-			await this.edgeRepository.delete(this.selectedEdge.id);
+			await this.graphElementService.removeEdge(this.selectedEdge);
 		}
 	}
 
@@ -174,12 +190,14 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		});
 		this.edgeRepository.entityCreated.subscribe(entity => {
 			this.edges.add(GraphViewComponent.mapToEdgeView(entity));
+			this.network?.fit();
 		});
 		this.edgeRepository.entityUpdated.subscribe(entity => {
 			this.edges.update(GraphViewComponent.mapToEdgeView(entity));
 		});
 		this.edgeRepository.entityDeletedId.subscribe(id => {
 			this.edges.remove(id);
+			this.selectedEdge = null;
 		})
 	}
 
@@ -195,14 +213,20 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 			await this.onSelectNode(args.nodes[0]);
 		});
 		this.network.on('doubleClick', async (args: NetworkSelection) => {
-			await this.onDoubleClickNode(args.nodes[0]);
-		})
-		this.network.on('selectEdge', async (args: NetworkSelection) => {
-			await this.onSelectEdge(args.edges[0]);
+			if (args.nodes.length > 0) {
+				await this.onDoubleClickNode(args.nodes[0]);
+			} else if (args.edges.length > 0) {
+				await this.onDoubleClickEdge(args.edges[0]);
+			}
 		});
-		this.network.on('deselectEdge', async (args: NetworkDeselection) => {
-			await this.onDeselectEdge(args.edges[0]);
-		})
+		this.network.on('selectEdge', async (args: NetworkSelection) => {
+			if (args.edges.length === 1) {
+				await this.onSelectEdge(args.edges[0]);
+			}
+		});
+		this.network.on('deselectEdge', async _ => {
+			await this.onDeselectEdge();
+		});
 	}
 
 	private async loadGraphElements() {
@@ -220,23 +244,21 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		this.selectedEdge = await this.edgeRepository.getById(id);
 	}
 
-	private async onDeselectEdge(id: string) {
-		if (id) {
-			await this.onSelectEdge(id);
-		} else {
-			this.selectedEdge = null;
-		}
+	private async onDeselectEdge() {
+		this.selectedEdge = null;
+		this.toolbar.closeEditor();
 	}
 
 	private async onSelectNode(id: string) {
-		const source = this.selectedSourceNode;
+		this.selectedEdge = null;
 		if (!id) {
 			this.selectedNode = null;
 		}
 		if (this.selectedNode?.id !== id) {
 			this.selectedNode = await this.graphElementService.getNodeById(id);
 		}
-		if (this.selectedSourceNode && this.selectedNode?.id !== this.selectedSourceNode.id) {
+		if (this.selectedSourceNode) {
+			const source = this.selectedSourceNode;
 			this.selectedSourceNode = null;
 			await this.graphElementService.addEdge(this.graph, source, this.selectedNode);
 		}
@@ -252,7 +274,13 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		}
 	}
 
+	private async onDoubleClickEdge(id: string) {
+		await this.onSelectEdge(id);
+		this.toolbar.openEditor();
+	}
+
 	private async onDeselectNode(args: NetworkDeselection) {
+		this.editMode = false;
 		const nextNode = args.nodes[0];
 		if (!nextNode) {
 			this.selectedNode = null;
@@ -293,6 +321,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 			id: edge.id,
 			from: edge.sourceNodeId,
 			to: edge.targetNodeId,
+			label: edge.name,
 			arrows: "to",
 			color: "#000000",
 			arrowStrikethrough: false,
@@ -304,6 +333,7 @@ export interface EdgeView {
 	id: string,
 	from: string,
 	to: string,
+	label: string,
 	arrows: string,
 	color: string,
 	arrowStrikethrough: boolean,

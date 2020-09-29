@@ -1,11 +1,25 @@
-<form (submit)="submitValue()">
-	<div class="uk-inline">
-		<a (click)="submitValue()"
-		   class="uk-form-icon uk-form-icon-flip" uk-icon="check"></a>
-		<input #labelInputElement
-			   class="uk-input uk-form-width-medium uk-form-small" type="text"
-			   placeholder="{{selectedNode && !shouldAppend ? 'Change' : 'Input new'}} name"
-			   [formControl]="labelInput"
-			   autofocus>
+<form (keydown.enter)="submitValue()">
+	<div class="uk-margin-bottom"
+		 *ngIf="shouldAppend || selectedEdge">
+		<div class="uk-inline">
+			<a *ngIf="!shouldAppend"
+			   (click)="submitValue()"
+			   class="uk-form-icon uk-form-icon-flip" uk-icon="check"></a>
+			<input #edgeLabelInputElement
+				   class="uk-input uk-form-width-medium uk-form-small" type="text"
+				   placeholder="{{!shouldAppend ? 'Change' : 'New'}} edge name"
+				   [formControl]="edgeLabelInput">
+		</div>
+	</div>
+	<div *ngIf="!selectedEdge">
+		<div class="uk-inline">
+			<a
+			   (click)="submitValue()"
+			   class="uk-form-icon uk-form-icon-flip" uk-icon="check"></a>
+			<input #nodeLabelInputElement
+				   class="uk-input uk-form-width-medium uk-form-small" type="text"
+				   placeholder="{{selectedNode && !shouldAppend ? 'Change' : 'New'}} node name"
+				   [formControl]="nodeLabelInput">
+		</div>
 	</div>
 </form>

@@ -35,7 +35,7 @@ import {GraphNode} from "../../models/GraphNode";
 import {FormControl} from "@angular/forms";
 import {Graph} from "../../models/Graph";
 import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
-import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
+import {GraphEdge} from "../../models/GraphEdge";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -48,24 +48,28 @@ import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.serv
 })
 export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 
-	@ViewChild('labelInputElement', {static: true})
-	labelInputElement: ElementRef;
+	@ViewChild('edgeLabelInputElement')
+	edgeLabelInputElement: ElementRef;
+	@ViewChild('nodeLabelInputElement')
+	nodeLabelInputElement: ElementRef;
 
 	@Input()
 	graph: Graph;
 	@Input()
 	selectedNode: GraphNode;
 	@Input()
+	selectedEdge: GraphEdge;
+	@Input()
 	shouldAppend: boolean;
 
 	@Output()
 	editingAborted = new EventEmitter();
 
-	labelInput = new FormControl('');
+	nodeLabelInput = new FormControl('');
+	edgeLabelInput = new FormControl('');
 
 	constructor(
 		private readonly nodeRepository: GraphNodeRepository,
-		private readonly edgeRepository: GraphEdgeRepository,
 		private readonly elementService: GraphElementService) {
 	}
 
@@ -74,9 +78,14 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 
 	ngAfterContentInit(): void {
 		setTimeout(() => {
-			this.labelInputElement.nativeElement.focus();
-			if (!this.shouldAppend) {
-				this.labelInput.setValue(this.selectedNode?.value);
+			if (this.edgeLabelInputElement) {
+				this.edgeLabelInputElement.nativeElement.focus();
+				this.edgeLabelInput.setValue(this.selectedEdge?.name);
+			} else if (this.nodeLabelInputElement) {
+				this.nodeLabelInputElement.nativeElement.focus();
+			}
+			if (this.nodeLabelInputElement && !this.shouldAppend) {
+				this.nodeLabelInput.setValue(this.selectedNode?.value);
 			}
 		});
 	}
@@ -87,18 +96,54 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	}
 
 	async submitValue() {
-		if (!this.graph || !this.labelInput.value) {
+		if (!this.graph || (!this.nodeLabelInput.value && !this.edgeLabelInput.value)) {
 			return;
 		}
-		const label = this.labelInput.value.trim();
+
 		if (this.shouldAppend && this.selectedNode) {
-			const newNode = await this.elementService.addNode(this.graph, label);
-			await this.elementService.addEdge(this.graph, this.selectedNode, newNode);
-		} else if (this.selectedNode) {
-			this.selectedNode.value = label;
-			await this.nodeRepository.update(this.selectedNode);
+			await this.appendNewNode();
+		} else if (this.selectedNode || this.selectedEdge) {
+			if (this.selectedEdge) {
+				await this.renameEdge();
+			}
+			if (this.selectedNode) {
+				await this.renameNode();
+			}
 		} else {
-			await this.elementService.addNode(this.graph, label);
+			await this.createNode();
 		}
 	}
+
+	private async appendNewNode() {
+		const nodeLabel = this.nodeLabelInput.value.trim();
+		const edgeLabel = this.edgeLabelInput.value?.trim();
+		if (!nodeLabel) {
+			return;
+		}
+		const newNode = await this.elementService.addNode(this.graph, nodeLabel);
+		await this.elementService.addEdge(this.graph, this.selectedNode, newNode, edgeLabel);
+	}
+
+	private async renameEdge() {
+		this.selectedEdge.name = this.edgeLabelInput.value.trim();
+		await this.elementService.updateEdge(this.selectedEdge);
+	}
+
+	private async renameNode() {
+		const nodeLabel = this.nodeLabelInput.value.trim();
+		if (!nodeLabel) {
+			return;
+		}
+		this.selectedNode.value = nodeLabel;
+		await this.nodeRepository.update(this.selectedNode);
+	}
+
+	private async createNode() {
+		const nodeLabel = this.nodeLabelInput.value.trim();
+		if (!nodeLabel) {
+			return;
+		}
+		await this.elementService.addNode(this.graph, nodeLabel);
+	}
+
 }

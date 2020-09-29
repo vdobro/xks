@@ -36,6 +36,7 @@ import {GraphEdge} from "../models/GraphEdge";
 	providedIn: 'root'
 })
 export class GraphElementService {
+	private unnamedEdgeNumber : number = 1;
 
 	constructor(private readonly nodeRepository: GraphNodeRepository,
 				private readonly edgeRepository: GraphEdgeRepository) {
@@ -55,13 +56,17 @@ export class GraphElementService {
 	async removeNode(node: GraphNode) {
 		const outgoingEdges = await this.edgeRepository.getAllFrom(node);
 		for (let edge of outgoingEdges) {
-			await this.edgeRepository.delete(edge.id);
+			await this.removeEdge(edge);
 		}
 		const incomingEdges = await this.edgeRepository.getAllTo(node);
 		for (let edge of incomingEdges) {
 			await this.edgeRepository.delete(edge.id);
 		}
 		await this.nodeRepository.delete(node.id);
+	}
+
+	async removeEdge(edge: GraphEdge) {
+		await this.edgeRepository.delete(edge.id);
 	}
 
 	async addEdge(graph: Graph, from: GraphNode, to: GraphNode, label: string = ''): Promise<GraphEdge> {
@@ -73,6 +78,8 @@ export class GraphElementService {
 			targetNodeId: to.id
 		};
 		await this.edgeRepository.add(edge);
+
+		await this.nameAllEdgesIfAnyAreLabeled(from);
 		return edge;
 	}
 
@@ -91,5 +98,41 @@ export class GraphElementService {
 
 	async getNodeById(id: string): Promise<GraphNode> {
 		return await this.nodeRepository.getById(id);
+	}
+
+	async updateEdge(edge: GraphEdge) {
+		await this.edgeRepository.update(edge);
+
+		const from = await this.nodeRepository.getById(edge.sourceNodeId);
+		await this.nameAllEdgesIfAnyAreLabeled(from);
+	}
+
+	private async nameAllEdgesIfAnyAreLabeled(node: GraphNode) {
+		if (await this.anyOutgoingEdgesHaveLabels(node)) {
+			await this.renameAllUnnamedEdges(node);
+		}
+	}
+
+	private async renameAllUnnamedEdges(node: GraphNode) {
+		if (await this.allOutgoingEdgesHaveLabels(node)) {
+			return;
+		}
+		const edges = (await this.edgeRepository.getAllFrom(node)).filter(edge => edge.name === '');
+
+		for (let edge of edges) {
+			edge.name = 'Unnamed edge ' + this.unnamedEdgeNumber;
+			this.unnamedEdgeNumber++;
+			await this.edgeRepository.update(edge);
+		}
+	}
+
+	private async allOutgoingEdgesHaveLabels(node: GraphNode) : Promise<boolean> {
+		const edges = await this.edgeRepository.getAllFrom(node);
+		return edges.every(edge => edge.name !== '');
+	}
+
+	private async anyOutgoingEdgesHaveLabels(node: GraphNode) : Promise<boolean> {
+		const edges = await this.edgeRepository.getAllFrom(node);
+		return edges.find(edge => edge.name !== '') !== undefined;
 	}
 }

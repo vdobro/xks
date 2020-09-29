@@ -19,11 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Graph} from "../../models/Graph";
 import {GraphNode} from "../../models/GraphNode";
 import {GraphElementService} from "../../services/graph-element.service";
 import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
+import {GraphEdge} from "../../models/GraphEdge";
+import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -44,22 +46,37 @@ export class GraphToolbarComponent implements OnInit {
 
 	@Input()
 	selectedNode: GraphNode;
+	@Input()
+	selectedEdge: GraphEdge;
 
 	connectNewNode: boolean = false;
 	showToolbar: boolean = true;
 
+	@Output()
+	currentlyInEdit = new EventEmitter<boolean>();
+
 	constructor(private readonly nodeRepository: GraphNodeRepository,
+				private readonly edgeRepository: GraphEdgeRepository,
 				private readonly elementService: GraphElementService) {
 
 		this.nodeRepository.entityCreated.subscribe(_ => this.closeEditor());
 		this.nodeRepository.entityUpdated.subscribe(_ => this.closeEditor());
+		this.nodeRepository.entityDeletedId.subscribe(_ => this.closeEditor());
+
+		this.edgeRepository.entityCreated.subscribe(_ => this.closeEditor());
+		this.edgeRepository.entityUpdated.subscribe(_ => this.closeEditor());
+		this.edgeRepository.entityDeletedId.subscribe(_ => this.closeEditor());
 	}
 
 	ngOnInit(): void {
 	}
 
-	async deleteNode() {
-		await this.elementService.removeNode(this.selectedNode);
+	async deleteSelectedElement() {
+		if (this.selectedNode) {
+			await this.elementService.removeNode(this.selectedNode);
+		} else if (this.selectedEdge) {
+			await this.elementService.removeEdge(this.selectedEdge);
+		}
 	}
 
 	appendNewNode() {
@@ -69,11 +86,13 @@ export class GraphToolbarComponent implements OnInit {
 
 	openEditor() {
 		this.showToolbar = false;
+		this.currentlyInEdit.emit(true);
 	}
 
 	closeEditor() {
 		this.connectNewNode = false;
 		this.showToolbar = true;
+		this.currentlyInEdit.emit(false);
 	}
 
 	openTutorial() {
