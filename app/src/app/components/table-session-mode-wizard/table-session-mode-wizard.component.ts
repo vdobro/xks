@@ -56,9 +56,11 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	table: Table;
 
 	@Output()
-	configurationValid = new EventEmitter<boolean>();
+	configurationChanged = new EventEmitter<void>();
 	@Output()
 	sessionModeCreated = new Subject<TableSessionMode>();
+
+	configurationValid : boolean = false;
 
 	tableColumns: TableColumn[];
 	questionColumns: TableColumn[] = [];
@@ -97,7 +99,8 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	}
 
 	private async reportValidity() {
-		this.configurationValid.emit(this.questionColumns.length > 0 && this.answerColumns.length > 0);
+		this.configurationValid = this.questionColumns.length > 0 && this.answerColumns.length > 0;
+		this.configurationChanged.emit();
 	}
 
 	private async reloadColumns() {

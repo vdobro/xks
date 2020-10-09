@@ -67,6 +67,7 @@ export class TableService {
 			deckId: deck.id,
 			name: name,
 			sessionModeIds: [],
+			defaultSessionModeId: null,
 		};
 		await this.repository.add(table);
 		this._tablesChanged.next(deck);

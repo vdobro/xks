@@ -30,6 +30,7 @@ import {AbstractRepository} from "../repositories/AbstractRepository";
 import {BaseDataEntity} from "../repositories/BaseRepository";
 import {Subject, Subscribable} from "rxjs";
 import {TableRepository} from "../repositories/table-repository.service";
+import {TableSessionModeService} from "./table-session-mode.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -49,7 +50,8 @@ export class TableCellService {
 	constructor(
 		private readonly rowRepository: TableRowRepository,
 		private readonly columnRepository: TableColumnRepository,
-		private readonly tableRepository: TableRepository,) {
+		private readonly tableRepository: TableRepository,
+		private readonly sessionModeService: TableSessionModeService) {
 	}
 
 	async getColumns(table: Table): Promise<TableColumn[]> {
@@ -132,6 +134,8 @@ export class TableCellService {
 			row.values.delete(column.id);
 			await this.rowRepository.update(row);
 		}
+		const table = await this.tableRepository.getById(column.tableId);
+		await this.sessionModeService.deleteAllWithColumn(table, column.id);
 		await this.columnRepository.delete(column.id);
 		this._columnsChanged.next(await this.tableRepository.getById(column.tableId));
 	}

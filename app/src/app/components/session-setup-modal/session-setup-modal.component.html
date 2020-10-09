@@ -1,0 +1,58 @@
+<div #setupSessionModal id="setup-session-modal" uk-modal>
+	<div class="uk-modal-dialog">
+		<div class="uk-modal-header">
+			<h2 class="uk-modal-title">Flashcard setup</h2>
+		</div>
+		<div class="uk-modal-body">
+			<div *ngIf="anySessionModesAvailable">
+				<ul uk-switcher
+					class="uk-subnav uk-subnav-pill">
+					<li><a href="#" (click)="this.useExisting = true; this.validateConfiguration();">Recently used</a></li>
+					<li><a href="#" (click)="this.useExisting = false; this.validateConfiguration();">Custom</a></li>
+				</ul>
+				<ul class="uk-switcher">
+					<li>
+						<app-session-mode-chooser
+							[table]="table"
+							(configurationChanged)="validateConfiguration()"></app-session-mode-chooser>
+						<form class="uk-margin">
+							<div class="uk-grid-small uk-child-width-auto uk-grid">
+								<label>
+									<input class="uk-checkbox"
+										   type="checkbox"
+										   [formControl]="defaultSessionCheckbox">
+									Set as default
+								</label>
+							</div>
+						</form>
+					</li>
+					<li>
+						<form class="uk-margin">
+							<div class="uk-grid-small uk-child-width-auto uk-grid">
+								<label>
+									<input class="uk-checkbox"
+										   type="checkbox"
+										   [formControl]="defaultSessionCheckbox">
+									Set as default
+								</label>
+							</div>
+						</form>
+						<app-table-session-mode-wizard
+							[table]="table"
+							(configurationChanged)="validateConfiguration()"></app-table-session-mode-wizard>
+					</li>
+				</ul>
+			</div>
+			<app-table-session-mode-wizard *ngIf="!anySessionModesAvailable"
+										   [table]="table"
+										   (configurationChanged)="validateConfiguration()"></app-table-session-mode-wizard>
+		</div>
+		<div class="uk-modal-footer uk-text-right">
+			<button (click)="startSession()"
+					[disabled]="!startSessionEnabled"
+					class="uk-button uk-button-primary uk-modal-close"
+					type="button">Start
+			</button>
+		</div>
+	</div>
+</div>

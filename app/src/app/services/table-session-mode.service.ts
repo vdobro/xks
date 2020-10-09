@@ -25,6 +25,7 @@ import {TableSessionModeRepository} from "../repositories/table-session-mode-rep
 import {Table} from "../models/Table";
 import {TableColumn} from "../models/TableColumn";
 import {TableSessionMode} from "../models/TableSessionMode";
+import {TableRepository} from "../repositories/table-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,11 +37,16 @@ import {TableSessionMode} from "../models/TableSessionMode";
 export class TableSessionModeService {
 
 	constructor(
+		private readonly tableRepository: TableRepository,
 		private readonly repository: TableSessionModeRepository) {
 	}
 
-	async getAllIn(table: Table) {
+	async getAllIn(table: Table) : Promise<TableSessionMode[]> {
 		return await this.repository.getByTable(table);
+	}
+
+	async anyExist(table: Table) : Promise<boolean> {
+		return (await this.getAllIn(table)).length > 0;
 	}
 
 	async create(table: Table,
@@ -66,7 +72,7 @@ export class TableSessionModeService {
 		return entity;
 	}
 
-	async deleteAllForTable(table: Table) {
+	async deleteAllForTable(table: Table) : Promise<void> {
 		const all = await this.repository.getByTable(table);
 		await Promise.all(all.map(mode => this.repository.delete(mode.id)));
 	}
@@ -78,5 +84,28 @@ export class TableSessionModeService {
 	private unorderedArraysEqual<T>(first: T[], second: T[]): boolean {
 		return first.length === second.length
 			&& first.every(value => second.findIndex(x => x === value) !== -1);
+	}
+
+	async setAsDefault(mode: TableSessionMode) : Promise<void> {
+		const table = await this.tableRepository.getById(mode.tableId);
+		table.defaultSessionModeId = mode.id;
+		await this.tableRepository.update(table);
+	}
+
+	async deleteAllWithColumn(table: Table, columnId: string) : Promise<void> {
+		if (!columnId) {
+			return;
+		}
+		const all = await this.getAllIn(table);
+		for (let mode of all) {
+			if (mode.answerColumnIds.find(id => columnId === id)
+				|| mode.questionColumnIds.find(id => columnId === id)) {
+				if (mode.id === table.defaultSessionModeId) {
+					table.defaultSessionModeId = null;
+					await this.tableRepository.update(table);
+				}
+				await this.repository.delete(mode.id);
+			}
+		}
 	}
 }

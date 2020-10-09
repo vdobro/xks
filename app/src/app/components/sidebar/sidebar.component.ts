@@ -28,7 +28,7 @@ import {TableService} from "../../services/table.service";
 import {NewDeckElementModalComponent} from "../new-deck-element-modal/new-deck-element-modal.component";
 import {DeckService} from "../../services/deck.service";
 import {NavigationService} from "../../services/navigation.service";
-import {SetupTableSessionModalComponent} from "../setup-table-session-modal/setup-table-session-modal.component";
+import {SessionSetupModalComponent} from "../session-setup-modal/session-setup-modal.component";
 import {SidebarService} from "../../services/sidebar.service";
 import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
 import {Graph} from "../../models/Graph";
@@ -51,8 +51,8 @@ export class SidebarComponent implements OnInit {
 	@ViewChild(ConfirmDeleteElementModalComponent)
 	confirmDeleteDeckModal: ConfirmDeleteElementModalComponent;
 
-	@ViewChild(SetupTableSessionModalComponent)
-	setupTableSessionModal: SetupTableSessionModalComponent;
+	@ViewChild(SessionSetupModalComponent)
+	setupTableSessionModal: SessionSetupModalComponent;
 
 	deck: Deck;
 

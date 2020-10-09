@@ -29,5 +29,6 @@ export interface Table extends BaseEntity {
 	deckId: string,
 	name: string,
 	sessionModeIds: string[]
+	defaultSessionModeId: string,
 }
 

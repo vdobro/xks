@@ -21,30 +21,24 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {SetupTableSessionModalComponent} from './setup-table-session-modal.component';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {RouterTestingModule} from "@angular/router/testing";
+import {SessionModeChooserComponent} from './session-mode-chooser.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.06
+ * @since 2020.10.08
  */
-describe('SetupTableSessionModalComponent', () => {
-	let component: SetupTableSessionModalComponent;
-	let fixture: ComponentFixture<SetupTableSessionModalComponent>;
+describe('SessionModeChooserComponent', () => {
+	let component: SessionModeChooserComponent;
+	let fixture: ComponentFixture<SessionModeChooserComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				HttpClientTestingModule,
-				RouterTestingModule,
-			],
-			declarations: [SetupTableSessionModalComponent]
+			declarations: [SessionModeChooserComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SetupTableSessionModalComponent);
+		fixture = TestBed.createComponent(SessionModeChooserComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

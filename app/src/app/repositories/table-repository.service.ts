@@ -68,6 +68,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 			name: entity.name,
 			deckId: entity.deckId,
 			sessionModes: entity.sessionModeIds,
+			defaultSessionMode: entity.defaultSessionModeId,
 		}
 	}
 
@@ -77,6 +78,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 			deckId: entity.deckId,
 			name: entity.name,
 			sessionModeIds: entity.sessionModes,
+			defaultSessionModeId: entity.defaultSessionMode,
 		}
 	}
 
@@ -99,4 +101,5 @@ interface TableDataEntity extends BaseDataEntity {
 	deckId: string;
 	name: string;
 	sessionModes: string[],
+	defaultSessionMode: string,
 }
