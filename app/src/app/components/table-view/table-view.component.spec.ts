@@ -70,5 +70,8 @@ function generateTable(): Table {
 		deckId: uuid() + 'as deck ID',
 		name: 'name ' + uuid(),
 		sessionModeIds: [],
+		defaultMaxScore: 8,
+		defaultStartingScore: 3,
+		defaultSessionModeId: uuid(),
 	};
 }
