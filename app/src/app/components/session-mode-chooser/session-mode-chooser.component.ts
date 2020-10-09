@@ -94,7 +94,7 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 		const separator = ', ';
 		return {
 			id: mode.id,
-			name: `(${questionColumns.join(separator)}) => (${answerColumns.join(separator)})`,
+			name: `(${questionColumns.join(separator)}) ⟼ (${answerColumns.join(separator)})`,
 		}
 	}
 

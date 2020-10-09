@@ -69,6 +69,8 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 			deckId: entity.deckId,
 			sessionModes: entity.sessionModeIds,
 			defaultSessionMode: entity.defaultSessionModeId,
+			defaultMaxScore: entity.defaultMaxScore,
+			defaultStartingScore: entity.defaultStartingScore,
 		}
 	}
 
@@ -79,6 +81,8 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 			name: entity.name,
 			sessionModeIds: entity.sessionModes,
 			defaultSessionModeId: entity.defaultSessionMode,
+			defaultMaxScore: entity.defaultMaxScore,
+			defaultStartingScore: entity.defaultStartingScore,
 		}
 	}
 
@@ -102,4 +106,6 @@ interface TableDataEntity extends BaseDataEntity {
 	name: string;
 	sessionModes: string[],
 	defaultSessionMode: string,
+	defaultMaxScore: number,
+	defaultStartingScore: number,
 }

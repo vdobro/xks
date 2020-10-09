@@ -30,5 +30,7 @@ export interface Table extends BaseEntity {
 	name: string,
 	sessionModeIds: string[]
 	defaultSessionModeId: string,
+	defaultStartingScore: number,
+	defaultMaxScore: number,
 }
 

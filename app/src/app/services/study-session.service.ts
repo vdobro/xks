@@ -141,20 +141,17 @@ export class StudySessionService {
 
 	private calculateProgress(state: LearningSessionState): number {
 		const internalState = this.getInternalState(state);
-		const startScore = this.taskService.defaultStartScore;
-		const maxScore = this.taskService.defaultMaximumScore - startScore;
 
-		const remainingTasks = internalState.remainingTasks.length;
-		const doneTasks = internalState.tasksDone.length;
-		const windowLength = internalState.taskWindow.length;
+		const allTasks = internalState.taskWindow.concat(internalState.remainingTasks, internalState.tasksDone);
 
-		const totalTasks = windowLength + remainingTasks + doneTasks;
-
-		const pendingTaskScore = internalState.taskWindow
-			.map(task => this.taskService.getCurrentScore(task) - startScore)
+		const maxScore = allTasks.map(task => (task.maxScore - task.startingScore))
 			.reduce((sum, current) => sum + current, 0);
 
-		const progress = ((doneTasks * maxScore) + pendingTaskScore) / (totalTasks * maxScore);
+		const currentScore = allTasks
+			.map(task => Math.max(0, this.taskService.getCurrentScore(task) - task.startingScore))
+			.reduce((sum, current) => sum + current, 0);
+
+		const progress = currentScore / maxScore;
 		return Math.max(progress, 0);
 	}
 
