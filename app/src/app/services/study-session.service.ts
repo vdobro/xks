@@ -19,6 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// @ts-ignore
 import {v4 as uuid} from 'uuid';
 import {AnswerFeedback, ExerciseTask, ExerciseTaskService} from "./exercise-task.service";
 
@@ -38,12 +39,15 @@ export class StudySessionService {
 				 fieldId: string,
 				 state: LearningSessionState): LearningSessionState {
 		const answerFeedback = this.taskService.logInAnswer(answer, fieldId,
-			state.currentTask, state.lastAnswer?.fieldId);
+			state.currentTask, state.lastAnswer?.fieldId || null);
 		return this.handleAnswerFeedback(answerFeedback.actualField.identifier.id,
 			answerFeedback, state);
 	}
 
 	acceptLastAnswer(state: LearningSessionState): LearningSessionState {
+		if (!state.lastAnswer) {
+			return state;
+		}
 		const fieldId = state.lastAnswer.fieldId;
 		const lastTask = state.lastAnswer.task;
 		const answerFeedback = this.taskService.forceAcceptAnswer(fieldId, lastTask);
@@ -63,7 +67,7 @@ export class StudySessionService {
 			currentTask: StudySessionService.randomElement(initialWindow),
 			session: session,
 			progress: 0,
-			lastAnswer: undefined
+			lastAnswer: null,
 		};
 		this.updateInternalState({
 			remainingTasks: remainingTasks,
@@ -190,8 +194,13 @@ export class StudySessionService {
 		return this.getInternalState(state).taskWindow;
 	}
 
-	private getInternalState(state: LearningSessionState) {
-		return this.activeSessions.get(state.session.id);
+	private getInternalState(state: LearningSessionState) : InternalSessionState {
+		const value = this.activeSessions.get(state.session.id);
+		if (value) {
+			return value;
+		} else {
+			throw new Error('Study session internal state not defined. Try reloading the application.');
+		}
 	}
 
 	private updateInternalState(internalState: InternalSessionState) {
@@ -235,7 +244,7 @@ export class StudySessionService {
 
 export interface LearningSession {
 	start: Date,
-	end: Date
+	end: Date | null,
 	id: string,
 	complete: boolean,
 }
@@ -249,7 +258,7 @@ export interface LearningSessionState {
 		expectedAnswer: string,
 		fieldId: string,
 		task: ExerciseTask
-	}
+	} | null,
 }
 
 interface InternalSessionState {

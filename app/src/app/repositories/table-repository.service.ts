@@ -105,7 +105,7 @@ interface TableDataEntity extends BaseDataEntity {
 	deckId: string;
 	name: string;
 	sessionModes: string[],
-	defaultSessionMode: string,
+	defaultSessionMode: string | null,
 	defaultMaxScore: number,
 	defaultStartingScore: number,
 }

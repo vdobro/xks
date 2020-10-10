@@ -27,6 +27,7 @@
 					[cdkDragDisabled]="!columnDragEnabled"
 					class="uk-table-expand"
 					*ngFor="let column of columns; let position = index"
+					[table]="table"
 					[column]="column"
 					(editingStarted)="disableColumnDrag()"
 					(columnChanged)="columnChanged(column)"

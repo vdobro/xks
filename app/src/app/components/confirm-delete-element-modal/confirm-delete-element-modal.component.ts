@@ -35,16 +35,16 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} f
 export class ConfirmDeleteElementModalComponent implements OnInit {
 
 	@ViewChild('confirmElementModal')
-	modal: ElementRef;
+	modal: ElementRef | undefined;
 
 	@Input()
-	type: string;
+	type: string = '';
 
 	@Input()
-	name: string;
+	name: string = '';
 
 	@Input()
-	explanation: string;
+	explanation: string = '';
 
 	@Output()
 	confirmed = new EventEmitter<void>();
@@ -56,6 +56,8 @@ export class ConfirmDeleteElementModalComponent implements OnInit {
 	}
 
 	openModal() {
-		UIkit.modal(this.modal.nativeElement).show();
+		if (this.modal) {
+			UIkit.modal(this.modal.nativeElement).show();
+		}
 	}
 }

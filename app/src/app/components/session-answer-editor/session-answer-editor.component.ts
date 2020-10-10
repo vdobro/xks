@@ -32,10 +32,7 @@ import {
 	ViewChild
 } from '@angular/core';
 import {FlashcardField} from "../../services/exercise-task.service";
-import {TableSessionService} from "../../services/table-session.service";
 import {FormControl} from "@angular/forms";
-import {StudySessionService} from "../../services/study-session.service";
-import {GraphSessionService} from "../../services/graph-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -49,12 +46,12 @@ import {GraphSessionService} from "../../services/graph-session.service";
 export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 
 	@ViewChild('answerFieldElement', {static: true})
-	answerInputElement: ElementRef;
+	answerInputElement: ElementRef | undefined;
 
 	@Input()
-	answerField: FlashcardField;
+	answerField: FlashcardField | null = null;
 	@Input()
-	indexNumber: number;
+	indexNumber: number = 0;
 
 	@Input()
 	graphAnswer: boolean = false;
@@ -72,26 +69,14 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 
 	answerInput = new FormControl('');
 
-	private taskService: StudySessionService = null;
-
 	private lastAnswer: string = '';
 
-	constructor(
-		private readonly tableTaskService: TableSessionService,
-		private readonly graphTaskService: GraphSessionService) {
-	}
-
 	ngOnInit() {
-		if (this.graphAnswer) {
-			this.taskService = this.graphTaskService;
-		} else {
-			this.taskService = this.tableTaskService;
-		}
 		this.resetInput();
 	}
 
 	ngOnChanges() {
-		this.answerInputElement.nativeElement.focus();
+		this.answerInputElement?.nativeElement.focus();
 		this.resetInput();
 	}
 
@@ -99,7 +84,7 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 		const value = this.answerInput.value.trim();
 		this.lastAnswer = value;
 		this.resetInput();
-		if (value.length > 0) {
+		if (value.length > 0 && this.answerField) {
 			this.submitted.emit({value: value, field: this.answerField});
 		}
 	}

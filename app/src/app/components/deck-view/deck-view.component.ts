@@ -47,7 +47,7 @@ export const DECK_ID_PARAM: string = 'deckId';
 export class DeckViewComponent implements OnInit {
 
 	@Output()
-	deck: Deck;
+	deck: Deck | null = null;
 
 	anyElementsAvailable: boolean = true;
 
@@ -64,7 +64,8 @@ export class DeckViewComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		this.route.paramMap.subscribe(async params => {
-			this.deck = await this.deckService.getById(params.get(DECK_ID_PARAM));
+			const id = params.get(DECK_ID_PARAM);
+			this.deck = id ? await this.deckService.getById(id) : null;
 			if (this.deck) {
 				this.sidebarService.populate(this.deck);
 				await this.checkIfAnyElementsAvailable();
@@ -86,8 +87,11 @@ export class DeckViewComponent implements OnInit {
 	}
 
 	private async checkIfAnyElementsAvailable() {
-		this.anyElementsAvailable =
-			await this.tableService.anyExistForDeck(this.deck)
+		if (!this.deck) {
+			this.anyElementsAvailable = false;
+			return;
+		}
+		this.anyElementsAvailable = await this.tableService.anyExistForDeck(this.deck)
 			|| await this.graphService.anyExistForDeck(this.deck);
 	}
 }

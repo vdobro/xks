@@ -29,7 +29,7 @@ export interface Table extends BaseEntity {
 	deckId: string,
 	name: string,
 	sessionModeIds: string[]
-	defaultSessionModeId: string,
+	defaultSessionModeId: string | null,
 	defaultStartingScore: number,
 	defaultMaxScore: number,
 }

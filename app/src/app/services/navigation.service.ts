@@ -38,9 +38,9 @@ import {GraphService} from "./graph.service";
 })
 export class NavigationService {
 
-	private deck: Deck = null;
-	private table: Table = null;
-	private graph: Graph = null;
+	private deck: Deck | null = null;
+	private table: Table | null = null;
+	private graph: Graph | null = null;
 	private studySessionActive: boolean = false;
 
 	constructor(
@@ -112,7 +112,7 @@ export class NavigationService {
 	async openDeck(deckId: string) {
 		this.studySessionActive = false;
 		this.deck = await this.deckService.getById(deckId);
-		await this.sidebarService.populate(this.deck);
+		this.sidebarService.populate(this.deck);
 		await this.router.navigate(['/decks', deckId]);
 	}
 
@@ -127,7 +127,7 @@ export class NavigationService {
 		this.studySessionActive = false;
 		this.deck = null;
 		this.table = null;
-		await this.sidebarService.populate(null);
+		this.sidebarService.depopulate();
 		await this.router.navigate(['/decks']);
 	}
 

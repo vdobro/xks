@@ -37,9 +37,9 @@ import {GraphService} from "../../services/graph.service";
 export class NavbarNewGraphComponent implements OnInit {
 
 	@ViewChild(NewDeckElementModalComponent)
-	childModal: NewDeckElementModalComponent;
+	childModal: NewDeckElementModalComponent | undefined;
 
-	deck: Deck;
+	deck: Deck | null;
 
 	constructor(private readonly sidebarService: SidebarService,
 				private readonly graphService: GraphService) {
@@ -51,6 +51,9 @@ export class NavbarNewGraphComponent implements OnInit {
 	}
 
 	async createGraph(name: string) {
+		if (!this.deck) {
+			return;
+		}
 		await this.graphService.create(this.deck, name);
 	}
 }

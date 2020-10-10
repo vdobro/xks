@@ -46,23 +46,23 @@ import {GraphService} from "../../services/graph.service";
 export class SidebarComponent implements OnInit {
 
 	@ViewChild(NewDeckElementModalComponent)
-	newTableModal: NewDeckElementModalComponent;
+	newTableModal: NewDeckElementModalComponent | undefined;
 
 	@ViewChild(ConfirmDeleteElementModalComponent)
-	confirmDeleteDeckModal: ConfirmDeleteElementModalComponent;
+	confirmDeleteDeckModal: ConfirmDeleteElementModalComponent | undefined;
 
 	@ViewChild(SessionSetupModalComponent)
-	setupTableSessionModal: SessionSetupModalComponent;
+	setupTableSessionModal: SessionSetupModalComponent | undefined;
 
-	deck: Deck;
+	deck: Deck | null = null;
 
 	tables: Table[] = [];
 	graphs: Graph[] = [];
 
-	selectedTable: Table = null;
+	selectedTable: Table | null = null;
 	tableSelected: boolean = false;
 
-	selectedGraph: Graph = null;
+	selectedGraph: Graph | null = null;
 	graphSelected: boolean = false;
 
 	active: boolean = false;
@@ -94,7 +94,7 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private onActiveTableChanged(table: Table) {
+	private onActiveTableChanged(table: Table | null) {
 		if (this.selectedTable?.id === table?.id) {
 			return;
 		}
@@ -104,7 +104,7 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private onActiveGraphChanged(graph: Graph) {
+	private onActiveGraphChanged(graph: Graph| null) {
 		if (this.selectedGraph?.id === graph?.id) {
 			return;
 		}
@@ -114,12 +114,12 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private async onActiveDeckChanged(deck: Deck) {
+	private async onActiveDeckChanged(deck: Deck | null) : Promise<void> {
 		if (this.deck?.id === deck?.id) {
 			return;
 		}
 		this.deck = deck;
-		if (deck) {
+		if (this.deck) {
 			this.tables = await this.tableService.getByDeck(this.deck);
 			this.graphs = await this.graphService.getByDeck(this.deck);
 		} else {
@@ -140,7 +140,7 @@ export class SidebarComponent implements OnInit {
 	async openDeckDetails() {
 		this.sidebarService.deselectTable();
 		this.sidebarService.deselectGraph();
-		await this.navigationService.openDeck(this.deck.id);
+		await this.navigationService.openDeck(this.deck!!.id);
 	}
 
 	async goHome() {
@@ -149,10 +149,10 @@ export class SidebarComponent implements OnInit {
 
 	async studyCurrent() {
 		if (this.tableSelected) {
-			this.setupTableSessionModal.openDialog();
+			this.setupTableSessionModal?.openDialog();
 		} else if (this.graphSelected) {
-			if (await this.graphService.anyNodesAndEdgesExist(this.selectedGraph)) {
-				await this.navigationService.studyGraph(this.selectedGraph.id);
+			if (await this.graphService.anyNodesAndEdgesExist(this.selectedGraph!!)) {
+				await this.navigationService.studyGraph(this.selectedGraph!!.id);
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
 			}
@@ -161,15 +161,15 @@ export class SidebarComponent implements OnInit {
 
 	private async onTablesChanged(deck: Deck) {
 		this.tables = await this.tableService.getByDeck(deck);
-		if (this.selectedTable && !this.tables.find(x => x.id === this.selectedTable.id)) {
+		if (this.selectedTable && !this.tables.find(x => x.id === this.selectedTable!!.id)) {
 			this.sidebarService.deselectTable();
 		}
 	}
 
 	private async onGraphsChanged(deck: Deck) {
 		this.graphs = await this.graphService.getByDeck(deck);
-		if (this.selectedGraph && !this.graphs.find(x => x.id === this.selectedTable.id)) {
-			this.sidebarService.deselectTable();
+		if (this.selectedGraph && !this.graphs.find(x => x.id === this.selectedGraph!!.id)) {
+			this.sidebarService.deselectGraph();
 		}
 	}
 

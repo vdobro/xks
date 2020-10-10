@@ -33,17 +33,17 @@ import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-moda
 export abstract class SidebarDeckElementComponent implements OnInit {
 
 	@ViewChild('inputElement', {static: true})
-	inputElement: ElementRef;
+	inputElement: ElementRef | undefined;
 
 	@ViewChild(ConfirmDeleteElementModalComponent)
-	confirmDeleteModal: ConfirmDeleteElementModalComponent;
+	confirmDeleteModal: ConfirmDeleteElementModalComponent | undefined;
 
 	@Input()
-	element: SidebarDeckElement;
+	element: SidebarDeckElement | undefined;
 
 	editMode: boolean = false;
 	nameInput = new FormControl('');
-	elementCount: string | number;
+	elementCount: string | number = 0;
 
 	protected constructor() {
 	}
@@ -53,16 +53,18 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 	}
 
 	async onDelete(): Promise<void> {
-		await this.onDeleteHandler(this.element.id);
+		if (this.element) {
+			await this.onDeleteHandler(this.element.id);
+		}
 	}
 
 	onEditClicked(): void {
 		this.editMode = true;
-		setTimeout(() => this.inputElement.nativeElement.focus());
+		setTimeout(() => this.inputElement?.nativeElement.focus());
 	}
 
 	async onChangesSubmit() {
-		if (this.element === null) {
+		if (!this.element) {
 			return;
 		}
 		this.element.name = this.nameInput.value;
@@ -72,11 +74,13 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 	}
 
 	async onNameClick() {
-		await this.onClickHandler(this.element.id);
+		if (this.element) {
+			await this.onClickHandler(this.element.id);
+		}
 	}
 
 	confirmDeletion() {
-		this.confirmDeleteModal.openModal();
+		this.confirmDeleteModal?.openModal();
 	}
 
 	cancelEditing() {

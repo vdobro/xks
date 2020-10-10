@@ -47,22 +47,22 @@ import {TableSessionMode} from "../../models/TableSessionMode";
 export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 
 	@ViewChild("tableSessionQuestionColumns", {static: true})
-	questionColumnsSortable: ElementRef;
+	questionColumnsSortable: ElementRef | undefined;
 
 	@ViewChild("tableSessionAnswerColumns", {static: true})
-	answerColumnsSortable: ElementRef;
+	answerColumnsSortable: ElementRef | undefined;
 
 	@Input()
-	table: Table;
+	table: Table | null = null;
 
 	@Output()
 	configurationChanged = new EventEmitter<void>();
 	@Output()
 	sessionModeCreated = new Subject<TableSessionMode>();
 
-	configurationValid : boolean = false;
+	configurationValid: boolean = false;
 
-	tableColumns: TableColumn[];
+	tableColumns: TableColumn[] = [];
 	questionColumns: TableColumn[] = [];
 	answerColumns: TableColumn[] = [];
 
@@ -77,6 +77,9 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	}
 
 	async ngOnInit() {
+		if (!this.questionColumnsSortable || !this.answerColumnsSortable) {
+			return;
+		}
 		UIkit.sortable(this.questionColumnsSortable.nativeElement);
 		UIkit.sortable(this.answerColumnsSortable.nativeElement);
 
@@ -94,8 +97,7 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	}
 
 	async createSessionMode(): Promise<TableSessionMode> {
-		return await this.sessionModeService.create(this.table,
-			this.questionColumns, this.answerColumns);
+		return await this.sessionModeService.create(this.table!!, this.questionColumns, this.answerColumns);
 	}
 
 	private async reportValidity() {
@@ -104,18 +106,24 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	}
 
 	private async reloadColumns() {
+		if (!this.table) {
+			this.tableColumns = [];
+			return;
+		}
 		this.tableColumns = await this.tableCellService.getColumns(this.table);
 		this.questionColumns.splice(0, this.questionColumns.length);
 		this.answerColumns.splice(0, this.answerColumns.length);
 	}
 
 	private setupSortable(elementRef: ElementRef, targetCollection: TableColumn[]) {
-		UIkit.util.on(elementRef.nativeElement, 'added', async args => {
+		// @ts-ignore
+		UIkit.util.on(elementRef.nativeElement, 'added', async (args: any) => {
 			const itemId = TableSessionModeWizardComponent.getItemIdFromSortableEvent(args);
 			await this.addColumn(itemId, targetCollection);
 			await this.reportValidity();
 		});
-		UIkit.util.on(elementRef.nativeElement, 'removed', async args => {
+		// @ts-ignore
+		UIkit.util.on(elementRef.nativeElement, 'removed', async (args: any) => {
 			const itemId = TableSessionModeWizardComponent.getItemIdFromSortableEvent(args);
 			this.removeColumn(itemId, targetCollection);
 			await this.reportValidity();
@@ -145,7 +153,7 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private static getItemIdFromSortableEvent(args): string {
+	private static getItemIdFromSortableEvent(args: { detail: { id: string }[] }): string {
 		return args.detail[1].id;
 	}
 }

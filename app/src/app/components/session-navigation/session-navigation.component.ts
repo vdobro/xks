@@ -42,8 +42,7 @@ export class SessionNavigationComponent implements OnInit {
 	}
 
 	async quitSession() {
-		UIkit.modal.confirm('Do you want to abort current study session? All progress will be lost.').then(async () => {
-			await this.navigationService.navigateToCurrentDeck();
-		}, () => {});
+		UIkit.modal.confirm('Do you want to abort current study session? All progress will be lost.')
+			.then(async () => { await this.navigationService.navigateToCurrentDeck(); }, () => {});
 	}
 }

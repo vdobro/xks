@@ -55,19 +55,16 @@ describe('DeckListViewComponent', () => {
 
 	@Component({
 		selector: 'host-component',
-		template: `
-			<app-deck-list-view [decks$]="decks"></app-deck-list-view>`
+		template: `<app-deck-list-view [decks]="decks"></app-deck-list-view>`
 	})
 	class TestHostComponent {
 		@ViewChild(DeckListViewComponent)
-		public componentUnderTest;
+		public componentUnderTest : DeckListViewComponent | undefined;
 
-		decks: Promise<Deck[]>;
+		decks: Deck[] = [];
 
 		setDecks(decks: Deck[]) {
-			this.decks = new Promise<Deck[]>((resolve, _) => {
-				resolve(decks);
-			});
+			this.decks = decks;
 		}
 	}
 });

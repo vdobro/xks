@@ -34,13 +34,13 @@ import {FlashcardField} from "../../services/exercise-task.service";
 export class SessionAnswerViewComponent implements OnInit {
 
 	@Input()
-	answerField: FlashcardField;
+	answerField: FlashcardField | null = null;
 
 	@Input()
-	indexNumber: number;
+	indexNumber: number = 0;
 
 	@Input()
-	pending: boolean;
+	pending: boolean = false;
 
 	constructor() {
 	}

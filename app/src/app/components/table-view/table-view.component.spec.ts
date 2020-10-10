@@ -58,9 +58,9 @@ describe('TableViewComponent', () => {
 	})
 	class TestHostComponent {
 		@ViewChild(TableViewComponent)
-		public componentUnderTest;
+		public componentUnderTest: TableViewComponent | undefined;
 
-		table: Table;
+		table: Table | null = null;
 	}
 });
 

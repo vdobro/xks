@@ -21,6 +21,8 @@
 
 export const environment = {
 	production: true,
+// @ts-ignore
 	serverUrl: window["env"]["apiUrl"] || "",
+// @ts-ignore
 	databaseUrl: window["env"]["dbUrl"] || "https://xks.dobrovolskis.com/api"
 };

@@ -54,15 +54,15 @@ export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 })
 export class SessionViewComponent implements OnInit, OnDestroy {
 
-	state: LearningSessionState = null;
+	state: LearningSessionState | null = null;
 	answerFields: TableColumn[] = [];
 
-	private table: Table;
-	private sessionMode: TableSessionMode;
+	private table: Table | null = null;
+	private sessionMode: TableSessionMode | null = null;
 
-	graph: Graph;
+	graph: Graph | null = null;
 
-	private sessionService: StudySessionService = null;
+	private sessionService: StudySessionService | null = null;
 
 	constructor(
 		private readonly route: ActivatedRoute,
@@ -113,11 +113,15 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 	}
 
 	async onAnswer(event: { value: string, field: FlashcardField }) {
-		UIkit.notification.closeAll();
-		this.state = await this.sessionService
-			.submitAnswer(event.value, event.field.identifier.id, this.state);
+		if (!this.sessionService || !this.state) {
+			return;
+		}
 
-		if (this.state.lastAnswer.correct) {
+		SessionViewComponent.clearNotifications();
+		this.state = await this.sessionService.submitAnswer(
+			event.value, event.field.identifier.id, this.state);
+
+		if (this.state.lastAnswer?.correct) {
 			UIkit.notification("Correct", {status: 'success',});
 		} else {
 			UIkit.notification("Incorrect, correct answer was:\n"
@@ -126,11 +130,20 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 	}
 
 	async onForceAcceptAnswer() {
-		UIkit.notification.closeAll();
+		if (!this.sessionService || !this.state) {
+			return;
+		}
+
+		SessionViewComponent.clearNotifications();
 		this.state = await this.sessionService.acceptLastAnswer(this.state);
 		UIkit.notification("Answer accepted", {
 			status: 'warning',
 			timeout: 1000,
 		});
+	}
+
+	private static clearNotifications() {
+		// @ts-ignore
+		UIkit.notification.closeAll();
 	}
 }

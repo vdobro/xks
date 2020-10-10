@@ -60,9 +60,9 @@ describe('DeckListCardComponent', () => {
 	})
 	class TestHostComponent {
 		@ViewChild(DeckListCardComponent)
-		public componentUnderTest;
+		public componentUnderTest : DeckListCardComponent | undefined;
 
-		deck: Deck;
+		deck: Deck | null = null;
 	}
 });
 

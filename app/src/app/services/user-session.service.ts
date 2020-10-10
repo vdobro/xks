@@ -52,12 +52,12 @@ export class UserSessionService {
 	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:"
 
 	private readonly _userLoggedIn = new Subject<boolean>();
-	private readonly _currentUserChanged = new Subject<User>();
+	private readonly _currentUserChanged = new Subject<User | null>();
 
 	readonly userLoggedIn: Subscribable<boolean> = this._userLoggedIn;
-	readonly userChanged: Subscribable<User> = this._currentUserChanged;
+	readonly userChanged: Subscribable<User | null> = this._currentUserChanged;
 
-	private currentUser: User = null;
+	private currentUser: User | null = null;
 
 	constructor(private httpClient: HttpClient) {
 		this.getUser().then(async () => {
@@ -106,7 +106,7 @@ export class UserSessionService {
 			this.httpOptions).toPromise();
 	}
 
-	private updateCurrentUser(user: User) {
+	private updateCurrentUser(user: User | null) {
 		if (user) {
 			UserSessionService.saveUsername(user.name);
 		} else {
@@ -133,7 +133,7 @@ export class UserSessionService {
 		}
 	}
 
-	private async getUser(): Promise<User> {
+	private async getUser(): Promise<User | null> {
 		const username = localStorage.getItem(USERNAME_KEY);
 		if (username) {
 			return await this.httpClient.get<User>(this.infoUrlPrefix + username,

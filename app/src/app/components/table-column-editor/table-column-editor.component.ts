@@ -39,21 +39,22 @@ import {ConfirmDeleteTableColumnModalComponent} from "../confirm-delete-table-co
 export class TableColumnEditorComponent implements OnInit {
 
 	@ViewChild('columnNameInput', {static: true})
-	columnNameInput: ElementRef;
+	columnNameInput: ElementRef | undefined;
+
 	@ViewChild(ConfirmDeleteTableColumnModalComponent)
-	confirmDeleteColumnModal: ConfirmDeleteTableColumnModalComponent;
+	confirmDeleteColumnModal: ConfirmDeleteTableColumnModalComponent | undefined;
 
 	@Input()
-	newColumn: boolean;
+	newColumn: boolean = false;
 	@Input()
-	leftmostInTable: boolean;
+	leftmostInTable: boolean = false;
 	@Input()
-	rightmostInTable: boolean;
+	rightmostInTable: boolean = false;
 
 	@Input()
-	existingColumn: TableColumn = null;
+	existingColumn: TableColumn | null = null;
 	@Input()
-	table: Table;
+	table: Table | null = null;
 
 	@Output()
 	nameChanged = new EventEmitter<TableColumn>();
@@ -62,7 +63,7 @@ export class TableColumnEditorComponent implements OnInit {
 	@Output()
 	editingCancelled = new EventEmitter();
 
-	column: TableColumn;
+	column: TableColumn | null = null;
 	nameInput = new FormControl('');
 
 	constructor(private readonly cellService: TableCellService) {
@@ -73,12 +74,12 @@ export class TableColumnEditorComponent implements OnInit {
 			this.column = this.existingColumn;
 			this.nameInput.setValue(this.column.name);
 		}
-		this.columnNameInput.nativeElement.focus();
+		this.columnNameInput?.nativeElement.focus();
 	}
 
 	async onNameSubmit() {
 		const name = this.nameInput.value.trim();
-		if (name === '') {
+		if (name === '' || !this.table) {
 			return;
 		}
 		if (this.column) {
@@ -90,11 +91,13 @@ export class TableColumnEditorComponent implements OnInit {
 	}
 
 	onColumnDelete() {
-		this.columnDeleted.emit(this.column);
+		if (this.column) {
+			this.columnDeleted.emit(this.column);
+		}
 	}
 
 	confirmDeletion() {
-		this.confirmDeleteColumnModal.openDialog();
+		this.confirmDeleteColumnModal?.openDialog();
 	}
 
 	cancelEditing() {

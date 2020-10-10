@@ -40,9 +40,9 @@ import {DeckRepository} from "../../repositories/deck-repository.service";
 export class DeckListPageComponent implements OnInit {
 
 	@ViewChild(DeckListViewComponent)
-	deckListView: DeckListViewComponent;
+	deckListView: DeckListViewComponent | undefined;
 
-	decks: Deck[];
+	decks: Deck[] = [];
 
 	constructor(private readonly deckService: DeckService,
 				deckRepository: DeckRepository,
@@ -62,7 +62,7 @@ export class DeckListPageComponent implements OnInit {
 	}
 
 	async onNewDeckCreated() {
-		this.deckListView.onNewDeckCreated();
+		this.deckListView?.onNewDeckCreated();
 		await this.reloadDecks();
 	}
 

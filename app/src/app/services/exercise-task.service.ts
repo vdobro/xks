@@ -19,7 +19,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// @ts-ignore
 import {v4 as uuid} from 'uuid';
+
 import {Injectable} from '@angular/core';
 import {TableCellService} from "./table-cell.service";
 import {Table} from "../models/Table";
@@ -109,11 +111,11 @@ export class ExerciseTaskService {
 	logInAnswer(answerValue: string,
 				fieldId: string,
 				task: ExerciseTask,
-				lastAnswerFieldId: string): AnswerFeedback {
+				lastAnswerFieldId: string | null): AnswerFeedback {
 		if (!this.taskStateExists(task)) {
 			this.registerTask(task);
 		}
-		const currentState = this.taskStates.get(task.id);
+		const currentState = this.getState(task);
 		const field = this.determineFieldToCheck(answerValue, fieldId, task, lastAnswerFieldId);
 		const expectedAnswer = field.value;
 		const answerCorrect = answerValue === expectedAnswer;
@@ -126,8 +128,8 @@ export class ExerciseTaskService {
 	}
 
 	forceAcceptAnswer(fieldId: string, task: ExerciseTask): AnswerFeedback {
-		const currentState = this.taskStates.get(task.id);
-		const field = task.answers.find(field => field.identifier.id === fieldId);
+		const currentState = this.getState(task);
+		const field = task.answers.find(field => field.identifier.id === fieldId)!!;
 
 		ExerciseTaskService.revertTaskState(currentState, field);
 
@@ -148,23 +150,27 @@ export class ExerciseTaskService {
 		if (!this.taskStateExists(task)) {
 			this.registerTask(task);
 		}
-		return this.taskStates.get(task.id).score.value;
+		return this.getState(task).score.value;
 	}
 
 	isComplete(task: ExerciseTask): boolean {
 		return this.getCurrentScore(task) >= task.maxScore;
 	}
 
+	private getState(task: ExerciseTask) : TaskState {
+		return this.taskStates.get(task.id)!!;
+	}
+
 	private determineFieldToCheck(answerValue: string,
 								  fieldId: string,
 								  task: ExerciseTask,
-								  lastAnswerFieldId: string) {
+								  lastAnswerFieldId: string | null) : FlashcardField{
 		if (task.ignoreAnswerOrder && task.pendingAnswers.length > 0) {
 			return this.getFieldWithClosestValue(answerValue, task.pendingAnswers);
 		} else if (!task.ignoreAnswerOrder) {
-			return task.answers.find(field => field.identifier.id === fieldId);
+			return task.answers.find(field => field.identifier.id === fieldId)!!;
 		} else {
-			return task.answers.find(field => field.identifier.id === lastAnswerFieldId);
+			return task.answers.find(field => field.identifier.id === lastAnswerFieldId)!!;
 		}
 	}
 
@@ -184,7 +190,7 @@ export class ExerciseTaskService {
 		const columnId = field.identifier.id;
 		if (answerCorrect) {
 			const subscores = currentState.columnSubscores;
-			const subscore = subscores.get(columnId);
+			const subscore = subscores.get(columnId)!!;
 			const globalMaxScore = maximumScoreAllowed;
 			const localMaxScore = currentState.score.value + 2;
 			if (subscore.value < globalMaxScore && subscore.value < localMaxScore) {
@@ -208,7 +214,7 @@ export class ExerciseTaskService {
 		const subscores = new Map<string, TaskScore>();
 		const startScore: TaskScore = {
 			value: task.startingScore,
-			previous: undefined,
+			previous: null,
 		};
 		for (let answerField of task.answers) {
 			subscores.set(answerField.identifier.id, startScore);
@@ -222,12 +228,15 @@ export class ExerciseTaskService {
 	private static revertTaskState(state: TaskState, field: FlashcardField) {
 		const subscores = state.columnSubscores;
 		const columnId = field.identifier.id;
-		const subscore = subscores.get(columnId);
+		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.revertScoreIfLess(subscore));
 		state.score = this.revertScoreIfLess(state.score);
 	}
 
 	private static revertScoreIfLess(score: TaskScore) {
+		if (!score.previous) {
+			return score;
+		}
 		if (score.value < score.previous.value) {
 			score.value = score.previous.value;
 			score.previous = score.previous.previous;
@@ -245,13 +254,13 @@ export class ExerciseTaskService {
 
 	private static incrementSubscore(state: TaskState, columnId: string) {
 		const subscores = state.columnSubscores;
-		const subscore = subscores.get(columnId);
+		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.incrementScore(subscore));
 	}
 
 	private static changeSubscore(state: TaskState, columnId: string, value: number) {
 		const subscores = state.columnSubscores;
-		const subscore = subscores.get(columnId);
+		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.changeScore(subscore, value));
 	}
 
@@ -269,7 +278,7 @@ export class ExerciseTaskService {
 	private static mapColumnToFlashcardField(row: TableRow, column: TableColumn): FlashcardField {
 		return {
 			identifier: column,
-			value: row.values.get(column.id),
+			value: row.values.get(column.id)!!,
 		};
 	}
 
@@ -326,7 +335,7 @@ interface TaskState {
 
 interface TaskScore {
 	value: number,
-	previous: TaskScore,
+	previous: TaskScore | null,
 }
 
 interface EdgeWithDestinationNode {

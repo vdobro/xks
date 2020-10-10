@@ -49,18 +49,18 @@ import {GraphEdge} from "../../models/GraphEdge";
 export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 
 	@ViewChild('edgeLabelInputElement')
-	edgeLabelInputElement: ElementRef;
+	edgeLabelInputElement: ElementRef | undefined;
 	@ViewChild('nodeLabelInputElement')
-	nodeLabelInputElement: ElementRef;
+	nodeLabelInputElement: ElementRef | undefined;
 
 	@Input()
-	graph: Graph;
+	graph: Graph | undefined;
 	@Input()
-	selectedNode: GraphNode;
+	selectedNode: GraphNode | undefined;
 	@Input()
-	selectedEdge: GraphEdge;
+	selectedEdge: GraphEdge | undefined;
 	@Input()
-	shouldAppend: boolean;
+	shouldAppend: boolean = false;
 
 	@Output()
 	editingAborted = new EventEmitter();
@@ -117,7 +117,7 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	private async appendNewNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
 		const edgeLabel = this.edgeLabelInput.value?.trim();
-		if (!nodeLabel) {
+		if (!nodeLabel || !this.graph || !this.selectedNode) {
 			return;
 		}
 		const newNode = await this.elementService.addNode(this.graph, nodeLabel);
@@ -125,13 +125,16 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	}
 
 	private async renameEdge() {
+		if (!this.selectedEdge) {
+			return;
+		}
 		this.selectedEdge.name = this.edgeLabelInput.value.trim();
 		await this.elementService.updateEdge(this.selectedEdge);
 	}
 
 	private async renameNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
-		if (!nodeLabel) {
+		if (!nodeLabel || !this.selectedNode) {
 			return;
 		}
 		this.selectedNode.value = nodeLabel;
@@ -140,7 +143,7 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 
 	private async createNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
-		if (!nodeLabel) {
+		if (!nodeLabel || !this.graph) {
 			return;
 		}
 		await this.elementService.addNode(this.graph, nodeLabel);

@@ -40,10 +40,10 @@ export class TableNewRowEditorComponent implements OnInit {
 	@Input()
 	columns: TableColumn[] = [];
 	@Input()
-	table: Table;
+	table: Table | null = null;
 
 	@Output()
-	rowInEditing: TableRow;
+	rowInEditing: TableRow | null = null;
 	@Output()
 	newColumnIndex: number = 0;
 	@Output()
@@ -66,7 +66,7 @@ export class TableNewRowEditorComponent implements OnInit {
 
 		if (this.newColumnIndex === this.columns.length - 1) {
 			this.newColumnIndex = 0;
-			this.newRow.next(this.rowInEditing);
+			this.newRow.next(this.rowInEditing!!);
 			this.rowInEditing = null;
 		} else {
 			this.newColumnIndex++;
@@ -74,11 +74,11 @@ export class TableNewRowEditorComponent implements OnInit {
 	}
 
 	async initNewRow() {
-		this.rowInEditing = await this.cellService.createRow(this.table);
+		this.rowInEditing = await this.cellService.createRow(this.table!!);
 	}
 
 	async updateRow(cellValue: string, column: TableColumn) {
 		this.rowInEditing = await this.cellService.changeCellValue(cellValue,
-			this.rowInEditing, column);
+			this.rowInEditing!!, column);
 	}
 }

@@ -29,6 +29,7 @@ import {TableSessionModeService} from "../../services/table-session-mode.service
 import {SessionModeChooserComponent} from "../session-mode-chooser/session-mode-chooser.component";
 import {FormControl} from "@angular/forms";
 import {TableService} from "../../services/table.service";
+import {TableSessionModeRepository} from "../../repositories/table-session-mode-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -42,20 +43,20 @@ import {TableService} from "../../services/table.service";
 export class SessionSetupModalComponent implements OnInit, OnChanges {
 
 	@ViewChild("setupSessionModal")
-	modal: ElementRef;
+	modal: ElementRef | undefined;
 
 	@ViewChild(TableSessionModeWizardComponent)
-	sessionModeWizard: TableSessionModeWizardComponent;
+	sessionModeWizard: TableSessionModeWizardComponent | undefined;
 
 	@ViewChild(SessionModeChooserComponent)
-	sessionModeChooser: SessionModeChooserComponent;
+	sessionModeChooser: SessionModeChooserComponent | undefined;
 
 	@Input()
-	table: Table;
+	table: Table | null = null;
 
 	anySessionModesAvailable: boolean = false;
 	startSessionEnabled: boolean = false;
-	useExisting: boolean = true;
+	useExisting: boolean = false;
 
 	startingScore: number = 3;
 	maxScore: number = 8;
@@ -67,19 +68,19 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	constructor(
 		private readonly navigationService: NavigationService,
 		private readonly tableService: TableService,
-		private readonly sessionModeService: TableSessionModeService) {
+		private readonly sessionModeService: TableSessionModeService,
+		sessionModeRepository: TableSessionModeRepository) {
+
+		sessionModeRepository.entityDeleted.subscribe(async _ => {
+			await this.checkIfSessionModesExist();
+		})
 	}
 
 	ngOnInit(): void {
 	}
 
 	async ngOnChanges(changes: SimpleChanges): Promise<void> {
-		if (this.table) {
-			this.maximumScoreRange.setValue(this.table.defaultMaxScore);
-			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.table);
-		} else {
-			this.anySessionModesAvailable = false;
-		}
+		await this.checkIfSessionModesExist();
 		this.validateConfiguration();
 	}
 
@@ -90,12 +91,16 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 
 		const modeId = await this.getSessionModeId();
 
-		await this.saveDefaultTableOptions(modeId);
-
-		await this.navigationService.studyTable(this.table.id, modeId);
+		if (modeId) {
+			await this.saveDefaultTableOptions(modeId);
+			await this.navigationService.studyTable(this.table.id, modeId);
+		}
 	}
 
 	openDialog(): void {
+		if (!this.modal || !this.table) {
+			return;
+		}
 		UIkit.modal(this.modal.nativeElement).show();
 
 		this.startingScore = this.table.defaultStartingScore;
@@ -104,7 +109,19 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		this.validateConfiguration();
 	}
 
+	private async checkIfSessionModesExist() {
+		if (this.table) {
+			this.maximumScoreRange.setValue(this.table.defaultMaxScore);
+			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.table);
+		} else {
+			this.anySessionModesAvailable = false;
+		}
+	}
+
 	private async saveDefaultTableOptions(modeId: string) {
+		if (!this.table) {
+			return;
+		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
 			const mode = await this.sessionModeService.getById(modeId);
 			await this.sessionModeService.setAsDefault(mode);
@@ -114,11 +131,11 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private async getSessionModeId(): Promise<string> {
+	private async getSessionModeId(): Promise<string | null> {
 		if (this.useExisting) {
-			return this.sessionModeChooser.currentSelection?.id;
+			return this.sessionModeChooser?.currentSelection?.id || null;
 		} else {
-			const mode = await this.sessionModeWizard.createSessionMode();
+			const mode = await this.sessionModeWizard!!.createSessionMode();
 			return mode.id;
 		}
 	}

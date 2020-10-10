@@ -64,10 +64,7 @@ export class GraphService {
 			return false;
 		}
 		const edges = await this.elementService.getEdges(graph);
-		if (edges.length === 0) {
-			return false;
-		}
-		return true;
+		return edges.length !== 0;
 	}
 
 	async create(deck: Deck, name: string) {

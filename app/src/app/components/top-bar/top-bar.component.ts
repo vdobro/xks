@@ -40,10 +40,10 @@ import {LoginModalComponent} from "../login-modal/login-modal.component";
 export class TopBarComponent implements OnInit, OnDestroy {
 
 	@ViewChild(NavBarItemsDirective, {static: true})
-	navBarItems: NavBarItemsDirective;
+	navBarItems: NavBarItemsDirective | undefined;
 
 	@ViewChild(LoginModalComponent, {static: true})
-	loginModal: LoginModalComponent;
+	loginModal: LoginModalComponent | undefined;
 
 	active: boolean = true;
 
@@ -91,11 +91,17 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	}
 
 	openLoginDialog() {
+		if (!this.loginModal) {
+			return;
+		}
 		this.loginModal.existingUser = true;
 		this.loginModal.openDialog();
 	}
 
 	openRegisterDialog() {
+		if (!this.loginModal) {
+			return;
+		}
 		this.loginModal.existingUser = false;
 		this.loginModal.openDialog();
 	}
@@ -113,7 +119,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	}
 
 	private updateItemsList(items: NavBarItem[]) {
-		const viewContainerRef = this.navBarItems.viewContainerRef;
+		const viewContainerRef = this.navBarItems!!.viewContainerRef;
 		viewContainerRef.clear();
 
 		for (const item of items) {
