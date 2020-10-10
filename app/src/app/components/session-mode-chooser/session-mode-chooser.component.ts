@@ -79,7 +79,10 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 	}
 
 	async changeSelection() {
-		const id = this.modeSelectElement?.nativeElement?.value || this.table?.defaultSessionModeId;
+		let id = this.modeSelectElement?.nativeElement?.value || this.table?.defaultSessionModeId;
+		if (!id && this.table?.sessionModeIds?.length) {
+			id = this.table.sessionModeIds[0];
+		}
 		if (id) {
 			this.currentSelection = await this.mapModeToOption(await this.sessionModeService.getById(id));
 		}

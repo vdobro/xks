@@ -94,13 +94,15 @@ export class TableService {
 	}
 
 	public async setDefaultStartingScore(table: Table, score: number) : Promise<void> {
-		table.defaultStartingScore = score;
-		await this.update(table);
+		const existingTable = await this.getById(table.id);
+		existingTable.defaultStartingScore = score;
+		await this.update(existingTable);
 	}
 
 	public async setDefaultMaximumScore(table: Table, score: number) : Promise<void> {
-		table.defaultMaxScore = score;
-		await this.update(table);
+		const existingTable = await this.getById(table.id);
+		existingTable.defaultMaxScore = score;
+		await this.update(existingTable);
 	}
 
 	public async update(table: Table) : Promise<void> {

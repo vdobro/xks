@@ -56,7 +56,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 
 	anySessionModesAvailable: boolean = false;
 	startSessionEnabled: boolean = false;
-	useExisting: boolean = false;
+	useExisting: boolean = true;
 
 	startingScore: number = 3;
 	maxScore: number = 8;
@@ -113,6 +113,9 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (this.table) {
 			this.maximumScoreRange.setValue(this.table.defaultMaxScore);
 			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.table);
+			if (!this.anySessionModesAvailable) {
+				this.useExisting = false;
+			}
 		} else {
 			this.anySessionModesAvailable = false;
 		}
