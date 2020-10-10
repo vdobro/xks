@@ -5,7 +5,7 @@
 				   [ngClass]="{'uk-form-danger': !lastAnswerAccepted, 'uk-animation-shake': !lastAnswerAccepted}"
 				   class="uk-input"
 				   type="text"
-				   [placeholder]="answerField?.identifier.name || indexNumber"
+				   [placeholder]="answerField?.identifier?.name || indexNumber"
 				   [formControl]="answerInput">
 		</label>
 	</div>

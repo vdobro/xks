@@ -54,11 +54,11 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	nodeLabelInputElement: ElementRef | undefined;
 
 	@Input()
-	graph: Graph | undefined;
+	graph: Graph | null = null;
 	@Input()
-	selectedNode: GraphNode | undefined;
+	selectedNode: GraphNode | null = null;
 	@Input()
-	selectedEdge: GraphEdge | undefined;
+	selectedEdge: GraphEdge | null = null;
 	@Input()
 	shouldAppend: boolean = false;
 

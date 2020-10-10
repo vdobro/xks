@@ -4,7 +4,7 @@
 			(change)="changeSelection()">
 		<option *ngFor="let mode of sessionModes"
 				value="{{mode.id}}"
-				[selected]="table.defaultSessionModeId === mode.id ? 'selected' : null">
+				[selected]="table?.defaultSessionModeId === mode.id ? 'selected' : null">
 			{{mode.name}}
 		</option>
 	</select>

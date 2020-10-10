@@ -16,7 +16,7 @@
 	<a *ngIf="!newColumn"
 	   class="uk-margin-small-left uk-icon uk-animation-fade uk-animation-fast"
 	   uk-icon="trash"
-	   (click)="confirmDeleteColumnModal.openDialog();$event.preventDefault();$event.stopPropagation();">
+	   (click)="confirmDeleteColumnModal?.openDialog();$event.preventDefault();$event.stopPropagation();">
 	</a>
 </form>
 <confirm-delete-table-column-modal [column]="column" (confirmed)="onColumnDelete()">
