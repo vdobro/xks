@@ -25,6 +25,7 @@ import {Table} from "../models/Table";
 import {BaseDataEntity} from "./BaseRepository";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
+import {DeckElement} from "../models/DeckElement";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -101,11 +102,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 	}
 }
 
-interface TableDataEntity extends BaseDataEntity {
-	deckId: string;
-	name: string;
+interface TableDataEntity extends BaseDataEntity, DeckElement {
 	sessionModes: string[],
 	defaultSessionMode: string | null,
-	defaultMaxScore: number,
-	defaultStartingScore: number,
 }

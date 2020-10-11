@@ -71,7 +71,9 @@ export class GraphService {
 		await this.repository.add({
 			deckId: deck.id,
 			id: uuid(),
-			name: name
+			name: name,
+			defaultMaxScore: 5,
+			defaultStartingScore: 3
 		});
 		this._graphsChanged.next(deck);
 	}

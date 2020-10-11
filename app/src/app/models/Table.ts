@@ -19,18 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {DeckElement} from "./DeckElement";
 import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.04.03
  */
-export interface Table extends BaseEntity {
-	deckId: string,
-	name: string,
+export interface Table extends DeckElement, BaseEntity {
 	sessionModeIds: string[]
 	defaultSessionModeId: string | null,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
 }
 

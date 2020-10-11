@@ -46,8 +46,6 @@ export class ExerciseTaskService {
 	private readonly taskStates = new Map<string, TaskState>();
 
 	private readonly defaultMinimumScore = 0;
-	private readonly defaultStartingScore = 3;
-	private readonly defaultMaximumScore = 8;
 
 	constructor(
 		private readonly tableCellService: TableCellService,
@@ -71,8 +69,8 @@ export class ExerciseTaskService {
 				answers: answerFields,
 				pendingAnswers: answerFields,
 				doneAnswers: [],
-				startingScore: table.defaultStartingScore || this.defaultStartingScore,
-				maxScore: table.defaultMaxScore || this.defaultMaximumScore,
+				startingScore: table.defaultStartingScore,
+				maxScore: table.defaultMaxScore,
 			};
 		});
 	}
@@ -100,8 +98,8 @@ export class ExerciseTaskService {
 					pendingAnswers: answerFields,
 					questions: [ExerciseTaskService.mapNodeToFlashcardField(node)],
 					doneAnswers: [],
-					startingScore: this.defaultStartingScore,
-					maxScore: this.defaultMaximumScore,
+					startingScore: graph.defaultStartingScore,
+					maxScore: graph.defaultMaxScore,
 				});
 			}
 		}

@@ -19,12 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
+import {TestBed} from '@angular/core/testing';
+
+import {DeckElementService} from './deck-element.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2020.10.11
  */
-export interface Graph extends DeckElement, BaseEntity {
-}
+describe('DeckElementService', () => {
+	let service: DeckElementService;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(DeckElementService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

@@ -19,12 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {SessionScoreSettingsComponent} from './session-score-settings.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2020.10.11
  */
-export interface Graph extends DeckElement, BaseEntity {
-}
+describe('SessionScoreSettingsComponent', () => {
+	let component: SessionScoreSettingsComponent;
+	let fixture: ComponentFixture<SessionScoreSettingsComponent>;
+
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [SessionScoreSettingsComponent]
+		}).compileComponents();
+	});
+
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SessionScoreSettingsComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

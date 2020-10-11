@@ -1,37 +1,16 @@
 <div #setupSessionModal id="setup-session-modal" uk-modal>
-	<div *ngIf="table"
-		 class="uk-modal-dialog">
+	<div class="uk-modal-dialog uk-animation-fade uk-animation-fast">
 		<div class="uk-modal-header">
-			<h2 class="uk-modal-title">Flashcard setup</h2>
+			<h2 class="uk-modal-title">Study setup</h2>
 		</div>
-		<div class="uk-modal-body">
-			<form uk-grid>
-				<div class="uk-width-1-2@m">
-					<label for="starting-score-input">Starting score: {{startingScore}}</label>
-					<input id="starting-score-input"
-						   class="uk-range"
-						   type="range"
-						   [formControl]="startingScoreRange"
-						   (change)="onStartScoreChanged()"
-						   min="0" [max]="maxScore - 1"
-						   step="1">
-				</div>
-				<div class="uk-width-1-2@m">
-					<label for="maximum-score-input">Score to complete: {{maxScore}}</label>
-					<input id="maximum-score-input"
-						   class="uk-range"
-						   type="range"
-						   [formControl]="maximumScoreRange"
-						   (change)="onMaxScoreChanged()"
-						   [min]="startingScore + 1" max="10"
-						   step="1">
-				</div>
-			</form>
-			<div class="uk-margin-medium" *ngIf="anySessionModesAvailable">
+		<div class="uk-modal-body" *ngIf="table">
+			<app-session-score-settings [deckElement]="table"></app-session-score-settings>
+			<h3 class="uk-heading-bullet">Flashcards</h3>
+			<div class="uk-margin-small" *ngIf="anySessionModesAvailable">
 				<ul uk-switcher
 					class="uk-subnav uk-subnav-pill">
-					<li><a href="#" (click)="this.useExisting = true; this.validateConfiguration();">Recently used</a></li>
-					<li><a href="#" (click)="this.useExisting = false; this.validateConfiguration();">Custom</a></li>
+					<li><a href="#" (click)="this.useExisting = true; this.validateConfiguration();">Quick setup</a></li>
+					<li><a href="#" (click)="this.useExisting = false; this.validateConfiguration();">Advanced</a></li>
 				</ul>
 				<ul class="uk-switcher">
 					<li>
@@ -44,7 +23,7 @@
 									<input class="uk-checkbox"
 										   type="checkbox"
 										   [formControl]="defaultSessionCheckbox">
-									Set as default
+									Set as default configuration
 								</label>
 							</div>
 						</form>
@@ -56,7 +35,7 @@
 									<input class="uk-checkbox"
 										   type="checkbox"
 										   [formControl]="defaultSessionCheckbox">
-									Set as default
+									Set as default configuration
 								</label>
 							</div>
 						</form>
@@ -69,6 +48,19 @@
 			<app-table-session-mode-wizard *ngIf="!anySessionModesAvailable"
 										   [table]="table"
 										   (configurationChanged)="validateConfiguration()"></app-table-session-mode-wizard>
+		</div>
+		<div class="uk-modal-body" *ngIf="graph">
+			<app-session-score-settings [deckElement]="graph"></app-session-score-settings>
+			<form class="uk-margin">
+				<div class="uk-grid-small uk-child-width-auto uk-grid">
+					<label>
+						<input class="uk-checkbox"
+							   type="checkbox"
+							   [formControl]="defaultSessionCheckbox">
+						Save configuration as default
+					</label>
+				</div>
+			</form>
 		</div>
 		<div class="uk-modal-footer uk-text-right">
 			<button (click)="startSession()"

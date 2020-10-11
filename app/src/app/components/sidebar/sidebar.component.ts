@@ -52,7 +52,7 @@ export class SidebarComponent implements OnInit {
 	confirmDeleteDeckModal: ConfirmDeleteElementModalComponent | undefined;
 
 	@ViewChild(SessionSetupModalComponent)
-	setupTableSessionModal: SessionSetupModalComponent | undefined;
+	setupSessionModal: SessionSetupModalComponent | undefined;
 
 	deck: Deck | null = null;
 
@@ -149,10 +149,10 @@ export class SidebarComponent implements OnInit {
 
 	async studyCurrent() {
 		if (this.tableSelected) {
-			this.setupTableSessionModal?.openDialog();
+			this.setupSessionModal?.openDialog();
 		} else if (this.graphSelected) {
 			if (await this.graphService.anyNodesAndEdgesExist(this.selectedGraph!!)) {
-				await this.navigationService.studyGraph(this.selectedGraph!!.id);
+				this.setupSessionModal?.openDialog();
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
 			}
