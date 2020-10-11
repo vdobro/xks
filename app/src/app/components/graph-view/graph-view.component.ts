@@ -80,10 +80,10 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 	};
 
 	selectedEdge: GraphEdge | null = null;
-	selectedNode: GraphNode | null= null;
+	selectedNode: GraphNode | null = null;
 	selectedSourceNode: GraphNode | null = null;
 
-	editMode : boolean = false;
+	editMode: boolean = false;
 
 	private rootContainerWidth: number = 0;
 

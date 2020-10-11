@@ -38,8 +38,8 @@ export class TopBarService {
 	private readonly _backButtonLabel$ = new Subject<string>();
 
 	readonly allItems: Subscribable<NavBarItem[]> = this._items$;
-	readonly backNavigationEnabled : Subscribable<boolean> = this._backNavigationEnabled$;
-	readonly backButtonLabel : Subscribable<string> = this._backButtonLabel$;
+	readonly backNavigationEnabled: Subscribable<boolean> = this._backNavigationEnabled$;
+	readonly backButtonLabel: Subscribable<string> = this._backButtonLabel$;
 
 	constructor() {
 	}

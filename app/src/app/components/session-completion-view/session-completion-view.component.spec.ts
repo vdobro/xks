@@ -33,7 +33,7 @@ describe('SessionCompletionViewComponent', () => {
 	let component: SessionCompletionViewComponent;
 	let fixture: ComponentFixture<SessionCompletionViewComponent>;
 
-	beforeEach(async() => {
+	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule, RouterTestingModule],
 			declarations: [SessionCompletionViewComponent]

@@ -1,8 +1,10 @@
 <div class="uk-card uk-card-default uk-card-body">
-	<h4 class="uk-card-title">Question:</h4>
-	<p *ngFor="let question of task?.questions">
-		{{question.identifier.name}}
-		<span *ngIf="question.identifier.name.length > 0" uk-icon="icon: arrow-right"></span>
-		{{question.value}}
-	</p>
+	<div *ngFor="let question of task?.questions; index as i">
+		<p class="uk-heading-bullet uk-text-meta">
+			{{question.identifier.name}}:
+		</p>
+		<p class="uk-text-lead" [ngClass]="{'uk-margin-remove-bottom': i === task.questions.length - 1}">
+			{{question.value}}
+		</p>
+	</div>
 </div>

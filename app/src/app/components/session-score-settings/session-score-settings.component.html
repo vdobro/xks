@@ -4,7 +4,7 @@
 </h3>
 <form uk-grid>
 	<div class="uk-width-1-2@m">
-		<label for="starting-score-input">Starting score: {{startingScore}}</label>
+		<label for="starting-score-input">Initial score: {{startingScore}}</label>
 		<input id="starting-score-input"
 			   class="uk-range"
 			   type="range"
@@ -23,9 +23,14 @@
 			   [min]="startingScore + 1" max="10"
 			   step="1">
 	</div>
+	<label class="uk-margin-small">
+		<input class="uk-checkbox"
+			   type="checkbox"
+			   [formControl]="saveSettingsCheckbox">
+		Save difficulty settings
+	</label>
 </form>
-<div id="session-difficulty-tutorial-modal"
-	 uk-modal>
+<div id="session-difficulty-tutorial-modal" uk-modal>
 	<div class="uk-modal-dialog uk-animation-fade uk-animation-fast">
 		<div class="uk-modal-header">
 			<h2 class="uk-modal-title">Tutorial: Difficulty settings</h2>

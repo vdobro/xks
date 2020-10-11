@@ -22,14 +22,13 @@
 import UIkit from 'uikit';
 
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {TABLE_ID_PARAM} from "../table-view/table-view.component";
 import {TableService} from "../../services/table.service";
 import {TableSessionModeService} from "../../services/table-session-mode.service";
 import {Table} from "../../models/Table";
 import {TableSessionMode} from "../../models/TableSessionMode";
 import {TableSessionService} from "../../services/table-session.service";
-import {TableColumn} from "../../models/TableColumn";
 import {SidebarService} from "../../services/sidebar.service";
 import {TopBarService} from "../../services/top-bar.service";
 import {NavBarItem} from "../nav-bar-item";
@@ -40,8 +39,12 @@ import {GraphSessionService} from "../../services/graph-session.service";
 import {GRAPH_ID_PARAM} from "../graph-view/graph-view.component";
 import {GraphService} from "../../services/graph.service";
 import {FlashcardField} from "../../services/exercise-task.service";
+import {NavigationService} from "../../services/navigation.service";
+import {DeckElement} from "../../models/DeckElement";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
+export const SESSION_START_SCORE_PARAM = "initial-score";
+export const SESSION_MAX_SCORE_PARAM = "maximum-score";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,12 +58,16 @@ export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 export class SessionViewComponent implements OnInit, OnDestroy {
 
 	state: LearningSessionState | null = null;
-	answerFields: TableColumn[] = [];
 
 	private table: Table | null = null;
 	private sessionMode: TableSessionMode | null = null;
 
-	graph: Graph | null = null;
+	private graph: Graph | null = null;
+
+	private deckElement: DeckElement | null = null;
+
+	private startScore: number = 0;
+	private maxScore: number = 8;
 
 	private sessionService: StudySessionService | null = null;
 
@@ -73,19 +80,28 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		private readonly graphSessionService: GraphSessionService,
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService,
+		private readonly navigationService: NavigationService
 	) {
 		this.route.paramMap.subscribe(async params => {
 			const tableId = params.get(TABLE_ID_PARAM);
 			const tableSessionModeId = params.get(TABLE_SESSION_MODE_ID_PARAM);
 			const graphId = params.get(GRAPH_ID_PARAM);
+
 			if (tableId && tableSessionModeId) {
 				this.table = await this.tableService.getById(tableId);
+				this.deckElement = this.table;
 				this.sessionMode = await this.sessionModeService.getById(tableSessionModeId);
 				this.sessionService = this.tableSessionService;
 			} else if (graphId) {
 				this.graph = await this.graphService.getById(graphId);
+				this.deckElement = this.graph;
 				this.sessionService = this.graphSessionService;
+			} else {
+				await this.navigationService.goBack();
+				return;
 			}
+			this.loadScores(params);
+
 			await this.initSession();
 		});
 	}
@@ -99,11 +115,22 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		this.graphSessionService.cleanup();
 	}
 
+	private loadScores(params: ParamMap) {
+		const startScoreParam = params.get(SESSION_START_SCORE_PARAM);
+		const maxScoreParam = params.get(SESSION_MAX_SCORE_PARAM);
+		this.startScore = startScoreParam ? parseInt(startScoreParam)
+			: this.deckElement!!.defaultStartingScore;
+		this.maxScore = maxScoreParam ? parseInt(maxScoreParam)
+			: this.deckElement!!.defaultMaxScore;
+	}
+
 	private async initSession() {
 		if (this.table && this.sessionMode) {
-			this.state = await this.tableSessionService.startNew(this.table, this.sessionMode);
+			this.state = await this.tableSessionService.startNew(this.table, this.sessionMode,
+				this.startScore, this.maxScore);
 		} else if (this.graph) {
-			this.state = await this.graphSessionService.startNew(this.graph);
+			this.state = await this.graphSessionService.startNew(this.graph,
+				this.startScore, this.maxScore);
 		}
 
 		this.sidebarService.hide();
@@ -146,4 +173,9 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		// @ts-ignore
 		UIkit.notification.closeAll();
 	}
+}
+
+export interface ScoreParams {
+	"initial-score": number,
+	"maximum-score": number,
 }

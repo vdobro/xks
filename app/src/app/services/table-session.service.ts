@@ -41,12 +41,15 @@ export class TableSessionService extends StudySessionService {
 		super(taskService);
 	}
 
-	async startNew(table: Table, sessionMode: TableSessionMode): Promise<LearningSessionState> {
+	async startNew(table: Table, sessionMode: TableSessionMode,
+				   startScore: number, maxScore: number): Promise<LearningSessionState> {
 		const questionColumns = await Promise.all(sessionMode.questionColumnIds
 			.map(async id => await this.columnRepository.getById(id)));
 		const answerColumns = await Promise.all(sessionMode.answerColumnIds
 			.map(async id => await this.columnRepository.getById(id)));
-		const allTasks = await this.taskService.getTableTaskList(table, questionColumns, answerColumns);
+		const allTasks = await this.taskService.getTableTaskList(table,
+			questionColumns, answerColumns,
+			startScore, maxScore);
 		return this.createSessionFromTasks(allTasks);
 	}
 }

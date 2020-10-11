@@ -40,7 +40,7 @@ export class NewDeckModalComponent implements OnInit {
 	modal: ElementRef | undefined;
 
 	@ViewChild("deckNameInput", {static: true})
-	nameInputElement: ElementRef| undefined;
+	nameInputElement: ElementRef | undefined;
 
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');

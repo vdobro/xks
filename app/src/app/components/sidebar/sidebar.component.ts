@@ -104,7 +104,7 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private onActiveGraphChanged(graph: Graph| null) {
+	private onActiveGraphChanged(graph: Graph | null) {
 		if (this.selectedGraph?.id === graph?.id) {
 			return;
 		}
@@ -114,7 +114,7 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private async onActiveDeckChanged(deck: Deck | null) : Promise<void> {
+	private async onActiveDeckChanged(deck: Deck | null): Promise<void> {
 		if (this.deck?.id === deck?.id) {
 			return;
 		}

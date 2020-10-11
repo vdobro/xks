@@ -55,7 +55,9 @@ export class ExerciseTaskService {
 
 	async getTableTaskList(table: Table,
 						   questionColumns: TableColumn[],
-						   answerColumns: TableColumn[]): Promise<ExerciseTask[]> {
+						   answerColumns: TableColumn[],
+						   startScore: number,
+						   maxScore: number): Promise<ExerciseTask[]> {
 		const rows = await this.tableCellService.getRows(table);
 		return rows.map(row => {
 			const answerFields = answerColumns.map(column =>
@@ -69,18 +71,20 @@ export class ExerciseTaskService {
 				answers: answerFields,
 				pendingAnswers: answerFields,
 				doneAnswers: [],
-				startingScore: table.defaultStartingScore,
-				maxScore: table.defaultMaxScore,
+				startingScore: startScore,
+				maxScore: maxScore,
 			};
 		});
 	}
 
-	async getGraphTaskList(graph: Graph): Promise<ExerciseTask[]> {
+	async getGraphTaskList(graph: Graph,
+						   startScore: number,
+						   maxScore: number): Promise<ExerciseTask[]> {
 		const nodes = await this.graphElementService.getNodes(graph);
 		const exercises: ExerciseTask[] = [];
 		for (let node of nodes) {
 			const edges = await this.graphEdgeRepository.getAllFrom(node);
-			const transitions : EdgeWithDestinationNode[] = [];
+			const transitions: EdgeWithDestinationNode[] = [];
 			for (let edge of edges) {
 				const targetNode = await this.graphElementService.getNodeById(edge.targetNodeId);
 				transitions.push({
@@ -98,8 +102,8 @@ export class ExerciseTaskService {
 					pendingAnswers: answerFields,
 					questions: [ExerciseTaskService.mapNodeToFlashcardField(node)],
 					doneAnswers: [],
-					startingScore: graph.defaultStartingScore,
-					maxScore: graph.defaultMaxScore,
+					startingScore: startScore,
+					maxScore: maxScore,
 				});
 			}
 		}
@@ -131,7 +135,7 @@ export class ExerciseTaskService {
 
 		ExerciseTaskService.revertTaskState(currentState, field);
 
-		this.updateScore(currentState, task.maxScore,true, field);
+		this.updateScore(currentState, task.maxScore, true, field);
 		this.taskStates.set(task.id, currentState);
 
 		return {
@@ -155,14 +159,14 @@ export class ExerciseTaskService {
 		return this.getCurrentScore(task) >= task.maxScore;
 	}
 
-	private getState(task: ExerciseTask) : TaskState {
+	private getState(task: ExerciseTask): TaskState {
 		return this.taskStates.get(task.id)!!;
 	}
 
 	private determineFieldToCheck(answerValue: string,
 								  fieldId: string,
 								  task: ExerciseTask,
-								  lastAnswerFieldId: string | null) : FlashcardField{
+								  lastAnswerFieldId: string | null): FlashcardField {
 		if (task.ignoreAnswerOrder && task.pendingAnswers.length > 0) {
 			return this.getFieldWithClosestValue(answerValue, task.pendingAnswers);
 		} else if (!task.ignoreAnswerOrder) {
@@ -290,7 +294,7 @@ export class ExerciseTaskService {
 		};
 	}
 
-	private static mapNodeToFlashcardField(node: GraphNode) : FlashcardField {
+	private static mapNodeToFlashcardField(node: GraphNode): FlashcardField {
 		return {
 			identifier: {
 				id: node.id,

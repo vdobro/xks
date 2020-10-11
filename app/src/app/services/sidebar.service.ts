@@ -37,12 +37,12 @@ import {Graph} from "../models/Graph";
 export class SidebarService {
 
 	private readonly _activeDeck$ = new Subject<Deck | null>();
-	private readonly _activeTable$ = new Subject<Table| null>();
-	private readonly _activeGraph$ = new Subject<Graph| null>();
+	private readonly _activeTable$ = new Subject<Table | null>();
+	private readonly _activeGraph$ = new Subject<Graph | null>();
 
 	readonly activeDeck: Subscribable<Deck | null> = this._activeDeck$;
-	readonly activeTable: Subscribable<Table| null> = this._activeTable$;
-	readonly activeGraph: Subscribable<Graph| null> = this._activeGraph$;
+	readonly activeTable: Subscribable<Table | null> = this._activeTable$;
+	readonly activeGraph: Subscribable<Graph | null> = this._activeGraph$;
 
 	currentDeck: Deck | null = null;
 	currentTable: Table | null = null;

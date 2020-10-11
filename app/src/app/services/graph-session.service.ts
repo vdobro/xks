@@ -37,8 +37,10 @@ export class GraphSessionService extends StudySessionService {
 		super(taskService);
 	}
 
-	async startNew(graph: Graph): Promise<LearningSessionState> {
-		const allTasks = await this.taskService.getGraphTaskList(graph);
+	async startNew(graph: Graph,
+				   startScore: number,
+				   maxScore: number): Promise<LearningSessionState> {
+		const allTasks = await this.taskService.getGraphTaskList(graph, startScore, maxScore);
 		return this.createSessionFromTasks(allTasks);
 	}
 }

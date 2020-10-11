@@ -38,7 +38,7 @@ import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.serv
 })
 export class GraphToolbarComponent implements OnInit {
 
-	@ViewChild('graphEditorTutorialModal', { static: true })
+	@ViewChild('graphEditorTutorialModal', {static: true})
 	tutorialModal: ElementRef | undefined;
 
 	@Input()

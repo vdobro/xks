@@ -89,7 +89,7 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 		this.configurationChanged.emit();
 	}
 
-	private async loadSessionModes() : Promise<void> {
+	private async loadSessionModes(): Promise<void> {
 		if (this.table) {
 			const modes = await this.sessionModeService.getAllIn(this.table);
 			this.sessionModes = await Promise.all(modes.map(mode => this.mapModeToOption(mode)));
@@ -98,7 +98,7 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private async mapModeToOption(mode: TableSessionMode) : Promise<ModeOption> {
+	private async mapModeToOption(mode: TableSessionMode): Promise<ModeOption> {
 		const questionColumns = await this.getColumnNames(mode.questionColumnIds);
 		const answerColumns = await this.getColumnNames(mode.answerColumnIds);
 		const separator = ', ';
@@ -108,7 +108,7 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private async getColumnNames(columnIds: string[]) : Promise<string[]> {
+	private async getColumnNames(columnIds: string[]): Promise<string[]> {
 		return (await Promise.all(columnIds.map(id => this.columnRepository.getById(id))))
 			.map(column => column.name);
 	}

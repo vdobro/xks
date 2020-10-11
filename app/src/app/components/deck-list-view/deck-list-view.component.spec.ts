@@ -59,7 +59,7 @@ describe('DeckListViewComponent', () => {
 	})
 	class TestHostComponent {
 		@ViewChild(DeckListViewComponent)
-		public componentUnderTest : DeckListViewComponent | undefined;
+		public componentUnderTest: DeckListViewComponent | undefined;
 
 		decks: Deck[] = [];
 

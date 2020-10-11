@@ -194,7 +194,7 @@ export class StudySessionService {
 		return this.getInternalState(state).taskWindow;
 	}
 
-	private getInternalState(state: LearningSessionState) : InternalSessionState {
+	private getInternalState(state: LearningSessionState): InternalSessionState {
 		const value = this.activeSessions.get(state.session.id);
 		if (value) {
 			return value;

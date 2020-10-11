@@ -35,7 +35,7 @@ import {Table} from "../../models/Table";
 export class TableColumnComponent implements OnInit {
 
 	@Input()
-	table : Table | null = null;
+	table: Table | null = null;
 	@Input()
 	column: TableColumn | null = null;
 
