@@ -21,10 +21,12 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {Deck} from "../../models/Deck";
+import {GraphService} from "../../services/graph.service";
+import {TableService} from "../../services/table.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -46,15 +48,14 @@ export class NewDeckElementModalComponent implements OnInit {
 	@Input()
 	deck: Deck | null = null;
 
-	@Input()
-	type: String = '';
+	type: DeckElementType = DeckElementType.GRAPH;
 
 	nameInput = new FormControl('');
 
-	@Output()
-	nameSubmitted = new EventEmitter<string>();
-
-	constructor() {
+	constructor(
+		private readonly graphService: GraphService,
+		private readonly tableService: TableService,
+	) {
 	}
 
 	ngOnInit(): void {
@@ -65,7 +66,7 @@ export class NewDeckElementModalComponent implements OnInit {
 		if (name === null || name === '') {
 			return;
 		}
-		this.nameSubmitted.emit(name);
+		await this.createElement(name);
 
 		this.nameInput.reset();
 		UIkit.modal(this.modal!!.nativeElement).hide();
@@ -82,4 +83,33 @@ export class NewDeckElementModalComponent implements OnInit {
 		});
 		this.nameInput.setValue('');
 	}
+
+	private async createElement(name: string) {
+		if (!this.deck) {
+			return;
+		}
+		switch (this.type) {
+			case DeckElementType.GRAPH:
+				await this.graphService.create(this.deck, name);
+				break;
+			case DeckElementType.TABLE:
+				await this.tableService.create(this.deck, name);
+				break;
+			default:
+				break;
+		}
+	}
+
+	selectTypeGraph() {
+		this.type = DeckElementType.GRAPH;
+	}
+
+	selectTypeTable() {
+		this.type = DeckElementType.TABLE;
+	}
+}
+
+export enum DeckElementType {
+	GRAPH = 'graph',
+	TABLE = 'table',
 }

@@ -23,14 +23,21 @@
 		<li *ngIf="deck && graphSelected || tableSelected">
 			<a (click)="studyCurrent()">
 				<span class="uk-margin-small-right"
-					  uk-icon="icon: play"></span>
+					  uk-icon="play"></span>
 				Study
+			</a>
+		</li>
+		<li *ngIf="deck && !(graphSelected || tableSelected)">
+			<a (click)="newElementModal?.openDialog()">
+				<span class="uk-margin-small-right"
+					  uk-icon="plus"></span>
+				Create
 			</a>
 		</li>
 		<li *ngIf="deck && graphSelected || tableSelected">
 			<a (click)="openDeckDetails()">
 					<span class="uk-margin-small-right"
-						  uk-icon="icon: album"></span>
+						  uk-icon="album"></span>
 				Deck details
 			</a>
 		</li>
@@ -38,7 +45,7 @@
 			<a (click)="goHome()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: table"></span>
-				All decks
+				Deck list
 			</a>
 		</li>
 		<li *ngIf="deck && !(graphSelected || tableSelected)" class="uk-nav-divider"></li>

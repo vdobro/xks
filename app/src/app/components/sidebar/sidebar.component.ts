@@ -46,7 +46,7 @@ import {GraphService} from "../../services/graph.service";
 export class SidebarComponent implements OnInit {
 
 	@ViewChild(NewDeckElementModalComponent)
-	newTableModal: NewDeckElementModalComponent | undefined;
+	newElementModal: NewDeckElementModalComponent | undefined;
 
 	@ViewChild(ConfirmDeleteElementModalComponent)
 	confirmDeleteDeckModal: ConfirmDeleteElementModalComponent | undefined;
@@ -73,12 +73,12 @@ export class SidebarComponent implements OnInit {
 				private readonly tableService: TableService,
 				private readonly graphService: GraphService,
 				private readonly navigationService: NavigationService) {
-		this.navControlService.sidebarVisible.subscribe(value => this.onVisibilityChanged(value));
-		this.sidebarService.activeDeck.subscribe(async value => this.onActiveDeckChanged(value));
-		this.sidebarService.activeTable.subscribe(value => this.onActiveTableChanged(value));
-		this.sidebarService.activeGraph.subscribe(value => this.onActiveGraphChanged(value));
-		this.tableService.tablesChanged.subscribe(value => this.onTablesChanged(value));
-		this.graphService.graphsChanged.subscribe(value => this.onGraphsChanged(value));
+		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
+		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
+		this.sidebarService.activeTable.subscribe((value: Table | null) => this.onActiveTableChanged(value));
+		this.sidebarService.activeGraph.subscribe((value: Graph | null) => this.onActiveGraphChanged(value));
+		this.tableService.tablesChanged.subscribe((value: Deck) => this.onTablesChanged(value));
+		this.graphService.graphsChanged.subscribe((value: Deck) => this.onGraphsChanged(value));
 	}
 
 	async ngOnInit() {
