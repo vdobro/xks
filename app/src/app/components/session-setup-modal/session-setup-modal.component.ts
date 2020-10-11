@@ -33,6 +33,7 @@ import {TableSessionModeRepository} from "../../repositories/table-session-mode-
 import {SessionScoreSettingsComponent} from "../session-score-settings/session-score-settings.component";
 import {Graph} from "../../models/Graph";
 import {DeckElement} from "../../models/DeckElement";
+import {ScoreParams} from "../session-view/session-view.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -80,7 +81,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	table: Table | null = null;
-	graph: Graph| null = null;
+	graph: Graph | null = null;
 	_deckElement: DeckElement | null = null;
 
 	anySessionModesAvailable: boolean = false;
@@ -112,19 +113,18 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (!this._deckElement) {
 			return;
 		}
+		await this.scoreSettingsComponent?.saveScoreSettings();
+		const scores = this.getScoreParams(this._deckElement);
 
 		if (this.table) {
 			const modeId = await this.getSessionModeId();
 
 			if (modeId) {
 				await this.saveDefaultTableOptions(modeId);
-				await this.navigationService.studyTable(this.table.id, modeId);
+				await this.navigationService.studyTable(this.table.id, modeId, scores);
 			}
 		} else if (this.graph) {
-			if (this.defaultSessionCheckbox.value) {
-				this.scoreSettingsComponent?.saveScoreSettings();
-			}
-			await this.navigationService.studyGraph(this.graph.id);
+			await this.navigationService.studyGraph(this.graph.id, scores);
 		}
 	}
 
@@ -135,6 +135,29 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		UIkit.modal(this.modal.nativeElement).show();
 
 		this.validateConfiguration();
+	}
+
+	validateConfiguration(): void {
+		if (!this._deckElement) {
+			this.startSessionEnabled = false;
+			return;
+		}
+		if (this.table) {
+			this.validateTableConfiguration(this.table);
+		} else if (this.graph) {
+			this.startSessionEnabled = true;
+			this.defaultSessionCheckbox.enable();
+		} else {
+			this.startSessionEnabled = false;
+			this.defaultSessionCheckbox.disable();
+		}
+	}
+
+	private getScoreParams(deckElement: DeckElement): ScoreParams {
+		return {
+			"initial-score": this.scoreSettingsComponent?.startingScore || deckElement.defaultStartingScore,
+			"maximum-score": this.scoreSettingsComponent?.maxScore || deckElement.defaultMaxScore
+		};
 	}
 
 	private async checkIfSessionModesExist() {
@@ -155,8 +178,6 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
 			const mode = await this.sessionModeService.getById(modeId);
 			await this.sessionModeService.setAsDefault(mode);
-
-			this.scoreSettingsComponent?.saveScoreSettings();
 		}
 	}
 
@@ -166,22 +187,6 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		} else {
 			const mode = await this.sessionModeWizard!!.createSessionMode();
 			return mode.id;
-		}
-	}
-
-	validateConfiguration(): void {
-		if (!this._deckElement) {
-			this.startSessionEnabled = false;
-			return;
-		}
-		if (this.table) {
-			this.validateTableConfiguration(this.table);
-		} else if (this.graph) {
-			this.startSessionEnabled = true;
-			this.defaultSessionCheckbox.enable();
-		} else {
-			this.startSessionEnabled = false;
-			this.defaultSessionCheckbox.disable();
 		}
 	}
 
@@ -203,14 +208,14 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private static isTable(element: DeckElement | null) : element is Table {
+	private static isTable(element: DeckElement | null): element is Table {
 		if (!element) {
 			return false;
 		}
 		return (element as Table).sessionModeIds !== undefined;
 	}
 
-	private static isGraph(element: DeckElement | null) : element is Graph {
+	private static isGraph(element: DeckElement | null): element is Graph {
 		if (!element) {
 			return false;
 		}

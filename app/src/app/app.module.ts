@@ -55,8 +55,6 @@ import {SessionNavigationComponent} from './components/session-navigation/sessio
 import {SessionCompletionViewComponent} from './components/session-completion-view/session-completion-view.component';
 import {LoginModalComponent} from './components/login-modal/login-modal.component';
 import {SidebarGraphListElementComponent} from './components/sidebar-deck-element/sidebar-graph-list-element.component';
-import {NavbarNewGraphComponent} from './components/navbar-new-graph/navbar-new-graph.component';
-import {NavbarNewTableComponent} from "./components/navbar-new-table/navbar-new-table.component";
 import {GRAPH_ID_PARAM, GraphViewComponent} from './components/graph-view/graph-view.component';
 import {GraphToolbarComponent} from './components/graph-toolbar/graph-toolbar.component';
 import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-label-editor.component';
@@ -102,8 +100,6 @@ import {SessionScoreSettingsComponent} from './components/session-score-settings
 		LoginModalComponent,
 		SidebarGraphListElementComponent,
 		SidebarTableListElementComponent,
-		NavbarNewTableComponent,
-		NavbarNewGraphComponent,
 		GraphViewComponent,
 		GraphToolbarComponent,
 		GraphLabelEditorComponent,

@@ -41,11 +41,11 @@ export class TableSessionModeService {
 		private readonly repository: TableSessionModeRepository) {
 	}
 
-	async getAllIn(table: Table) : Promise<TableSessionMode[]> {
+	async getAllIn(table: Table): Promise<TableSessionMode[]> {
 		return await this.repository.getByTable(table);
 	}
 
-	async anyExist(table: Table) : Promise<boolean> {
+	async anyExist(table: Table): Promise<boolean> {
 		return (await this.getAllIn(table)).length > 0;
 	}
 
@@ -72,7 +72,7 @@ export class TableSessionModeService {
 		return entity;
 	}
 
-	async deleteAllForTable(table: Table) : Promise<void> {
+	async deleteAllForTable(table: Table): Promise<void> {
 		const all = await this.repository.getByTable(table);
 		await Promise.all(all.map(mode => this.repository.delete(mode.id)));
 	}
@@ -86,13 +86,13 @@ export class TableSessionModeService {
 			&& first.every(value => second.findIndex(x => x === value) !== -1);
 	}
 
-	async setAsDefault(mode: TableSessionMode) : Promise<void> {
+	async setAsDefault(mode: TableSessionMode): Promise<void> {
 		const table = await this.tableRepository.getById(mode.tableId);
 		table.defaultSessionModeId = mode.id;
 		await this.tableRepository.update(table);
 	}
 
-	async deleteAllWithColumn(table: Table, columnId: string) : Promise<void> {
+	async deleteAllWithColumn(table: Table, columnId: string): Promise<void> {
 		if (!columnId) {
 			return;
 		}

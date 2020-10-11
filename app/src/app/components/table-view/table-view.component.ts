@@ -58,8 +58,8 @@ export class TableViewComponent implements OnInit, OnChanges {
 	@Output()
 	showColumnSwapControls: boolean = false;
 
-	columnDragEnabled : boolean = true;
-	rowDragEnabled : boolean = true;
+	columnDragEnabled: boolean = true;
+	rowDragEnabled: boolean = true;
 
 	table: Table | null = null;
 

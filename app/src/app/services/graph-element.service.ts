@@ -36,7 +36,7 @@ import {GraphEdge} from "../models/GraphEdge";
 	providedIn: 'root'
 })
 export class GraphElementService {
-	private unnamedEdgeNumber : number = 1;
+	private unnamedEdgeNumber: number = 1;
 
 	constructor(private readonly nodeRepository: GraphNodeRepository,
 				private readonly edgeRepository: GraphEdgeRepository) {
@@ -126,12 +126,12 @@ export class GraphElementService {
 		}
 	}
 
-	private async allOutgoingEdgesHaveLabels(node: GraphNode) : Promise<boolean> {
+	private async allOutgoingEdgesHaveLabels(node: GraphNode): Promise<boolean> {
 		const edges = await this.edgeRepository.getAllFrom(node);
 		return edges.every(edge => edge.name !== '');
 	}
 
-	private async anyOutgoingEdgesHaveLabels(node: GraphNode) : Promise<boolean> {
+	private async anyOutgoingEdgesHaveLabels(node: GraphNode): Promise<boolean> {
 		const edges = await this.edgeRepository.getAllFrom(node);
 		return edges.find(edge => edge.name !== '') !== undefined;
 	}

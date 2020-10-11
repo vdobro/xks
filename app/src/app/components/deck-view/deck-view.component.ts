@@ -22,16 +22,13 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {Deck} from "../../models/Deck";
 import {DeckService} from "../../services/deck.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {NavigationControlService} from "../../services/navigation-control.service";
 import {TableService} from "../../services/table.service";
 import {NavigationService} from "../../services/navigation.service";
 import {SidebarService} from "../../services/sidebar.service";
 import {GraphService} from "../../services/graph.service";
 import {TopBarService} from "../../services/top-bar.service";
-import {NavbarNewTableComponent} from "../navbar-new-table/navbar-new-table.component";
-import {NavBarItem} from "../nav-bar-item";
-import {NavbarNewGraphComponent} from "../navbar-new-graph/navbar-new-graph.component";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -63,7 +60,7 @@ export class DeckViewComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<void> {
-		this.route.paramMap.subscribe(async params => {
+		this.route.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(DECK_ID_PARAM);
 			this.deck = id ? await this.deckService.getById(id) : null;
 			if (this.deck) {
@@ -73,15 +70,13 @@ export class DeckViewComponent implements OnInit {
 				await this.navigationService.goToDeckList();
 			}
 		});
-		this.tableService.tablesChanged.subscribe(async deck => {
+		this.tableService.tablesChanged.subscribe(async (deck: Deck) => {
 			if (this.deck?.id === deck.id) {
 				await this.checkIfAnyElementsAvailable();
 			}
 		});
 
 		this.topBarService.clearItems();
-		this.topBarService.addItem(new NavBarItem(NavbarNewTableComponent));
-		this.topBarService.addItem(new NavBarItem(NavbarNewGraphComponent));
 		this.topBarService.setBackButtonLabel('Deck list');
 		this.navigationControlService.setTopBarVisibility(true);
 	}

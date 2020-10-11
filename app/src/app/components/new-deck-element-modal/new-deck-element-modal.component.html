@@ -1,10 +1,24 @@
 <div #modal uk-modal>
 	<div class="uk-modal-dialog uk-modal-body">
 		<button class="uk-modal-close-default" type="button" uk-close></button>
-		<h2 class="uk-modal-title">New {{type}}</h2>
+		<h2 class="uk-modal-title">New element</h2>
 		<form class="uk-form-stacked" (submit)="onSaveClick()">
 			<div class="uk-margin">
-				<label class="uk-form-label" for="deckElementNameInput">Name</label>
+				<label class="uk-form-label uk-margin-small">Select element type:</label>
+				<div uk-switcher="animation: uk-animation-fade; toggle: > *">
+					<button class="uk-button uk-button-default" type="button"
+							(click)="selectTypeGraph()">Graph</button>
+					<button class="uk-button uk-button-default uk-margin-small-left" type="button"
+							(click)="selectTypeTable()">Table</button>
+				</div>
+				<ul class="uk-switcher uk-margin">
+					<li>Graphs contain multiple nodes and edges/arrows connecting them.<br>
+						Every node has a text value to it and all edges pointing from a node either have a label each, or all are unnamed.</li>
+					<li>Tables consist of named columns and (unnamed) rows with values in each cell corresponding to each column.</li>
+				</ul>
+			</div>
+			<div class="uk-margin">
+				<label class="uk-form-label" for="deckElementNameInput">Name:</label>
 				<div class="uk-form-controls">
 					<input #nameInputElement
 						   id="deckElementNameInput"
@@ -14,7 +28,7 @@
 						   [formControl]="nameInput">
 				</div>
 			</div>
-			<button class="uk-float-right uk-button uk-button-primary" type="submit">Add</button>
+			<button class="uk-float-right uk-button uk-button-primary" type="submit">Create {{type}}</button>
 		</form>
 	</div>
 </div>

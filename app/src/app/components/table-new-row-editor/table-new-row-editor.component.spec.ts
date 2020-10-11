@@ -32,7 +32,7 @@ describe('TableNewRowEditorComponent', () => {
 	let component: TableNewRowEditorComponent;
 	let fixture: ComponentFixture<TableNewRowEditorComponent>;
 
-	beforeEach(async() => {
+	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule],
 			declarations: [TableNewRowEditorComponent]

@@ -7,8 +7,7 @@
 			<app-session-score-settings [deckElement]="table"></app-session-score-settings>
 			<h3 class="uk-heading-bullet">Flashcards</h3>
 			<div class="uk-margin-small" *ngIf="anySessionModesAvailable">
-				<ul uk-switcher
-					class="uk-subnav uk-subnav-pill">
+				<ul uk-switcher class="uk-subnav uk-subnav-pill">
 					<li><a href="#" (click)="this.useExisting = true; this.validateConfiguration();">Quick setup</a></li>
 					<li><a href="#" (click)="this.useExisting = false; this.validateConfiguration();">Advanced</a></li>
 				</ul>
@@ -17,27 +16,23 @@
 						<app-session-mode-chooser
 							[table]="table"
 							(configurationChanged)="validateConfiguration()"></app-session-mode-chooser>
-						<form class="uk-margin">
-							<div class="uk-grid-small uk-child-width-auto uk-grid">
-								<label>
-									<input class="uk-checkbox"
-										   type="checkbox"
-										   [formControl]="defaultSessionCheckbox">
-									Set as default configuration
-								</label>
-							</div>
+						<form class="uk-margin uk-grid-small uk-child-width-auto" uk-grid>
+							<label>
+								<input class="uk-checkbox"
+									   type="checkbox"
+									   [formControl]="defaultSessionCheckbox">
+								Set as default
+							</label>
 						</form>
 					</li>
 					<li>
-						<form class="uk-margin">
-							<div class="uk-grid-small uk-child-width-auto uk-grid">
-								<label>
-									<input class="uk-checkbox"
-										   type="checkbox"
-										   [formControl]="defaultSessionCheckbox">
-									Set as default configuration
-								</label>
-							</div>
+						<form class="uk-margin uk-grid-small uk-child-width-auto" uk-grid>
+							<label>
+								<input class="uk-checkbox"
+									   type="checkbox"
+									   [formControl]="defaultSessionCheckbox">
+								Set as default
+							</label>
 						</form>
 						<app-table-session-mode-wizard
 							[table]="table"
@@ -51,15 +46,13 @@
 		</div>
 		<div class="uk-modal-body" *ngIf="graph">
 			<app-session-score-settings [deckElement]="graph"></app-session-score-settings>
-			<form class="uk-margin">
-				<div class="uk-grid-small uk-child-width-auto uk-grid">
-					<label>
-						<input class="uk-checkbox"
-							   type="checkbox"
-							   [formControl]="defaultSessionCheckbox">
-						Save configuration as default
-					</label>
-				</div>
+			<form class="uk-margin uk-grid-small uk-child-width-auto" uk-grid>
+				<label>
+					<input class="uk-checkbox"
+						   type="checkbox"
+						   [formControl]="defaultSessionCheckbox">
+					Set as default
+				</label>
 			</form>
 		</div>
 		<div class="uk-modal-footer uk-text-right">

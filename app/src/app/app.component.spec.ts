@@ -29,7 +29,7 @@ import {RouterTestingModule} from "@angular/router/testing";
  * @since 2020.03.11
  */
 describe('AppComponent', () => {
-	beforeEach(async() => {
+	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,

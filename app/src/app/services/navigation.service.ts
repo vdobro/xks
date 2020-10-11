@@ -28,6 +28,7 @@ import {TableService} from "./table.service";
 import {SidebarService} from "./sidebar.service";
 import {Graph} from "../models/Graph";
 import {GraphService} from "./graph.service";
+import {ScoreParams,} from "../components/session-view/session-view.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -81,16 +82,23 @@ export class NavigationService {
 		await this.router.navigate(['/tables', tableId, 'edit']);
 	}
 
-	async studyTable(tableId: string, sessionModeId: string) {
+	async studyTable(tableId: string,
+					 sessionModeId: string,
+					 difficultySettings: ScoreParams) {
 		await this.selectTable(tableId);
 		this.studySessionActive = true;
-		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId]);
+		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId], {
+			queryParams: difficultySettings
+		});
 	}
 
-	async studyGraph(graphId: string) {
+	async studyGraph(graphId: string, difficultySettings: ScoreParams) {
 		await this.selectGraph(graphId);
 		this.studySessionActive = true;
-		await this.router.navigate(['/graphs', graphId, 'learn']);
+
+		await this.router.navigate(['/graphs', graphId, 'learn'], {
+			queryParams: difficultySettings
+		});
 	}
 
 	async openGraph(graphId: string) {

@@ -40,6 +40,7 @@ export class SessionScoreSettingsComponent implements OnInit, OnChanges {
 
 	startingScoreRange = new FormControl('');
 	maximumScoreRange = new FormControl('');
+	saveSettingsCheckbox = new FormControl('');
 
 	startingScore: number = 3;
 	maxScore: number = 8;
@@ -75,7 +76,7 @@ export class SessionScoreSettingsComponent implements OnInit, OnChanges {
 	}
 
 	async saveScoreSettings(): Promise<void> {
-		if (!this.deckElement) {
+		if (!this.deckElement || !this.saveSettingsCheckbox.value) {
 			return;
 		}
 		await this.deckElementService.setDefaultStartingScore(this.deckElement, this.startingScore);
