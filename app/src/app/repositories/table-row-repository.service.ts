@@ -45,6 +45,7 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 	protected mapToDataEntity(entity: TableRow): TableRowDataEntity {
 		const values = {};
 		entity.values.forEach((value, key) => {
+			// @ts-ignore This is intended weak typing
 			values[key] = value;
 		});
 		return {

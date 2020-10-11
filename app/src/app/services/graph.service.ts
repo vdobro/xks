@@ -64,17 +64,16 @@ export class GraphService {
 			return false;
 		}
 		const edges = await this.elementService.getEdges(graph);
-		if (edges.length === 0) {
-			return false;
-		}
-		return true;
+		return edges.length !== 0;
 	}
 
 	async create(deck: Deck, name: string) {
 		await this.repository.add({
 			deckId: deck.id,
 			id: uuid(),
-			name: name
+			name: name,
+			defaultMaxScore: 5,
+			defaultStartingScore: 3
 		});
 		this._graphsChanged.next(deck);
 	}

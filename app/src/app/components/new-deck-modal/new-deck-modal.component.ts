@@ -37,10 +37,10 @@ import {DeckService} from "../../services/deck.service";
 export class NewDeckModalComponent implements OnInit {
 
 	@ViewChild("newDeckModal")
-	modal: ElementRef;
+	modal: ElementRef | undefined;
 
 	@ViewChild("deckNameInput", {static: true})
-	nameInputElement: ElementRef;
+	nameInputElement: ElementRef| undefined;
 
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');
@@ -60,7 +60,7 @@ export class NewDeckModalComponent implements OnInit {
 		await this.deckService.create(name, description ? description : '');
 
 		this.clearForm();
-		UIkit.modal(this.modal.nativeElement).hide();
+		UIkit.modal(this.modal!!.nativeElement).hide();
 	}
 
 	private clearForm() {
@@ -69,9 +69,12 @@ export class NewDeckModalComponent implements OnInit {
 	}
 
 	openModal() {
+		if (!this.modal) {
+			return;
+		}
 		UIkit.modal(this.modal.nativeElement).show();
 		setTimeout(() => {
-			this.nameInputElement.nativeElement.focus()
+			this.nameInputElement?.nativeElement.focus()
 		});
 		this.nameInput.setValue('');
 	}

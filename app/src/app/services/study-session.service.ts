@@ -19,6 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// @ts-ignore
 import {v4 as uuid} from 'uuid';
 import {AnswerFeedback, ExerciseTask, ExerciseTaskService} from "./exercise-task.service";
 
@@ -38,12 +39,15 @@ export class StudySessionService {
 				 fieldId: string,
 				 state: LearningSessionState): LearningSessionState {
 		const answerFeedback = this.taskService.logInAnswer(answer, fieldId,
-			state.currentTask, state.lastAnswer?.fieldId);
+			state.currentTask, state.lastAnswer?.fieldId || null);
 		return this.handleAnswerFeedback(answerFeedback.actualField.identifier.id,
 			answerFeedback, state);
 	}
 
 	acceptLastAnswer(state: LearningSessionState): LearningSessionState {
+		if (!state.lastAnswer) {
+			return state;
+		}
 		const fieldId = state.lastAnswer.fieldId;
 		const lastTask = state.lastAnswer.task;
 		const answerFeedback = this.taskService.forceAcceptAnswer(fieldId, lastTask);
@@ -63,7 +67,7 @@ export class StudySessionService {
 			currentTask: StudySessionService.randomElement(initialWindow),
 			session: session,
 			progress: 0,
-			lastAnswer: undefined
+			lastAnswer: null,
 		};
 		this.updateInternalState({
 			remainingTasks: remainingTasks,
@@ -141,20 +145,17 @@ export class StudySessionService {
 
 	private calculateProgress(state: LearningSessionState): number {
 		const internalState = this.getInternalState(state);
-		const startScore = this.taskService.defaultStartScore;
-		const maxScore = this.taskService.defaultMaximumScore - startScore;
 
-		const remainingTasks = internalState.remainingTasks.length;
-		const doneTasks = internalState.tasksDone.length;
-		const windowLength = internalState.taskWindow.length;
+		const allTasks = internalState.taskWindow.concat(internalState.remainingTasks, internalState.tasksDone);
 
-		const totalTasks = windowLength + remainingTasks + doneTasks;
-
-		const pendingTaskScore = internalState.taskWindow
-			.map(task => this.taskService.getCurrentScore(task) - startScore)
+		const maxScore = allTasks.map(task => (task.maxScore - task.startingScore))
 			.reduce((sum, current) => sum + current, 0);
 
-		const progress = ((doneTasks * maxScore) + pendingTaskScore) / (totalTasks * maxScore);
+		const currentScore = allTasks
+			.map(task => Math.max(0, this.taskService.getCurrentScore(task) - task.startingScore))
+			.reduce((sum, current) => sum + current, 0);
+
+		const progress = currentScore / maxScore;
 		return Math.max(progress, 0);
 	}
 
@@ -193,8 +194,13 @@ export class StudySessionService {
 		return this.getInternalState(state).taskWindow;
 	}
 
-	private getInternalState(state: LearningSessionState) {
-		return this.activeSessions.get(state.session.id);
+	private getInternalState(state: LearningSessionState) : InternalSessionState {
+		const value = this.activeSessions.get(state.session.id);
+		if (value) {
+			return value;
+		} else {
+			throw new Error('Study session internal state not defined. Try reloading the application.');
+		}
 	}
 
 	private updateInternalState(internalState: InternalSessionState) {
@@ -238,7 +244,7 @@ export class StudySessionService {
 
 export interface LearningSession {
 	start: Date,
-	end: Date
+	end: Date | null,
 	id: string,
 	complete: boolean,
 }
@@ -252,7 +258,7 @@ export interface LearningSessionState {
 		expectedAnswer: string,
 		fieldId: string,
 		task: ExerciseTask
-	}
+	} | null,
 }
 
 interface InternalSessionState {

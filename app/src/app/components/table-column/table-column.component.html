@@ -1,5 +1,6 @@
 <table-column-editor
 	*ngIf="editMode"
+	[table]="table"
 	[newColumn]="false"
 	[existingColumn]="column"
 	(nameChanged)="onNameSubmit($event.name)"

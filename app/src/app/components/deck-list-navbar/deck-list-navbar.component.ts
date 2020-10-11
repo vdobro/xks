@@ -30,7 +30,7 @@ import {NewDeckModalComponent} from "../new-deck-modal/new-deck-modal.component"
 export class DeckListNavbarComponent implements OnInit {
 
 	@ViewChild(NewDeckModalComponent)
-	childModal: NewDeckModalComponent;
+	childModal: NewDeckModalComponent | undefined;
 
 	constructor() {
 	}

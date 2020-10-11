@@ -21,6 +21,7 @@
 
 import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {TableColumn} from "../../models/TableColumn";
+import {Table} from "../../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,14 +35,16 @@ import {TableColumn} from "../../models/TableColumn";
 export class TableColumnComponent implements OnInit {
 
 	@Input()
-	column: TableColumn;
+	table : Table | null = null;
+	@Input()
+	column: TableColumn | null = null;
 
 	@Output()
 	columnChanged = new EventEmitter<TableColumn>();
 	@Output()
 	columnDeleted = new EventEmitter<TableColumn>();
 	@Output()
-	editingStarted = new EventEmitter();
+	editingStarted = new EventEmitter<void>();
 
 	editMode: boolean = false;
 
@@ -65,6 +68,9 @@ export class TableColumnComponent implements OnInit {
 	}
 
 	async onNameSubmit(value: string) {
+		if (!this.column) {
+			return;
+		}
 		this.column.name = value;
 		this.columnChanged.emit(this.column);
 		this.editMode = false;

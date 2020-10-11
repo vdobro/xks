@@ -48,7 +48,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {ConfirmDeleteTableColumnModalComponent} from './components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
 import {ConfirmDeleteElementModalComponent} from './components/confirm-delete-element-modal/confirm-delete-element-modal.component';
 import {SessionViewComponent, TABLE_SESSION_MODE_ID_PARAM} from './components/session-view/session-view.component';
-import {SetupTableSessionModalComponent} from './components/setup-table-session-modal/setup-table-session-modal.component';
+import {SessionSetupModalComponent} from './components/session-setup-modal/session-setup-modal.component';
 import {TableSessionModeWizardComponent} from './components/table-session-mode-wizard/table-session-mode-wizard.component';
 import {SessionAnswerEditorComponent} from './components/session-answer-editor/session-answer-editor.component';
 import {SessionNavigationComponent} from './components/session-navigation/session-navigation.component';
@@ -63,6 +63,8 @@ import {GraphLabelEditorComponent} from './components/graph-label-editor/graph-l
 import {SessionAnswerViewComponent} from './components/session-answer-view/session-answer-view.component';
 import {NotFoundViewComponent} from './components/not-found-view/not-found-view.component';
 import {SessionQuestionViewComponent} from './components/session-question-view/session-question-view.component';
+import {SessionModeChooserComponent} from './components/session-mode-chooser/session-mode-chooser.component';
+import {SessionScoreSettingsComponent} from './components/session-score-settings/session-score-settings.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -92,7 +94,7 @@ import {SessionQuestionViewComponent} from './components/session-question-view/s
 		ConfirmDeleteTableColumnModalComponent,
 		ConfirmDeleteElementModalComponent,
 		SessionViewComponent,
-		SetupTableSessionModalComponent,
+		SessionSetupModalComponent,
 		TableSessionModeWizardComponent,
 		SessionAnswerEditorComponent,
 		SessionNavigationComponent,
@@ -108,6 +110,8 @@ import {SessionQuestionViewComponent} from './components/session-question-view/s
 		SessionAnswerViewComponent,
 		NotFoundViewComponent,
 		SessionQuestionViewComponent,
+		SessionModeChooserComponent,
+		SessionScoreSettingsComponent,
 	],
 	imports: [
 		BrowserModule,

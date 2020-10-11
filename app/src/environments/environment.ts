@@ -22,12 +22,18 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+
+// @ts-ignore
 if (!window["env"]) {
+// @ts-ignore
 	window["env"] = [];
 }
+
 export const environment = {
 	production: false,
+// @ts-ignore
 	serverUrl: window["env"]["apiUrl"] || "http://localhost:8080",
+// @ts-ignore
 	databaseUrl: window["env"]["dbUrl"] || "http://172.17.0.3:5984"
 };
 

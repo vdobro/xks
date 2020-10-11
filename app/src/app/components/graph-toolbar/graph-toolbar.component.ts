@@ -39,15 +39,15 @@ import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.serv
 export class GraphToolbarComponent implements OnInit {
 
 	@ViewChild('graphEditorTutorialModal', { static: true })
-	tutorialModal: ElementRef;
+	tutorialModal: ElementRef | undefined;
 
 	@Input()
-	graph: Graph;
+	graph: Graph | null = null;
 
 	@Input()
-	selectedNode: GraphNode;
+	selectedNode: GraphNode | null = null;
 	@Input()
-	selectedEdge: GraphEdge;
+	selectedEdge: GraphEdge | null = null;
 
 	connectNewNode: boolean = false;
 	showToolbar: boolean = true;
@@ -61,11 +61,11 @@ export class GraphToolbarComponent implements OnInit {
 
 		this.nodeRepository.entityCreated.subscribe(_ => this.closeEditor());
 		this.nodeRepository.entityUpdated.subscribe(_ => this.closeEditor());
-		this.nodeRepository.entityDeletedId.subscribe(_ => this.closeEditor());
+		this.nodeRepository.entityDeleted.subscribe(_ => this.closeEditor());
 
 		this.edgeRepository.entityCreated.subscribe(_ => this.closeEditor());
 		this.edgeRepository.entityUpdated.subscribe(_ => this.closeEditor());
-		this.edgeRepository.entityDeletedId.subscribe(_ => this.closeEditor());
+		this.edgeRepository.entityDeleted.subscribe(_ => this.closeEditor());
 	}
 
 	ngOnInit(): void {
@@ -93,9 +93,5 @@ export class GraphToolbarComponent implements OnInit {
 		this.connectNewNode = false;
 		this.showToolbar = true;
 		this.currentlyInEdit.emit(false);
-	}
-
-	openTutorial() {
-
 	}
 }

@@ -20,14 +20,14 @@
 			</ul>
 		</li>
 		<li class="uk-nav-header">Actions</li>
-		<li *ngIf="graphSelected || tableSelected">
+		<li *ngIf="deck && graphSelected || tableSelected">
 			<a (click)="studyCurrent()">
 				<span class="uk-margin-small-right"
 					  uk-icon="icon: play"></span>
 				Study
 			</a>
 		</li>
-		<li *ngIf="graphSelected || tableSelected">
+		<li *ngIf="deck && graphSelected || tableSelected">
 			<a (click)="openDeckDetails()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: album"></span>
@@ -41,9 +41,9 @@
 				All decks
 			</a>
 		</li>
-		<li *ngIf="!(graphSelected || tableSelected)" class="uk-nav-divider"></li>
-		<li *ngIf="!(graphSelected || tableSelected)">
-			<a (click)="confirmDeleteDeckModal.openModal()">
+		<li *ngIf="deck && !(graphSelected || tableSelected)" class="uk-nav-divider"></li>
+		<li *ngIf="deck && !(graphSelected || tableSelected)">
+			<a (click)="confirmDeleteDeckModal?.openModal()">
 				<span class="uk-margin-small-right" uk-icon="icon: trash"></span>
 				Delete deck
 			</a>
@@ -56,10 +56,11 @@
 	</app-new-deck-element-modal>
 	<app-confirm-delete-element-modal
 		[type]="'deck'"
-		[name]="deck?.name"
+		[name]="deck?.name || ''"
 		[explanation]="'All tables belonging to this deck will be deleted as well.'"
 		(confirmed)="onDeckDeleted()">
 	</app-confirm-delete-element-modal>
-	<app-setup-table-session-modal [table]="selectedTable">
+	<app-setup-table-session-modal
+		[deckElement]="selectedTable || selectedGraph">
 	</app-setup-table-session-modal>
 </div>

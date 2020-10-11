@@ -25,6 +25,7 @@ import {BaseDataEntity} from "./BaseRepository";
 import {Graph} from "../models/Graph";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
+import {DeckElement} from "../models/DeckElement";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -68,6 +69,8 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 			_rev: '',
 			deckId: entity.deckId,
 			name: entity.name,
+			defaultStartingScore: entity.defaultStartingScore,
+			defaultMaxScore: entity.defaultMaxScore,
 		};
 	}
 
@@ -76,6 +79,8 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 			id: entity._id,
 			deckId: entity.deckId,
 			name: entity.name,
+			defaultStartingScore: entity.defaultStartingScore,
+			defaultMaxScore: entity.defaultMaxScore,
 		};
 	}
 
@@ -94,7 +99,5 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 	}
 }
 
-interface GraphDataEntity extends BaseDataEntity {
-	deckId: string,
-	name: string,
+interface GraphDataEntity extends BaseDataEntity, DeckElement {
 }

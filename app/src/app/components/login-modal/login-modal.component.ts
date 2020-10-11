@@ -36,10 +36,10 @@ import {UserSessionService} from "../../services/user-session.service";
 export class LoginModalComponent implements OnInit, AfterViewInit {
 
 	@ViewChild("loginModal", {static: true})
-	modal: ElementRef;
+	modal: ElementRef | undefined;
 
 	@ViewChild("userUsernameInput")
-	usernameInputElement: ElementRef;
+	usernameInputElement: ElementRef | undefined;
 
 	@Input()
 	existingUser: boolean = true;
@@ -59,15 +59,21 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
-		UIkit.util.on(this.modal.nativeElement, 'hidden', _ => {
-			this.loginErrorMessage = '';
-		});
+		if (this.modal) {
+			// @ts-ignore
+			UIkit.util.on(this.modal.nativeElement, 'hidden', _ => {
+				this.loginErrorMessage = '';
+			});
+		}
 	}
 
 	openDialog() {
+		if (!this.modal) {
+			return;
+		}
 		UIkit.modal(this.modal.nativeElement).show();
 		setTimeout(() => {
-			this.usernameInputElement.nativeElement.focus()
+			this.usernameInputElement?.nativeElement.focus();
 		});
 		this.usernameInput.setValue('');
 		this.passwordInput.setValue('');
@@ -86,7 +92,9 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 				} else {
 					await this.userSessionService.register(username, password);
 				}
-				UIkit.modal(this.modal.nativeElement).hide();
+				if (this.modal) {
+					UIkit.modal(this.modal.nativeElement).hide();
+				}
 			} catch (e) {
 				this.loginErrorMessage = e.message;
 			}

@@ -46,7 +46,7 @@ export class NotFoundViewComponent implements OnInit {
 		this.topBarService.clearItems();
 		this.topBarService.setBackButtonLabel('Go home');
 
-		await this.sidebarService.selectGraph(null);
+		await this.sidebarService.deselectGraph();
 		await this.sidebarService.hide();
 	}
 

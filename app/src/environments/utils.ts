@@ -23,7 +23,7 @@
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.20
  */
-export const stripTrailingSlash = (str) => {
+export const stripTrailingSlash = (str: string) => {
 	return str.endsWith('/') ?
 		str.slice(0, -1) :
 		str;
@@ -38,5 +38,6 @@ export const levenshtein = (a: string, b: string) : number => {
 		for (u = [i], j = 1; j <= n; j++) {
 			u[j] = a[i - 1] === b[j - 1] ? t[j - 1] : Math.min(t[j - 1], t[j], u[j - 1]) + 1;
 		} t = u;
-	} return u[n];
+	}
+	return u ? u[n] : 0;
 }

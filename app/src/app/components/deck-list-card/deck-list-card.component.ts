@@ -33,7 +33,7 @@ import {NavigationService} from "../../services/navigation.service";
 export class DeckListCardComponent implements OnInit {
 
 	@Input()
-	deck: Deck;
+	deck: Deck | null = null;
 
 	editMode: boolean = false;
 
@@ -55,7 +55,7 @@ export class DeckListCardComponent implements OnInit {
 
 	async onChangesSubmit() {
 		const title = this.nameInput.value.trim();
-		if (!title) {
+		if (!title || !this.deck) {
 			return;
 		}
 		this.deck.name = title;
@@ -66,6 +66,6 @@ export class DeckListCardComponent implements OnInit {
 	}
 
 	async openDeckDetails() {
-		await this.navigationService.openDeck(this.deck.id);
+		await this.navigationService.openDeck(this.deck!!.id);
 	}
 }

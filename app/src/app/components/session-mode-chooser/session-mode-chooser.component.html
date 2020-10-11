@@ -1,0 +1,11 @@
+<form class="uk-form-stacked">
+	<label class="uk-form-label" for="session-mode-select"></label>
+	<select #modeSelect class="uk-select" id="session-mode-select"
+			(change)="changeSelection()">
+		<option *ngFor="let mode of sessionModes"
+				value="{{mode.id}}"
+				[selected]="table?.defaultSessionModeId === mode.id ? 'selected' : null">
+			{{mode.name}}
+		</option>
+	</select>
+</form>

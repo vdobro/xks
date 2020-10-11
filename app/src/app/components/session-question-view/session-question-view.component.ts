@@ -34,7 +34,7 @@ import {ExerciseTask} from "../../services/exercise-task.service";
 export class SessionQuestionViewComponent implements OnInit, OnChanges {
 
 	@Input()
-	task: ExerciseTask;
+	task: ExerciseTask | null = null;
 
 	constructor() {
 	}

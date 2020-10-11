@@ -37,9 +37,9 @@ import {SidebarService} from "../../services/sidebar.service";
 export class NavbarNewTableComponent implements OnInit {
 
 	@ViewChild(NewDeckElementModalComponent)
-	childModal: NewDeckElementModalComponent;
+	childModal: NewDeckElementModalComponent | undefined;
 
-	deck: Deck;
+	deck: Deck | null;
 
 	constructor(private readonly tableService: TableService,
 				private readonly sidebarService: SidebarService) {
@@ -51,6 +51,8 @@ export class NavbarNewTableComponent implements OnInit {
 	}
 
 	async createTable(name: string) {
-		await this.tableService.create(this.deck, name);
+		if (this.deck) {
+			await this.tableService.create(this.deck, name);
+		}
 	}
 }

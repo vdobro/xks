@@ -36,17 +36,17 @@ import {Graph} from "../models/Graph";
 })
 export class SidebarService {
 
-	private readonly _activeDeck$ = new Subject<Deck>();
-	private readonly _activeTable$ = new Subject<Table>();
-	private readonly _activeGraph$ = new Subject<Graph>();
+	private readonly _activeDeck$ = new Subject<Deck | null>();
+	private readonly _activeTable$ = new Subject<Table| null>();
+	private readonly _activeGraph$ = new Subject<Graph| null>();
 
-	readonly activeDeck: Subscribable<Deck> = this._activeDeck$;
-	readonly activeTable: Subscribable<Table> = this._activeTable$;
-	readonly activeGraph: Subscribable<Graph> = this._activeGraph$;
+	readonly activeDeck: Subscribable<Deck | null> = this._activeDeck$;
+	readonly activeTable: Subscribable<Table| null> = this._activeTable$;
+	readonly activeGraph: Subscribable<Graph| null> = this._activeGraph$;
 
-	currentDeck: Deck;
-	currentTable: Table;
-	currentGraph: Graph;
+	currentDeck: Deck | null = null;
+	currentTable: Table | null = null;
+	currentGraph: Graph | null = null;
 
 	constructor(
 		private readonly deckService: DeckService,
@@ -81,17 +81,19 @@ export class SidebarService {
 		}
 	}
 
-	populate(deck: Deck) {
-		const deckIsNull = deck === null || deck === undefined;
-		this.navigationControlService.setSidebarVisibility(!deckIsNull);
-		this.updateDeck(deck);
-		if (deckIsNull) {
-			this.deselectTable();
-			this.deselectGraph();
-		}
+	depopulate() {
+		this.navigationControlService.setSidebarVisibility(false);
+		this.updateDeck(null);
+		this.deselectTable();
+		this.deselectGraph();
 	}
 
-	private updateTable(table: Table) {
+	populate(deck: Deck) {
+		this.navigationControlService.setSidebarVisibility(true);
+		this.updateDeck(deck);
+	}
+
+	private updateTable(table: Table | null): void {
 		if (this.currentTable?.id === table?.id) {
 			return;
 		}
@@ -99,7 +101,7 @@ export class SidebarService {
 		this._activeTable$.next(this.currentTable);
 	}
 
-	private updateDeck(deck: Deck) {
+	private updateDeck(deck: Deck | null): void {
 		if (this.currentDeck?.id === deck?.id) {
 			return;
 		}
@@ -108,7 +110,7 @@ export class SidebarService {
 		this._activeDeck$.next(this.currentDeck);
 	}
 
-	private updateGraph(graph: Graph) {
+	private updateGraph(graph: Graph | null) {
 		if (this.currentGraph?.id === graph?.id) {
 			return;
 		}

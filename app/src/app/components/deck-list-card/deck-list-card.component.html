@@ -12,7 +12,7 @@
 			   uk-icon="icon: pencil"></a>
 		</div>
 	</div>
-	<p *ngIf="deck.description?.length > 0" class="uk-text-break">
+	<p *ngIf="deck.description?.length || 0 > 0" class="uk-text-break">
 		{{ deck.description }}
 	</p>
 </a>

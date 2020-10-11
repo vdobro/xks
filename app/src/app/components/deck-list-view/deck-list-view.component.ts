@@ -36,19 +36,25 @@ import {SidebarService} from "../../services/sidebar.service";
 })
 export class DeckListViewComponent implements OnInit {
 
-	@ViewChild("deckListFooter") deckListFooter: ElementRef;
+	@ViewChild("deckListFooter")
+	deckListFooter: ElementRef | undefined;
 
 	@Input()
-	decks: Deck[];
+	decks: Deck[] = [];
 
 	constructor(private readonly sidebarService: SidebarService) {
 	}
 
 	ngOnInit(): void {
-		this.sidebarService.populate(null);
+		this.sidebarService.depopulate();
 	}
 
 	onNewDeckCreated() {
+		if (!this.deckListFooter) {
+			return;
+		}
+
+		// @ts-ignore It can actually scroll to an index
 		UIkit.scroll(0).scrollTo(this.deckListFooter.nativeElement);
 	}
 }

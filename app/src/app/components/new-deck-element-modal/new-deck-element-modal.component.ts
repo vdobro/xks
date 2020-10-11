@@ -38,16 +38,16 @@ import {Deck} from "../../models/Deck";
 export class NewDeckElementModalComponent implements OnInit {
 
 	@ViewChild("modal")
-	modal: ElementRef;
+	modal: ElementRef | undefined;
 
 	@ViewChild("nameInputElement")
-	nameInputElement: ElementRef;
+	nameInputElement: ElementRef | undefined;
 
 	@Input()
-	deck: Deck;
+	deck: Deck | null = null;
 
 	@Input()
-	type: String;
+	type: String = '';
 
 	nameInput = new FormControl('');
 
@@ -68,13 +68,17 @@ export class NewDeckElementModalComponent implements OnInit {
 		this.nameSubmitted.emit(name);
 
 		this.nameInput.reset();
-		UIkit.modal(this.modal.nativeElement).hide();
+		UIkit.modal(this.modal!!.nativeElement).hide();
 	}
 
 	openDialog() {
+		if (!this.modal) {
+			return;
+		}
 		UIkit.modal(this.modal.nativeElement).show();
+
 		setTimeout(() => {
-			this.nameInputElement.nativeElement.focus()
+			this.nameInputElement?.nativeElement.focus()
 		});
 		this.nameInput.setValue('');
 	}

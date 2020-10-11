@@ -45,12 +45,12 @@ import {FormControl} from "@angular/forms";
 export class TableCellEditorComponent implements OnInit, AfterContentInit, OnChanges {
 
 	@ViewChild('cellInputElement', {static: true})
-	cellInputElement: ElementRef;
+	cellInputElement: ElementRef | undefined;
 
 	cellInput = new FormControl('');
 
 	@Input()
-	existingValue: string;
+	existingValue: string = '';
 
 	@Output()
 	valueSubmitted = new EventEmitter<string>();
@@ -63,7 +63,7 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 	}
 
 	ngAfterContentInit(): void {
-		this.cellInputElement.nativeElement.focus();
+		this.cellInputElement?.nativeElement.focus();
 	}
 
 	ngOnChanges(changes: SimpleChanges) {

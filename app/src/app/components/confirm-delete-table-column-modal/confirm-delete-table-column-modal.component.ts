@@ -36,10 +36,10 @@ import {TableColumn} from "../../models/TableColumn";
 export class ConfirmDeleteTableColumnModalComponent implements OnInit {
 
 	@ViewChild('confirmDeleteTableColumnModal')
-	modal: ElementRef;
+	modal: ElementRef | undefined;
 
 	@Input()
-	column: TableColumn;
+	column: TableColumn | null = null;
 
 	@Output()
 	confirmed = new EventEmitter<void>();
@@ -51,6 +51,6 @@ export class ConfirmDeleteTableColumnModalComponent implements OnInit {
 	}
 
 	openDialog() {
-		UIkit.modal(this.modal.nativeElement).show();
+		UIkit.modal(this.modal?.nativeElement).show();
 	}
 }

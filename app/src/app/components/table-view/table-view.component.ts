@@ -56,12 +56,12 @@ export class TableViewComponent implements OnInit, OnChanges {
 	@Output()
 	newRowColumnIndex: number = 0;
 	@Output()
-	showColumnSwapControls: boolean;
+	showColumnSwapControls: boolean = false;
 
 	columnDragEnabled : boolean = true;
 	rowDragEnabled : boolean = true;
 
-	table: Table;
+	table: Table | null = null;
 
 	constructor(private readonly tableService: TableService,
 				private readonly deckService: DeckService,
@@ -75,7 +75,9 @@ export class TableViewComponent implements OnInit, OnChanges {
 
 	async ngOnInit() {
 		this.activatedRoute.paramMap.subscribe(async params => {
-			this.table = await this.tableService.getById(params.get(TABLE_ID_PARAM));
+			const id = params.get(TABLE_ID_PARAM);
+			this.table = id ? await this.tableService.getById(id) : null;
+
 			if (this.table) {
 				await this.sidebarService.selectTable(this.table);
 				await this.reloadAll();
@@ -111,6 +113,9 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	async deleteColumn(column: TableColumn) {
+		if (!this.table) {
+			return;
+		}
 		if (this.columns.length === 1) {
 			await this.cellService.deleteAllRowsIn(this.table);
 		}
@@ -131,11 +136,15 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	private async reloadColumns() {
-		this.columns = await this.cellService.getColumns(this.table);
+		if (this.table) {
+			this.columns = await this.cellService.getColumns(this.table);
+		}
 	}
 
 	private async reloadRows() {
-		this.rows = await this.cellService.getRows(this.table);
+		if (this.table) {
+			this.rows = await this.cellService.getRows(this.table);
+		}
 	}
 
 	async dropRow(event: CdkDragDrop<TableViewComponent, TableRowComponent>) {

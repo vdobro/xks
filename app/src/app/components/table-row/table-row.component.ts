@@ -36,9 +36,9 @@ import {TableCellService} from "../../services/table-cell.service";
 export class TableRowComponent implements OnInit {
 
 	@Input()
-	row: TableRow;
+	row: TableRow | null = null;
 	@Input()
-	columns: TableColumn[];
+	columns: TableColumn[] = [];
 
 	@Output()
 	rowDeleted = new EventEmitter<TableRow>();

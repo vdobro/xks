@@ -35,11 +35,11 @@ import {TableColumn} from "../../models/TableColumn";
 export class TableCellComponent implements OnInit, OnChanges {
 
 	@Input()
-	row: TableRow;
+	newCell: boolean = false;
 	@Input()
-	newCell: boolean;
+	row: TableRow | null = null;
 	@Input()
-	column: TableColumn;
+	column: TableColumn | null = null;
 
 	@Output()
 	cellValueChanged = new EventEmitter<string>();
@@ -82,8 +82,8 @@ export class TableCellComponent implements OnInit, OnChanges {
 	}
 
 	private updateExistingValue() {
-		if (this.row) {
-			this.currentValue = this.row.values.get(this.column.id);
+		if (this.row && this.column) {
+			this.currentValue = this.row.values.get(this.column.id) || '';
 		} else {
 			this.currentValue = '';
 		}

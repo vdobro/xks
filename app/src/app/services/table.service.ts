@@ -67,13 +67,16 @@ export class TableService {
 			deckId: deck.id,
 			name: name,
 			sessionModeIds: [],
+			defaultSessionModeId: null,
+			defaultStartingScore: 3,
+			defaultMaxScore: 8,
 		};
 		await this.repository.add(table);
 		this._tablesChanged.next(deck);
 		return table;
 	}
 
-	public async delete(id: string) {
+	public async delete(id: string) : Promise<void> {
 		const table = await this.getById(id);
 		await this.sessionModeService.deleteAllForTable(table);
 		await this.cellService.deleteAllRowsIn(table);
@@ -82,15 +85,14 @@ export class TableService {
 		this._tablesChanged.next(await this.getDeck(table));
 	}
 
-	public async deleteAllInDeck(deck: Deck) {
+	public async deleteAllInDeck(deck: Deck) : Promise<void> {
 		const tables = await this.getByDeck(deck);
 		for (let table of tables) {
 			await this.delete(table.id);
 		}
 		this._tablesChanged.next(deck);
 	}
-
-	public async update(table: Table) {
+	public async update(table: Table) : Promise<void> {
 		await this.repository.update(table);
 	}
 

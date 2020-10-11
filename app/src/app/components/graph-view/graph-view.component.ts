@@ -20,8 +20,7 @@
  */
 
 import {DataSet, Network, Options} from "vis-network/standalone";
-import ResizeObserver from 'resize-observer-polyfill';
-import {AfterContentChecked, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Graph} from "../../models/Graph";
 import {GraphService} from "../../services/graph.service";
@@ -47,22 +46,22 @@ export const GRAPH_ID_PARAM: string = 'graphId';
 	templateUrl: './graph-view.component.html',
 	styleUrls: ['./graph-view.component.sass']
 })
-export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecked {
+export class GraphViewComponent implements OnInit, AfterContentChecked {
 
 	@ViewChild(GraphToolbarComponent)
-	toolbar: GraphToolbarComponent;
+	toolbar: GraphToolbarComponent | undefined;
 
 	@ViewChild('networkContainer', {static: true})
-	networkContainer: ElementRef;
+	networkContainer: ElementRef | undefined;
 
 	@ViewChild('graphToolbar', {static: true})
-	graphToolbar: ElementRef;
+	graphToolbar: ElementRef | undefined;
 
 	@ViewChild('graphViewContainer', {static: true})
-	container: ElementRef;
+	container: ElementRef | undefined;
 
-	graph: Graph;
-	network: Network;
+	graph: Graph | null = null;
+	network: Network | null = null;
 
 	renderingOptions: Options = {
 		nodes: {
@@ -80,14 +79,13 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		}
 	};
 
-	selectedEdge: GraphEdge = null;
-	selectedNode: GraphNode = null;
-	selectedSourceNode: GraphNode = null;
+	selectedEdge: GraphEdge | null = null;
+	selectedNode: GraphNode | null= null;
+	selectedSourceNode: GraphNode | null = null;
 
 	editMode : boolean = false;
 
 	private rootContainerWidth: number = 0;
-	private sizeObserver: ResizeObserver = null;
 
 	private readonly nodes = new DataSet<any>();
 	private readonly edges = new DataSet<any>();
@@ -117,12 +115,6 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		this.adjustGraphViewSize();
 	}
 
-	ngOnDestroy() {
-		this.sizeObserver?.unobserve(this.networkContainer.nativeElement);
-		this.sizeObserver?.disconnect();
-		this.sizeObserver = null;
-	}
-
 	ngAfterContentChecked() {
 		this.adjustGraphViewSize();
 	}
@@ -146,6 +138,9 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	}
 
 	private adjustGraphViewSize() {
+		if (!this.container) {
+			return;
+		}
 		const containerSize = this.container.nativeElement.getBoundingClientRect();
 		const containerWidth = containerSize.width;
 		const containerHeight = containerSize.height;
@@ -155,6 +150,9 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	}
 
 	private adjustCanvasSize(containerHeight: number, containerWidth: number) {
+		if (!this.graphToolbar) {
+			return;
+		}
 		const toolbarHeight = this.graphToolbar.nativeElement.offsetHeight + 21;
 		const height = Math.max(containerHeight - toolbarHeight, 400);
 		this.network?.setSize(`${containerWidth}px`, `${height}px`);
@@ -163,7 +161,8 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	private setUpDataLoading() {
 		this.activatedRoute.paramMap.subscribe(async params => {
-			this.graph = await this.graphService.getById(params.get(GRAPH_ID_PARAM));
+			const id = params.get(GRAPH_ID_PARAM);
+			this.graph = id ? await this.graphService.getById(id) : null;
 			if (this.graph) {
 				await this.sidebarService.selectGraph(this.graph);
 				await this.setUpNetworkView();
@@ -182,7 +181,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 			this.nodes.update(GraphViewComponent.mapToNodeView(entity));
 			this.selectedSourceNode = null;
 		})
-		this.nodeRepository.entityDeletedId.subscribe(id => {
+		this.nodeRepository.entityDeleted.subscribe(id => {
 			this.nodes.remove(id);
 			this.network?.fit();
 			this.selectedSourceNode = null;
@@ -195,7 +194,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		this.edgeRepository.entityUpdated.subscribe(entity => {
 			this.edges.update(GraphViewComponent.mapToEdgeView(entity));
 		});
-		this.edgeRepository.entityDeletedId.subscribe(id => {
+		this.edgeRepository.entityDeleted.subscribe(id => {
 			this.edges.remove(id);
 			this.selectedEdge = null;
 		})
@@ -204,6 +203,9 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 	private async setUpNetworkView() {
 		await this.loadGraphElements();
 
+		if (!this.networkContainer) {
+			return;
+		}
 		this.network = new Network(this.networkContainer.nativeElement,
 			{nodes: this.nodes, edges: this.edges}, this.renderingOptions);
 		this.network.on('deselectNode', async (args: NetworkDeselection) => {
@@ -246,7 +248,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	private async onDeselectEdge() {
 		this.selectedEdge = null;
-		this.toolbar.closeEditor();
+		this.toolbar?.closeEditor();
 	}
 
 	private async onSelectNode(id: string) {
@@ -257,7 +259,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		if (this.selectedNode?.id !== id) {
 			this.selectedNode = await this.graphElementService.getNodeById(id);
 		}
-		if (this.selectedSourceNode) {
+		if (this.selectedSourceNode && this.graph) {
 			const source = this.selectedSourceNode;
 			this.selectedSourceNode = null;
 			await this.graphElementService.addEdge(this.graph, source, this.selectedNode);
@@ -268,7 +270,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		if (!id) {
 			this.selectedSourceNode = null;
 		}
-		this.toolbar.openEditor();
+		this.toolbar?.openEditor();
 		if (this.selectedSourceNode?.id !== id) {
 			this.selectedSourceNode = await this.graphElementService.getNodeById(id);
 		}
@@ -276,7 +278,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 
 	private async onDoubleClickEdge(id: string) {
 		await this.onSelectEdge(id);
-		this.toolbar.openEditor();
+		this.toolbar?.openEditor();
 	}
 
 	private async onDeselectNode(args: NetworkDeselection) {
@@ -285,7 +287,7 @@ export class GraphViewComponent implements OnInit, OnDestroy, AfterContentChecke
 		if (!nextNode) {
 			this.selectedNode = null;
 			this.selectedSourceNode = null;
-			this.toolbar.closeEditor();
+			this.toolbar?.closeEditor();
 		} else {
 			await this.onSelectNode(nextNode);
 		}

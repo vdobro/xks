@@ -7,7 +7,7 @@
 				   [attr.disabled]="pending ? '' : null"
 				   class="uk-input"
 				   type="text"
-				   [placeholder]="answerField?.identifier.name || indexNumber"
+				   [placeholder]="answerField?.identifier?.name || indexNumber"
 				   value="{{pending ? '' : answerField?.value}}">
 		</label>
 	</div>

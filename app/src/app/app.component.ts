@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
 	sidebarVisible: boolean = false;
 
 	@ViewChild('rootContainer', {static: true})
-	rootContainer: ElementRef;
+	rootContainer: ElementRef | undefined;
 
 	constructor(
 		private readonly deckRepository: DeckRepository,
@@ -63,6 +63,9 @@ export class AppComponent implements OnInit, AfterContentChecked {
 	}
 
 	ngAfterContentChecked() {
+		if (!this.rootContainer) {
+			return;
+		}
 		const width = this.rootContainer.nativeElement.offsetWidth;
 		this.navControlService.notifyRootContainerChange(width);
 	}

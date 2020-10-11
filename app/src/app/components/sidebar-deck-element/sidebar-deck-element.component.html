@@ -14,8 +14,7 @@
 			<a (click)="onChangesSubmit()"
 			   class="uk-form-icon uk-form-icon-flip"
 			   uk-icon="check"></a>
-			<input #inputElement
-				   class="uk-input uk-form-small"
+			<input class="uk-input uk-form-small"
 				   type="text"
 				   placeholder="Title"
 				   (focusout)="cancelEditing()"
@@ -25,6 +24,6 @@
 	</form>
 </div>
 <app-confirm-delete-element-modal [type]="'table'"
-								  [name]="element?.name"
+								  [name]="element?.name || ''"
 								  (confirmed)="onDelete()">
 </app-confirm-delete-element-modal>

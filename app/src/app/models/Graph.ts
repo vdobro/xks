@@ -19,13 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {DeckElement} from "./DeckElement";
 import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
-export interface Graph extends BaseEntity {
-	deckId: string,
-	name: string,
+export interface Graph extends DeckElement, BaseEntity {
 }

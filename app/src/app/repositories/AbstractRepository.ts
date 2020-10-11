@@ -25,7 +25,7 @@ import PouchFind from "pouchdb-find";
 import {UserSessionService} from "../services/user-session.service";
 import {environment} from "../../environments/environment";
 import {TableConfiguration} from "../models/TableConfiguration";
-import {Observable, Subject, Subscribable} from "rxjs";
+import {Subject, Subscribable} from "rxjs";
 import {User} from "../models/User";
 import {stripTrailingSlash} from "../../environments/utils";
 
@@ -38,7 +38,7 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 
 	private static pouchFindInitialized = false;
 
-	private readonly _sourceChanged = new Subject();
+	private readonly _sourceChanged = new Subject<void>();
 	readonly sourceChanged: Subscribable<void> = this._sourceChanged;
 
 	protected db: any;
@@ -51,9 +51,9 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	private readonly _entityDeletedId = new Subject<string>();
 	private readonly _entityUpdated = new Subject<Entity>();
 
-	readonly entityCreated: Observable<Entity> = this._entityCreated;
-	readonly entityDeletedId: Observable<string> = this._entityDeletedId;
-	readonly entityUpdated: Observable<Entity> = this._entityUpdated;
+	readonly entityCreated: Subscribable<Entity> = this._entityCreated;
+	readonly entityDeleted: Subscribable<string> = this._entityDeletedId;
+	readonly entityUpdated: Subscribable<Entity> = this._entityUpdated;
 
 	protected abstract mapToDataEntity(entity: Entity): DataEntity
 
@@ -92,13 +92,13 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		const allDocsResponse = await this.db.allDocs({
 			include_docs: true
 		});
-		return allDocsResponse.rows.map((value) => this.mapToEntity(value.doc));
+		return allDocsResponse.rows.map((value: { doc?: DataEntity; }) => this.mapToEntity(value.doc!!));
 	}
 
 	async getById(id: string): Promise<Entity> {
 		const dataEntity = await this.getDataEntity(id);
 		if (!dataEntity) {
-			return null;
+			throw new Error('Could not find entity with id ' + id);
 		}
 		return this.mapToEntity(dataEntity);
 	}
@@ -125,7 +125,7 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		});
 		for (let row of revisions.rows) {
 			const id: string = row.id;
-			const doc = idMap.get(id);
+			const doc = idMap.get(id)!!;
 			doc._rev = row.value.rev;
 			await this.db.put(doc);
 		}
@@ -142,18 +142,18 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		try {
 			return await this.db.get(id);
 		} catch (e) {
-			console.log('Could not get document ' + id);
-			return null;
+			throw new Error('Could not get document ' + id);
 		}
 	}
 
-	private async userChangedHandler(user: User) {
+	private async userChangedHandler(user: User | null) {
 		if (user) {
 			const remoteName = this.resolveRemoteDatabaseName(user.tableConfig);
 			this.userDb = new PouchDB(remoteName);
 			const remoteUrl = stripTrailingSlash(environment.databaseUrl) + "/" + remoteName;
 			const remoteDb = new PouchDB(remoteUrl, {
 				fetch(url, opts) {
+					// @ts-ignore
 					opts.credentials = 'include';
 					return PouchDB.fetch(url, opts);
 				}
@@ -166,13 +166,13 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		this._sourceChanged.next();
 	}
 
-	private syncRemoteDb(remoteDb) {
+	private syncRemoteDb(remoteDb: PouchDB.Database<{}>) {
 		this.remoteSyncHandler = this.userDb.sync(remoteDb, {
 			live: true,
 			retry: true,
-		}).on('error', err => {
+		}).on('error', (err: string) => {
 			console.log('(P|C)ouchDB sync error: ' + err);
-		}).on('change', _ => {
+		}).on('change', () => {
 			this._sourceChanged.next();
 		});
 	}
