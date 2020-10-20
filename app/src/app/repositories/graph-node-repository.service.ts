@@ -64,7 +64,7 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 			_id: entity.id,
 			_rev: '',
 			graphId: entity.graphId,
-			value: entity.value,
+			valueId: entity.valueId,
 		};
 	}
 
@@ -72,7 +72,7 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 		return {
 			id: entity._id,
 			graphId: entity.graphId,
-			value: entity.value,
+			valueId: entity.valueId,
 		};
 	}
 
@@ -94,5 +94,5 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 
 interface GraphNodeDataEntity extends BaseDataEntity {
 	graphId: string,
-	value: string,
+	valueId: string,
 }

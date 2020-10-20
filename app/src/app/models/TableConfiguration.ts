@@ -32,4 +32,5 @@ export interface TableConfiguration {
 	graphs: string,
 	graphNodes: string,
 	graphEdges: string
+	answerValues: string,
 }

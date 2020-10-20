@@ -31,6 +31,7 @@ import {BaseDataEntity} from "../repositories/BaseRepository";
 import {Subject, Subscribable} from "rxjs";
 import {TableRepository} from "../repositories/table-repository.service";
 import {TableSessionModeService} from "./table-session-mode.service";
+import {AnswerValueService} from "./answer-value.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -51,7 +52,9 @@ export class TableCellService {
 		private readonly rowRepository: TableRowRepository,
 		private readonly columnRepository: TableColumnRepository,
 		private readonly tableRepository: TableRepository,
-		private readonly sessionModeService: TableSessionModeService) {
+		private readonly sessionModeService: TableSessionModeService,
+		private readonly answerService: AnswerValueService,
+	) {
 	}
 
 	async getColumns(table: Table): Promise<TableColumn[]> {
@@ -88,23 +91,24 @@ export class TableCellService {
 		const allRows = await this.getRows(table);
 		const allColumns = await this.getColumns(table);
 		const values = new Map<string, string>();
-		allColumns.forEach((value: TableColumn) => {
-			values.set(value.id, '');
-		});
-		const row = {
+		for(let column of allColumns) {
+			const answer = await this.answerService.create('');
+			values.set(column.id, answer.id);
+		}
+		const row : TableRow = {
 			id: uuid(),
 			tableId: table.id,
 			index: allRows.length,
-			values: values
-		}
+			valueIds: values
+		};
 		await this.rowRepository.add(row);
 		this._rowCountChanged.next(table);
 		return row;
 	}
 
 	async changeCellValue(cellValue: string, row: TableRow, column: TableColumn): Promise<TableRow> {
-		row.values.set(column.id, cellValue);
-		await this.rowRepository.update(row);
+		const answer = await this.answerService.getForCell(row, column);
+		await this.answerService.set(cellValue, answer);
 		return row;
 	}
 
@@ -115,6 +119,9 @@ export class TableCellService {
 
 	async deleteRow(row: TableRow) {
 		await this.rowRepository.delete(row.id);
+		for (let value of row.valueIds.values()) {
+			await this.answerService.delete(value);
+		}
 		this._rowCountChanged.next(await this.tableRepository.getById(row.tableId));
 	}
 
@@ -131,12 +138,21 @@ export class TableCellService {
 	async deleteColumn(column: TableColumn) {
 		const rows = await this.rowRepository.getByTableId(column.tableId);
 		for (let row of rows) {
-			row.values.delete(column.id);
+			await this.answerService.delete(row.valueIds.get(column.id)!!);
+			row.valueIds.delete(column.id);
 			await this.rowRepository.update(row);
 		}
 		const table = await this.tableRepository.getById(column.tableId);
 		await this.sessionModeService.deleteAllWithColumn(table, column.id);
 		await this.columnRepository.delete(column.id);
+		const oldIndex = column.index;
+		const columns = await this.getColumns(table);
+		for (let remainingColumn of columns) {
+			if (remainingColumn.index > oldIndex) {
+				remainingColumn.index--;
+				await this.updateColumn(remainingColumn);
+			}
+		}
 		this._columnsChanged.next(await this.tableRepository.getById(column.tableId));
 	}
 
@@ -145,10 +161,10 @@ export class TableCellService {
 		this._columnsChanged.next(table);
 	}
 
-	private async appendColumnToRow(row: TableRow, column: TableColumn): Promise<TableRow> {
-		row.values.set(column.id, '');
+	private async appendColumnToRow(row: TableRow, column: TableColumn): Promise<void> {
+		const cellValue = await this.answerService.create('');
+		row.valueIds.set(column.id, cellValue.id);
 		await this.rowRepository.update(row);
-		return row;
 	}
 
 	private static async moveElement<T extends { id: string, index: number },

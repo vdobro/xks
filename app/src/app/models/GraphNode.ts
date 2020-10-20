@@ -27,5 +27,5 @@ import {BaseEntity} from "./BaseEntity";
  */
 export interface GraphNode extends BaseEntity {
 	graphId: string,
-	value: string,
+	valueId: string,
 }

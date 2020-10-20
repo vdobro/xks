@@ -21,21 +21,17 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {DeckElementService} from './deck-element.service';
+import {AnswerValueService} from './answer-value.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
-/**
- * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
- */
-describe('DeckElementService', () => {
-	let service: DeckElementService;
+describe('AnswerValueService', () => {
+	let service: AnswerValueService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule],
 		});
-		service = TestBed.inject(DeckElementService);
+		service = TestBed.inject(AnswerValueService);
 	});
 
 	it('should be created', () => {

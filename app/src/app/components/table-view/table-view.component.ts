@@ -27,7 +27,7 @@ import {TableRow} from "../../models/TableRow";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 import {TableRowComponent} from "../table-row/table-row.component";
 import {TableColumnComponent} from "../table-column/table-column.component";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {TableService} from "../../services/table.service";
 import {DeckService} from "../../services/deck.service";
 import {NavigationControlService} from "../../services/navigation-control.service";
@@ -74,7 +74,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 	}
 
 	async ngOnInit() {
-		this.activatedRoute.paramMap.subscribe(async params => {
+		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(TABLE_ID_PARAM);
 			this.table = id ? await this.tableService.getById(id) : null;
 

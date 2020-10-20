@@ -27,6 +27,7 @@ import {GraphEdgeRepository} from "../repositories/graph-edge-repository.service
 import {Graph} from "../models/Graph";
 import {GraphNode} from "../models/GraphNode";
 import {GraphEdge} from "../models/GraphEdge";
+import {AnswerValueService} from "./answer-value.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -39,15 +40,17 @@ export class GraphElementService {
 	private unnamedEdgeNumber: number = 1;
 
 	constructor(private readonly nodeRepository: GraphNodeRepository,
-				private readonly edgeRepository: GraphEdgeRepository) {
+				private readonly edgeRepository: GraphEdgeRepository,
+				private readonly answerService: AnswerValueService) {
 
 	}
 
 	async addNode(graph: Graph, value: string): Promise<GraphNode> {
+		const answer = await this.answerService.create(value);
 		const node: GraphNode = {
 			graphId: graph.id,
 			id: uuid(),
-			value: value
+			valueId: answer.id
 		};
 		await this.nodeRepository.add(node);
 		return node;

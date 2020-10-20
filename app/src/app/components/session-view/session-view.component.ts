@@ -33,14 +33,15 @@ import {SidebarService} from "../../services/sidebar.service";
 import {TopBarService} from "../../services/top-bar.service";
 import {NavBarItem} from "../nav-bar-item";
 import {SessionNavigationComponent} from "../session-navigation/session-navigation.component";
-import {LearningSessionState, StudySessionService} from "../../services/study-session.service";
+import {StudySessionService} from "../../services/study-session.service";
 import {Graph} from "../../models/Graph";
 import {GraphSessionService} from "../../services/graph-session.service";
 import {GRAPH_ID_PARAM} from "../graph-view/graph-view.component";
 import {GraphService} from "../../services/graph.service";
-import {FlashcardField} from "../../services/exercise-task.service";
 import {NavigationService} from "../../services/navigation.service";
 import {DeckElement} from "../../models/DeckElement";
+import {FlashcardField} from "../../services/models/flashcard-field";
+import {LearningSessionState} from "../../services/models/learning-session-state";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 export const SESSION_START_SCORE_PARAM = "initial-score";
@@ -82,7 +83,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		private readonly topBarService: TopBarService,
 		private readonly navigationService: NavigationService
 	) {
-		this.route.paramMap.subscribe(async params => {
+		this.route.paramMap.subscribe(async (params: ParamMap) => {
 			const tableId = params.get(TABLE_ID_PARAM);
 			const tableSessionModeId = params.get(TABLE_SESSION_MODE_ID_PARAM);
 			const graphId = params.get(GRAPH_ID_PARAM);
@@ -156,13 +157,13 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	async onForceAcceptAnswer() {
+	async onForceAcceptAnswer(currentInput: string) {
 		if (!this.sessionService || !this.state) {
 			return;
 		}
 
 		SessionViewComponent.clearNotifications();
-		this.state = await this.sessionService.acceptLastAnswer(this.state);
+		this.state = await this.sessionService.acceptLastAnswer(currentInput, this.state);
 		UIkit.notification("Answer accepted", {
 			status: 'warning',
 			timeout: 1000,

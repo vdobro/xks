@@ -30,9 +30,13 @@ import {TableRow} from "../models/TableRow";
 import {Graph} from "../models/Graph";
 import {GraphElementService} from "./graph-element.service";
 import {GraphEdgeRepository} from "../repositories/graph-edge-repository.service";
-import {BaseEntity} from "../models/BaseEntity";
 import {GraphNode} from "../models/GraphNode";
 import {levenshtein} from "../../environments/utils";
+import {AnswerValue} from "../models/AnswerValue";
+import {AnswerValueRepository} from "../repositories/answer-value-repository.service";
+import {ExerciseTask} from "./models/exercise-task";
+import {FlashcardField} from "./models/flashcard-field";
+import {AnswerFeedback} from "./models/answer-feedback";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -50,7 +54,8 @@ export class ExerciseTaskService {
 	constructor(
 		private readonly tableCellService: TableCellService,
 		private readonly graphElementService: GraphElementService,
-		private readonly graphEdgeRepository: GraphEdgeRepository) {
+		private readonly graphEdgeRepository: GraphEdgeRepository,
+		private readonly answerValueRepository: AnswerValueRepository) {
 	}
 
 	async getTableTaskList(table: Table,
@@ -59,22 +64,24 @@ export class ExerciseTaskService {
 						   startScore: number,
 						   maxScore: number): Promise<ExerciseTask[]> {
 		const rows = await this.tableCellService.getRows(table);
-		return rows.map(row => {
-			const answerFields = answerColumns.map(column =>
-				ExerciseTaskService.mapColumnToFlashcardField(row, column));
-			return {
+		const tasks : ExerciseTask[] = [];
+		for (let row of rows) {
+			const answerFields = await Promise.all(answerColumns.map(column =>
+				this.mapColumnToFlashcardField(row, column)));
+			const questions = await Promise.all(questionColumns.map(column =>
+				this.mapColumnToFlashcardField(row, column)));
+			tasks.push({
 				id: uuid(),
 				ignoreAnswerOrder: false,
-				elementId: row.id,
-				questions: questionColumns.map(column =>
-					ExerciseTaskService.mapColumnToFlashcardField(row, column)),
+				questions: questions,
 				answers: answerFields,
 				pendingAnswers: answerFields,
 				doneAnswers: [],
 				startingScore: startScore,
 				maxScore: maxScore,
-			};
-		});
+			});
+		}
+		return tasks;
 	}
 
 	async getGraphTaskList(graph: Graph,
@@ -92,7 +99,7 @@ export class ExerciseTaskService {
 					node: targetNode,
 				});
 			}
-			const answerFields = transitions.map(ExerciseTaskService.mapEdgeToFlashcardField);
+			const answerFields = await Promise.all(transitions.map(this.mapEdgeToFlashcardField));
 			const ignoreAnswerOrder = edges.every(x => x.name === '');
 			if (answerFields.length > 0) {
 				exercises.push({
@@ -100,7 +107,7 @@ export class ExerciseTaskService {
 					ignoreAnswerOrder: ignoreAnswerOrder,
 					answers: answerFields,
 					pendingAnswers: answerFields,
-					questions: [ExerciseTaskService.mapNodeToFlashcardField(node)],
+					questions: [await this.mapNodeToFlashcardField(node)],
 					doneAnswers: [],
 					startingScore: startScore,
 					maxScore: maxScore,
@@ -120,16 +127,17 @@ export class ExerciseTaskService {
 		const currentState = this.getState(task);
 		const field = this.determineFieldToCheck(answerValue, fieldId, task, lastAnswerFieldId);
 		const expectedAnswer = field.value;
-		const answerCorrect = answerValue === expectedAnswer;
+		const answerCorrect = ExerciseTaskService.checkIfAnswerValueIsIn(answerValue, expectedAnswer);
 		this.updateScore(currentState, task.maxScore, answerCorrect, field);
 		this.taskStates.set(task.id, currentState);
 		return {
+			input: answerValue,
 			correct: answerCorrect,
 			actualField: field
 		};
 	}
 
-	forceAcceptAnswer(fieldId: string, task: ExerciseTask): AnswerFeedback {
+	forceAcceptAnswer(currentValue: string, fieldId: string, task: ExerciseTask): AnswerFeedback {
 		const currentState = this.getState(task);
 		const field = task.answers.find(field => field.identifier.id === fieldId)!!;
 
@@ -140,6 +148,7 @@ export class ExerciseTaskService {
 
 		return {
 			correct: true,
+			input: currentValue,
 			actualField: field
 		}
 	}
@@ -177,12 +186,37 @@ export class ExerciseTaskService {
 	}
 
 	private getFieldWithClosestValue(value: string, fields: FlashcardField[]): FlashcardField {
-		const sorted = fields.sort((a, b) => {
+		const fieldAnswers : {
+			value: string,
+			flashcard: FlashcardField,
+			isAlternative: boolean
+		}[] = [];
+		for (let field of fields) {
+			fieldAnswers.push({
+				value: field.value.defaultValue,
+				isAlternative : false,
+				flashcard: field
+			});
+			for (let alternative of field.value.alternatives) {
+				fieldAnswers.push({
+					value: alternative,
+					isAlternative: true,
+					flashcard: field
+				})
+			}
+		}
+		const sorted = fieldAnswers.sort((a, b) => {
 			const distanceA = levenshtein(value, a.value);
 			const distanceB = levenshtein(value, b.value);
-			return distanceA < distanceB ? -1 : (distanceA > distanceB ? 1 : 0);
+			return distanceA < distanceB
+				? -1
+				: (distanceA > distanceB
+					? 1
+					: (!a.isAlternative && b.isAlternative
+						? -1
+						: (a.isAlternative && !b.isAlternative ? 1 : 0)));
 		});
-		return sorted[0];
+		return sorted[0].flashcard;
 	}
 
 	private updateScore(currentState: TaskState,
@@ -227,6 +261,39 @@ export class ExerciseTaskService {
 		});
 	}
 
+	private async mapColumnToFlashcardField(row: TableRow, column: TableColumn): Promise<FlashcardField> {
+		const value = await this.answerValueRepository.getById(row.valueIds.get(column.id)!!);
+		return {
+			identifier: column,
+			value: value,
+		};
+	}
+
+	private async mapEdgeToFlashcardField(transition: EdgeWithDestinationNode): Promise<FlashcardField> {
+		const value = await this.answerValueRepository.getById(transition.node.valueId);
+		return {
+			identifier: {
+				id: transition.node.id,
+				name: transition.edgeName,
+			},
+			value: value,
+		};
+	}
+
+	private async mapNodeToFlashcardField(node: GraphNode): Promise<FlashcardField> {
+		return {
+			identifier: {
+				id: node.id,
+				name: '',
+			},
+			value: await this.answerValueRepository.getById(node.valueId),
+		}
+	}
+
+	private static checkIfAnswerValueIsIn(answer: string, expected: AnswerValue) : boolean {
+		return expected.defaultValue === answer || expected.alternatives.find(x => x === answer) !== undefined;
+	}
+
 	private static revertTaskState(state: TaskState, field: FlashcardField) {
 		const subscores = state.columnSubscores;
 		const columnId = field.identifier.id;
@@ -246,7 +313,7 @@ export class ExerciseTaskService {
 		return score;
 	}
 
-	private static incrementMainScoreIfPossible(state: TaskState) {
+	private static incrementMainScoreIfPossible(state: TaskState) : void {
 		const old = state.score.value;
 		const subscores = state.columnSubscores;
 		if (Array.from(subscores.values()).every(score => score.value > old)) {
@@ -254,13 +321,13 @@ export class ExerciseTaskService {
 		}
 	}
 
-	private static incrementSubscore(state: TaskState, columnId: string) {
+	private static incrementSubscore(state: TaskState, columnId: string) : void {
 		const subscores = state.columnSubscores;
 		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.incrementScore(subscore));
 	}
 
-	private static changeSubscore(state: TaskState, columnId: string, value: number) {
+	private static changeSubscore(state: TaskState, columnId: string, value: number) : void {
 		const subscores = state.columnSubscores;
 		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.changeScore(subscore, value));
@@ -276,58 +343,6 @@ export class ExerciseTaskService {
 			previous: score,
 		}
 	}
-
-	private static mapColumnToFlashcardField(row: TableRow, column: TableColumn): FlashcardField {
-		return {
-			identifier: column,
-			value: row.values.get(column.id)!!,
-		};
-	}
-
-	private static mapEdgeToFlashcardField(transition: EdgeWithDestinationNode): FlashcardField {
-		return {
-			identifier: {
-				id: transition.node.id,
-				name: transition.edgeName,
-			},
-			value: transition.node.value,
-		};
-	}
-
-	private static mapNodeToFlashcardField(node: GraphNode): FlashcardField {
-		return {
-			identifier: {
-				id: node.id,
-				name: '',
-			},
-			value: node.value,
-		}
-	}
-}
-
-export interface ExerciseTask {
-	id: string,
-	ignoreAnswerOrder: boolean,
-	questions: FlashcardField[],
-	answers: FlashcardField[],
-	pendingAnswers: FlashcardField[],
-	doneAnswers: FlashcardField[],
-	startingScore: number,
-	maxScore: number,
-}
-
-export interface FlashcardField {
-	identifier: NamedEntity,
-	value: string,
-}
-
-export interface NamedEntity extends BaseEntity {
-	name: string
-}
-
-export interface AnswerFeedback {
-	correct: boolean,
-	actualField: FlashcardField,
 }
 
 interface TaskState {

@@ -19,26 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {DeckElementService} from './deck-element.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {BaseEntity} from "../../models/BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.09.15
  */
-describe('DeckElementService', () => {
-	let service: DeckElementService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(DeckElementService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export interface NamedEntity extends BaseEntity {
+	name: string
+}

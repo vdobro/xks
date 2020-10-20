@@ -44,14 +44,14 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 
 	protected mapToDataEntity(entity: TableRow): TableRowDataEntity {
 		const values = {};
-		entity.values.forEach((value, key) => {
+		entity.valueIds.forEach((value, key) => {
 			// @ts-ignore This is intended weak typing
 			values[key] = value;
 		});
 		return {
 			_id: entity.id,
 			_rev: '',
-			values: JSON.stringify(values),
+			valueIds: JSON.stringify(values),
 			index: entity.index,
 			tableId: entity.tableId
 		}
@@ -59,12 +59,12 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 
 	protected mapToEntity(entity: TableRowDataEntity): TableRow {
 		const values = new Map<string, string>();
-		for (let [key, value] of Object.entries(JSON.parse(entity.values))) {
+		for (let [key, value] of Object.entries(JSON.parse(entity.valueIds))) {
 			values.set(key, value as string);
 		}
 		return {
 			id: entity._id,
-			values: values,
+			valueIds: values,
 			index: entity.index,
 			tableId: entity.tableId
 		}
@@ -118,5 +118,5 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 interface TableRowDataEntity extends BaseDataEntity {
 	tableId: string,
 	index: number,
-	values: string
+	valueIds: string
 }

@@ -31,8 +31,8 @@ import {
 	Output,
 	ViewChild
 } from '@angular/core';
-import {FlashcardField} from "../../services/exercise-task.service";
 import {FormControl} from "@angular/forms";
+import {FlashcardField} from "../../services/models/flashcard-field";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -65,7 +65,7 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 	@Output()
 	submitted = new EventEmitter<{ field: FlashcardField, value: string, }>();
 	@Output()
-	forceAcceptRequest = new EventEmitter();
+	forceAcceptRequest = new EventEmitter<string>();
 
 	answerInput = new FormControl('');
 
@@ -98,7 +98,7 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 
 	async forceAcceptAnswer() {
 		if (this.allowOverride) {
-			this.forceAcceptRequest.emit(this.answerField);
+			this.forceAcceptRequest.emit(this.answerInput.value);
 			this.resetInput();
 		}
 	}

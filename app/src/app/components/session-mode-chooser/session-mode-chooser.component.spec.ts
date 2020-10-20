@@ -22,6 +22,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {SessionModeChooserComponent} from './session-mode-chooser.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,7 +34,8 @@ describe('SessionModeChooserComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [SessionModeChooserComponent]
+			imports: [HttpClientTestingModule],
+			declarations: [SessionModeChooserComponent],
 		}).compileComponents();
 	});
 

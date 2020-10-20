@@ -47,7 +47,8 @@ class UserDatabaseService(
 				tableSessionModes = createWithPermission(username),
 				graphs = createWithPermission(username),
 				graphNodes = createWithPermission(username),
-				graphEdges = createWithPermission(username)
+				graphEdges = createWithPermission(username),
+				answerValues = createWithPermission(username),
 		)
 	}
 
@@ -60,6 +61,7 @@ class UserDatabaseService(
 		client.deleteDB(configuration.tableColumns)
 		client.deleteDB(configuration.tables)
 		client.deleteDB(configuration.decks)
+		client.deleteDB(configuration.answerValues)
 	}
 
 	private fun createWithPermission(username: String): String {

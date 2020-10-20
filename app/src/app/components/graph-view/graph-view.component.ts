@@ -21,7 +21,7 @@
 
 import {DataSet, Network, Options} from "vis-network/standalone";
 import {AfterContentChecked, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {Graph} from "../../models/Graph";
 import {GraphService} from "../../services/graph.service";
 import {NavigationService} from "../../services/navigation.service";
@@ -34,6 +34,7 @@ import {GraphNodeRepository} from "../../repositories/graph-node-repository.serv
 import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
 import {GraphToolbarComponent} from "../graph-toolbar/graph-toolbar.component";
 import {NavigationControlService} from "../../services/navigation-control.service";
+import {AnswerValueService} from "../../services/answer-value.service";
 
 export const GRAPH_ID_PARAM: string = 'graphId';
 
@@ -91,6 +92,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 	private readonly edges = new DataSet<any>();
 
 	constructor(
+		private readonly answerService: AnswerValueService,
 		private readonly graphService: GraphService,
 		private readonly graphElementService: GraphElementService,
 		private readonly nodeRepository: GraphNodeRepository,
@@ -160,7 +162,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 	}
 
 	private setUpDataLoading() {
-		this.activatedRoute.paramMap.subscribe(async params => {
+		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(GRAPH_ID_PARAM);
 			this.graph = id ? await this.graphService.getById(id) : null;
 			if (this.graph) {
@@ -173,12 +175,12 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 	}
 
 	private setUpDataEvents() {
-		this.nodeRepository.entityCreated.subscribe(entity => {
-			this.nodes.add(GraphViewComponent.mapToNodeView(entity));
+		this.nodeRepository.entityCreated.subscribe(async entity => {
+			this.nodes.add(await this.mapToNodeView(entity));
 			this.network?.fit();
 		});
-		this.nodeRepository.entityUpdated.subscribe(entity => {
-			this.nodes.update(GraphViewComponent.mapToNodeView(entity));
+		this.nodeRepository.entityUpdated.subscribe(async entity => {
+			this.nodes.update(await this.mapToNodeView(entity));
 			this.selectedSourceNode = null;
 		})
 		this.nodeRepository.entityDeleted.subscribe(id => {
@@ -237,7 +239,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		if (this.graph) {
 			const nodes = await this.graphElementService.getNodes(this.graph);
 			const edges = await this.graphElementService.getEdges(this.graph);
-			this.nodes.add(nodes.map(GraphViewComponent.mapToNodeView));
+			this.nodes.add(await Promise.all(nodes.map(this.mapToNodeView)));
 			this.edges.add(edges.map(GraphViewComponent.mapToEdgeView));
 		}
 	}
@@ -293,10 +295,11 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		}
 	}
 
-	private static mapToNodeView(node: GraphNode): NodeView {
+	private async mapToNodeView(node: GraphNode): Promise<NodeView> {
+		const label = await this.answerService.getForNode(node);
 		return {
 			id: node.id,
-			label: node.value,
+			label: label.defaultValue,
 			margin: 10,
 			color: {
 				border: "#303030",

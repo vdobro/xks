@@ -29,5 +29,5 @@ export interface TableRow extends BaseEntity {
 	id: string;
 	tableId: string;
 	index: number;
-	values: Map<string, string>;
+	valueIds: Map<string, string>;
 }

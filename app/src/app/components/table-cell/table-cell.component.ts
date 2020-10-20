@@ -22,6 +22,7 @@
 import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TableRow} from "../../models/TableRow";
 import {TableColumn} from "../../models/TableColumn";
+import {AnswerValueService} from "../../services/answer-value.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -51,16 +52,18 @@ export class TableCellComponent implements OnInit, OnChanges {
 	editMode: boolean = false;
 	currentValue: string = '';
 
-	constructor() {
+	constructor(
+		private readonly answerService: AnswerValueService,
+	) {
 	}
 
-	ngOnInit(): void {
-		this.updateExistingValue();
+	async ngOnInit(): Promise<void> {
+		await this.updateExistingValue();
 		this.editMode = this.newCell;
 	}
 
-	ngOnChanges(changes: SimpleChanges) {
-		this.updateExistingValue();
+	async ngOnChanges(changes: SimpleChanges) {
+		await this.updateExistingValue();
 		this.editMode = this.newCell;
 	}
 
@@ -81,9 +84,10 @@ export class TableCellComponent implements OnInit, OnChanges {
 		this.editMode = false;
 	}
 
-	private updateExistingValue() {
+	private async updateExistingValue() {
 		if (this.row && this.column) {
-			this.currentValue = this.row.values.get(this.column.id) || '';
+			const value = await this.answerService.getForCell(this.row, this.column);
+			this.currentValue = value.defaultValue;
 		} else {
 			this.currentValue = '';
 		}

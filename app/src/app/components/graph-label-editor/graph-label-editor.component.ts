@@ -36,6 +36,7 @@ import {FormControl} from "@angular/forms";
 import {Graph} from "../../models/Graph";
 import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
 import {GraphEdge} from "../../models/GraphEdge";
+import {AnswerValueService} from "../../services/answer-value.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -70,14 +71,15 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 
 	constructor(
 		private readonly nodeRepository: GraphNodeRepository,
-		private readonly elementService: GraphElementService) {
+		private readonly elementService: GraphElementService,
+		private readonly answerService: AnswerValueService) {
 	}
 
 	ngOnInit(): void {
 	}
 
 	ngAfterContentInit(): void {
-		setTimeout(() => {
+		setTimeout(async () => {
 			if (this.edgeLabelInputElement) {
 				this.edgeLabelInputElement.nativeElement.focus();
 				this.edgeLabelInput.setValue(this.selectedEdge?.name);
@@ -85,7 +87,10 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 				this.nodeLabelInputElement.nativeElement.focus();
 			}
 			if (this.nodeLabelInputElement && !this.shouldAppend) {
-				this.nodeLabelInput.setValue(this.selectedNode?.value);
+				const value = this.selectedNode
+					? await this.answerService.getForNode(this.selectedNode)
+					: '';
+				this.nodeLabelInput.setValue(value);
 			}
 		});
 	}
@@ -137,8 +142,8 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 		if (!nodeLabel || !this.selectedNode) {
 			return;
 		}
-		this.selectedNode.value = nodeLabel;
-		await this.nodeRepository.update(this.selectedNode);
+		const existingValue = await this.answerService.getForNode(this.selectedNode);
+		await this.answerService.set(nodeLabel, existingValue);
 	}
 
 	private async createNode() {
@@ -148,5 +153,4 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 		}
 		await this.elementService.addNode(this.graph, nodeLabel);
 	}
-
 }

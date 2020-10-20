@@ -20,7 +20,7 @@
  */
 
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {ExerciseTask} from "../../services/exercise-task.service";
+import {ExerciseTask} from "../../services/models/exercise-task";
 
 /**
  * @author Vitalijus Dobrovolskis

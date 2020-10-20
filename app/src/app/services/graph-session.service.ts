@@ -20,9 +20,10 @@
  */
 
 import {Injectable} from '@angular/core';
-import {LearningSessionState, StudySessionService} from "./study-session.service";
+import {StudySessionService} from "./study-session.service";
 import {ExerciseTaskService} from "./exercise-task.service";
 import {Graph} from "../models/Graph";
+import {LearningSessionState} from "./models/learning-session-state";
 
 /**
  * @author Vitalijus Dobrovolskis

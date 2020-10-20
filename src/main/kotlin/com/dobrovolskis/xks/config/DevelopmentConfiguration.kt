@@ -32,10 +32,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
  * @since 2020.09.09
  */
 @Configuration
-@Profile("development")
+@Profile(PROFILE_DEVELOPMENT)
 class DevelopmentConfiguration : WebMvcConfigurer {
 	override fun addCorsMappings(registry: CorsRegistry) {
 		registry.addMapping("/api/**")
 				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 	}
 }
+
+const val PROFILE_DEVELOPMENT = "development"

@@ -19,26 +19,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {DeckElementService} from './deck-element.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {LearningSession} from "./learning-session";
+import {ExerciseTask} from "./exercise-task";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.09.15
  */
-describe('DeckElementService', () => {
-	let service: DeckElementService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(DeckElementService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export interface LearningSessionState {
+	session: LearningSession,
+	currentTask: ExerciseTask,
+	progress: number,
+	lastAnswer: {
+		correct: boolean,
+		expectedAnswer: string,
+		fieldId: string,
+		task: ExerciseTask
+	} | null,
+}

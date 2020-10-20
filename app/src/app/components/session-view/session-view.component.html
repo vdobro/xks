@@ -11,14 +11,15 @@
 			</div>
 		</div>
 		<div *ngFor="let answer of state.currentTask.doneAnswers">
-			<session-answer-view [answerField]="answer"
+			<session-answer-view [answerInput]="answer.input"
+								 [field]="answer.field"
 								 [indexNumber]="0"
 								 [pending]="false"></session-answer-view>
 		</div>
 		<div *ngIf="state.currentTask.pendingAnswers.length > 0">
 			<session-answer-editor
 				(submitted)="onAnswer($event)"
-				(forceAcceptRequest)="onForceAcceptAnswer()"
+				(forceAcceptRequest)="onForceAcceptAnswer($event)"
 				[lastAnswerAccepted]="state.lastAnswer ? state.lastAnswer.correct : true"
 				[indexNumber]="1 + state.currentTask.doneAnswers.length"
 				[answerField]="state.currentTask.pendingAnswers[0]"
@@ -27,7 +28,7 @@
 		</div>
 		<div *ngFor="let answerField of state.currentTask.pendingAnswers.slice(1); index as i">
 			<session-answer-view
-				[answerField]="answerField"
+				[field]="answerField"
 				[indexNumber]="i + 2 + state.currentTask.doneAnswers.length"
 				[pending]="true"></session-answer-view>
 		</div>

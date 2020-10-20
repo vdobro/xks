@@ -21,7 +21,11 @@
 
 // @ts-ignore
 import {v4 as uuid} from 'uuid';
-import {AnswerFeedback, ExerciseTask, ExerciseTaskService} from "./exercise-task.service";
+import {ExerciseTaskService} from "./exercise-task.service";
+import {ExerciseTask} from "./models/exercise-task";
+import {AnswerFeedback} from "./models/answer-feedback";
+import {LearningSession} from "./models/learning-session";
+import {LearningSessionState} from "./models/learning-session-state";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -44,13 +48,14 @@ export class StudySessionService {
 			answerFeedback, state);
 	}
 
-	acceptLastAnswer(state: LearningSessionState): LearningSessionState {
+	acceptLastAnswer(currentValue: string,
+					 state: LearningSessionState): LearningSessionState {
 		if (!state.lastAnswer) {
 			return state;
 		}
 		const fieldId = state.lastAnswer.fieldId;
 		const lastTask = state.lastAnswer.task;
-		const answerFeedback = this.taskService.forceAcceptAnswer(fieldId, lastTask);
+		const answerFeedback = this.taskService.forceAcceptAnswer(currentValue, fieldId, lastTask);
 		return this.handleAnswerFeedback(fieldId, answerFeedback, state);
 	}
 
@@ -86,7 +91,10 @@ export class StudySessionService {
 		const doneAnswer = answerFeedback.actualField;
 		state.currentTask.pendingAnswers = state.currentTask.pendingAnswers
 			.filter(x => x.identifier.id !== doneAnswer.identifier.id);
-		state.currentTask.doneAnswers.push(doneAnswer);
+		state.currentTask.doneAnswers.push({
+			input: answerFeedback.input,
+			field: answerFeedback.actualField
+		});
 	}
 
 	private handleAnswerFeedback(fieldId: string,
@@ -101,7 +109,7 @@ export class StudySessionService {
 
 		state.lastAnswer = {
 			correct: answerFeedback.correct,
-			expectedAnswer: answerFeedback.actualField.value,
+			expectedAnswer: answerFeedback.actualField.value.defaultValue, //TODO: alternative value???
 			task: state.currentTask,
 			fieldId: fieldId
 		};
@@ -239,26 +247,6 @@ export class StudySessionService {
 	private static random(start: number, end: number): number {
 		return Math.floor(start + (Math.random() * (end - start)));
 	}
-}
-
-
-export interface LearningSession {
-	start: Date,
-	end: Date | null,
-	id: string,
-	complete: boolean,
-}
-
-export interface LearningSessionState {
-	session: LearningSession,
-	currentTask: ExerciseTask,
-	progress: number,
-	lastAnswer: {
-		correct: boolean,
-		expectedAnswer: string,
-		fieldId: string,
-		task: ExerciseTask
-	} | null,
 }
 
 interface InternalSessionState {

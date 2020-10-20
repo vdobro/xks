@@ -24,15 +24,16 @@ package com.dobrovolskis.xks.service
 import com.cloudant.http.HttpConnection
 import com.dobrovolskis.xks.config.ApplicationConfiguration
 import com.dobrovolskis.xks.config.DatabaseConnector
+import com.dobrovolskis.xks.config.PROFILE_DEVELOPMENT
 import com.dobrovolskis.xks.config.PersistenceConfiguration
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.EventListener
+import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import java.net.URL
-
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,10 +41,12 @@ import java.net.URL
  */
 @Component
 class DatabaseSetupService(
+		environment: Environment,
 		private val applicationConfiguration: ApplicationConfiguration,
 		private val persistenceConfiguration: PersistenceConfiguration,
 		databaseConnector: DatabaseConnector) : ApplicationListener<ApplicationReadyEvent> {
 	private val client = databaseConnector.adminClient()
+	private val developmentProfile = environment.activeProfiles.contains(PROFILE_DEVELOPMENT)
 
 	@EventListener
 	override fun onApplicationEvent(event: ApplicationReadyEvent) {
@@ -54,14 +57,17 @@ class DatabaseSetupService(
 		client.database(USERS_DB, true)
 		client.database(REPLICATOR_DB, true)
 
+		pushSettings()
+	}
+
+	private fun pushSettings() {
 		configure(USERS_SECURITY_EDITABLE, TRUE)
 		request(USERS_SECURITY, "{}")
 
-		val origins = arrayOf(
-				"http://localhost:4200",
-				"http://localhost:8080",
-				"https://${applicationConfiguration.host}").joinToString()
-		configure(CORS_ORIGINS, origins)
+		if (developmentProfile) {
+			configure(CORS_CREDENTIALS, TRUE)
+		}
+		configure(CORS_ORIGINS, getCorsOrigins())
 		configure(ENABLE_CORS, TRUE)
 		configure(SAME_SITE, "strict")
 	}
@@ -85,6 +91,14 @@ class DatabaseSetupService(
 
 		return URL(base + separator + path)
 	}
+
+	private fun getCorsOrigins() : String {
+		return if (developmentProfile)
+			"http://localhost:4200, http://localhost:8080"
+		 else {
+			"https://${applicationConfiguration.host}"
+		}
+	}
 }
 
 private const val TRUE = true.toString()
@@ -103,6 +117,7 @@ private const val ENABLE_CORS = "$HTTPD/enable_cors"
 
 private const val CORS = "/cors"
 private const val CORS_ORIGINS = "$CORS/origins"
+private const val CORS_CREDENTIALS = "$CORS/credentials"
 
 private const val HTTPD_AUTH = "/couch_httpd_auth"
 private const val SAME_SITE = "$HTTPD_AUTH/same_site"

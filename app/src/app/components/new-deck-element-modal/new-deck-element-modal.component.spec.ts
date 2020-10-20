@@ -22,6 +22,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NewDeckElementModalComponent} from './new-deck-element-modal.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,7 +34,8 @@ describe('NewTableModalComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [NewDeckElementModalComponent]
+			imports: [HttpClientTestingModule],
+			declarations: [NewDeckElementModalComponent],
 		}).compileComponents();
 	});
 

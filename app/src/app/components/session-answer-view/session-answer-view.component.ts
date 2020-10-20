@@ -20,7 +20,8 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {FlashcardField} from "../../services/exercise-task.service";
+import {FormControl} from "@angular/forms";
+import {FlashcardField} from "../../services/models/flashcard-field";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,7 +35,10 @@ import {FlashcardField} from "../../services/exercise-task.service";
 export class SessionAnswerViewComponent implements OnInit {
 
 	@Input()
-	answerField: FlashcardField | null = null;
+	answerInput: string  = '';
+
+	@Input()
+	field: FlashcardField | null = null;
 
 	@Input()
 	indexNumber: number = 0;
@@ -42,10 +46,29 @@ export class SessionAnswerViewComponent implements OnInit {
 	@Input()
 	pending: boolean = false;
 
+	control = new FormControl('');
+
 	constructor() {
 	}
 
 	ngOnInit(): void {
+		if (!this.pending && this.field !== null) {
+			const isAlternative = this.isAlternative();
+			const isMainAnswer = this.answerInput === this.field.value.defaultValue;
+
+			this.control.setValue(this.answerInput +
+				(isAlternative && !isMainAnswer
+					? ` (${this.field.value.defaultValue})`
+					: '')
+			);
+		}
 	}
 
+	private isAlternative() : boolean {
+		if (!this.field) {
+			return false;
+		}
+		return this.field.value.alternatives
+			.find(x => x === this.answerInput) !== undefined;
+	}
 }

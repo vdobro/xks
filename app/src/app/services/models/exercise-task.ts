@@ -19,26 +19,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {DeckElementService} from './deck-element.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FlashcardField} from "./flashcard-field";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.09.05
  */
-describe('DeckElementService', () => {
-	let service: DeckElementService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(DeckElementService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export interface ExerciseTask {
+	id: string,
+	ignoreAnswerOrder: boolean,
+	questions: FlashcardField[],
+	answers: FlashcardField[],
+	pendingAnswers: FlashcardField[],
+	doneAnswers: {
+		input: string,
+		field: FlashcardField,
+	}[],
+	startingScore: number,
+	maxScore: number,
+}

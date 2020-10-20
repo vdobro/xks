@@ -39,4 +39,6 @@ data class UserTableConfiguration(
 		val graphs: String,
 		val graphNodes: String,
 		val graphEdges: String,
+
+		val answerValues: String
 )

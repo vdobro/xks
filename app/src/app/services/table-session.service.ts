@@ -24,7 +24,8 @@ import {Table} from "../models/Table";
 import {ExerciseTaskService} from "./exercise-task.service";
 import {TableColumnRepository} from "../repositories/table-column-repository.service";
 import {TableSessionMode} from "../models/TableSessionMode";
-import {LearningSessionState, StudySessionService} from "./study-session.service";
+import {StudySessionService} from "./study-session.service";
+import {LearningSessionState} from "./models/learning-session-state";
 
 /**
  * @author Vitalijus Dobrovolskis
