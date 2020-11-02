@@ -88,7 +88,7 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 			}
 			if (this.nodeLabelInputElement && !this.shouldAppend) {
 				const value = this.selectedNode
-					? await this.answerService.getForNode(this.selectedNode)
+					? (await this.answerService.getForNode(this.selectedNode)).defaultValue
 					: '';
 				this.nodeLabelInput.setValue(value);
 			}
@@ -117,6 +117,7 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 		} else {
 			await this.createNode();
 		}
+		this.editingAborted.emit();
 	}
 
 	private async appendNewNode() {

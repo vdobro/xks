@@ -23,7 +23,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TableColumn} from "../../models/TableColumn";
 import {Table} from "../../models/Table";
 import {TableRow} from "../../models/TableRow";
-import {Subject} from "rxjs";
 import {TableCellService} from "../../services/table-cell.service";
 
 /**
@@ -43,14 +42,12 @@ export class TableNewRowEditorComponent implements OnInit {
 	table: Table | null = null;
 
 	@Output()
-	rowInEditing: TableRow | null = null;
-	@Output()
-	newColumnIndex: number = 0;
-	@Output()
 	editingStarted = new EventEmitter();
-
 	@Output()
-	newRow = new Subject<TableRow>();
+	newRow = new EventEmitter<TableRow>();
+
+	rowInEditing: TableRow | null = null;
+	newColumnIndex: number = 0;
 
 	constructor(private readonly cellService: TableCellService) {
 	}
@@ -58,12 +55,16 @@ export class TableNewRowEditorComponent implements OnInit {
 	async ngOnInit() {
 	}
 
-	async onCellSubmitted(value: string, column: TableColumn) {
+	async onCellSubmitted(value: { default: string, alternatives: string[] },
+						  column: TableColumn) {
 		if (this.newColumnIndex === 0) {
 			await this.initNewRow();
 		}
 		await this.updateRow(value, column);
 
+		if (value.default.length === 0) {
+			return;
+		}
 		if (this.newColumnIndex === this.columns.length - 1) {
 			this.newColumnIndex = 0;
 			this.newRow.next(this.rowInEditing!!);
@@ -77,7 +78,7 @@ export class TableNewRowEditorComponent implements OnInit {
 		this.rowInEditing = await this.cellService.createRow(this.table!!);
 	}
 
-	async updateRow(cellValue: string, column: TableColumn) {
+	async updateRow(cellValue: { default: string, alternatives: string[] }, column: TableColumn) {
 		this.rowInEditing = await this.cellService.changeCellValue(cellValue,
 			this.rowInEditing!!, column);
 	}

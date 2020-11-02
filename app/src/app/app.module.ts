@@ -63,6 +63,7 @@ import {NotFoundViewComponent} from './components/not-found-view/not-found-view.
 import {SessionQuestionViewComponent} from './components/session-question-view/session-question-view.component';
 import {SessionModeChooserComponent} from './components/session-mode-chooser/session-mode-chooser.component';
 import {SessionScoreSettingsComponent} from './components/session-score-settings/session-score-settings.component';
+import {AlternativeAnswerEditorComponent} from './components/alternative-answer-editor/alternative-answer-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -108,6 +109,7 @@ import {SessionScoreSettingsComponent} from './components/session-score-settings
 		SessionQuestionViewComponent,
 		SessionModeChooserComponent,
 		SessionScoreSettingsComponent,
+		AlternativeAnswerEditorComponent,
 	],
 	imports: [
 		BrowserModule,

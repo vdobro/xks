@@ -43,7 +43,7 @@ export class TableCellComponent implements OnInit, OnChanges {
 	column: TableColumn | null = null;
 
 	@Output()
-	cellValueChanged = new EventEmitter<string>();
+	cellValueChanged = new EventEmitter<{ default: string, alternatives: string[] }>();
 	@Output()
 	editingStarted = new EventEmitter();
 	@Output()
@@ -51,10 +51,10 @@ export class TableCellComponent implements OnInit, OnChanges {
 
 	editMode: boolean = false;
 	currentValue: string = '';
+	currentAlternatives: string[] = [];
+	allowLoseFocus : boolean = true;
 
-	constructor(
-		private readonly answerService: AnswerValueService,
-	) {
+	constructor(private readonly answerService: AnswerValueService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -80,8 +80,20 @@ export class TableCellComponent implements OnInit, OnChanges {
 
 	async onSubmit(value: string) {
 		this.currentValue = value;
-		this.cellValueChanged.emit(value);
+		this.emitCurrent();
 		this.editMode = false;
+	}
+
+	async onAlternativeSubmit(alternativeValues: string[]) {
+		this.currentAlternatives = alternativeValues;
+		this.emitCurrent();
+	}
+
+	private emitCurrent() {
+		this.cellValueChanged.emit({
+			default: this.currentValue,
+			alternatives: this.currentAlternatives
+		});
 	}
 
 	private async updateExistingValue() {
@@ -94,11 +106,21 @@ export class TableCellComponent implements OnInit, OnChanges {
 	}
 
 	cancelEditingIfExisting() {
-		if (!this.newCell) {
+		if (!this.newCell && this.allowLoseFocus && this.currentValue.length > 0) {
 			setTimeout(() => {
 				this.editMode = false;
 				this.editingStopped.emit();
 			}, 100);
+		}
+	}
+
+	async onAlternativesEditorStatusChange(dialogVisible: boolean) {
+		this.allowLoseFocus = !dialogVisible;
+		if (this.row && this.column) {
+			const oldValue = await this.answerService.getForCell(this.row, this.column);
+			if (this.currentValue === oldValue.defaultValue) {
+				this.cancelEditingIfExisting();
+			}
 		}
 	}
 }

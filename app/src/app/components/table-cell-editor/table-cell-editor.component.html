@@ -1,6 +1,6 @@
 <form (submit)="onSubmit()" class="uk-grid-small uk-flex-middle" uk-grid>
-	<div class="uk-inline">
-		<a (click)="onSubmit();$event.preventDefault();$event.stopPropagation();"
+	<div class="uk-inline uk-width-expand">
+		<a (mousedown)="onSubmit();$event.preventDefault();$event.stopPropagation();"
 		   class="uk-form-icon uk-form-icon-flip"
 		   uk-icon="check"></a>
 		<input #cellInputElement
@@ -9,4 +9,13 @@
 			   placeholder="Cell value"
 			   [formControl]="cellInput">
 	</div>
+	<div class="uk-inline uk-width-auto uk-padding-remove-left">
+		<a *ngIf="cellInput.value && cellInput.value === existingValue"
+		   class="uk-margin-xsmall-left uk-flex uk-flex-middle"
+		   uk-icon="more-vertical"
+		   (mousedown)="openAlternativesDialog();$event.preventDefault();$event.stopPropagation()"></a>
+	</div>
 </form>
+<app-alternative-answer-editor [existingValues]="alternativeValues"
+							   (closed)="onAlternativesEditorClosed()"
+							   (valuesChanged)="onAlternativesSubmitted($event)"></app-alternative-answer-editor>

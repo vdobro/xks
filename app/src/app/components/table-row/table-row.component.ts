@@ -53,7 +53,10 @@ export class TableRowComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	async cellChanged(value: string, row: TableRow, column: TableColumn) {
+	async cellChanged(value: {
+		default: string,
+		alternatives: string[]
+	}, row: TableRow, column: TableColumn) {
 		await this.cellService.changeCellValue(value, row, column);
 		this.editingStopped.emit();
 	}

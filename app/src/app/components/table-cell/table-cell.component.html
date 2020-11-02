@@ -1,6 +1,9 @@
 <table-cell-editor *ngIf="editMode"
 				   [existingValue]="currentValue"
+				   [alternativeValues]="currentAlternatives"
+				   (alternativesInEdit)="onAlternativesEditorStatusChange($event)"
 				   (valueSubmitted)="onSubmit($event)"
+				   (alternativesSubmitted)="onAlternativeSubmit($event)"
 				   (focusout)="cancelEditingIfExisting()">
 </table-cell-editor>
 <span *ngIf="!editMode">

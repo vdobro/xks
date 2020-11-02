@@ -66,6 +66,7 @@ export class GraphElementService {
 			await this.edgeRepository.delete(edge.id);
 		}
 		await this.nodeRepository.delete(node.id);
+		await this.answerService.delete(node.valueId);
 	}
 
 	async removeEdge(edge: GraphEdge) {

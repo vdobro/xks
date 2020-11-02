@@ -72,23 +72,10 @@ export class AnswerValueService {
 		await this.repository.delete(id);
 	}
 
-	async addAlternative(value: string, answer: AnswerValue) : Promise<AnswerValue> {
+	async setAlternatives(value: string[], answer: AnswerValue) : Promise<AnswerValue> {
 		const existing = await this.getExisting(answer.id);
-		if (existing.alternatives.find(x => x === value) === undefined) {
-			existing.alternatives.push(value);
-			await this.repository.update(existing);
-		}
-		return existing;
-	}
-
-	async removeAlternative(value: string, answer: AnswerValue) : Promise<AnswerValue> {
-		const existing = await this.getExisting(answer.id);
-		if (existing.alternatives.find(x => x === value) !== undefined) {
-			const index = existing.alternatives.indexOf(value);
-			existing.alternatives.splice(index, 1)
-			existing.alternatives = existing.alternatives.splice(index, 1);
-			await this.repository.update(existing);
-		}
+		existing.alternatives = value;
+		await this.repository.update(existing);
 		return existing;
 	}
 

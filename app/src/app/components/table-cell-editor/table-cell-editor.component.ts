@@ -32,6 +32,7 @@ import {
 	ViewChild
 } from '@angular/core';
 import {FormControl} from "@angular/forms";
+import {AlternativeAnswerEditorComponent} from "../alternative-answer-editor/alternative-answer-editor.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -47,19 +48,31 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 	@ViewChild('cellInputElement', {static: true})
 	cellInputElement: ElementRef | undefined;
 
+	@ViewChild(AlternativeAnswerEditorComponent, {static: true})
+	alternativeEditor: AlternativeAnswerEditorComponent | undefined;
+
 	cellInput = new FormControl('');
 
 	@Input()
 	existingValue: string = '';
 
+	@Input()
+	alternativeValues : string[] = [];
+
 	@Output()
 	valueSubmitted = new EventEmitter<string>();
+
+	@Output()
+	alternativesSubmitted = new EventEmitter<string[]>();
+
+	@Output()
+	alternativesInEdit = new EventEmitter<boolean>();
 
 	constructor() {
 	}
 
 	ngOnInit(): void {
-		this.cellInput.setValue(this.existingValue);
+		this.preloadValue();
 	}
 
 	ngAfterContentInit(): void {
@@ -67,7 +80,7 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
-		this.cellInput.setValue(this.existingValue);
+		this.preloadValue();
 	}
 
 	onSubmit() {
@@ -76,5 +89,23 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 			return;
 		}
 		this.valueSubmitted.emit(value);
+	}
+
+	openAlternativesDialog() {
+		this.alternativesInEdit.emit(true);
+		this.alternativeEditor?.openModal();
+	}
+
+	onAlternativesSubmitted(values: string[]) {
+		this.alternativesInEdit.emit(false);
+		this.alternativesSubmitted.emit(values);
+	}
+
+	private preloadValue() : void {
+		this.cellInput.setValue(this.existingValue);
+	}
+
+	onAlternativesEditorClosed(): void {
+		this.alternativesInEdit.emit(false);
 	}
 }

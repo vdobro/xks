@@ -99,8 +99,4 @@ export class TableColumnEditorComponent implements OnInit {
 	confirmDeletion() {
 		this.confirmDeleteColumnModal?.openDialog();
 	}
-
-	cancelEditing() {
-		setTimeout(() => this.editingCancelled.emit(), 100);
-	}
 }

@@ -106,9 +106,11 @@ export class TableCellService {
 		return row;
 	}
 
-	async changeCellValue(cellValue: string, row: TableRow, column: TableColumn): Promise<TableRow> {
+	async changeCellValue(cellValue: { default: string, alternatives: string[] },
+						  row: TableRow, column: TableColumn): Promise<TableRow> {
 		const answer = await this.answerService.getForCell(row, column);
-		await this.answerService.set(cellValue, answer);
+		await this.answerService.set(cellValue.default, answer);
+		await this.answerService.setAlternatives(cellValue.alternatives, answer);
 		return row;
 	}
 
