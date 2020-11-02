@@ -6,7 +6,7 @@
 		<div class="uk-modal-body">
 			<form #formElement
 				  class="uk-grid-small" uk-grid
-				  (submit)="onSubmit($event)">
+				  (submit)="onSubmit()">
 				<div class="uk-inline uk-width-1-1"
 					 *ngFor="let inputControl of inputs.controls; index as i">
 					<a class="uk-form-icon uk-form-icon-flip"
