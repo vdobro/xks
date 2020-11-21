@@ -28,6 +28,7 @@ import {GraphRepository} from "../repositories/graph-repository.service";
 import {Graph} from "../models/Graph";
 import {DeckRepository} from "../repositories/deck-repository.service";
 import {GraphElementService} from "./graph-element.service";
+import {DeckElementTypes} from "../models/DeckElementTypes";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -71,6 +72,7 @@ export class GraphService {
 		await this.repository.add({
 			deckId: deck.id,
 			id: uuid(),
+			type: DeckElementTypes.Graph,
 			name: name,
 			defaultMaxScore: 5,
 			defaultStartingScore: 3

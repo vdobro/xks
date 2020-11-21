@@ -19,20 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElementTypes} from "./DeckElementTypes";
+import {DeckElement} from "./DeckElement";
 import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.11.15
  */
-export interface DeckElement extends DeckElementDataEntity, BaseEntity {
-	type: DeckElementTypes,
-}
-
-export interface DeckElementDataEntity {
-	name: string,
-	deckId: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
+export interface SimpleCardList extends DeckElement, BaseEntity {
 }

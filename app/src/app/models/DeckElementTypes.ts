@@ -19,20 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElementTypes} from "./DeckElementTypes";
-import {BaseEntity} from "./BaseEntity";
-
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.11.21
  */
-export interface DeckElement extends DeckElementDataEntity, BaseEntity {
-	type: DeckElementTypes,
+import {DeckElement} from "./DeckElement";
+import {Table} from "./Table";
+import {Graph} from "./Graph";
+
+export enum DeckElementTypes {
+	Table= "table",
+	Graph = "graph",
+	SimpleCards = "simple_cards"
 }
 
-export interface DeckElementDataEntity {
-	name: string,
-	deckId: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
+export class ElementTypeUtilities {
+
+	public static isTable(element: DeckElement | null): element is Table {
+		return element !== null && element.type === DeckElementTypes.Table;
+	}
+
+	public static isGraph(element: DeckElement | null): element is Graph {
+		return element !== null &&  element.type === DeckElementTypes.Graph;
+	}
+
+	public static isSimpleCardList(element: DeckElement | null): element is Graph {
+		return element !== null && element.type === DeckElementTypes.SimpleCards;
+	}
 }

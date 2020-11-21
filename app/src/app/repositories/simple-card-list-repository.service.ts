@@ -20,30 +20,30 @@
  */
 
 import {Injectable} from '@angular/core';
-import {AbstractRepository} from "./AbstractRepository";
 import {BaseDataEntity} from "./BaseRepository";
-import {Graph} from "../models/Graph";
+import {AbstractRepository} from "./AbstractRepository";
+import {SimpleCardList} from "../models/SimpleCardList";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
 import {DeckElementDataEntity} from "../models/DeckElement";
 import {DeckElementTypes} from "../models/DeckElementTypes";
+import {Table} from "../models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2020.11.15
  */
 @Injectable({
 	providedIn: 'root'
 })
-export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> {
-
+export class SimpleCardListRepository extends AbstractRepository<SimpleCardList, SimpleCardListDataEntity> {
 	private indexCreated: boolean = false;
 
 	constructor(userSessionService: UserSessionService) {
-		super('graph', userSessionService);
+		super('simple-card-list', userSessionService);
 	}
 
-	async getByDeck(id: string): Promise<Graph[]> {
+	async getByDeck(id: string): Promise<Table[]> {
 		await this.checkIndexes();
 		const result = await this.db.find({
 			selector: {
@@ -64,30 +64,30 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 		return result.docs.length > 0;
 	}
 
-	protected mapToDataEntity(entity: Graph): GraphDataEntity {
+	protected mapToDataEntity(entity: SimpleCardList): SimpleCardListDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
-			deckId: entity.deckId,
 			name: entity.name,
-			defaultStartingScore: entity.defaultStartingScore,
+			deckId: entity.deckId,
 			defaultMaxScore: entity.defaultMaxScore,
+			defaultStartingScore: entity.defaultStartingScore,
 		};
 	}
 
-	protected mapToEntity(entity: GraphDataEntity): Graph {
+	protected mapToEntity(entity: SimpleCardListDataEntity): SimpleCardList {
 		return {
-			type: DeckElementTypes.Graph,
 			id: entity._id,
-			deckId: entity.deckId,
 			name: entity.name,
-			defaultStartingScore: entity.defaultStartingScore,
+			type: DeckElementTypes.SimpleCards,
+			deckId: entity.deckId,
 			defaultMaxScore: entity.defaultMaxScore,
+			defaultStartingScore: entity.defaultStartingScore,
 		};
 	}
 
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
-		return tableConfig.graphs;
+		return tableConfig.simpleCardLists;
 	}
 
 	private async checkIndexes() {
@@ -101,5 +101,5 @@ export class GraphRepository extends AbstractRepository<Graph, GraphDataEntity> 
 	}
 }
 
-interface GraphDataEntity extends BaseDataEntity, DeckElementDataEntity {
+interface SimpleCardListDataEntity extends BaseDataEntity, DeckElementDataEntity {
 }

@@ -48,11 +48,15 @@ class UserDatabaseService(
 				graphs = createWithPermission(username),
 				graphNodes = createWithPermission(username),
 				graphEdges = createWithPermission(username),
+				simpleCards = createWithPermission(username),
+				simpleCardLists = createWithPermission(username),
 				answerValues = createWithPermission(username),
 		)
 	}
 
 	fun removeAll(configuration: UserTableConfiguration) {
+		client.deleteDB(configuration.simpleCards)
+		client.deleteDB(configuration.simpleCardLists)
 		client.deleteDB(configuration.graphEdges)
 		client.deleteDB(configuration.graphNodes)
 		client.deleteDB(configuration.graphs)

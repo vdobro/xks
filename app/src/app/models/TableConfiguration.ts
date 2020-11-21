@@ -31,6 +31,8 @@ export interface TableConfiguration {
 	tableSessionModes: string
 	graphs: string,
 	graphNodes: string,
-	graphEdges: string
+	graphEdges: string,
+	simpleCards: string,
+	simpleCardLists: string,
 	answerValues: string,
 }

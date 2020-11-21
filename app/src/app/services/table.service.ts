@@ -29,6 +29,7 @@ import {TableCellService} from "./table-cell.service";
 import {TableSessionModeService} from "./table-session-mode.service";
 import {Subject, Subscribable} from "rxjs";
 import {DeckRepository} from "../repositories/deck-repository.service";
+import {DeckElementTypes} from "../models/DeckElementTypes";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -66,6 +67,7 @@ export class TableService {
 			id: uuid(),
 			deckId: deck.id,
 			name: name,
+			type: DeckElementTypes.Table,
 			sessionModeIds: [],
 			defaultSessionModeId: null,
 			defaultStartingScore: 3,

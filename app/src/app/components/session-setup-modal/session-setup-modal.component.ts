@@ -31,9 +31,10 @@ import {FormControl} from "@angular/forms";
 import {TableService} from "../../services/table.service";
 import {TableSessionModeRepository} from "../../repositories/table-session-mode-repository.service";
 import {SessionScoreSettingsComponent} from "../session-score-settings/session-score-settings.component";
-import {Graph} from "../../models/Graph";
 import {DeckElement} from "../../models/DeckElement";
 import {ScoreParams} from "../session-view/session-view.component";
+import {ElementTypeUtilities} from "../../models/DeckElementTypes";
+import {Graph} from "../../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -61,23 +62,25 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	@Input()
 	set deckElement(val: DeckElement | null) {
 		this._deckElement = val;
-		if (!this._deckElement) {
+		if (!this.deckElement) {
 			this.table = null;
 			this.graph = null;
-		}
-		if (!this._deckElement) {
 			return;
 		}
-		if (SessionSetupModalComponent.isTable(this._deckElement)) {
-			this.table = this._deckElement;
+		if (ElementTypeUtilities.isTable(this.deckElement)) {
+			this.table = this.deckElement;
 			this.graph = null;
-		} else if (SessionSetupModalComponent.isGraph(this._deckElement)) {
-			this.graph = this._deckElement;
+		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
+			this.graph = this.deckElement;
 			this.table = null;
-		} else {
+		} else if (ElementTypeUtilities.isSimpleCardList(this.deckElement)) {
 			this.table = null;
 			this.graph = null;
 		}
+	}
+
+	get deckElement() : DeckElement | null {
+		return this._deckElement;
 	}
 
 	table: Table | null = null;
@@ -110,26 +113,26 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	async startSession(): Promise<void> {
-		if (!this._deckElement) {
+		if (!this.deckElement) {
 			return;
 		}
 		await this.scoreSettingsComponent?.saveScoreSettings();
-		const scores = this.getScoreParams(this._deckElement);
+		const scores = this.getScoreParams(this.deckElement);
 
-		if (this.table) {
+		if (ElementTypeUtilities.isTable(this.deckElement)) {
 			const modeId = await this.getSessionModeId();
 
 			if (modeId) {
 				await this.saveDefaultTableOptions(modeId);
-				await this.navigationService.studyTable(this.table.id, modeId, scores);
+				await this.navigationService.studyTable(this.deckElement.id, modeId, scores);
 			}
-		} else if (this.graph) {
-			await this.navigationService.studyGraph(this.graph.id, scores);
+		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
+			await this.navigationService.studyGraph(this.deckElement.id, scores);
 		}
 	}
 
 	openDialog(): void {
-		if (!this.modal || !this._deckElement) {
+		if (!this.modal || !this.deckElement) {
 			return;
 		}
 		UIkit.modal(this.modal.nativeElement).show();
@@ -138,13 +141,13 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	validateConfiguration(): void {
-		if (!this._deckElement) {
+		if (!this.deckElement) {
 			this.startSessionEnabled = false;
 			return;
 		}
-		if (this.table) {
-			this.validateTableConfiguration(this.table);
-		} else if (this.graph) {
+		if (ElementTypeUtilities.isTable(this.deckElement)) {
+			this.validateTableConfiguration(this.deckElement);
+		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
 			this.startSessionEnabled = true;
 			this.defaultSessionCheckbox.enable();
 		} else {
@@ -161,8 +164,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	private async checkIfSessionModesExist() {
-		if (this.table) {
-			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.table);
+		if (ElementTypeUtilities.isTable(this.deckElement)) {
+			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.deckElement);
 			if (!this.anySessionModesAvailable) {
 				this.useExisting = false;
 			}
@@ -172,7 +175,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	private async saveDefaultTableOptions(modeId: string) {
-		if (!this.table) {
+		if (!ElementTypeUtilities.isTable(this.deckElement)) {
 			return;
 		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
@@ -206,19 +209,5 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			this.defaultSessionCheckbox.setValue(false);
 			this.startSessionEnabled = this.sessionModeWizard?.configurationValid || false;
 		}
-	}
-
-	private static isTable(element: DeckElement | null): element is Table {
-		if (!element) {
-			return false;
-		}
-		return (element as Table).sessionModeIds !== undefined;
-	}
-
-	private static isGraph(element: DeckElement | null): element is Graph {
-		if (!element) {
-			return false;
-		}
-		return (element as Table).sessionModeIds === undefined;
 	}
 }

@@ -33,6 +33,10 @@ import {SidebarService} from "../../services/sidebar.service";
 import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
 import {Graph} from "../../models/Graph";
 import {GraphService} from "../../services/graph.service";
+import {SimpleCardList} from "../../models/SimpleCardList";
+import {DeckElement} from "../../models/DeckElement";
+import {ElementTypeUtilities} from "../../models/DeckElementTypes";
+import {SimpleCardListService} from "../../services/simple-card-list.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,15 +59,11 @@ export class SidebarComponent implements OnInit {
 	setupSessionModal: SessionSetupModalComponent | undefined;
 
 	deck: Deck | null = null;
+	selectedDeckElement : DeckElement | null = null;
 
 	tables: Table[] = [];
 	graphs: Graph[] = [];
-
-	selectedTable: Table | null = null;
-	tableSelected: boolean = false;
-
-	selectedGraph: Graph | null = null;
-	graphSelected: boolean = false;
+	simpleCardLists: SimpleCardList[] = []; //TODO: everything
 
 	active: boolean = false;
 
@@ -72,18 +72,18 @@ export class SidebarComponent implements OnInit {
 				private readonly deckService: DeckService,
 				private readonly tableService: TableService,
 				private readonly graphService: GraphService,
+				private readonly cardListService: SimpleCardListService,
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
 		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
-		this.sidebarService.activeTable.subscribe((value: Table | null) => this.onActiveTableChanged(value));
-		this.sidebarService.activeGraph.subscribe((value: Graph | null) => this.onActiveGraphChanged(value));
+		this.sidebarService.activeElement.subscribe((value: DeckElement | null) => this.onActiveDeckElementChanged(value));
 		this.tableService.tablesChanged.subscribe((value: Deck) => this.onTablesChanged(value));
 		this.graphService.graphsChanged.subscribe((value: Deck) => this.onGraphsChanged(value));
+		this.cardListService.cardListsChanged.subscribe((value: Deck) => this.onCardListsChanged(value));
 	}
 
 	async ngOnInit() {
-		this.onActiveTableChanged(this.sidebarService.currentTable);
-		this.onActiveGraphChanged(this.sidebarService.currentGraph);
+		this.onActiveDeckElementChanged(this.sidebarService.currentElement);
 		await this.onActiveDeckChanged(this.sidebarService.currentDeck);
 		this.onVisibilityChanged(this.deck !== null);
 	}
@@ -94,24 +94,11 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private onActiveTableChanged(table: Table | null) {
-		if (this.selectedTable?.id === table?.id) {
+	private onActiveDeckElementChanged(element: DeckElement | null) {
+		if (this.selectedDeckElement?.id === element?.id) {
 			return;
 		}
-		this.tableSelected = !!table;
-		if (this.selectedTable?.id !== table?.id) {
-			this.selectedTable = table;
-		}
-	}
-
-	private onActiveGraphChanged(graph: Graph | null) {
-		if (this.selectedGraph?.id === graph?.id) {
-			return;
-		}
-		this.graphSelected = !!graph;
-		if (this.selectedGraph?.id !== graph?.id) {
-			this.selectedGraph = graph;
-		}
+		this.selectedDeckElement = element;
 	}
 
 	private async onActiveDeckChanged(deck: Deck | null): Promise<void> {
@@ -122,6 +109,7 @@ export class SidebarComponent implements OnInit {
 		if (this.deck) {
 			this.tables = await this.tableService.getByDeck(this.deck);
 			this.graphs = await this.graphService.getByDeck(this.deck);
+			this.simpleCardLists = await this.cardListService.getByDeck(this.deck);
 		} else {
 			this.resetCurrentDeckElements();
 		}
@@ -138,8 +126,7 @@ export class SidebarComponent implements OnInit {
 	}
 
 	async openDeckDetails() {
-		this.sidebarService.deselectTable();
-		this.sidebarService.deselectGraph();
+		this.sidebarService.deselectDeckElement();
 		await this.navigationService.openDeck(this.deck!!.id);
 	}
 
@@ -148,10 +135,10 @@ export class SidebarComponent implements OnInit {
 	}
 
 	async studyCurrent() {
-		if (this.tableSelected) {
+		if (ElementTypeUtilities.isTable(this.selectedDeckElement)) {
 			this.setupSessionModal?.openDialog();
-		} else if (this.graphSelected) {
-			if (await this.graphService.anyNodesAndEdgesExist(this.selectedGraph!!)) {
+		} else if (ElementTypeUtilities.isGraph(this.selectedDeckElement)) {
+			if (await this.graphService.anyNodesAndEdgesExist(this.selectedDeckElement!!)) {
 				this.setupSessionModal?.openDialog();
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
@@ -161,24 +148,32 @@ export class SidebarComponent implements OnInit {
 
 	private async onTablesChanged(deck: Deck) {
 		this.tables = await this.tableService.getByDeck(deck);
-		if (this.selectedTable && !this.tables.find(x => x.id === this.selectedTable!!.id)) {
-			this.sidebarService.deselectTable();
+		if (ElementTypeUtilities.isTable(this.selectedDeckElement)
+			&& !this.tables.find(x => x.id === this.selectedDeckElement!!.id)) {
+			this.sidebarService.deselectDeckElement();
 		}
 	}
 
 	private async onGraphsChanged(deck: Deck) {
 		this.graphs = await this.graphService.getByDeck(deck);
-		if (this.selectedGraph && !this.graphs.find(x => x.id === this.selectedGraph!!.id)) {
-			this.sidebarService.deselectGraph();
+		if (ElementTypeUtilities.isGraph(this.selectedDeckElement)
+			&& !this.graphs.find(x => x.id === this.selectedDeckElement!!.id)) {
+			this.sidebarService.deselectDeckElement();
+		}
+	}
+
+	private async onCardListsChanged(deck: Deck) {
+		this.simpleCardLists = await this.cardListService.getByDeck(deck);
+		if (ElementTypeUtilities.isSimpleCardList(this.selectedDeckElement)
+			&& !this.simpleCardLists.find(x => x.id === this.selectedDeckElement!!.id)) {
+			this.sidebarService.deselectDeckElement();
 		}
 	}
 
 	private resetCurrentDeckElements() {
-		this.graphSelected = false;
-		this.tableSelected = false;
 		this.tables = [];
 		this.graphs = [];
-		this.selectedTable = null;
-		this.selectedGraph = null;
+		this.simpleCardLists = [];
+		this.selectedDeckElement = null;
 	}
 }

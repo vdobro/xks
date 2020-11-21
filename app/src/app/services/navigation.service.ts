@@ -22,13 +22,14 @@
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
 import {Deck} from "../models/Deck";
-import {Table} from "../models/Table";
 import {DeckService} from "./deck.service";
 import {TableService} from "./table.service";
 import {SidebarService} from "./sidebar.service";
-import {Graph} from "../models/Graph";
 import {GraphService} from "./graph.service";
 import {ScoreParams,} from "../components/session-view/session-view.component";
+import {DeckElement} from "../models/DeckElement";
+import {ElementTypeUtilities} from "../models/DeckElementTypes";
+import {SimpleCardListService} from "./simple-card-list.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,39 +41,35 @@ import {ScoreParams,} from "../components/session-view/session-view.component";
 export class NavigationService {
 
 	private deck: Deck | null = null;
-	private table: Table | null = null;
-	private graph: Graph | null = null;
+	private deckElement: DeckElement | null = null;
 	private studySessionActive: boolean = false;
 
 	constructor(
 		private readonly deckService: DeckService,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
+		private readonly cardListService: SimpleCardListService,
 		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
 	}
 
 	async goBack() {
-		if (this.deck) {
-			if (this.table || this.graph) {
-				if (this.studySessionActive) {
-					await this.navigateToCurrentDeckElement();
-				} else {
-					await this.navigateToCurrentDeck();
-				}
-			} else {
-				await this.goHome();
-			}
-		} else {
+		if (!this.deck || !this.deckElement) {
 			await this.goHome();
+			return;
+		}
+		if (this.studySessionActive) {
+			await this.navigateToCurrentDeckElement();
+		} else {
+			await this.navigateToCurrentDeck();
 		}
 	}
 
 	async navigateToCurrentDeckElement() {
-		if (this.table) {
-			await this.openTable(this.table.id);
-		} else if (this.graph) {
-			await this.openGraph(this.graph.id);
+		if (ElementTypeUtilities.isTable(this.deckElement)) {
+			await this.openTable(this.deckElement.id);
+		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
+			await this.openGraph(this.deckElement.id);
 		}
 	}
 
@@ -92,7 +89,8 @@ export class NavigationService {
 		});
 	}
 
-	async studyGraph(graphId: string, difficultySettings: ScoreParams) {
+	async studyGraph(graphId: string,
+					 difficultySettings: ScoreParams) {
 		await this.selectGraph(graphId);
 		this.studySessionActive = true;
 
@@ -109,12 +107,18 @@ export class NavigationService {
 
 	async navigateToCurrentDeck() {
 		if (this.deck) {
-			this.table = null;
-			this.graph = null;
-			this.sidebarService.deselectTable();
-			this.sidebarService.deselectGraph();
+			this.deckElement = null;
+			this.sidebarService.deselectDeckElement();
 			await this.openDeck(this.deck.id);
 		}
+	}
+
+	async openSimpleCardList(listId: string) {
+		await this.selectCardList(listId);
+		this.studySessionActive = false;
+
+		//TODO: routing
+		await this.router.navigate(['/simple-card-lists', listId, 'edit']);
 	}
 
 	async openDeck(deckId: string) {
@@ -127,25 +131,32 @@ export class NavigationService {
 	async goHome() {
 		this.studySessionActive = false;
 		this.deck = null;
-		this.table = null;
+		this.deckElement = null;
 		await this.router.navigate(['/']);
 	}
 
 	async goToDeckList() {
 		this.studySessionActive = false;
 		this.deck = null;
-		this.table = null;
+		this.deckElement = null;
 		this.sidebarService.depopulate();
 		await this.router.navigate(['/decks']);
 	}
 
-	private async selectTable(tableId: string) {
-		this.table = await this.tableService.getById(tableId);
-		await this.sidebarService.selectTable(this.table);
+	private async selectTable(id: string) {
+		await this.selectDeckElement(await this.tableService.getById(id));
 	}
 
-	private async selectGraph(graphId: string) {
-		this.graph = await this.graphService.getById(graphId);
-		await this.sidebarService.selectGraph(this.graph);
+	private async selectGraph(id: string) {
+		await this.selectDeckElement(await this.graphService.getById(id));
+	}
+
+	private async selectCardList(id: string) {
+		await this.selectDeckElement(await this.cardListService.getById(id));
+	}
+
+	private async selectDeckElement(element: DeckElement) {
+		this.deckElement = element;
+		await this.sidebarService.selectDeckElement(this.deckElement);
 	}
 }

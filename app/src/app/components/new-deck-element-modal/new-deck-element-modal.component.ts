@@ -27,6 +27,7 @@ import {FormControl} from "@angular/forms";
 import {Deck} from "../../models/Deck";
 import {GraphService} from "../../services/graph.service";
 import {TableService} from "../../services/table.service";
+import {SimpleCardListService} from "../../services/simple-card-list.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,6 +56,7 @@ export class NewDeckElementModalComponent implements OnInit {
 	constructor(
 		private readonly graphService: GraphService,
 		private readonly tableService: TableService,
+		private readonly cardListService: SimpleCardListService,
 	) {
 	}
 
@@ -95,6 +97,9 @@ export class NewDeckElementModalComponent implements OnInit {
 			case DeckElementType.TABLE:
 				await this.tableService.create(this.deck, name);
 				break;
+			case DeckElementType.CARD_LIST:
+				await this.cardListService.create(this.deck, name);
+				break;
 			default:
 				break;
 		}
@@ -107,9 +112,14 @@ export class NewDeckElementModalComponent implements OnInit {
 	selectTypeTable() {
 		this.type = DeckElementType.TABLE;
 	}
+
+	selectTypeCardList() {
+		this.type = DeckElementType.CARD_LIST;
+	}
 }
 
 export enum DeckElementType {
 	GRAPH = 'graph',
 	TABLE = 'table',
+	CARD_LIST = 'card list',
 }

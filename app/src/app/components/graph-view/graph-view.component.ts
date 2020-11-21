@@ -169,7 +169,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 			const id = params.get(GRAPH_ID_PARAM);
 			this.graph = id ? await this.graphService.getById(id) : null;
 			if (this.graph) {
-				await this.sidebarService.selectGraph(this.graph);
+				await this.sidebarService.selectDeckElement(this.graph);
 				await this.setUpNetworkView();
 			} else {
 				await this.navigationService.goToDeckList();

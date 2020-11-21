@@ -19,20 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElementTypes} from "./DeckElementTypes";
-import {BaseEntity} from "./BaseEntity";
+import {Injectable} from '@angular/core';
+import {Subject, Subscribable} from "rxjs";
+import {SimpleCardList} from "../models/SimpleCardList";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.11.21
  */
-export interface DeckElement extends DeckElementDataEntity, BaseEntity {
-	type: DeckElementTypes,
-}
+@Injectable({
+	providedIn: 'root'
+})
+export class SimpleCardService {
 
-export interface DeckElementDataEntity {
-	name: string,
-	deckId: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
+	private readonly _countChangedForList = new Subject<SimpleCardList>();
+
+	readonly rowCountChanged: Subscribable<SimpleCardList> = this._countChangedForList;
+
+	constructor() {
+	}
 }

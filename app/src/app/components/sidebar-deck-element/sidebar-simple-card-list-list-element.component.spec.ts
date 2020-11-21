@@ -20,60 +20,36 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {TableViewComponent} from './table-view.component';
-import {Component, ViewChild} from "@angular/core";
-import {Table} from "../../models/Table";
-import {v4 as uuid} from 'uuid';
-import {DeckElementTypes} from "../../models/DeckElementTypes";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
+import {SidebarTableListElementComponent} from "./sidebar-table-list-element.component";
+import {SidebarSimpleCardListListElementComponent} from "./sidebar-simple-card-list-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.03
+ * @since 2020.11.21
  */
-describe('TableViewComponent', () => {
-	let component: TestHostComponent;
-	let fixture: ComponentFixture<TestHostComponent>;
+describe('SidebarTableListElementComponent', () => {
+	let component: SidebarSimpleCardListListElementComponent;
+	let fixture: ComponentFixture<SidebarSimpleCardListListElementComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [TableViewComponent]
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule
+			],
+			declarations: [SidebarSimpleCardListListElementComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(TestHostComponent);
+		fixture = TestBed.createComponent(SidebarSimpleCardListListElementComponent);
 		component = fixture.componentInstance;
-		component.table = generateTable();
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
-
-	@Component({
-		selector: 'host-component',
-		template: `
-			<app-table-view></app-table-view>`
-	})
-	class TestHostComponent {
-		@ViewChild(TableViewComponent)
-		public componentUnderTest: TableViewComponent | undefined;
-
-		table: Table | null = null;
-	}
 });
-
-function generateTable(): Table {
-	return {
-		type: DeckElementTypes.Table,
-		id: uuid(),
-		deckId: uuid() + 'as deck ID',
-		name: 'name ' + uuid(),
-		sessionModeIds: [],
-		defaultMaxScore: 8,
-		defaultStartingScore: 3,
-		defaultSessionModeId: uuid(),
-	};
-}

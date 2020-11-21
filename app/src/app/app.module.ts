@@ -64,6 +64,7 @@ import {SessionQuestionViewComponent} from './components/session-question-view/s
 import {SessionModeChooserComponent} from './components/session-mode-chooser/session-mode-chooser.component';
 import {SessionScoreSettingsComponent} from './components/session-score-settings/session-score-settings.component';
 import {AlternativeAnswerEditorComponent} from './components/alternative-answer-editor/alternative-answer-editor.component';
+import {SidebarSimpleCardListListElementComponent} from "./components/sidebar-deck-element/sidebar-simple-card-list-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -101,6 +102,7 @@ import {AlternativeAnswerEditorComponent} from './components/alternative-answer-
 		LoginModalComponent,
 		SidebarGraphListElementComponent,
 		SidebarTableListElementComponent,
+		SidebarSimpleCardListListElementComponent,
 		GraphViewComponent,
 		GraphToolbarComponent,
 		GraphLabelEditorComponent,

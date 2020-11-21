@@ -19,20 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElementTypes} from "./DeckElementTypes";
-import {BaseEntity} from "./BaseEntity";
+import {TestBed} from '@angular/core/testing';
+
+import {SimpleCardRepository} from './simple-card-repository.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.11.15
  */
-export interface DeckElement extends DeckElementDataEntity, BaseEntity {
-	type: DeckElementTypes,
-}
+describe('SimpleCardRepository', () => {
+	let service: SimpleCardRepository;
 
-export interface DeckElementDataEntity {
-	name: string,
-	deckId: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
-}
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(SimpleCardRepository);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

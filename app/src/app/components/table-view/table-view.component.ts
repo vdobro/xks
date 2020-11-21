@@ -79,7 +79,7 @@ export class TableViewComponent implements OnInit, OnChanges {
 			this.table = id ? await this.tableService.getById(id) : null;
 
 			if (this.table) {
-				await this.sidebarService.selectTable(this.table);
+				await this.sidebarService.selectDeckElement(this.table);
 				await this.reloadAll();
 			} else {
 				await this.navigationService.goToDeckList();
