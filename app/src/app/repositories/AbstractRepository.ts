@@ -135,6 +135,9 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 
 	private async getRevision(id: string): Promise<string> {
 		const dataEntity = await this.getDataEntity(id);
+		if (!dataEntity._rev) {
+			throw new Error('Missing revision for entity ' + id);
+		}
 		return dataEntity._rev;
 	}
 

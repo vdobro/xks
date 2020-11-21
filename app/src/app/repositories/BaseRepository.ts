@@ -37,5 +37,5 @@ export interface BaseRepository<Entity> {
 
 export interface BaseDataEntity {
 	_id: string,
-	_rev: string
+	_rev: string | undefined
 }
