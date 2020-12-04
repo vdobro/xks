@@ -33,10 +33,11 @@ import {SidebarService} from "../../services/sidebar.service";
 import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
 import {Graph} from "../../models/Graph";
 import {GraphService} from "../../services/graph.service";
-import {SimpleCardList} from "../../models/SimpleCardList";
+import {FlashcardSet} from "../../models/FlashcardSet";
 import {DeckElement} from "../../models/DeckElement";
 import {ElementTypeUtilities} from "../../models/DeckElementTypes";
-import {SimpleCardListService} from "../../services/simple-card-list.service";
+import {FlashcardSetService} from "../../services/flashcard-set.service";
+import {FlashcardService} from "../../services/flashcard.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -63,7 +64,7 @@ export class SidebarComponent implements OnInit {
 
 	tables: Table[] = [];
 	graphs: Graph[] = [];
-	simpleCardLists: SimpleCardList[] = []; //TODO: everything
+	flashcardSets: FlashcardSet[] = []; //TODO: everything
 
 	active: boolean = false;
 
@@ -72,14 +73,15 @@ export class SidebarComponent implements OnInit {
 				private readonly deckService: DeckService,
 				private readonly tableService: TableService,
 				private readonly graphService: GraphService,
-				private readonly cardListService: SimpleCardListService,
+				private readonly flashcardSetService: FlashcardSetService,
+				private readonly flashcardService: FlashcardService,
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
 		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
 		this.sidebarService.activeElement.subscribe((value: DeckElement | null) => this.onActiveDeckElementChanged(value));
 		this.tableService.tablesChanged.subscribe((value: Deck) => this.onTablesChanged(value));
 		this.graphService.graphsChanged.subscribe((value: Deck) => this.onGraphsChanged(value));
-		this.cardListService.cardListsChanged.subscribe((value: Deck) => this.onCardListsChanged(value));
+		this.flashcardSetService.setsChanged.subscribe((value: Deck) => this.onCardListsChanged(value));
 	}
 
 	async ngOnInit() {
@@ -109,7 +111,7 @@ export class SidebarComponent implements OnInit {
 		if (this.deck) {
 			this.tables = await this.tableService.getByDeck(this.deck);
 			this.graphs = await this.graphService.getByDeck(this.deck);
-			this.simpleCardLists = await this.cardListService.getByDeck(this.deck);
+			this.flashcardSets = await this.flashcardSetService.getByDeck(this.deck);
 		} else {
 			this.resetCurrentDeckElements();
 		}
@@ -143,6 +145,12 @@ export class SidebarComponent implements OnInit {
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
 			}
+		} else if (ElementTypeUtilities.isFlashcardSet(this.selectedDeckElement)) {
+			if (await this.flashcardService.anyCardsExist(this.selectedDeckElement)) {
+				this.setupSessionModal?.openDialog();
+			} else {
+				UIkit.notification("No cards to study in the set", {status: 'warning'});
+			}
 		}
 	}
 
@@ -163,9 +171,9 @@ export class SidebarComponent implements OnInit {
 	}
 
 	private async onCardListsChanged(deck: Deck) {
-		this.simpleCardLists = await this.cardListService.getByDeck(deck);
-		if (ElementTypeUtilities.isSimpleCardList(this.selectedDeckElement)
-			&& !this.simpleCardLists.find(x => x.id === this.selectedDeckElement!!.id)) {
+		this.flashcardSets = await this.flashcardSetService.getByDeck(deck);
+		if (ElementTypeUtilities.isFlashcardSet(this.selectedDeckElement)
+			&& !this.flashcardSets.find(x => x.id === this.selectedDeckElement!!.id)) {
 			this.sidebarService.deselectDeckElement();
 		}
 	}
@@ -173,7 +181,7 @@ export class SidebarComponent implements OnInit {
 	private resetCurrentDeckElements() {
 		this.tables = [];
 		this.graphs = [];
-		this.simpleCardLists = [];
+		this.flashcardSets = [];
 		this.selectedDeckElement = null;
 	}
 }

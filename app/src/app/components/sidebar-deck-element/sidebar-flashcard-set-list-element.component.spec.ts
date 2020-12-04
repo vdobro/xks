@@ -22,16 +22,15 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
-import {SidebarTableListElementComponent} from "./sidebar-table-list-element.component";
-import {SidebarSimpleCardListListElementComponent} from "./sidebar-simple-card-list-list-element.component";
+import {SidebarFlashcardSetListElementComponent} from "./sidebar-flashcard-set-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.21
  */
-describe('SidebarTableListElementComponent', () => {
-	let component: SidebarSimpleCardListListElementComponent;
-	let fixture: ComponentFixture<SidebarSimpleCardListListElementComponent>;
+describe('SidebarFlashcardSetElementComponent', () => {
+	let component: SidebarFlashcardSetListElementComponent;
+	let fixture: ComponentFixture<SidebarFlashcardSetListElementComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -39,12 +38,12 @@ describe('SidebarTableListElementComponent', () => {
 				HttpClientTestingModule,
 				RouterTestingModule
 			],
-			declarations: [SidebarSimpleCardListListElementComponent]
+			declarations: [SidebarFlashcardSetListElementComponent]
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SidebarSimpleCardListListElementComponent);
+		fixture = TestBed.createComponent(SidebarFlashcardSetListElementComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

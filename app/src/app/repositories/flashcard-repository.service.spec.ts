@@ -19,23 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-import {Subject, Subscribable} from "rxjs";
-import {SimpleCardList} from "../models/SimpleCardList";
+import {TestBed} from '@angular/core/testing';
+
+import {FlashcardRepository} from './flashcard-repository.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.11.21
+ * @since 2020.11.15
  */
-@Injectable({
-	providedIn: 'root'
-})
-export class SimpleCardService {
+describe('FlashcardRepository', () => {
+	let service: FlashcardRepository;
 
-	private readonly _countChangedForList = new Subject<SimpleCardList>();
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(FlashcardRepository);
+	});
 
-	readonly rowCountChanged: Subscribable<SimpleCardList> = this._countChangedForList;
-
-	constructor() {
-	}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

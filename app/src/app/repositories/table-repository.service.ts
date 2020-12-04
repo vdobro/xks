@@ -36,14 +36,13 @@ import {DeckElementTypes} from "../models/DeckElementTypes";
 	providedIn: 'root'
 })
 export class TableRepository extends AbstractRepository<Table, TableDataEntity> {
-	private indexCreated: boolean = false;
 
 	constructor(userSessionService: UserSessionService) {
 		super('table', userSessionService);
 	}
 
 	async getByDeck(id: string): Promise<Table[]> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				deckId: id
@@ -53,7 +52,7 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 	}
 
 	async existAnyForDeck(id: string): Promise<boolean> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				deckId: id
@@ -93,14 +92,8 @@ export class TableRepository extends AbstractRepository<Table, TableDataEntity> 
 		return tableConfig.tables;
 	}
 
-	private async checkIndexes() {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['deckId', 'name']}
-		});
-		this.indexCreated = true;
+	protected getIndexFields() : string[] {
+		return ['deckId', 'name'];
 	}
 }
 

@@ -36,8 +36,6 @@ import {TableConfiguration} from "../models/TableConfiguration";
 })
 export class TableSessionModeRepository extends AbstractRepository<TableSessionMode, TableStudySessionModeDataEntity> {
 
-	private indexCreated: boolean = false;
-
 	constructor(userSessionService: UserSessionService) {
 		super('table-study-session-mode', userSessionService);
 	}
@@ -71,7 +69,7 @@ export class TableSessionModeRepository extends AbstractRepository<TableSessionM
 	}
 
 	private async getDataEntitiesByTable(tableId: string): Promise<TableStudySessionModeDataEntity[]> {
-		await this.checkIndexesInitialized();
+		await this.checkIndex();
 		const results = await this.db.find({
 			selector: {
 				$and: [
@@ -83,14 +81,8 @@ export class TableSessionModeRepository extends AbstractRepository<TableSessionM
 		return results.docs;
 	}
 
-	private async checkIndexesInitialized(): Promise<void> {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['tableId']}
-		});
-		this.indexCreated = true;
+	protected getIndexFields(): string[] {
+		return ['tableId'];
 	}
 }
 

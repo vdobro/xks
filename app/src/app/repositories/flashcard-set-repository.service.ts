@@ -22,7 +22,7 @@
 import {Injectable} from '@angular/core';
 import {BaseDataEntity} from "./BaseRepository";
 import {AbstractRepository} from "./AbstractRepository";
-import {SimpleCardList} from "../models/SimpleCardList";
+import {FlashcardSet} from "../models/FlashcardSet";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
 import {DeckElementDataEntity} from "../models/DeckElement";
@@ -36,15 +36,14 @@ import {Table} from "../models/Table";
 @Injectable({
 	providedIn: 'root'
 })
-export class SimpleCardListRepository extends AbstractRepository<SimpleCardList, SimpleCardListDataEntity> {
-	private indexCreated: boolean = false;
+export class FlashcardSetRepository extends AbstractRepository<FlashcardSet, FlashcardSetDataEntity> {
 
 	constructor(userSessionService: UserSessionService) {
-		super('simple-card-list', userSessionService);
+		super('flashcard-set', userSessionService);
 	}
 
 	async getByDeck(id: string): Promise<Table[]> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				deckId: id
@@ -54,7 +53,7 @@ export class SimpleCardListRepository extends AbstractRepository<SimpleCardList,
 	}
 
 	async existAnyForDeck(id: string): Promise<boolean> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				deckId: id
@@ -64,7 +63,7 @@ export class SimpleCardListRepository extends AbstractRepository<SimpleCardList,
 		return result.docs.length > 0;
 	}
 
-	protected mapToDataEntity(entity: SimpleCardList): SimpleCardListDataEntity {
+	protected mapToDataEntity(entity: FlashcardSet): FlashcardSetDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
@@ -75,11 +74,11 @@ export class SimpleCardListRepository extends AbstractRepository<SimpleCardList,
 		};
 	}
 
-	protected mapToEntity(entity: SimpleCardListDataEntity): SimpleCardList {
+	protected mapToEntity(entity: FlashcardSetDataEntity): FlashcardSet {
 		return {
 			id: entity._id,
 			name: entity.name,
-			type: DeckElementTypes.SimpleCards,
+			type: DeckElementTypes.Flashcards,
 			deckId: entity.deckId,
 			defaultMaxScore: entity.defaultMaxScore,
 			defaultStartingScore: entity.defaultStartingScore,
@@ -87,19 +86,13 @@ export class SimpleCardListRepository extends AbstractRepository<SimpleCardList,
 	}
 
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
-		return tableConfig.simpleCardLists;
+		return tableConfig.flashcardSets;
 	}
 
-	private async checkIndexes() {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['deckId', 'name']}
-		});
-		this.indexCreated = true;
+	protected getIndexFields(): string[] {
+		return ['deckId', 'name'];
 	}
 }
 
-interface SimpleCardListDataEntity extends BaseDataEntity, DeckElementDataEntity {
+interface FlashcardSetDataEntity extends BaseDataEntity, DeckElementDataEntity {
 }

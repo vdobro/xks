@@ -41,6 +41,7 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	private readonly _sourceChanged = new Subject<void>();
 	readonly sourceChanged: Subscribable<void> = this._sourceChanged;
 
+	protected indexCreated: boolean = false;
 	protected db: any;
 	private remoteSyncHandler: any;
 
@@ -58,6 +59,8 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	protected abstract mapToDataEntity(entity: Entity): DataEntity
 
 	protected abstract mapToEntity(entity: DataEntity): Entity
+
+	protected abstract getIndexFields() : string[]
 
 	protected constructor(
 		private readonly localDbName: string,
@@ -184,5 +187,20 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 		this.remoteSyncHandler?.cancel();
 		this.db = this.anonDb;
 		this.userDb = null;
+	}
+
+	protected async checkIndex(): Promise<void> {
+		if (this.indexCreated) {
+			return;
+		}
+		const fieldsToIndex = this.getIndexFields();
+		if (fieldsToIndex.length > 0) {
+			await this.db.createIndex({
+				index: {
+					fields: fieldsToIndex
+				}
+			});
+		}
+		this.indexCreated = true;
 	}
 }

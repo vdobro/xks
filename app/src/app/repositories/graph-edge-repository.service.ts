@@ -37,14 +37,12 @@ import {Graph} from "../models/Graph";
 })
 export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdgeDataEntity> {
 
-	private indexCreated: boolean = false;
-
 	constructor(userSessionService: UserSessionService) {
 		super('graph-edge', userSessionService);
 	}
 
 	async getAllInGraph(graph: Graph): Promise<GraphEdge[]> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				graphId: graph.id
@@ -54,7 +52,7 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 	}
 
 	async getAllTo(node: GraphNode): Promise<GraphEdge[]> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				targetNodeId: node.id
@@ -64,7 +62,7 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 	}
 
 	async getAllFrom(node: GraphNode): Promise<GraphEdge[]> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				sourceNodeId: node.id
@@ -82,16 +80,6 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
 		return tableConfig.graphEdges;
-	}
-
-	private async checkIndexes() {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['graphId', 'sourceNodeId', 'targetNodeId']}
-		});
-		this.indexCreated = true;
 	}
 
 	protected mapToDataEntity(entity: GraphEdge): GraphEdgeDataEntity {
@@ -113,6 +101,10 @@ export class GraphEdgeRepository extends AbstractRepository<GraphEdge, GraphEdge
 			sourceNodeId: entity.sourceNodeId,
 			targetNodeId: entity.targetNodeId
 		};
+	}
+
+	protected getIndexFields(): string[] {
+		return ['graphId', 'sourceNodeId', 'targetNodeId'];
 	}
 }
 

@@ -66,6 +66,8 @@ export class DeckListCardComponent implements OnInit {
 	}
 
 	async openDeckDetails() {
-		await this.navigationService.openDeck(this.deck!!.id);
+		if (!this.editMode) {
+			await this.navigationService.openDeck(this.deck!!.id);
+		}
 	}
 }

@@ -29,7 +29,7 @@ import {GraphService} from "./graph.service";
 import {ScoreParams,} from "../components/session-view/session-view.component";
 import {DeckElement} from "../models/DeckElement";
 import {ElementTypeUtilities} from "../models/DeckElementTypes";
-import {SimpleCardListService} from "./simple-card-list.service";
+import {FlashcardSetService} from "./flashcard-set.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -48,7 +48,7 @@ export class NavigationService {
 		private readonly deckService: DeckService,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
-		private readonly cardListService: SimpleCardListService,
+		private readonly flashcardSetService: FlashcardSetService,
 		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
 	}
@@ -99,6 +99,16 @@ export class NavigationService {
 		});
 	}
 
+	async studyFlashcards(setId: string,
+						  difficultySettings: ScoreParams) {
+		await this.selectFlashcards(setId);
+		this.studySessionActive = true;
+
+		await this.router.navigate(['/flashcards', setId, 'learn'], {
+			queryParams: difficultySettings
+		});
+	}
+
 	async openGraph(graphId: string) {
 		await this.selectGraph(graphId);
 		this.studySessionActive = false;
@@ -113,12 +123,10 @@ export class NavigationService {
 		}
 	}
 
-	async openSimpleCardList(listId: string) {
-		await this.selectCardList(listId);
+	async openFlashcardSet(setId: string) {
+		await this.selectFlashcards(setId);
 		this.studySessionActive = false;
-
-		//TODO: routing
-		await this.router.navigate(['/simple-card-lists', listId, 'edit']);
+		await this.router.navigate(['/flashcards', setId, 'edit']);
 	}
 
 	async openDeck(deckId: string) {
@@ -151,8 +159,8 @@ export class NavigationService {
 		await this.selectDeckElement(await this.graphService.getById(id));
 	}
 
-	private async selectCardList(id: string) {
-		await this.selectDeckElement(await this.cardListService.getById(id));
+	private async selectFlashcards(id: string) {
+		await this.selectDeckElement(await this.flashcardSetService.getById(id));
 	}
 
 	private async selectDeckElement(element: DeckElement) {

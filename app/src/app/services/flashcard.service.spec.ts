@@ -21,21 +21,21 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {SimpleCardListService} from './simple-card-list.service';
+import {FlashcardService} from './flashcard.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.21
  */
-describe('SimpleCardListService', () => {
-	let service: SimpleCardListService;
+describe('FlashcardService', () => {
+	let service: FlashcardService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [HttpClientTestingModule]
 		});
-		service = TestBed.inject(SimpleCardListService);
+		service = TestBed.inject(FlashcardService);
 	});
 
 	it('should be created', () => {

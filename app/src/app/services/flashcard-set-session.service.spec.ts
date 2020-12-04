@@ -19,31 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import {ConfirmDeleteElementModalComponent} from './confirm-delete-element-modal.component';
+import {FlashcardSetSessionService} from './flashcard-set-session.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.10
+ * @since 2020.12.04
  */
-describe('ConfirmDeleteElementModalComponent', () => {
-	let component: ConfirmDeleteElementModalComponent;
-	let fixture: ComponentFixture<ConfirmDeleteElementModalComponent>;
-
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [ConfirmDeleteElementModalComponent]
-		}).compileComponents();
-	});
+describe('FlashcardSetSessionService', () => {
+	let service: FlashcardSetSessionService;
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(ConfirmDeleteElementModalComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(FlashcardSetSessionService);
 	});
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
+	it('should be created', () => {
+		expect(service).toBeTruthy();
 	});
 });

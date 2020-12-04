@@ -22,6 +22,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NewDeckModalComponent} from "../new-deck-modal/new-deck-modal.component";
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.03.23
+ */
 @Component({
 	selector: 'li [deck-list-navbar]',
 	templateUrl: './deck-list-navbar.component.html',

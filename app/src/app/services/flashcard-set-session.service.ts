@@ -19,31 +19,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {ConfirmDeleteElementModalComponent} from './confirm-delete-element-modal.component';
+import {Injectable} from '@angular/core';
+import {StudySessionService} from "./study-session.service";
+import {ExerciseTaskService} from "./exercise-task.service";
+import {LearningSessionState} from "./models/learning-session-state";
+import {FlashcardSet} from "../models/FlashcardSet";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.10
+ * @since 2020.12.04
  */
-describe('ConfirmDeleteElementModalComponent', () => {
-	let component: ConfirmDeleteElementModalComponent;
-	let fixture: ComponentFixture<ConfirmDeleteElementModalComponent>;
+@Injectable({
+	providedIn: 'root'
+})
+export class FlashcardSetSessionService extends StudySessionService {
+	constructor(taskService: ExerciseTaskService) {
+		super(taskService);
+	}
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [ConfirmDeleteElementModalComponent]
-		}).compileComponents();
-	});
-
-	beforeEach(() => {
-		fixture = TestBed.createComponent(ConfirmDeleteElementModalComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
-
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	async startNew(set: FlashcardSet,
+				   startScore: number,
+				   maxScore: number): Promise<LearningSessionState> {
+		const allTasks = await this.taskService.getFlashcardTaskList(set, startScore, maxScore);
+		return this.createSessionFromTasks(allTasks);
+	}
+}

@@ -32,7 +32,7 @@ export interface TableConfiguration {
 	graphs: string,
 	graphNodes: string,
 	graphEdges: string,
-	simpleCards: string,
-	simpleCardLists: string,
+	flashcards: string,
+	flashcardSets: string,
 	answerValues: string,
 }

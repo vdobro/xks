@@ -25,8 +25,8 @@ import {BaseEntity} from "./BaseEntity";
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.15
  */
-export interface SimpleCard extends BaseEntity {
-	listId: string;
+export interface Flashcard extends BaseEntity {
+	setId: string;
 	question: string;
 	answerId: string;
 }

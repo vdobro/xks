@@ -26,11 +26,12 @@
 import {DeckElement} from "./DeckElement";
 import {Table} from "./Table";
 import {Graph} from "./Graph";
+import {FlashcardSet} from "./FlashcardSet";
 
 export enum DeckElementTypes {
-	Table= "table",
+	Table = "table",
 	Graph = "graph",
-	SimpleCards = "simple_cards"
+	Flashcards = "flashcards"
 }
 
 export class ElementTypeUtilities {
@@ -40,10 +41,10 @@ export class ElementTypeUtilities {
 	}
 
 	public static isGraph(element: DeckElement | null): element is Graph {
-		return element !== null &&  element.type === DeckElementTypes.Graph;
+		return element !== null && element.type === DeckElementTypes.Graph;
 	}
 
-	public static isSimpleCardList(element: DeckElement | null): element is Graph {
-		return element !== null && element.type === DeckElementTypes.SimpleCards;
+	public static isFlashcardSet(element: DeckElement | null): element is FlashcardSet {
+		return element !== null && element.type === DeckElementTypes.Flashcards;
 	}
 }

@@ -36,8 +36,6 @@ import {TableConfiguration} from "../models/TableConfiguration";
 })
 export class TableRowRepository extends AbstractRepository<TableRow, TableRowDataEntity> {
 
-	private indexCreated: boolean = false;
-
 	constructor(userSessionService: UserSessionService) {
 		super('table-row', userSessionService);
 	}
@@ -90,18 +88,12 @@ export class TableRowRepository extends AbstractRepository<TableRow, TableRowDat
 		return tableConfig.tableRows;
 	}
 
-	private async checkIndexesInitialized(): Promise<void> {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['index', 'tableId']}
-		});
-		this.indexCreated = true;
+	protected getIndexFields(): string[] {
+		return ['index', 'tableId'];
 	}
 
 	private async getDataEntitiesByTable(tableId: string): Promise<TableRowDataEntity[]> {
-		await this.checkIndexesInitialized();
+		await this.checkIndex();
 		const results = await this.db.find({
 			selector: {
 				$and: [

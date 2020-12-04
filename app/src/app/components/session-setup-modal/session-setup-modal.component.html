@@ -44,8 +44,8 @@
 										   [table]="table"
 										   (configurationChanged)="validateConfiguration()"></app-table-session-mode-wizard>
 		</div>
-		<div class="uk-modal-body" *ngIf="graph">
-			<app-session-score-settings [deckElement]="graph"></app-session-score-settings>
+		<div class="uk-modal-body" *ngIf="graph || flashcardSet">
+			<app-session-score-settings [deckElement]="graph || flashcardSet"></app-session-score-settings>
 			<form class="uk-margin uk-grid-small uk-child-width-auto" uk-grid>
 				<label>
 					<input class="uk-checkbox"

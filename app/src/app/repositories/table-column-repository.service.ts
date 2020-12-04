@@ -36,24 +36,12 @@ import {TableConfiguration} from "../models/TableConfiguration";
 })
 export class TableColumnRepository extends AbstractRepository<TableColumn, TableColumnDataEntity> {
 
-	private indexCreated: boolean = false;
-
 	constructor(userSessionService: UserSessionService) {
 		super('table-column', userSessionService);
 	}
 
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
 		return tableConfig.tableColumns;
-	}
-
-	private async checkIndexesInitialized(): Promise<void> {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['index', 'tableId']}
-		});
-		this.indexCreated = true;
 	}
 
 	protected mapToDataEntity(entity: TableColumn): TableColumnDataEntity {
@@ -92,7 +80,7 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 	}
 
 	private async getDataEntitiesInTable(tableId: string): Promise<TableColumnDataEntity[]> {
-		await this.checkIndexesInitialized();
+		await this.checkIndex();
 		const result = await this.db.find({
 			selector: {
 				$and: [
@@ -103,6 +91,10 @@ export class TableColumnRepository extends AbstractRepository<TableColumn, Table
 			sort: [{index: 'asc'}, {tableId: 'asc'}]
 		})
 		return result.docs;
+	}
+
+	protected getIndexFields(): string[] {
+		return ['index', 'tableId'];
 	}
 }
 

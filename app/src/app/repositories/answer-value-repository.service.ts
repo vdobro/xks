@@ -59,6 +59,10 @@ export class AnswerValueRepository extends AbstractRepository<AnswerValue, Answe
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
 		return tableConfig.answerValues;
 	}
+
+	protected getIndexFields(): string[] {
+		return [];
+	}
 }
 
 interface AnswerValueEntity extends BaseDataEntity {

@@ -19,26 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {SimpleCardRepository} from './simple-card-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {DeckElement} from "./DeckElement";
+import {BaseEntity} from "./BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.15
  */
-describe('SimpleCardRepository', () => {
-	let service: SimpleCardRepository;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(SimpleCardRepository);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export interface FlashcardSet extends DeckElement, BaseEntity {
+}

@@ -144,7 +144,7 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 			return;
 		}
 		const existingValue = await this.answerService.getForNode(this.selectedNode);
-		await this.answerService.set(nodeLabel, existingValue);
+		await this.answerService.setDefault(nodeLabel, existingValue);
 	}
 
 	private async createNode() {

@@ -37,6 +37,8 @@ import {AnswerValueRepository} from "../repositories/answer-value-repository.ser
 import {ExerciseTask} from "./models/exercise-task";
 import {FlashcardField} from "./models/flashcard-field";
 import {AnswerFeedback} from "./models/answer-feedback";
+import {FlashcardSet} from "../models/FlashcardSet";
+import {FlashcardRepository} from "../repositories/flashcard-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,6 +57,7 @@ export class ExerciseTaskService {
 		private readonly tableCellService: TableCellService,
 		private readonly graphElementService: GraphElementService,
 		private readonly graphEdgeRepository: GraphEdgeRepository,
+		private readonly flashcardRepository: FlashcardRepository,
 		private readonly answerValueRepository: AnswerValueRepository) {
 	}
 
@@ -115,6 +118,12 @@ export class ExerciseTaskService {
 			}
 		}
 		return exercises;
+	}
+
+	async getFlashcardTaskList(set: FlashcardSet, startScore: number, maxScore: number) : Promise<ExerciseTask[]> {
+		const cards = await this.flashcardRepository.getAllInSet(set.id);
+		//TODO
+		return [];
 	}
 
 	logInAnswer(answerValue: string,

@@ -19,26 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {SimpleCardListRepository} from './simple-card-list-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FlashcardSetViewComponent} from './flashcard-set-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.11.15
+ * @since 2020.11.22
  */
-describe('SimpleCardListService', () => {
-	let service: SimpleCardListRepository;
+describe('FlashcardSetViewComponent', () => {
+	let component: FlashcardSetViewComponent;
+	let fixture: ComponentFixture<FlashcardSetViewComponent>;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(SimpleCardListRepository);
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [FlashcardSetViewComponent]
+		}).compileComponents();
 	});
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
+	beforeEach(() => {
+		fixture = TestBed.createComponent(FlashcardSetViewComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
 	});
 });

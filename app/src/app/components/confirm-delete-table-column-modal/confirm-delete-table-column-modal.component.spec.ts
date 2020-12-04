@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ConfirmDeleteTableColumnModalComponent} from './confirm-delete-table-column-modal.component';
 
@@ -31,12 +31,11 @@ describe('ConfirmDeleteTableColumnModalComponent', () => {
 	let component: ConfirmDeleteTableColumnModalComponent;
 	let fixture: ComponentFixture<ConfirmDeleteTableColumnModalComponent>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			declarations: [ConfirmDeleteTableColumnModalComponent]
-		})
-			.compileComponents();
-	}));
+		}).compileComponents();
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(ConfirmDeleteTableColumnModalComponent);

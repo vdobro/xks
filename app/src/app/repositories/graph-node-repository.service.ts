@@ -36,14 +36,12 @@ import {Graph} from "../models/Graph";
 })
 export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNodeDataEntity> {
 
-	private indexCreated: boolean = false;
-
 	constructor(userSessionService: UserSessionService) {
 		super('graph-node', userSessionService);
 	}
 
 	async getAllInGraph(graph: Graph): Promise<GraphNode[]> {
-		await this.checkIndexes();
+		await this.checkIndex();
 		const results = await this.db.find({
 			selector: {
 				graphId: graph.id
@@ -80,16 +78,9 @@ export class GraphNodeRepository extends AbstractRepository<GraphNode, GraphNode
 		return config.graphNodes;
 	}
 
-	private async checkIndexes() {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['graphId']}
-		});
-		this.indexCreated = true;
+	protected getIndexFields() : string[] {
+		return ['graphId'];
 	}
-
 }
 
 interface GraphNodeDataEntity extends BaseDataEntity {

@@ -26,7 +26,6 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
 import {TABLE_ID_PARAM} from "../table-view/table-view.component";
 import {TableService} from "../../services/table.service";
 import {TableSessionModeService} from "../../services/table-session-mode.service";
-import {Table} from "../../models/Table";
 import {TableSessionMode} from "../../models/TableSessionMode";
 import {TableSessionService} from "../../services/table-session.service";
 import {SidebarService} from "../../services/sidebar.service";
@@ -34,7 +33,6 @@ import {TopBarService} from "../../services/top-bar.service";
 import {NavBarItem} from "../nav-bar-item";
 import {SessionNavigationComponent} from "../session-navigation/session-navigation.component";
 import {StudySessionService} from "../../services/study-session.service";
-import {Graph} from "../../models/Graph";
 import {GraphSessionService} from "../../services/graph-session.service";
 import {GRAPH_ID_PARAM} from "../graph-view/graph-view.component";
 import {GraphService} from "../../services/graph.service";
@@ -42,6 +40,9 @@ import {NavigationService} from "../../services/navigation.service";
 import {DeckElement} from "../../models/DeckElement";
 import {FlashcardField} from "../../services/models/flashcard-field";
 import {LearningSessionState} from "../../services/models/learning-session-state";
+import {FLASHCARD_SET_ID_PARAM} from "../flashcard-set-view/flashcard-set-view.component";
+import {FlashcardSetService} from "../../services/flashcard-set.service";
+import {ElementTypeUtilities} from "../../models/DeckElementTypes";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 export const SESSION_START_SCORE_PARAM = "initial-score";
@@ -60,12 +61,8 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 
 	state: LearningSessionState | null = null;
 
-	private table: Table | null = null;
-	private sessionMode: TableSessionMode | null = null;
-
-	private graph: Graph | null = null;
-
 	private deckElement: DeckElement | null = null;
+	private sessionMode: TableSessionMode | null = null;
 
 	private startScore: number = 0;
 	private maxScore: number = 8;
@@ -76,6 +73,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		private readonly route: ActivatedRoute,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
+		private readonly flashcardSetService: FlashcardSetService,
 		private readonly sessionModeService: TableSessionModeService,
 		private readonly tableSessionService: TableSessionService,
 		private readonly graphSessionService: GraphSessionService,
@@ -87,16 +85,17 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 			const tableId = params.get(TABLE_ID_PARAM);
 			const tableSessionModeId = params.get(TABLE_SESSION_MODE_ID_PARAM);
 			const graphId = params.get(GRAPH_ID_PARAM);
+			const flashcardSetId = params.get(FLASHCARD_SET_ID_PARAM);
 
 			if (tableId && tableSessionModeId) {
-				this.table = await this.tableService.getById(tableId);
-				this.deckElement = this.table;
+				this.deckElement = await this.tableService.getById(tableId);
 				this.sessionMode = await this.sessionModeService.getById(tableSessionModeId);
 				this.sessionService = this.tableSessionService;
 			} else if (graphId) {
-				this.graph = await this.graphService.getById(graphId);
-				this.deckElement = this.graph;
+				this.deckElement = await this.graphService.getById(graphId);
 				this.sessionService = this.graphSessionService;
+			} else if (flashcardSetId) {
+				this.deckElement = await this.flashcardSetService.getById(flashcardSetId);
 			} else {
 				await this.navigationService.goBack();
 				return;
@@ -126,12 +125,17 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 	}
 
 	private async initSession() {
-		if (this.table && this.sessionMode) {
-			this.state = await this.tableSessionService.startNew(this.table, this.sessionMode,
+		if (ElementTypeUtilities.isTable(this.deckElement) && this.sessionMode) {
+			this.state = await this.tableSessionService.startNew(
+				this.deckElement,
+				this.sessionMode,
+				this.startScore,
+				this.maxScore);
+		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
+			this.state = await this.graphSessionService.startNew(this.deckElement,
 				this.startScore, this.maxScore);
-		} else if (this.graph) {
-			this.state = await this.graphSessionService.startNew(this.graph,
-				this.startScore, this.maxScore);
+		} else if (ElementTypeUtilities.isFlashcardSet(this.deckElement)) {
+			//TODO
 		}
 
 		this.sidebarService.hide();

@@ -64,7 +64,12 @@ import {SessionQuestionViewComponent} from './components/session-question-view/s
 import {SessionModeChooserComponent} from './components/session-mode-chooser/session-mode-chooser.component';
 import {SessionScoreSettingsComponent} from './components/session-score-settings/session-score-settings.component';
 import {AlternativeAnswerEditorComponent} from './components/alternative-answer-editor/alternative-answer-editor.component';
-import {SidebarSimpleCardListListElementComponent} from "./components/sidebar-deck-element/sidebar-simple-card-list-list-element.component";
+import {SidebarFlashcardSetListElementComponent} from "./components/sidebar-deck-element/sidebar-flashcard-set-list-element.component";
+import {
+	FLASHCARD_SET_ID_PARAM,
+	FlashcardSetViewComponent
+} from './components/flashcard-set-view/flashcard-set-view.component';
+import {FlashcardEditorComponent} from './components/flashcard-editor/flashcard-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -102,7 +107,7 @@ import {SidebarSimpleCardListListElementComponent} from "./components/sidebar-de
 		LoginModalComponent,
 		SidebarGraphListElementComponent,
 		SidebarTableListElementComponent,
-		SidebarSimpleCardListListElementComponent,
+		SidebarFlashcardSetListElementComponent,
 		GraphViewComponent,
 		GraphToolbarComponent,
 		GraphLabelEditorComponent,
@@ -112,6 +117,8 @@ import {SidebarSimpleCardListListElementComponent} from "./components/sidebar-de
 		SessionModeChooserComponent,
 		SessionScoreSettingsComponent,
 		AlternativeAnswerEditorComponent,
+		FlashcardSetViewComponent,
+		FlashcardEditorComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -124,6 +131,8 @@ import {SidebarSimpleCardListListElementComponent} from "./components/sidebar-de
 			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
 			{path: `graphs/:${GRAPH_ID_PARAM}/edit`, component: GraphViewComponent},
 			{path: `graphs/:${GRAPH_ID_PARAM}/learn`, component: SessionViewComponent},
+			{path: `flashcards/:${FLASHCARD_SET_ID_PARAM}/edit`, component: FlashcardSetViewComponent},
+			{path: `flashcards/:${FLASHCARD_SET_ID_PARAM}/learn`, component: SessionViewComponent},
 			{path: '**', component: NotFoundViewComponent},
 		], { useHash: true, relativeLinkResolution: 'legacy' }),
 		FormsModule,

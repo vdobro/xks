@@ -28,7 +28,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
  * @author Vitalijus Dobrovolskis
  * @since 2020.08.01
  */
-describe('DeckRepositoryService', () => {
+describe('DeckRepository', () => {
 	let service: DeckRepository;
 
 	beforeEach(() => {

@@ -59,6 +59,10 @@ export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
 		return tableConfig.decks;
 	}
+
+	protected getIndexFields(): string[] {
+		return [];
+	}
 }
 
 interface DeckEntity extends BaseDataEntity {

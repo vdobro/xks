@@ -44,6 +44,7 @@ export class SidebarTableListElementComponent
 		private readonly tableService: TableService,
 		private readonly navigationService: NavigationService) {
 		super();
+		this.elementType = 'table';
 
 		this.tableCellService.rowCountChanged.subscribe(async table => {
 			if (this.element?.id === table.id) {

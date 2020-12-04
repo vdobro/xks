@@ -46,6 +46,7 @@ export class SidebarGraphListElementComponent
 		private readonly edgeRepository: GraphEdgeRepository,
 		private readonly navigationService: NavigationService) {
 		super();
+		this.elementType = 'graph';
 	}
 
 	async ngOnInit() {

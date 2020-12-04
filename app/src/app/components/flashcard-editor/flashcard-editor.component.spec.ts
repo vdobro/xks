@@ -19,12 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {FlashcardEditorComponent} from './flashcard-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.11.15
+ * @since 2020.12.03
  */
-export interface SimpleCardList extends DeckElement, BaseEntity {
-}
+describe('FlashcardEditorComponent', () => {
+	let component: FlashcardEditorComponent;
+	let fixture: ComponentFixture<FlashcardEditorComponent>;
+
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [FlashcardEditorComponent]
+		}).compileComponents();
+	});
+
+	beforeEach(() => {
+		fixture = TestBed.createComponent(FlashcardEditorComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});

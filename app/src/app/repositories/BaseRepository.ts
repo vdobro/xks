@@ -19,11 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {BaseEntity} from "../models/BaseEntity";
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.08.01
  */
-export interface BaseRepository<Entity> {
+export interface BaseRepository<Entity extends BaseEntity> {
 	getAll(): Promise<Entity[]>
 
 	getById(id: string): Promise<Entity>

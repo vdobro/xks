@@ -27,6 +27,7 @@ import {GraphNode} from "../models/GraphNode";
 import {TableRow} from "../models/TableRow";
 import {TableColumn} from "../models/TableColumn";
 import {TableRowRepository} from "../repositories/table-row-repository.service";
+import {Flashcard} from "../models/Flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -51,6 +52,10 @@ export class AnswerValueService {
 		return await this.getExisting(id);
 	}
 
+	async getForFlashcard(flashcard: Flashcard) : Promise<AnswerValue> {
+		return await this.getExisting(flashcard.answerId);
+	}
+
 	async create(value: string) : Promise<AnswerValue> {
 		const entity = {
 			defaultValue: value,
@@ -61,7 +66,7 @@ export class AnswerValueService {
 		return this.getExisting(entity.id);
 	}
 
-	async set(value: string, answer: AnswerValue) : Promise<AnswerValue> {
+	async setDefault(value: string, answer: AnswerValue) : Promise<AnswerValue> {
 		const existing = await this.getExisting(answer.id);
 		existing.defaultValue = value;
 		await this.repository.update(existing);

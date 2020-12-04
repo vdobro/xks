@@ -35,6 +35,7 @@ import {DeckElement} from "../../models/DeckElement";
 import {ScoreParams} from "../session-view/session-view.component";
 import {ElementTypeUtilities} from "../../models/DeckElementTypes";
 import {Graph} from "../../models/Graph";
+import {FlashcardSet} from "../../models/FlashcardSet";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -65,27 +66,24 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (!this.deckElement) {
 			this.table = null;
 			this.graph = null;
+			this.flashcardSet = null;
 			return;
 		}
-		if (ElementTypeUtilities.isTable(this.deckElement)) {
-			this.table = this.deckElement;
-			this.graph = null;
-		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
-			this.graph = this.deckElement;
-			this.table = null;
-		} else if (ElementTypeUtilities.isSimpleCardList(this.deckElement)) {
-			this.table = null;
-			this.graph = null;
-		}
+		this.table = ElementTypeUtilities.isTable(this.deckElement) ? this.deckElement : null;
+		this.graph = ElementTypeUtilities.isGraph(this.deckElement) ? this.deckElement : null;
+		this.flashcardSet = ElementTypeUtilities.isFlashcardSet(this.deckElement)
+			? this.deckElement : null;
 	}
 
 	get deckElement() : DeckElement | null {
 		return this._deckElement;
 	}
 
+	_deckElement: DeckElement | null = null;
+
 	table: Table | null = null;
 	graph: Graph | null = null;
-	_deckElement: DeckElement | null = null;
+	flashcardSet: FlashcardSet | null = null;
 
 	anySessionModesAvailable: boolean = false;
 	startSessionEnabled: boolean = false;
@@ -128,6 +126,9 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			}
 		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
 			await this.navigationService.studyGraph(this.deckElement.id, scores);
+		} else if (ElementTypeUtilities.isFlashcardSet(this.deckElement)) {
+			const set = this.deckElement as FlashcardSet;
+			await this.navigationService.studyFlashcards(set.id, scores);
 		}
 	}
 
@@ -147,7 +148,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		}
 		if (ElementTypeUtilities.isTable(this.deckElement)) {
 			this.validateTableConfiguration(this.deckElement);
-		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
+		} else if (ElementTypeUtilities.isGraph(this.deckElement)
+			|| ElementTypeUtilities.isFlashcardSet(this.deckElement)) {
 			this.startSessionEnabled = true;
 			this.defaultSessionCheckbox.enable();
 		} else {

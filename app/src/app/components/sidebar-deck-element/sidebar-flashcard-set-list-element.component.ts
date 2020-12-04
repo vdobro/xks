@@ -22,28 +22,31 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationService} from "../../services/navigation.service";
 import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
-import {SimpleCardService} from "../../services/simple-card.service";
-import {SimpleCardList} from "../../models/SimpleCardList";
+import {FlashcardService} from "../../services/flashcard.service";
+import {FlashcardSet} from "../../models/FlashcardSet";
+import {FlashcardSetService} from "../../services/flashcard-set.service";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.21
  */
 @Component({
-	selector: 'li [deck-element-simple-card-list]',
+	selector: 'li [deck-element-flashcard-set]',
 	templateUrl: './sidebar-deck-element.component.html',
 	styleUrls: ['./sidebar-deck-element.component.sass']
 })
-export class SidebarSimpleCardListListElementComponent
+export class SidebarFlashcardSetListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
 	constructor(
-		private readonly cardService: SimpleCardService,
+		private readonly cardSetService: FlashcardSetService,
+		private readonly cardService: FlashcardService,
 		private readonly navigationService: NavigationService) {
 		super();
+		this.elementType = 'flashcard collection';
 
-		this.cardService.rowCountChanged.subscribe(async (list: SimpleCardList) => {
+		this.cardService.cardCountChanged.subscribe(async (list: FlashcardSet) => {
 			if (this.element?.id === list.id) {
 				await this.updateElementCount();
 			}
@@ -59,18 +62,19 @@ export class SidebarSimpleCardListListElementComponent
 	}
 
 	private async updateElementCount() {
-		//TODO
+		const cards = await this.cardService.getBySet(this.element as FlashcardSet);
+		this.elementCount = cards.length;
 	}
 
 	protected async onClickHandler(id: string) {
-		await this.navigationService.openSimpleCardList(id);
+		await this.navigationService.openFlashcardSet(id);
 	}
 
 	protected async onDeleteHandler(id: string) {
-		//TODO
+		await this.cardSetService.delete(id);
 	}
 
 	protected async onUpdateHandler(element: SidebarDeckElement) {
-		//TODO
+		await this.cardSetService.update(element as FlashcardSet);
 	}
 }

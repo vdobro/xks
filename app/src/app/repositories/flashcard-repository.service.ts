@@ -21,10 +21,11 @@
 
 import {Injectable} from '@angular/core';
 import {AbstractRepository} from "./AbstractRepository";
-import {SimpleCard} from "../models/SimpleCard";
+import {Flashcard} from "../models/Flashcard";
 import {BaseDataEntity} from "./BaseRepository";
 import {UserSessionService} from "../services/user-session.service";
 import {TableConfiguration} from "../models/TableConfiguration";
+import {FlashcardSet} from "../models/FlashcardSet";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,38 +34,63 @@ import {TableConfiguration} from "../models/TableConfiguration";
 @Injectable({
 	providedIn: 'root'
 })
-export class SimpleCardRepository extends AbstractRepository<SimpleCard, SimpleCardDataEntity> {
+export class FlashcardRepository extends AbstractRepository<Flashcard, FlashcardDataEntity> {
 
 	constructor(userSessionService: UserSessionService) {
-		super('simple-card', userSessionService);
+		super('flashcard', userSessionService);
 	}
 
-	protected mapToDataEntity(entity: SimpleCard): SimpleCardDataEntity {
+	async getAllInSet(setId: string) : Promise<Flashcard[]> {
+		await this.checkIndex();
+		const result = await this.db.find({
+			selector: {
+				setId: setId
+			}
+		});
+		return result.docs.map(this.mapToEntity);
+	}
+
+	async anyCardsExist(set: FlashcardSet) {
+		await this.checkIndex();
+		const result = await this.db.find({
+			selector: {
+				setId: set.id
+			},
+			limit: 1
+		});
+		return result.docs.length > 0;
+	}
+
+	protected mapToDataEntity(entity: Flashcard): FlashcardDataEntity {
 		return {
 			_id: entity.id,
 			_rev: '',
 			answerId: entity.answerId,
-			listId: entity.listId,
+			setId: entity.setId,
 			question: entity.question
 		};
 	}
 
-	protected mapToEntity(entity: SimpleCardDataEntity): SimpleCard {
+	protected mapToEntity(entity: FlashcardDataEntity): Flashcard {
 		return {
 			id: entity._id,
 			answerId: entity.answerId,
-			listId: entity.listId,
+			setId: entity.setId,
 			question: entity.question
 		};
 	}
 
 	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
-		return tableConfig.simpleCards;
+		return tableConfig.flashcards;
+	}
+
+	protected getIndexFields(): string[] {
+		return ['graphId'];
 	}
 }
 
-interface SimpleCardDataEntity extends BaseDataEntity {
-	listId: string;
+interface FlashcardDataEntity extends BaseDataEntity {
+	setId: string;
 	question: string;
 	answerId: string;
 }
