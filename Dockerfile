@@ -10,14 +10,18 @@ LABEL maintainer="Vitalijus Dobrovolskis vitalijusdobro@gmail.com"
 VOLUME /tmp
 
 RUN apt-get update && apt-get install -y gettext
-RUN addgroup --system spring && useradd -g spring spring
+RUN adduser  --system --group spring
 
 USER spring:spring
 WORKDIR /application
 COPY --from=builder application/setup_env.sh ./
+RUN true
 COPY --from=builder application/dependencies/ ./
+RUN true
 COPY --from=builder application/spring-boot-loader/ ./
+RUN true
 COPY --from=builder application/snapshot-dependencies/ ./
+RUN true
 COPY --from=builder application/application/ ./
 
 USER root
