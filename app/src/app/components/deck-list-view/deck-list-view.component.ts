@@ -55,6 +55,8 @@ export class DeckListViewComponent implements OnInit {
 		}
 
 		// @ts-ignore It can actually scroll to an index
-		UIkit.scroll(0).scrollTo(this.deckListFooter.nativeElement);
+		if (this.decks.length > 0) {
+			UIkit.scroll(this.deckListFooter.nativeElement);
+		}
 	}
 }
