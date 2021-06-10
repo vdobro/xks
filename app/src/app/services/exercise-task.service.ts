@@ -99,7 +99,9 @@ export class ExerciseTaskService {
 					node: targetNode,
 				});
 			}
-			const answerFields = await Promise.all(transitions.map(this.mapEdgeToFlashcardField));
+			const answerFields = await Promise.all(transitions.map(transition => {
+				return this.mapEdgeToFlashcardField(transition);
+			}));
 			const ignoreAnswerOrder = edges.every(x => x.name === '');
 			if (answerFields.length > 0) {
 				exercises.push({
