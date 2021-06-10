@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {TableRowComponent} from './table-row.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
@@ -32,7 +32,7 @@ describe('TableRowComponent', () => {
 	let component: TableRowComponent;
 	let fixture: ComponentFixture<TableRowComponent>;
 
-	beforeEach(async(() => {
+	beforeEach(waitForAsync(() => {
 		TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule],
 			declarations: [TableRowComponent]

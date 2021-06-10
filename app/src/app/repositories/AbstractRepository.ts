@@ -76,7 +76,9 @@ export abstract class AbstractRepository<Entity extends { id: string }, DataEnti
 	}
 
 	async add(entity: Entity): Promise<void> {
-		const dataEntity = this.mapToDataEntity(entity);
+		const dataEntity : {
+			_rev?: string,
+		} = this.mapToDataEntity(entity);
 		delete dataEntity._rev;
 		await this.db.put(dataEntity);
 		this._entityCreated.next(entity);

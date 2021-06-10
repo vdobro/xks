@@ -123,7 +123,7 @@ import {AlternativeAnswerEditorComponent} from './components/alternative-answer-
 			{path: `graphs/:${GRAPH_ID_PARAM}/edit`, component: GraphViewComponent},
 			{path: `graphs/:${GRAPH_ID_PARAM}/learn`, component: SessionViewComponent},
 			{path: '**', component: NotFoundViewComponent},
-		], {useHash: true}),
+		], { useHash: true, relativeLinkResolution: 'legacy' }),
 		FormsModule,
 		ReactiveFormsModule,
 		DragDropModule,
