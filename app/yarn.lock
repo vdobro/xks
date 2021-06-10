@@ -2970,7 +2970,7 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=
 
-component-emitter@^1.2.1, component-emitter@~1.3.0:
+component-emitter@^1.2.1, component-emitter@^1.3.0, component-emitter@~1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.3.0.tgz#16e4070fba8ae29b679f2215853ee181ab2eabc0"
   integrity sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==
@@ -5147,11 +5147,6 @@ jest-worker@^27.0.2:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-jquery@^3.5.1:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
-  integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
-
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -5332,10 +5327,10 @@ karma@~6.3.3:
     ua-parser-js "^0.7.23"
     yargs "^16.1.1"
 
-keycharm@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/keycharm/-/keycharm-0.3.1.tgz#1de258425454752b95c4d8a6cab9ec83218670de"
-  integrity sha512-zn47Ti4FJT9zdF+YBBLWJsfKF/fYQHkrYlBeB5Ez5e2PjW7SoIxr43yehAne2HruulIoid4NKZZxO0dHBygCtQ==
+keycharm@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/keycharm/-/keycharm-0.4.0.tgz#8d684ea9cc01379a07fbddee33ff32d97f5ae2a7"
+  integrity sha512-TyQTtsabOVv3MeOpR92sIKk/br9wxS+zGj4BG7CR8YbK4jM3tyIBaF0zhzeBUMx36/Q/iQLOKKOT+3jOQtemRQ==
 
 killable@^1.0.1:
   version "1.0.1"
@@ -8848,20 +8843,20 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vis-data@^7.0.0:
+vis-data@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.2.tgz#b7d076ac79cb54f7c5e9c80f5b03b93cc8cc1fda"
   integrity sha512-RPSegFxEcnp3HUEJSzhS2vBdbJ2PSsrYYuhRlpHp2frO/MfRtTYbIkkLZmPkA/Sg3pPfBlR235gcoKbtdm4mbw==
 
-vis-network@^8.3.2:
-  version "8.5.6"
-  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-8.5.6.tgz#dd3ff2d1b5909b94259df245e6909ce094eea047"
-  integrity sha512-4OOPuDSwcVRID+iPXKn6DBSfdsmCRPk40diAQbF0W6pZ5ivy7jyLKysjUjxVhJqqstu/Wiu2P/OfNqq7gc1Bww==
+vis-network@^9.0.4:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-9.0.4.tgz#c62d466224897070e9c1720e4d8e6e1dc479ca81"
+  integrity sha512-F/pq8yBJUuB9lNKXHhtn4GP2h91FV0c2O2nvfU34RX4VCYOlqs+mINdz+J+QkWiYhiPdlVy15gzVEzkhJ9hpaw==
 
-vis-util@^4.3.4:
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-4.3.4.tgz#02319fbd909f82782b96a36d1224f1beea67f8b2"
-  integrity sha512-hJIZNrwf4ML7FYjs+m+zjJfaNvhjk3/1hbMdQZVnwwpOFJS/8dMG8rdbOHXcKoIEM6U5VOh3HNpaDXxGkOZGpw==
+vis-util@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-5.0.2.tgz#47e8a31580c0805680c43d253ac7da21501990b9"
+  integrity sha512-oPDmPc4o0uQLoKpKai2XD1DjrhYsA7MRz75Wx9KmfX84e9LLgsbno7jVL5tR0K9eNVQkD6jf0Ei8NtbBHDkF1A==
 
 void-elements@^2.0.0:
   version "2.0.1"
