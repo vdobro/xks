@@ -19,26 +19,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {TableColumnRepository} from './table-column-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {IdEntity} from "@app/repositories/id-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.02
+ * @since 2020.08.01
  */
-describe('TableColumnRepository', () => {
-	let service: TableColumnRepository;
+export interface BaseRepository<Entity extends IdEntity> {
+	getAll(): Promise<Entity[]>
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(TableColumnRepository);
-	});
+	getById(id: string): Promise<Entity>
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+	add(entity: Entity, type?: string): Promise<void>
+
+	delete(id: string): Promise<void>
+
+	update(entity: Entity): Promise<Entity>
+}
+

@@ -20,15 +20,17 @@
  */
 
 import {Component, OnInit, Output} from '@angular/core';
-import {Deck} from "../../models/Deck";
-import {DeckService} from "../../services/deck.service";
 import {ActivatedRoute, ParamMap} from "@angular/router";
-import {NavigationControlService} from "../../services/navigation-control.service";
-import {TableService} from "../../services/table.service";
-import {NavigationService} from "../../services/navigation.service";
-import {SidebarService} from "../../services/sidebar.service";
-import {GraphService} from "../../services/graph.service";
-import {TopBarService} from "../../services/top-bar.service";
+
+import {Deck} from "@app/models/Deck";
+
+import {DeckService} from "@app/services/deck.service";
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {TableService} from "@app/services/table.service";
+import {NavigationService} from "@app/services/navigation.service";
+import {SidebarService} from "@app/services/sidebar.service";
+import {GraphService} from "@app/services/graph.service";
+import {TopBarService} from "@app/services/top-bar.service";
 
 export const DECK_ID_PARAM: string = 'deckId';
 
@@ -70,8 +72,8 @@ export class DeckViewComponent implements OnInit {
 				await this.navigationService.goToDeckList();
 			}
 		});
-		this.tableService.tablesChanged.subscribe(async (deck: Deck) => {
-			if (this.deck?.id === deck.id) {
+		this.tableService.tablesChanged.subscribe(async (deckId: string) => {
+			if (this.deck?.id === deckId) {
 				await this.checkIfAnyElementsAvailable();
 			}
 		});

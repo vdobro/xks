@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,26 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {TableCellService} from './table-cell.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.03
+ * @since 2021.07.25
  */
-describe('TableCellService', () => {
-	let service: TableCellService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
-		service = TestBed.inject(TableCellService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export interface ElementId {
+	deck: string,
+	element: string,
+}

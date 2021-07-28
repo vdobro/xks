@@ -19,8 +19,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
 import {Subject, Subscribable} from "rxjs";
+
+import {Injectable} from '@angular/core';
 
 /**
  * @author Vitalijus Dobrovolskis

@@ -19,24 +19,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// @ts-ignore
 import {v4 as uuid} from 'uuid';
 
 import {Injectable} from '@angular/core';
-import {TableCellService} from "./table-cell.service";
-import {Table} from "../models/Table";
-import {TableColumn} from "../models/TableColumn";
-import {TableRow} from "../models/TableRow";
-import {Graph} from "../models/Graph";
-import {GraphElementService} from "./graph-element.service";
-import {GraphEdgeRepository} from "../repositories/graph-edge-repository.service";
-import {GraphNode} from "../models/GraphNode";
-import {levenshtein} from "../../environments/utils";
-import {AnswerValue} from "../models/AnswerValue";
-import {AnswerValueRepository} from "../repositories/answer-value-repository.service";
-import {ExerciseTask} from "./models/exercise-task";
-import {FlashcardField} from "./models/flashcard-field";
-import {AnswerFeedback} from "./models/answer-feedback";
+
+import {levenshtein} from "@environments/utils";
+
+import {Table} from "@app/models/Table";
+import {TableColumn} from "@app/models/TableColumn";
+import {TableRow} from "@app/models/TableRow";
+import {Graph} from "@app/models/Graph";
+import {GraphNode} from "@app/models/GraphNode";
+import {AnswerValue} from "@app/models/AnswerValue";
+
+import {TableElementService} from "@app/services/table-element.service";
+import {GraphElementService} from "@app/services/graph-element.service";
+import {ExerciseTask} from "@app/services/models/exercise-task";
+import {FlashcardField} from "@app/services/models/flashcard-field";
+import {AnswerFeedback} from "@app/services/models/answer-feedback";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -52,24 +52,19 @@ export class ExerciseTaskService {
 	private readonly defaultMinimumScore = 0;
 
 	constructor(
-		private readonly tableCellService: TableCellService,
-		private readonly graphElementService: GraphElementService,
-		private readonly graphEdgeRepository: GraphEdgeRepository,
-		private readonly answerValueRepository: AnswerValueRepository) {
+		private readonly tableCellService: TableElementService,
+		private readonly graphElementService: GraphElementService) {
 	}
 
-	async getTableTaskList(table: Table,
+	getTableTaskList(table: Table,
 						   questionColumns: TableColumn[],
 						   answerColumns: TableColumn[],
 						   startScore: number,
-						   maxScore: number): Promise<ExerciseTask[]> {
-		const rows = await this.tableCellService.getRows(table);
-		const tasks : ExerciseTask[] = [];
-		for (let row of rows) {
-			const answerFields = await Promise.all(answerColumns.map(column =>
-				this.mapColumnToFlashcardField(row, column)));
-			const questions = await Promise.all(questionColumns.map(column =>
-				this.mapColumnToFlashcardField(row, column)));
+						   maxScore: number): ExerciseTask[] {
+		const tasks: ExerciseTask[] = [];
+		for (let row of  table.rows) {
+			const answerFields =answerColumns.map(column => this.mapColumnToFlashcardField(row, column));
+			const questions = questionColumns.map(column => this.mapColumnToFlashcardField(row, column));
 			tasks.push({
 				id: uuid(),
 				ignoreAnswerOrder: false,
@@ -84,24 +79,21 @@ export class ExerciseTaskService {
 		return tasks;
 	}
 
-	async getGraphTaskList(graph: Graph,
+	getGraphTaskList(graph: Graph,
 						   startScore: number,
-						   maxScore: number): Promise<ExerciseTask[]> {
-		const nodes = await this.graphElementService.getNodes(graph);
+						   maxScore: number): ExerciseTask[] {
 		const exercises: ExerciseTask[] = [];
-		for (let node of nodes) {
-			const edges = await this.graphEdgeRepository.getAllFrom(node);
+		for (let node of graph.nodes) {
+			const edges = node.edges;
 			const transitions: EdgeWithDestinationNode[] = [];
 			for (let edge of edges) {
-				const targetNode = await this.graphElementService.getNodeById(edge.targetNodeId);
+				const targetNode = this.graphElementService.findNode(edge.targetId, graph);
 				transitions.push({
 					edgeName: edge.name,
 					node: targetNode,
 				});
 			}
-			const answerFields = await Promise.all(transitions.map(transition => {
-				return this.mapEdgeToFlashcardField(transition);
-			}));
+			const answerFields = transitions.map(transition => ExerciseTaskService.mapEdgeToFlashcardField(transition));
 			const ignoreAnswerOrder = edges.every(x => x.name === '');
 			if (answerFields.length > 0) {
 				exercises.push({
@@ -109,7 +101,7 @@ export class ExerciseTaskService {
 					ignoreAnswerOrder: ignoreAnswerOrder,
 					answers: answerFields,
 					pendingAnswers: answerFields,
-					questions: [await this.mapNodeToFlashcardField(node)],
+					questions: [ExerciseTaskService.mapNodeToFlashcardField(node)],
 					doneAnswers: [],
 					startingScore: startScore,
 					maxScore: maxScore,
@@ -188,15 +180,15 @@ export class ExerciseTaskService {
 	}
 
 	private getFieldWithClosestValue(value: string, fields: FlashcardField[]): FlashcardField {
-		const fieldAnswers : {
+		const fieldAnswers: {
 			value: string,
 			flashcard: FlashcardField,
 			isAlternative: boolean
 		}[] = [];
 		for (let field of fields) {
 			fieldAnswers.push({
-				value: field.value.defaultValue,
-				isAlternative : false,
+				value: field.value.default,
+				isAlternative: false,
 				flashcard: field
 			});
 			for (let alternative of field.value.alternatives) {
@@ -263,16 +255,16 @@ export class ExerciseTaskService {
 		});
 	}
 
-	private async mapColumnToFlashcardField(row: TableRow, column: TableColumn): Promise<FlashcardField> {
-		const value = await this.answerValueRepository.getById(row.valueIds.get(column.id)!!);
+	private mapColumnToFlashcardField(row: TableRow, column: TableColumn): FlashcardField {
+		const columnValue = row.columnValues.find(x => x.columnId === column.id)!!;
 		return {
 			identifier: column,
-			value: value,
+			value: columnValue.value,
 		};
 	}
 
-	private async mapEdgeToFlashcardField(transition: EdgeWithDestinationNode): Promise<FlashcardField> {
-		const value = await this.answerValueRepository.getById(transition.node.valueId);
+	private static mapEdgeToFlashcardField(transition: EdgeWithDestinationNode): FlashcardField {
+		const value = transition.node.value;
 		return {
 			identifier: {
 				id: transition.node.id,
@@ -282,18 +274,18 @@ export class ExerciseTaskService {
 		};
 	}
 
-	private async mapNodeToFlashcardField(node: GraphNode): Promise<FlashcardField> {
+	private static mapNodeToFlashcardField(node: GraphNode): FlashcardField {
 		return {
 			identifier: {
 				id: node.id,
 				name: '',
 			},
-			value: await this.answerValueRepository.getById(node.valueId),
+			value: node.value
 		}
 	}
 
-	private static checkIfAnswerValueIsIn(answer: string, expected: AnswerValue) : boolean {
-		return expected.defaultValue === answer || expected.alternatives.find(x => x === answer) !== undefined;
+	private static checkIfAnswerValueIsIn(answer: string, expected: AnswerValue): boolean {
+		return expected.default === answer || expected.alternatives.find(x => x === answer) !== undefined;
 	}
 
 	private static revertTaskState(state: TaskState, field: FlashcardField) {
@@ -315,7 +307,7 @@ export class ExerciseTaskService {
 		return score;
 	}
 
-	private static incrementMainScoreIfPossible(state: TaskState) : void {
+	private static incrementMainScoreIfPossible(state: TaskState): void {
 		const old = state.score.value;
 		const subscores = state.columnSubscores;
 		if (Array.from(subscores.values()).every(score => score.value > old)) {
@@ -323,13 +315,13 @@ export class ExerciseTaskService {
 		}
 	}
 
-	private static incrementSubscore(state: TaskState, columnId: string) : void {
+	private static incrementSubscore(state: TaskState, columnId: string): void {
 		const subscores = state.columnSubscores;
 		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.incrementScore(subscore));
 	}
 
-	private static changeSubscore(state: TaskState, columnId: string, value: number) : void {
+	private static changeSubscore(state: TaskState, columnId: string, value: number): void {
 		const subscores = state.columnSubscores;
 		const subscore = subscores.get(columnId)!!;
 		subscores.set(columnId, this.changeScore(subscore, value));

@@ -20,19 +20,24 @@
  */
 
 import UIkit from 'uikit';
+
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
-import {NavigationControlService} from "../../services/navigation-control.service";
-import {Table} from "../../models/Table";
-import {TableService} from "../../services/table.service";
-import {NewDeckElementModalComponent} from "../new-deck-element-modal/new-deck-element-modal.component";
-import {DeckService} from "../../services/deck.service";
-import {NavigationService} from "../../services/navigation.service";
-import {SessionSetupModalComponent} from "../session-setup-modal/session-setup-modal.component";
-import {SidebarService} from "../../services/sidebar.service";
-import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
-import {Graph} from "../../models/Graph";
-import {GraphService} from "../../services/graph.service";
+
+import {Deck} from "@app/models/Deck";
+import {Graph} from "@app/models/Graph";
+import {Table} from "@app/models/Table";
+
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {TableService} from "@app/services/table.service";
+import {DeckService} from "@app/services/deck.service";
+import {NavigationService} from "@app/services/navigation.service";
+import {SidebarService} from "@app/services/sidebar.service";
+import {GraphService} from "@app/services/graph.service";
+import {GraphElementService} from "@app/services/graph-element.service";
+
+import {SessionSetupModalComponent} from "@app/components/session-setup-modal/session-setup-modal.component";
+import {ConfirmDeleteElementModalComponent} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
+import {NewDeckElementModalComponent} from "@app/components/new-deck-element-modal/new-deck-element-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -72,13 +77,14 @@ export class SidebarComponent implements OnInit {
 				private readonly deckService: DeckService,
 				private readonly tableService: TableService,
 				private readonly graphService: GraphService,
+				private readonly graphElementService: GraphElementService,
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
 		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
 		this.sidebarService.activeTable.subscribe((value: Table | null) => this.onActiveTableChanged(value));
 		this.sidebarService.activeGraph.subscribe((value: Graph | null) => this.onActiveGraphChanged(value));
-		this.tableService.tablesChanged.subscribe((value: Deck) => this.onTablesChanged(value));
-		this.graphService.graphsChanged.subscribe((value: Deck) => this.onGraphsChanged(value));
+		this.tableService.tablesChanged.subscribe((deckId: string) => this.onTablesChanged(deckId));
+		this.graphService.deckGraphsChanged.subscribe((deckId: string) => this.onGraphsChanged(deckId));
 	}
 
 	async ngOnInit() {
@@ -151,7 +157,7 @@ export class SidebarComponent implements OnInit {
 		if (this.tableSelected) {
 			this.setupSessionModal?.openDialog();
 		} else if (this.graphSelected) {
-			if (await this.graphService.anyNodesAndEdgesExist(this.selectedGraph!!)) {
+			if (await this.graphElementService.anyNodesAndEdgesExist(this.selectedGraph!!)) {
 				this.setupSessionModal?.openDialog();
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
@@ -159,15 +165,15 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private async onTablesChanged(deck: Deck) {
-		this.tables = await this.tableService.getByDeck(deck);
+	private async onTablesChanged(deckId: string) {
+		this.tables = await this.tableService.getByDeckId(deckId);
 		if (this.selectedTable && !this.tables.find(x => x.id === this.selectedTable!!.id)) {
 			this.sidebarService.deselectTable();
 		}
 	}
 
-	private async onGraphsChanged(deck: Deck) {
-		this.graphs = await this.graphService.getByDeck(deck);
+	private async onGraphsChanged(deckId: string) {
+		this.graphs = await this.graphService.getByDeckId(deckId);
 		if (this.selectedGraph && !this.graphs.find(x => x.id === this.selectedGraph!!.id)) {
 			this.sidebarService.deselectGraph();
 		}

@@ -22,18 +22,20 @@
 import UIkit from 'uikit';
 
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {Table} from "../../models/Table";
-import {NavigationService} from "../../services/navigation.service";
-import {TableSessionModeWizardComponent} from "../table-session-mode-wizard/table-session-mode-wizard.component";
-import {TableSessionModeService} from "../../services/table-session-mode.service";
-import {SessionModeChooserComponent} from "../session-mode-chooser/session-mode-chooser.component";
 import {FormControl} from "@angular/forms";
-import {TableService} from "../../services/table.service";
-import {TableSessionModeRepository} from "../../repositories/table-session-mode-repository.service";
-import {SessionScoreSettingsComponent} from "../session-score-settings/session-score-settings.component";
-import {Graph} from "../../models/Graph";
-import {DeckElement} from "../../models/DeckElement";
-import {ScoreParams} from "../session-view/session-view.component";
+
+import {DeckElement} from "@app/models/DeckElement";
+import {isTable, Table} from "@app/models/Table";
+import {Graph, isGraph} from "@app/models/Graph";
+
+import {NavigationService} from "@app/services/navigation.service";
+import {TableSessionModeService} from "@app/services/table-session-mode.service";
+import {TableService} from "@app/services/table.service";
+
+import {ScoreParams} from "@app/components/session-view/session-view.component";
+import {SessionScoreSettingsComponent} from "@app/components/session-score-settings/session-score-settings.component";
+import {SessionModeChooserComponent} from "@app/components/session-mode-chooser/session-mode-chooser.component";
+import {TableSessionModeWizardComponent} from "@app/components/table-session-mode-wizard/table-session-mode-wizard.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -68,10 +70,10 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (!this._deckElement) {
 			return;
 		}
-		if (SessionSetupModalComponent.isTable(this._deckElement)) {
+		if (isTable(this._deckElement)) {
 			this.table = this._deckElement;
 			this.graph = null;
-		} else if (SessionSetupModalComponent.isGraph(this._deckElement)) {
+		} else if (isGraph(this._deckElement)) {
 			this.graph = this._deckElement;
 			this.table = null;
 		} else {
@@ -93,10 +95,9 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	constructor(
 		private readonly navigationService: NavigationService,
 		private readonly tableService: TableService,
-		private readonly sessionModeService: TableSessionModeService,
-		sessionModeRepository: TableSessionModeRepository) {
+		private readonly sessionModeService: TableSessionModeService) {
 
-		sessionModeRepository.entityDeleted.subscribe(async _ => {
+		sessionModeService.$modesChanged.subscribe(async _ => {
 			await this.checkIfSessionModesExist();
 		})
 	}
@@ -121,10 +122,10 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 
 			if (modeId) {
 				await this.saveDefaultTableOptions(modeId);
-				await this.navigationService.studyTable(this.table.id, modeId, scores);
+				await this.navigationService.studyTable(this.table, modeId, scores);
 			}
 		} else if (this.graph) {
-			await this.navigationService.studyGraph(this.graph.id, scores);
+			await this.navigationService.studyGraph(this.graph, scores);
 		}
 	}
 
@@ -161,13 +162,14 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	private async checkIfSessionModesExist() {
-		if (this.table) {
-			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.table);
-			if (!this.anySessionModesAvailable) {
-				this.useExisting = false;
-			}
-		} else {
+		if (!this.table) {
 			this.anySessionModesAvailable = false;
+			return;
+		}
+
+		this.anySessionModesAvailable = this.sessionModeService.anyExist(this.table);
+		if (!this.anySessionModesAvailable) {
+			this.useExisting = false;
 		}
 	}
 
@@ -176,8 +178,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			return;
 		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
-			const mode = await this.sessionModeService.getById(modeId);
-			await this.sessionModeService.setAsDefault(mode);
+			const mode = await this.sessionModeService.getById(modeId, this.table);
+			await this.sessionModeService.setAsDefault(mode, this.table);
 		}
 	}
 
@@ -206,19 +208,5 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			this.defaultSessionCheckbox.setValue(false);
 			this.startSessionEnabled = this.sessionModeWizard?.configurationValid || false;
 		}
-	}
-
-	private static isTable(element: DeckElement | null): element is Table {
-		if (!element) {
-			return false;
-		}
-		return (element as Table).sessionModeIds !== undefined;
-	}
-
-	private static isGraph(element: DeckElement | null): element is Graph {
-		if (!element) {
-			return false;
-		}
-		return (element as Table).sessionModeIds === undefined;
 	}
 }

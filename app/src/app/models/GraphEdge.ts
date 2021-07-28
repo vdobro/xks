@@ -26,8 +26,6 @@ import {BaseEntity} from "./BaseEntity";
  * @since 2020.09.12
  */
 export interface GraphEdge extends BaseEntity {
-	graphId: string,
-	sourceNodeId: string,
 	name: string,
-	targetNodeId: string,
+	targetId: string,
 }

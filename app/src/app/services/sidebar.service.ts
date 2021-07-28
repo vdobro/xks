@@ -20,12 +20,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Deck} from "../models/Deck";
-import {Table} from "../models/Table";
+import {Deck} from "@app/models/Deck";
+import {Graph} from "@app/models/Graph";
+import {Table} from "@app/models/Table";
 import {NavigationControlService} from "./navigation-control.service";
 import {Subject, Subscribable} from "rxjs";
 import {DeckService} from "./deck.service";
-import {Graph} from "../models/Graph";
 
 /**
  * @author Vitalijus Dobrovolskis

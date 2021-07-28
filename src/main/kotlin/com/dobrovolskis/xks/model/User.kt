@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,22 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
+package com.dobrovolskis.xks.model
 
-import {AnswerValueService} from './answer-value.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-
-describe('AnswerValueService', () => {
-	let service: AnswerValueService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(AnswerValueService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2021.06.10
+ */
+data class User(
+	val username: String,
+	val database: String,
+)

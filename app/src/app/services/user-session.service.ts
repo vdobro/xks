@@ -21,10 +21,10 @@
 
 import {Injectable} from '@angular/core';
 import {Subject, Subscribable} from "rxjs";
-import {User} from "../models/User";
+import {User} from "@app/models/User";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {environment} from "../../environments/environment";
-import {stripTrailingSlash} from "../../environments/utils";
+import {environment} from "@environments/environment";
+import {stripTrailingSlash} from "@environments/utils";
 
 const USERNAME_KEY = "current_user_name";
 
@@ -106,6 +106,10 @@ export class UserSessionService {
 			this.httpOptions).toPromise();
 	}
 
+	getUserName() : string | null {
+		return this.currentUser?.name || null;
+	}
+
 	private updateCurrentUser(user: User | null) {
 		if (user) {
 			UserSessionService.saveUsername(user.name);
@@ -136,7 +140,8 @@ export class UserSessionService {
 	private async getUser(): Promise<User | null> {
 		const username = localStorage.getItem(USERNAME_KEY);
 		if (username) {
-			return await this.httpClient.get<User>(this.infoUrlPrefix + username,
+			return await this.httpClient.get<User>(
+				this.infoUrlPrefix + username,
 				this.httpOptions).toPromise();
 		} else {
 			return null;

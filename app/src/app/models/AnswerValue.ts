@@ -19,13 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
-
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.10.20
  */
-export interface AnswerValue extends BaseEntity {
-	defaultValue: string,
+export interface AnswerValue {
+	default: string,
 	alternatives: string[],
 }

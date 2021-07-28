@@ -20,13 +20,15 @@
  */
 
 import {Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NavBarItemsDirective} from "../nav-bar-items.directive";
-import {NavigationControlService} from "../../services/navigation-control.service";
-import {NavBarItem} from "../nav-bar-item";
-import {NavigationService} from "../../services/navigation.service";
-import {TopBarService} from "../../services/top-bar.service";
-import {UserSessionService} from "../../services/user-session.service";
-import {LoginModalComponent} from "../login-modal/login-modal.component";
+
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {NavigationService} from "@app/services/navigation.service";
+import {TopBarService} from "@app/services/top-bar.service";
+import {UserSessionService} from "@app/services/user-session.service";
+
+import {LoginModalComponent} from "@app/components/login-modal/login-modal.component";
+import {NavBarItem} from "@app/components/nav-bar-item";
+import {NavBarItemsDirective} from "@app/components/nav-bar-items.directive";
 
 /**
  * @author Vitalijus Dobrovolskis

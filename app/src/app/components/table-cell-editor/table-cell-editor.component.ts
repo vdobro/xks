@@ -32,7 +32,8 @@ import {
 	ViewChild
 } from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {AlternativeAnswerEditorComponent} from "../alternative-answer-editor/alternative-answer-editor.component";
+
+import {AlternativeAnswerEditorComponent} from "@app/components/alternative-answer-editor/alternative-answer-editor.component";
 
 /**
  * @author Vitalijus Dobrovolskis

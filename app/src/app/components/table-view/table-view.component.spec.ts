@@ -23,7 +23,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {TableViewComponent} from './table-view.component';
 import {Component, ViewChild} from "@angular/core";
-import {Table} from "../../models/Table";
+import {Table} from "@app/models/Table";
 import {v4 as uuid} from 'uuid';
 
 /**
@@ -69,9 +69,11 @@ function generateTable(): Table {
 		id: uuid(),
 		deckId: uuid() + 'as deck ID',
 		name: 'name ' + uuid(),
-		sessionModeIds: [],
+		sessionModes: [],
 		defaultMaxScore: 8,
 		defaultStartingScore: 3,
 		defaultSessionModeId: uuid(),
+		columns: [],
+		rows: []
 	};
 }

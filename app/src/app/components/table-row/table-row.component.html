@@ -1,6 +1,6 @@
 <td table-cell
 	class="uk-padding-remove-right"
-	*ngFor="let column of columns"
+	*ngFor="let column of table?.columns || []"
 	[row]="row"
 	[column]="column"
 	[newCell]="false"

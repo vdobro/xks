@@ -70,6 +70,8 @@ class DatabaseSetupService(
 		configure(CORS_ORIGINS, getCorsOrigins())
 		configure(ENABLE_CORS, TRUE)
 		configure(SAME_SITE, "strict")
+		configure(DATABASE_PER_USER, TRUE)
+		configure(AUTOMATICALLY_DELETE_USER_DATABASE, TRUE)
 	}
 
 	private fun configure(setting: String, value: String) {
@@ -105,12 +107,16 @@ private const val TRUE = true.toString()
 private const val FALSE = false.toString()
 
 private const val REPLICATOR_DB = "_replicator"
-private const val USERS_DB = "_users"
+const val USERS_DB = "_users"
 private const val USERS_SECURITY = "$USERS_DB/_security"
 private const val CONFIG_PREFIX = "_node/_local/_config"
 
 private const val BASE = "/couchdb"
 private const val USERS_SECURITY_EDITABLE = "$BASE/users_db_security_editable"
+
+private const val COUCH_PERUSER = "/couch_peruser"
+private const val DATABASE_PER_USER = "$COUCH_PERUSER/enable"
+private const val AUTOMATICALLY_DELETE_USER_DATABASE = "$COUCH_PERUSER/delete_dbs"
 
 private const val HTTPD = "/httpd"
 private const val ENABLE_CORS = "$HTTPD/enable_cors"

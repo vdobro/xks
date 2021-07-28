@@ -23,7 +23,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {DeckListCardComponent} from './deck-list-card.component';
 import {Component, ViewChild} from "@angular/core";
-import {Deck} from "../../models/Deck";
+import {Deck} from "@app/models/Deck";
 import {v4 as uuid} from 'uuid';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -70,6 +70,7 @@ function generateDeck(): Deck {
 	return {
 		id: uuid(),
 		name: uuid() + ' name',
-		description: uuid() + ' description'
+		description: uuid() + ' description',
+		database: '',
 	}
 }

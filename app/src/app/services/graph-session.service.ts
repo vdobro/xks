@@ -20,10 +20,12 @@
  */
 
 import {Injectable} from '@angular/core';
+
+import {Graph} from "@app/models/Graph";
+import {LearningSessionState} from "./models/learning-session-state";
+
 import {StudySessionService} from "./study-session.service";
 import {ExerciseTaskService} from "./exercise-task.service";
-import {Graph} from "../models/Graph";
-import {LearningSessionState} from "./models/learning-session-state";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,10 +40,10 @@ export class GraphSessionService extends StudySessionService {
 		super(taskService);
 	}
 
-	async startNew(graph: Graph,
+	startNew(graph: Graph,
 				   startScore: number,
-				   maxScore: number): Promise<LearningSessionState> {
-		const allTasks = await this.taskService.getGraphTaskList(graph, startScore, maxScore);
+				   maxScore: number): LearningSessionState {
+		const allTasks = this.taskService.getGraphTaskList(graph, startScore, maxScore);
 		return this.createSessionFromTasks(allTasks);
 	}
 }

@@ -26,7 +26,5 @@ import {BaseEntity} from "./BaseEntity";
  * @since 2020.04.03
  */
 export interface TableColumn extends BaseEntity {
-	tableId: string;
-	index: number;
 	name: string;
 }

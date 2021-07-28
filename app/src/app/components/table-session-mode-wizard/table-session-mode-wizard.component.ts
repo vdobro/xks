@@ -20,6 +20,7 @@
  */
 
 import UIkit from 'uikit';
+import {Subject} from "rxjs";
 
 import {
 	Component,
@@ -32,12 +33,13 @@ import {
 	SimpleChanges,
 	ViewChild
 } from '@angular/core';
-import {Table} from "../../models/Table";
-import {TableColumn} from "../../models/TableColumn";
-import {TableSessionModeService} from "../../services/table-session-mode.service";
-import {TableCellService} from "../../services/table-cell.service";
-import {Subject} from "rxjs";
-import {TableSessionMode} from "../../models/TableSessionMode";
+
+import {Table} from "@app/models/Table";
+import {TableColumn} from "@app/models/TableColumn";
+import {TableSessionMode} from "@app/models/TableSessionMode";
+
+import {TableElementService} from "@app/services/table-element.service";
+import {TableSessionModeService} from "@app/services/table-session-mode.service";
 
 @Component({
 	selector: 'app-table-session-mode-wizard',
@@ -68,10 +70,12 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 
 	constructor(
 		private readonly sessionModeService: TableSessionModeService,
-		private readonly tableCellService: TableCellService) {
+		private readonly tableCellService: TableElementService) {
 		this.tableCellService.columnsChanged.subscribe(async table => {
 			if (this.table?.id === table.id) {
-				await this.reloadColumns();
+				setTimeout(() => {
+					this.reloadColumns();
+				});
 			}
 		});
 	}
@@ -86,31 +90,31 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 		this.setupSortable(this.questionColumnsSortable, this.questionColumns);
 		this.setupSortable(this.answerColumnsSortable, this.answerColumns);
 
-		await this.reportValidity();
+		this.reportValidity();
 	}
 
-	async ngOnChanges(changes: SimpleChanges) {
+	ngOnChanges(changes: SimpleChanges) {
 		if (this.table) {
-			await this.reloadColumns();
+			this.reloadColumns();
 		}
-		await this.reportValidity();
+		this.reportValidity();
 	}
 
 	async createSessionMode(): Promise<TableSessionMode> {
 		return await this.sessionModeService.create(this.table!!, this.questionColumns, this.answerColumns);
 	}
 
-	private async reportValidity() {
+	private reportValidity() {
 		this.configurationValid = this.questionColumns.length > 0 && this.answerColumns.length > 0;
 		this.configurationChanged.emit();
 	}
 
-	private async reloadColumns() {
+	private reloadColumns() {
 		if (!this.table) {
 			this.tableColumns = [];
 			return;
 		}
-		this.tableColumns = await this.tableCellService.getColumns(this.table);
+		this.tableColumns = this.table.columns;
 		this.questionColumns.splice(0, this.questionColumns.length);
 		this.answerColumns.splice(0, this.answerColumns.length);
 	}
@@ -120,13 +124,13 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 		UIkit.util.on(elementRef.nativeElement, 'added', async (args: any) => {
 			const itemId = TableSessionModeWizardComponent.getItemIdFromSortableEvent(args);
 			await this.addColumn(itemId, targetCollection);
-			await this.reportValidity();
+			this.reportValidity();
 		});
 		// @ts-ignore
 		UIkit.util.on(elementRef.nativeElement, 'removed', async (args: any) => {
 			const itemId = TableSessionModeWizardComponent.getItemIdFromSortableEvent(args);
 			this.removeColumn(itemId, targetCollection);
-			await this.reportValidity();
+			this.reportValidity();
 		});
 	}
 

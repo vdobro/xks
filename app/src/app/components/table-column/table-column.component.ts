@@ -20,8 +20,9 @@
  */
 
 import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
-import {TableColumn} from "../../models/TableColumn";
-import {Table} from "../../models/Table";
+
+import {TableColumn} from "@app/models/TableColumn";
+import {Table} from "@app/models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis

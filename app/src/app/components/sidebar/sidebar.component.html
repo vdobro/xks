@@ -7,7 +7,8 @@
 			<ul class="uk-nav-sub">
 				<li deck-element-table
 					*ngFor="let table of tables"
-					[element]="table"></li>
+					[element]="table"
+					[deck]="deck"></li>
 			</ul>
 		</li>
 		<li *ngIf="deck && !graphSelected && !tableSelected"
@@ -16,7 +17,8 @@
 			<ul class="uk-nav-sub">
 				<li deck-element-graph
 					*ngFor="let graph of graphs"
-					[element]="graph"></li>
+					[element]="graph"
+					[deck]="deck"></li>
 			</ul>
 		</li>
 		<li class="uk-nav-header">Actions</li>

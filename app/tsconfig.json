@@ -16,6 +16,10 @@
 		"target": "es2015",
 		"module": "es2020",
 		"allowSyntheticDefaultImports": true,
+		"paths": {
+			"@app/*": ["src/app/*"],
+			"@environments/*": ["src/environments/*"]
+		},
 		"typeRoots": [
 			"node_modules/@types"
 		],

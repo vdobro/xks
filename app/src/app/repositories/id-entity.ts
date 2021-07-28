@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -21,16 +21,8 @@
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.09
+ * @since 2020.08.01
  */
-export interface TableConfiguration {
-	decks: string,
-	tables: string,
-	tableColumns: string,
-	tableRows: string,
-	tableSessionModes: string
-	graphs: string,
-	graphNodes: string,
-	graphEdges: string
-	answerValues: string,
+export interface IdEntity {
+	id: string
 }

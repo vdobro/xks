@@ -34,7 +34,7 @@ export const environment = {
 // @ts-ignore
 	serverUrl: window["env"]["apiUrl"] || "http://localhost:8080",
 // @ts-ignore
-	databaseUrl: window["env"]["dbUrl"] || "http://172.17.0.3:5984"
+	databaseUrl: window["env"]["dbUrl"] || "http://172.19.0.5:5984"
 };
 
 /*

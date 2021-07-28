@@ -20,9 +20,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {NavigationService} from "../../services/navigation.service";
-import {SidebarService} from "../../services/sidebar.service";
-import {TopBarService} from "../../services/top-bar.service";
+import {NavigationService} from "@app/services/navigation.service";
+import {SidebarService} from "@app/services/sidebar.service";
+import {TopBarService} from "@app/services/top-bar.service";
 
 /**
  * @author Vitalijus Dobrovolskis

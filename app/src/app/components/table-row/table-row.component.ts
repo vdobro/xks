@@ -20,9 +20,13 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TableRow} from "../../models/TableRow";
-import {TableColumn} from "../../models/TableColumn";
-import {TableCellService} from "../../services/table-cell.service";
+
+import {AnswerValue} from "@app/models/AnswerValue";
+import {Table} from "@app/models/Table";
+import {TableRow} from "@app/models/TableRow";
+import {TableColumn} from "@app/models/TableColumn";
+
+import {TableElementService} from "@app/services/table-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,7 +42,7 @@ export class TableRowComponent implements OnInit {
 	@Input()
 	row: TableRow | null = null;
 	@Input()
-	columns: TableColumn[] = [];
+	table: Table | null = null;
 
 	@Output()
 	rowDeleted = new EventEmitter<TableRow>();
@@ -47,17 +51,18 @@ export class TableRowComponent implements OnInit {
 	@Output()
 	editingStopped = new EventEmitter();
 
-	constructor(private readonly cellService: TableCellService) {
+	constructor(private readonly cellService: TableElementService) {
 	}
 
 	ngOnInit(): void {
 	}
 
-	async cellChanged(value: {
-		default: string,
-		alternatives: string[]
-	}, row: TableRow, column: TableColumn) {
-		await this.cellService.changeCellValue(value, row, column);
+	async cellChanged(value: AnswerValue, row: TableRow, column: TableColumn) {
+		if (!this.table) {
+			return;
+		}
+
+		await this.cellService.changeCellValue(value, row, column, this.table);
 		this.editingStopped.emit();
 	}
 }

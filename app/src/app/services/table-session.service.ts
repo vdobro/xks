@@ -20,12 +20,14 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Table} from "../models/Table";
-import {ExerciseTaskService} from "./exercise-task.service";
-import {TableColumnRepository} from "../repositories/table-column-repository.service";
-import {TableSessionMode} from "../models/TableSessionMode";
-import {StudySessionService} from "./study-session.service";
-import {LearningSessionState} from "./models/learning-session-state";
+
+import {Table} from "@app/models/Table";
+import {TableSessionMode} from "@app/models/TableSessionMode";
+
+import {ExerciseTaskService} from "@app/services/exercise-task.service";
+import {StudySessionService} from "@app/services/study-session.service";
+import {LearningSessionState} from "@app/services/models/learning-session-state";
+import {TableElementService} from "@app/services/table-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,17 +40,18 @@ export class TableSessionService extends StudySessionService {
 
 	constructor(
 		taskService: ExerciseTaskService,
-		private readonly columnRepository: TableColumnRepository) {
+		private readonly cellService: TableElementService) {
 		super(taskService);
 	}
 
-	async startNew(table: Table, sessionMode: TableSessionMode,
-				   startScore: number, maxScore: number): Promise<LearningSessionState> {
-		const questionColumns = await Promise.all(sessionMode.questionColumnIds
-			.map(async id => await this.columnRepository.getById(id)));
-		const answerColumns = await Promise.all(sessionMode.answerColumnIds
-			.map(async id => await this.columnRepository.getById(id)));
-		const allTasks = await this.taskService.getTableTaskList(table,
+	startNew(table: Table,
+			 sessionMode: TableSessionMode,
+			 startScore: number, maxScore: number): LearningSessionState {
+		const questionColumns = sessionMode.questionColumnIds
+			.map(id => this.cellService.findColumn(id, table));
+		const answerColumns = sessionMode.answerColumnIds
+			.map(id => this.cellService.findColumn(id, table));
+		const allTasks = this.taskService.getTableTaskList(table,
 			questionColumns, answerColumns,
 			startScore, maxScore);
 		return this.createSessionFromTasks(allTasks);

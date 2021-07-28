@@ -29,6 +29,8 @@ import {SidebarService} from "./sidebar.service";
 import {Graph} from "../models/Graph";
 import {GraphService} from "./graph.service";
 import {ScoreParams,} from "../components/session-view/session-view.component";
+import {ElementId} from "@app/models/ElementId";
+import {DeckElement} from "@app/models/DeckElement";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -69,42 +71,48 @@ export class NavigationService {
 	}
 
 	async navigateToCurrentDeckElement() {
+		if (!this.deck) {
+			return;
+		}
+		const deckId = this.deck.id;
 		if (this.table) {
-			await this.openTable(this.table.id);
+			await this.openTable({element: this.table.id, deck: deckId});
 		} else if (this.graph) {
-			await this.openGraph(this.graph.id);
+			await this.openGraph({element: this.graph.id, deck: deckId});
 		}
 	}
 
-	async openTable(tableId: string) {
-		await this.selectTable(tableId);
+	async openTable(id: ElementId) {
+		await this.selectTable(id);
 		this.studySessionActive = false;
-		await this.router.navigate(['/tables', tableId, 'edit']);
+		await this.router.navigate(['/decks', id.deck, 'tables', id.element, 'edit']);
 	}
 
-	async studyTable(tableId: string,
+	async studyTable(table: DeckElement,
 					 sessionModeId: string,
 					 difficultySettings: ScoreParams) {
-		await this.selectTable(tableId);
+		const id: ElementId = {element: table.id, deck: table.deckId};
+		await this.selectTable(id);
 		this.studySessionActive = true;
-		await this.router.navigate(['/tables', tableId, 'learn', sessionModeId], {
+		await this.router.navigate(['/decks', id.deck, 'tables', id.element, 'learn', sessionModeId], {
 			queryParams: difficultySettings
 		});
 	}
 
-	async studyGraph(graphId: string, difficultySettings: ScoreParams) {
-		await this.selectGraph(graphId);
+	async studyGraph(graph: DeckElement, difficultySettings: ScoreParams) {
+		const id: ElementId = {element: graph.id, deck: graph.deckId};
+		await this.selectGraph(id);
 		this.studySessionActive = true;
 
-		await this.router.navigate(['/graphs', graphId, 'learn'], {
+		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'learn'], {
 			queryParams: difficultySettings
 		});
 	}
 
-	async openGraph(graphId: string) {
-		await this.selectGraph(graphId);
+	async openGraph(id: ElementId) {
+		await this.selectGraph(id);
 		this.studySessionActive = false;
-		await this.router.navigate(['/graphs', graphId, 'edit']);
+		await this.router.navigate(['/deck', id.deck, 'graphs', id.element, 'edit']);
 	}
 
 	async navigateToCurrentDeck() {
@@ -117,11 +125,11 @@ export class NavigationService {
 		}
 	}
 
-	async openDeck(deckId: string) {
+	async openDeck(id: string) {
 		this.studySessionActive = false;
-		this.deck = await this.deckService.getById(deckId);
+		this.deck = await this.deckService.getById(id);
 		this.sidebarService.populate(this.deck);
-		await this.router.navigate(['/decks', deckId]);
+		await this.router.navigate(['/decks', id]);
 	}
 
 	async goHome() {
@@ -139,12 +147,12 @@ export class NavigationService {
 		await this.router.navigate(['/decks']);
 	}
 
-	private async selectTable(tableId: string) {
+	private async selectTable(tableId: ElementId) {
 		this.table = await this.tableService.getById(tableId);
 		await this.sidebarService.selectTable(this.table);
 	}
 
-	private async selectGraph(graphId: string) {
+	private async selectGraph(graphId: ElementId) {
 		this.graph = await this.graphService.getById(graphId);
 		await this.sidebarService.selectGraph(this.graph);
 	}

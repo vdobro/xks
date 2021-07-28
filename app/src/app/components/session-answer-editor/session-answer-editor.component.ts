@@ -19,7 +19,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import {
 	Component,
 	ElementRef,
@@ -32,7 +31,7 @@ import {
 	ViewChild
 } from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {FlashcardField} from "../../services/models/flashcard-field";
+import {FlashcardField} from "@app/services/models/flashcard-field";
 
 /**
  * @author Vitalijus Dobrovolskis

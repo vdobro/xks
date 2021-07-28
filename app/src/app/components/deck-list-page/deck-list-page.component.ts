@@ -20,13 +20,13 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
+import {Deck} from "@app/models/Deck";
 import {DeckListViewComponent} from "../deck-list-view/deck-list-view.component";
-import {DeckService} from "../../services/deck.service";
+import {DeckService} from "@app/services/deck.service";
 import {DeckListNavbarComponent} from "../deck-list-navbar/deck-list-navbar.component";
 import {NavBarItem} from "../nav-bar-item";
-import {TopBarService} from "../../services/top-bar.service";
-import {DeckRepository} from "../../repositories/deck-repository.service";
+import {TopBarService} from "@app/services/top-bar.service";
+import {DeckRepository} from "@app/repositories/internal/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis

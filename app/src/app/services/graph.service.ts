@@ -20,14 +20,16 @@
  */
 
 import {v4 as uuid} from 'uuid';
+import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
-import {Deck} from "../models/Deck";
-import {Subject, Subscribable} from "rxjs";
-import {GraphRepository} from "../repositories/graph-repository.service";
-import {Graph} from "../models/Graph";
-import {DeckRepository} from "../repositories/deck-repository.service";
-import {GraphElementService} from "./graph-element.service";
+
+import {Graph} from "@app/models/Graph";
+import {Deck} from "@app/models/Deck";
+
+import {ElementId} from "@app/models/ElementId";
+import {DeckElementService} from "@app/services/deck-element.service";
+import {DeckElementType} from "@app/models/DeckElement";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,67 +40,56 @@ import {GraphElementService} from "./graph-element.service";
 })
 export class GraphService {
 
-	private readonly _graphsChanged = new Subject<Deck>();
-	readonly graphsChanged: Subscribable<Deck> = this._graphsChanged;
+	private static readonly elementType: DeckElementType = "graph";
+	private readonly _graphsChanged = new Subject<string>();
+	readonly deckGraphsChanged: Subscribable<string> = this._graphsChanged;
 
-	constructor(private readonly repository: GraphRepository,
-				private readonly elementService: GraphElementService,
-				private readonly deckRepository: DeckRepository) {
+	constructor(private readonly repository: DeckElementService) {
 	}
 
-	public async getById(id: string): Promise<Graph> {
-		return await this.repository.getById(id);
+	public async getById(id: ElementId): Promise<Graph> {
+		return await this.repository.findGraph(id);
+	}
+
+	async getByDeckId(deckId: string) : Promise<Graph[]> {
+		return await this.repository.getAllGraphs(deckId);
 	}
 
 	async getByDeck(deck: Deck): Promise<Graph[]> {
-		return this.repository.getByDeck(deck.id);
+		return await this.getByDeckId(deck.id);
 	}
 
 	async anyExistForDeck(deck: Deck): Promise<boolean> {
-		return this.repository.existAnyForDeck(deck.id);
-	}
-
-	async anyNodesAndEdgesExist(graph: Graph): Promise<boolean> {
-		const nodes = await this.elementService.getNodes(graph);
-		if (nodes.length === 0) {
-			return false;
-		}
-		const edges = await this.elementService.getEdges(graph);
-		return edges.length !== 0;
+		return await this.repository.existAny(deck.id, GraphService.elementType);
 	}
 
 	async create(deck: Deck, name: string) {
 		await this.repository.add({
-			deckId: deck.id,
 			id: uuid(),
+			deckId: deck.id,
 			name: name,
 			defaultMaxScore: 5,
 			defaultStartingScore: 3
-		});
-		this._graphsChanged.next(deck);
+		}, GraphService.elementType);
+		this._graphsChanged.next(deck.id);
 	}
 
-	public async delete(id: string) {
-		const graph = await this.getById(id);
-		await this.elementService.removeAll(graph);
+	public async delete(id: ElementId) {
 		await this.repository.delete(id);
 
-		this._graphsChanged.next(await this.getDeck(graph));
+		this._graphsChanged.next(id.deck);
 	}
 
 	public async deleteAllInDeck(deck: Deck) {
 		const tables = await this.getByDeck(deck);
 		for (let table of tables) {
-			await this.delete(table.id);
+			await this.delete({element: table.id, deck: deck.id});
 		}
-		this._graphsChanged.next(deck);
+		this._graphsChanged.next(deck.id);
 	}
 
 	public async update(graph: Graph) {
-		await this.repository.update(graph);
+		await this.repository.updateElement(graph);
 	}
 
-	private async getDeck(graph: Graph): Promise<Deck> {
-		return await this.deckRepository.getById(graph.deckId);
-	}
 }

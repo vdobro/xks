@@ -20,12 +20,16 @@
  */
 
 import {v4 as uuid} from 'uuid';
+import {Subject} from "rxjs";
+import {find, remove} from "lodash-es";
+
 import {Injectable} from '@angular/core';
-import {TableSessionModeRepository} from "../repositories/table-session-mode-repository.service";
-import {Table} from "../models/Table";
-import {TableColumn} from "../models/TableColumn";
-import {TableSessionMode} from "../models/TableSessionMode";
-import {TableRepository} from "../repositories/table-repository.service";
+
+import {Table} from "@app/models/Table";
+import {TableColumn} from "@app/models/TableColumn";
+import {TableSessionMode} from "@app/models/TableSessionMode";
+
+import {TableService} from "@app/services/table.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,17 +40,14 @@ import {TableRepository} from "../repositories/table-repository.service";
 })
 export class TableSessionModeService {
 
-	constructor(
-		private readonly tableRepository: TableRepository,
-		private readonly repository: TableSessionModeRepository) {
+	private readonly _sessionModesChanged = new Subject<Table>();
+	readonly $modesChanged = this._sessionModesChanged.asObservable();
+
+	constructor(private readonly tableService: TableService) {
 	}
 
-	async getAllIn(table: Table): Promise<TableSessionMode[]> {
-		return await this.repository.getByTable(table);
-	}
-
-	async anyExist(table: Table): Promise<boolean> {
-		return (await this.getAllIn(table)).length > 0;
+	anyExist(table: Table): boolean {
+		return table.sessionModes.length > 0;
 	}
 
 	async create(table: Table,
@@ -55,8 +56,7 @@ export class TableSessionModeService {
 		const questionColumnIds = questionColumns.map(column => column.id);
 		const answerColumnIds = answerColumns.map(column => column.id);
 
-		const existing = await this.repository.getByTable(table);
-		const duplicate = existing.find(mode =>
+		const duplicate = table.sessionModes.find(mode =>
 			this.unorderedArraysEqual(mode.questionColumnIds, questionColumnIds)
 			&& this.unorderedArraysEqual(mode.answerColumnIds, answerColumnIds));
 		if (duplicate) {
@@ -64,48 +64,50 @@ export class TableSessionModeService {
 		}
 		const entity: TableSessionMode = {
 			id: uuid(),
-			tableId: table.id,
 			questionColumnIds: questionColumnIds,
 			answerColumnIds: answerColumnIds,
 		};
-		await this.repository.add(entity);
+		table.sessionModes.push(entity);
+		await this.tableService.update(table);
+		this._sessionModesChanged.next(table);
 		return entity;
 	}
 
-	async deleteAllForTable(table: Table): Promise<void> {
-		const all = await this.repository.getByTable(table);
-		await Promise.all(all.map(mode => this.repository.delete(mode.id)));
-	}
-
-	async getById(id: string): Promise<TableSessionMode> {
-		return await this.repository.getById(id);
+	getById(id: string, table: Table): TableSessionMode {
+		const mode = find(table.sessionModes, mode => mode.id === id);
+		if (!mode) {
+			throw new Error(`Session mode ${id} not found`);
+		}
+		return mode;
 	}
 
 	private unorderedArraysEqual<T>(first: T[], second: T[]): boolean {
 		return first.length === second.length
-			&& first.every(value => second.findIndex(x => x === value) !== -1);
+			&& first.every(value => find(second, x => x === value) !== undefined);
 	}
 
-	async setAsDefault(mode: TableSessionMode): Promise<void> {
-		const table = await this.tableRepository.getById(mode.tableId);
+	async setAsDefault(mode: TableSessionMode, table: Table): Promise<void> {
 		table.defaultSessionModeId = mode.id;
-		await this.tableRepository.update(table);
+		await this.tableService.update(table);
 	}
 
 	async deleteAllWithColumn(table: Table, columnId: string): Promise<void> {
 		if (!columnId) {
 			return;
 		}
-		const all = await this.getAllIn(table);
+		const all = table.sessionModes;
+		let shouldUpdate = false;
 		for (let mode of all) {
-			if (mode.answerColumnIds.find(id => columnId === id)
-				|| mode.questionColumnIds.find(id => columnId === id)) {
+			if (mode.answerColumnIds.find(id => columnId === id) || mode.questionColumnIds.find(id => columnId === id)) {
 				if (mode.id === table.defaultSessionModeId) {
 					table.defaultSessionModeId = null;
-					await this.tableRepository.update(table);
 				}
-				await this.repository.delete(mode.id);
+				remove(all, x => x.id === mode.id);
+				shouldUpdate = true;
 			}
+		}
+		if (shouldUpdate) {
+			await this.tableService.update(table);
 		}
 	}
 }

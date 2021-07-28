@@ -21,8 +21,9 @@
 
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {DeckElement} from "../../models/DeckElement";
-import {DeckElementService} from "../../services/deck-element.service";
+
+import {DeckElement} from "@app/models/DeckElement";
+import {DeckElementService} from "@app/services/deck-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis

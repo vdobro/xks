@@ -20,12 +20,14 @@
  */
 
 import {BaseEntity} from "./BaseEntity";
+import {GraphEdge} from "./GraphEdge";
+import {AnswerValue} from "./AnswerValue";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
 export interface GraphNode extends BaseEntity {
-	graphId: string,
-	valueId: string,
+	value: AnswerValue,
+	edges: GraphEdge[],
 }

@@ -20,12 +20,11 @@
  */
 
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Graph} from "../../models/Graph";
-import {GraphNode} from "../../models/GraphNode";
-import {GraphElementService} from "../../services/graph-element.service";
-import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
-import {GraphEdge} from "../../models/GraphEdge";
-import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
+
+import {Graph} from "@app/models/Graph";
+import {GraphNode} from "@app/models/GraphNode";
+import {GraphElementService} from "@app/services/graph-element.service";
+import {GraphEdge} from "@app/models/GraphEdge";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,27 +54,23 @@ export class GraphToolbarComponent implements OnInit {
 	@Output()
 	currentlyInEdit = new EventEmitter<boolean>();
 
-	constructor(private readonly nodeRepository: GraphNodeRepository,
-				private readonly edgeRepository: GraphEdgeRepository,
-				private readonly elementService: GraphElementService) {
+	constructor(private readonly elementService: GraphElementService) {
 
-		this.nodeRepository.entityCreated.subscribe(_ => this.closeEditor());
-		this.nodeRepository.entityUpdated.subscribe(_ => this.closeEditor());
-		this.nodeRepository.entityDeleted.subscribe(_ => this.closeEditor());
-
-		this.edgeRepository.entityCreated.subscribe(_ => this.closeEditor());
-		this.edgeRepository.entityUpdated.subscribe(_ => this.closeEditor());
-		this.edgeRepository.entityDeleted.subscribe(_ => this.closeEditor());
+		//TODO: close when entities change
 	}
 
 	ngOnInit(): void {
 	}
 
 	async deleteSelectedElement() {
+		if (!this.graph) {
+			return;
+		}
+
 		if (this.selectedNode) {
-			await this.elementService.removeNode(this.selectedNode);
+			await this.elementService.removeNode(this.selectedNode, this.graph);
 		} else if (this.selectedEdge) {
-			await this.elementService.removeEdge(this.selectedEdge);
+			await this.elementService.removeEdge(this.selectedEdge, this.graph);
 		}
 	}
 

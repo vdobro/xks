@@ -19,7 +19,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {BaseEntity} from "@app/models/BaseEntity";
+import {AnswerValue} from "@app/models/AnswerValue";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -27,7 +28,10 @@ import {BaseEntity} from "./BaseEntity";
  */
 export interface TableRow extends BaseEntity {
 	id: string;
-	tableId: string;
-	index: number;
-	valueIds: Map<string, string>;
+	columnValues: TableRowValue[],
+}
+
+export interface TableRowValue {
+	columnId: string,
+	value: AnswerValue
 }

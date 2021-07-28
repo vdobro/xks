@@ -19,12 +19,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
+import {DeckElement} from "@app/models/DeckElement";
+import {BaseEntity} from "@app/models/BaseEntity";
+import {GraphNode} from "@app/models/GraphNode";
+import {Table} from "@app/models/Table";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
 export interface Graph extends DeckElement, BaseEntity {
+	nodes: GraphNode[]
+}
+
+export function isGraph(element: DeckElement | null): element is Graph {
+	if (!element) {
+		return false;
+	}
+	return (element as Table).sessionModes === undefined;
 }
