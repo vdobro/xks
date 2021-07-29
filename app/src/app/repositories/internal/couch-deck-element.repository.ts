@@ -19,13 +19,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {User} from "@app/models/User";
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
 
 import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
-
-import {UserSessionService} from "@app/services/user-session.service";
+import {BaseRepository} from "@app/repositories/base-repository";
 import {Deck} from "@app/models/Deck";
+import {LocalRepository} from "@app/repositories/internal/local-repository";
+import {RemoteRepository} from "@app/repositories/internal/remote-repository";
+import {User} from "@app/models/User";
 
 export type DeckElementData = Omit<DeckElement, "deckId">
 
@@ -33,17 +34,16 @@ export type DeckElementData = Omit<DeckElement, "deckId">
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
-export class CouchDeckElementRepository extends CouchDbRepository<DeckElementData> {
-    private indexCreated: boolean = false;
+export abstract class CouchDeckElementRepository implements BaseRepository<DeckElementData> {
+	private indexCreated: boolean = false;
 
-	constructor(public readonly deck: Deck,
-				userSessionService: UserSessionService) {
-		super("deck_" + deck.id,
-			userSessionService,
-			deck.database);
+	private readonly db;
+
+	protected constructor(private readonly source: CouchDbRepository<DeckElementData>) {
+		this.db = this.source.getHandle();
 	}
 
-	async getAllOfType(type: DeckElementType) : Promise<DeckElementData[]> {
+	async getAllOfType(type: DeckElementType): Promise<DeckElementData[]> {
 		await this.checkIndexes();
 		const result = await this.db.find({
 			selector: {
@@ -68,7 +68,35 @@ export class CouchDeckElementRepository extends CouchDbRepository<DeckElementDat
 		this.indexCreated = true;
 	}
 
-	protected resolveRemoteDatabaseName(user: User): string {
-		throw new Error("Should never be invoked.");
+	async add(entity: DeckElementData, type: DeckElementType): Promise<void> {
+		return await this.source.add(entity, type);
+	}
+
+	async delete(id: string): Promise<void> {
+		await this.source.delete(id);
+	}
+
+	async getAll(): Promise<DeckElementData[]> {
+		return await this.source.getAll();
+	}
+
+	async getById(id: string): Promise<DeckElementData> {
+		return await this.source.getById(id);
+	}
+
+	async update(entity: DeckElementData): Promise<DeckElementData> {
+		return await this.source.update(entity);
+	}
+}
+
+export class LocalDeckElementRepository extends CouchDeckElementRepository {
+	constructor(deck: Deck) {
+		super(new LocalRepository<DeckElementData>(deck.id));
+	}
+}
+
+export class RemoteDeckElementRepository extends CouchDeckElementRepository {
+	constructor(deck: Deck, user: User) {
+		super(new RemoteRepository<DeckElementData>(deck.id, user, deck.database));
 	}
 }

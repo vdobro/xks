@@ -25,12 +25,12 @@ import {Subject, Subscribable} from "rxjs";
 import {Injectable} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
-import {DeckRepository} from "@app/repositories/internal/deck-repository.service";
 
 import {stripTrailingSlash} from "@environments/utils";
 import {environment} from "@environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {UserSessionService} from "@app/services/user-session.service";
+import {DeckRepository} from "@app/repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -67,7 +67,7 @@ export class DeckService {
 			database: ''
 		};
 		await this.repository.add(newDeck, "deck");
-		const databaseName = await this.getDatabaseName(newDeck);
+		const databaseName = await this.getRemoteDatabaseName(newDeck);
 
 		this._decksChanged.next();
 		newDeck.database = databaseName;
@@ -85,8 +85,8 @@ export class DeckService {
 		this._decksChanged.next();
 	}
 
-	private async getDatabaseName(deck: Deck): Promise<string> {
-		if (!this.repository.isUserActive()) {
+	private async getRemoteDatabaseName(deck: Deck): Promise<string> {
+		if (!this.userSessionService.isLoggedIn()) {
 			return '';
 		}
 		const result = await this.httpClient.post<{

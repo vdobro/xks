@@ -24,12 +24,17 @@ import {Injectable} from "@angular/core";
 import {ElementId} from "@app/models/ElementId";
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
 
-import {DeckRepository} from "@app/repositories/internal/deck-repository.service";
-import {CouchDeckElementRepository, DeckElementData} from "@app/repositories/internal/couch-deck-element.repository";
+import {
+	CouchDeckElementRepository,
+	DeckElementData, LocalDeckElementRepository,
+	RemoteDeckElementRepository
+} from "@app/repositories/internal/couch-deck-element.repository";
 
 import {UserSessionService} from "@app/services/user-session.service";
 import {DeckService} from "@app/services/deck.service";
 import {Deck} from "@app/models/Deck";
+import {DeckRepository} from "@app/repositories/deck-repository.service";
+import {User} from "@app/models/User";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -47,15 +52,17 @@ export class DeckElementRepository {
 				private readonly deckRepository: DeckRepository) {
 
 		this.deckRepository.sourceChanged.subscribe(async () => {
-			// TODO need for a mutex due to both event handlers below?
+			// TODO need for a mutex due to both event handlers below and possible user change?
 			this.deckRepos.clear();
 			const decks = await this.deckRepository.getAll();
+			const user = this.userSessionService.getCurrentUser();
 			for (let deck of decks) {
-				this.addRepository(deck);
+				this.addRepository(deck, user);
 			}
 		});
 		this.deckRepository.entityCreated.subscribe(deck => {
-			this.addRepository(deck);
+			const user = this.userSessionService.getCurrentUser();
+			this.addRepository(deck, user);
 		});
 		this.deckRepository.entityDeleted.subscribe(deckId => {
 			this.deckRepos.delete(deckId);
@@ -92,8 +99,10 @@ export class DeckElementRepository {
 		return await this.resolveDeckRepository(deckId).existAnyOfType(type);
 	}
 
-	private addRepository(deck: Deck) {
-		const repo = new CouchDeckElementRepository(deck, this.userSessionService);
+	private addRepository(deck: Deck, user: User | null) {
+		const repo = user !== null
+			? new RemoteDeckElementRepository(deck, user)
+			: new LocalDeckElementRepository(deck);
 		this.deckRepos.set(deck.id, repo);
 	}
 

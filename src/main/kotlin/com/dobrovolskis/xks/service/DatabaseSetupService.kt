@@ -70,6 +70,9 @@ class DatabaseSetupService(
 		configure(CORS_ORIGINS, getCorsOrigins())
 		configure(ENABLE_CORS, TRUE)
 		configure(SAME_SITE, "strict")
+		configure(ALLOW_PERSISTENT_COOKIES, TRUE)
+		configure(SESSION_TIMEOUT, 604800.toString())
+
 		configure(DATABASE_PER_USER, TRUE)
 		configure(AUTOMATICALLY_DELETE_USER_DATABASE, TRUE)
 	}
@@ -127,3 +130,7 @@ private const val CORS_CREDENTIALS = "$CORS/credentials"
 
 private const val HTTPD_AUTH = "/couch_httpd_auth"
 private const val SAME_SITE = "$HTTPD_AUTH/same_site"
+
+private const val CHTTPD_AUTH = "/chttpd_auth"
+private const val ALLOW_PERSISTENT_COOKIES = "$CHTTPD_AUTH/allow_persistent_cookies"
+private const val SESSION_TIMEOUT = "$CHTTPD_AUTH/timeout"

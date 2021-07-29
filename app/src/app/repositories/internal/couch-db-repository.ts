@@ -26,12 +26,9 @@ import {Subject, Subscribable} from "rxjs";
 import {environment} from "@environments/environment";
 import {stripTrailingSlash} from "@environments/utils";
 
-import {User} from "@app/models/User";
-
 import {IdEntity} from "@app/repositories/id-entity";
 import {BaseRepository} from "@app/repositories/base-repository";
-
-import {UserSessionService} from "@app/services/user-session.service";
+import {EntityChangeSource} from "@app/repositories/entity-change-source";
 
 type BaseDataEntity = {
 	_id: string,
@@ -48,30 +45,24 @@ const ID_PREFIX_LENGTH = ID_PREFIX.length;
  * @author Vitalijus Dobrovolskis
  * @since 2020.08.02
  */
-export abstract class CouchDbRepository<Entity extends IdEntity> implements BaseRepository<Entity> {
+export abstract class CouchDbRepository<TEntity extends IdEntity>
+	implements BaseRepository<TEntity>, EntityChangeSource<TEntity> {
 
 	private static pouchFindInitialized = false;
 
-	private readonly _sourceChanged = new Subject();
-	readonly sourceChanged = this._sourceChanged.asObservable();
-
 	protected db: any;
+	private remoteDb: any;
 	private remoteSyncHandler: any;
 
-	private readonly anonDb: any;
-	private userDb: any;
+	private readonly _entityCreated = new Subject<TEntity>();
+	private readonly _entityDeleted = new Subject<string>();
+	private readonly _entityUpdated = new Subject<TEntity>();
 
-	private readonly _entityCreated = new Subject<Entity>();
-	private readonly _entityDeletedId = new Subject<string>();
-	private readonly _entityUpdated = new Subject<Entity>();
+	readonly entityCreated: Subscribable<TEntity> = this._entityCreated;
+	readonly entityDeleted: Subscribable<string> = this._entityDeleted;
+	readonly entityUpdated: Subscribable<TEntity> = this._entityUpdated;
 
-	readonly entityCreated: Subscribable<Entity> = this._entityCreated;
-	readonly entityDeleted: Subscribable<string> = this._entityDeletedId;
-	readonly entityUpdated: Subscribable<Entity> = this._entityUpdated;
-
-	protected abstract resolveRemoteDatabaseName(user: User) : string;
-
-	protected mapToEntity(dataEntity: DataLayerEntity<Entity>): Entity {
+	protected mapToEntity(dataEntity: DataLayerEntity<TEntity>): TEntity {
 		let result : any = {
 			...dataEntity,
 			id : dataEntity._id.substring(ID_PREFIX_LENGTH)
@@ -84,19 +75,21 @@ export abstract class CouchDbRepository<Entity extends IdEntity> implements Base
 
 	protected constructor(
 		private readonly localDbName: string,
-		protected readonly userSessionService: UserSessionService,
 		private readonly remoteDbName?: string,) {
 
 		if (!CouchDbRepository.pouchFindInitialized) {
 			PouchDB.plugin(PouchFind);
 			CouchDbRepository.pouchFindInitialized = true;
 		}
-		this.anonDb = new PouchDB("anon-" + this.localDbName);
-		this.switchToLocal().then(_ => this._sourceChanged.next());
+		if (remoteDbName) {
+			this.setUpToSync();
+		} else {
+			this.db = new PouchDB(this.localDbName);
+		}
 	}
 
-	async add(entity: Entity, type: string): Promise<void> {
-		const dataEntity : DataLayerEntity<Entity> = {
+	async add(entity: TEntity, type: string): Promise<void> {
+		const dataEntity : DataLayerEntity<TEntity> = {
 			...entity,
 			_id: ID_PREFIX + entity.id,
 		};
@@ -111,18 +104,18 @@ export abstract class CouchDbRepository<Entity extends IdEntity> implements Base
 		const entity = await this.getDataEntity(id);
 		const revision = entity._rev;
 		await this.db.remove(id, revision);
-		this._entityDeletedId.next(id);
+		this._entityDeleted.next(id);
 	}
 
-	async getAll(): Promise<Entity[]> {
+	async getAll(): Promise<TEntity[]> {
 		const allDocsResponse = await this.db.allDocs({
 			include_docs: true,
 			startkey: ID_PREFIX,
 		});
-		return allDocsResponse.rows.map((value: { doc?: DataLayerEntity<Entity>; }) => this.mapToEntity(value.doc!!));
+		return allDocsResponse.rows.map((value: { doc?: DataLayerEntity<TEntity>; }) => this.mapToEntity(value.doc!!));
 	}
 
-	async getById(id: string): Promise<Entity> {
+	async getById(id: string): Promise<TEntity> {
 		const dataEntity = await this.getDataEntity(id);
 		if (!dataEntity) {
 			throw new Error('Could not find entity with id ' + id);
@@ -130,10 +123,10 @@ export abstract class CouchDbRepository<Entity extends IdEntity> implements Base
 		return this.mapToEntity(dataEntity);
 	}
 
-	async update(entity: Entity): Promise<Entity> {
+	async update(entity: TEntity): Promise<TEntity> {
 		const existingEntity = await this.getDataEntity(entity.id);
 
-		let dataEntity: DataLayerEntity<Entity> = {
+		let dataEntity: DataLayerEntity<TEntity> = {
 			_id: existingEntity._id,
 			_rev: existingEntity._rev,
 			type: existingEntity.type,
@@ -145,42 +138,32 @@ export abstract class CouchDbRepository<Entity extends IdEntity> implements Base
 		return result;
 	}
 
-	isUserActive() : boolean {
-		return this.userDb === this.db && this.userDb != null;
-	}
-
 	async close() : Promise<void> {
-		if (this.userDb) {
-			await this.userDb.close();
+		if (this.remoteDb) {
+			await this.remoteDb.close();
 		}
-		await this.anonDb.close();
+		await this.db.close();
 	}
 
-	switchToRemote(user: User) {
-		const dbName = this.remoteDbName || this.resolveRemoteDatabaseName(user);
-		this.userDb = new PouchDB(dbName);
+	getHandle() : any {
+		return this.db;
+	}
+
+	private setUpToSync() : void {
+		const dbName = this.remoteDbName;
+		this.db = new PouchDB(dbName);
 		const remoteUrl = stripTrailingSlash(environment.databaseUrl) + "/" + dbName;
-		const remoteDb = new PouchDB(remoteUrl, {
+		this.remoteDb = new PouchDB(remoteUrl, {
 			fetch(url, opts) {
 				// @ts-ignore
 				opts.credentials = 'include';
 				return PouchDB.fetch(url, opts);
 			}
 		});
-		this.syncRemoteDb(remoteDb);
-		this.db = this.userDb;
-		this._sourceChanged.next()
+		this.syncToRemoteDb(this.remoteDb);
 	}
 
-	async switchToLocal() : Promise<void> {
-		this.remoteSyncHandler?.cancel();
-		await this.userDb?.close();
-		this.db = this.anonDb;
-		this.userDb = null;
-		this._sourceChanged.next();
-	}
-
-	private async getDataEntity(id: string): Promise<DataLayerEntity<Entity>> {
+	private async getDataEntity(id: string): Promise<DataLayerEntity<TEntity>> {
 		try {
 			return await this.db.get(ID_PREFIX + id);
 		} catch (e) {
@@ -188,8 +171,8 @@ export abstract class CouchDbRepository<Entity extends IdEntity> implements Base
 		}
 	}
 
-	private syncRemoteDb(remoteDb: PouchDB.Database<{}>) : void {
-		this.remoteSyncHandler = this.userDb.sync(remoteDb, {
+	private syncToRemoteDb(remoteDb: PouchDB.Database<{}>) : void {
+		this.remoteSyncHandler = this.db.sync(remoteDb, {
 			live: true,
 			retry: true,
 		}).on('error', (err: string) => {

@@ -54,8 +54,8 @@ export class UserSessionService {
 	private readonly _userLoggedIn = new Subject<boolean>();
 	private readonly _currentUserChanged = new Subject<User | null>();
 
-	readonly userLoggedIn: Subscribable<boolean> = this._userLoggedIn;
-	readonly userChanged: Subscribable<User | null> = this._currentUserChanged;
+	readonly userLoggedIn: Subscribable<boolean> = this._userLoggedIn.asObservable();
+	readonly userChanged: Subscribable<User | null> = this._currentUserChanged.asObservable();
 
 	private currentUser: User | null = null;
 
@@ -104,6 +104,14 @@ export class UserSessionService {
 		await this.httpClient.post(this.forgetUrl,
 			UserSessionService.authRequest(username, password),
 			this.httpOptions).toPromise();
+	}
+
+	isLoggedIn() : boolean {
+		return this.getUserName() !== null;
+	}
+
+	getCurrentUser() : User | null {
+		return this.currentUser;
 	}
 
 	getUserName() : string | null {

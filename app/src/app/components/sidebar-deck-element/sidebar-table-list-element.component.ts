@@ -42,6 +42,8 @@ export class SidebarTableListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
+	private table : Table|  null = null;
+
 	constructor(
 		private readonly tableCellService: TableElementService,
 		private readonly tableService: TableService,
@@ -55,19 +57,20 @@ export class SidebarTableListElementComponent
 		});
 	}
 
-	ngOnInit() {
+	async ngOnInit() {
 		super.ngOnInit();
 
 		if (this.element) {
-			this.updateRowCount();
+			await this.updateRowCount();
 		}
 	}
 
-	private updateRowCount() {
+	private async updateRowCount() {
 		if (!this.element) {
 			return;
 		}
-		this.elementCount = (this.element as Table).rows.length;
+		await this.refreshTable(this.element.id);
+		this.elementCount = this.table!!.rows.length;
 	}
 
 	protected async onClickHandler(id: string) {
@@ -84,5 +87,11 @@ export class SidebarTableListElementComponent
 
 	protected async onUpdateHandler(element: SidebarDeckElement) {
 		await this.tableService.update(element as Table);
+	}
+
+	private async refreshTable(elementId: string) {
+		if (this.deck) {
+			this.table = await this.tableService.getById({element: elementId, deck: this.deck.id});
+		}
 	}
 }

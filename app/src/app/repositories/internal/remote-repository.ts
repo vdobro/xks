@@ -19,44 +19,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-
-import {Deck} from "@app/models/Deck";
-
+import {IdEntity} from "@app/repositories/id-entity";
 import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
-
-import {UserSessionService} from "@app/services/user-session.service";
 import {User} from "@app/models/User";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.01
+ * @since 2021.07.29
  */
-@Injectable({
-	providedIn: 'root'
-})
-export class DeckRepository extends CouchDbRepository<Deck> {
-
-	constructor(userSessionService: UserSessionService) {
-		super("local_decks", userSessionService);
-		this.userSessionService.userChanged.subscribe(async user => {
-			await this.userChangedHandler(user);
-		})
-	}
-
-	protected resolveRemoteDatabaseName(user: User): string {
-		const hex = user.name
-			.split('')
-			.map(c => c.charCodeAt(0).toString(16))
-			.join('')
-		return "userdb-" + hex;
-	}
-
-	private async userChangedHandler(user: User | null) : Promise<void> {
-		if (user) {
-			this.switchToRemote(user);
-		} else {
-			await this.switchToLocal();
-		}
+export class RemoteRepository<TEntity extends IdEntity> extends CouchDbRepository<TEntity> {
+	constructor(entityIdentifier: String, user: User, remoteDbName: string) {
+		super(`remote_${entityIdentifier}`, remoteDbName);
 	}
 }
