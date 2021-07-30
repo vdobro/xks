@@ -103,7 +103,7 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 	async delete(id: string): Promise<void> {
 		const entity = await this.getDataEntity(id);
 		const revision = entity._rev;
-		await this.db.remove(id, revision);
+		await this.db.remove(ID_PREFIX + id, revision);
 		this._entityDeleted.next(id);
 	}
 

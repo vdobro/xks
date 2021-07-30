@@ -24,12 +24,12 @@ import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
+import {DeckElementType} from "@app/models/DeckElement";
 import {Graph} from "@app/models/Graph";
 import {Deck} from "@app/models/Deck";
 
 import {ElementId} from "@app/models/ElementId";
 import {DeckElementService} from "@app/services/deck-element.service";
-import {DeckElementType} from "@app/models/DeckElement";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,18 +41,22 @@ import {DeckElementType} from "@app/models/DeckElement";
 export class GraphService {
 
 	private static readonly elementType: DeckElementType = "graph";
-	private readonly _graphsChanged = new Subject<string>();
-	readonly deckGraphsChanged: Subscribable<string> = this._graphsChanged;
 
-	constructor(private readonly repository: DeckElementService) {
+	private readonly _graphsChanged = new Subject<string>();
+	readonly deckGraphsChanged: Subscribable<string> = this._graphsChanged.asObservable();
+
+	private readonly _graphChanged = new Subject<Graph>();
+	readonly graphChanged = this._graphChanged.asObservable();
+
+	constructor(private readonly deckElementService: DeckElementService) {
 	}
 
 	public async getById(id: ElementId): Promise<Graph> {
-		return await this.repository.findGraph(id);
+		return await this.deckElementService.findGraph(id);
 	}
 
 	async getByDeckId(deckId: string) : Promise<Graph[]> {
-		return await this.repository.getAllGraphs(deckId);
+		return await this.deckElementService.getAllGraphs(deckId);
 	}
 
 	async getByDeck(deck: Deck): Promise<Graph[]> {
@@ -60,27 +64,30 @@ export class GraphService {
 	}
 
 	async anyExistForDeck(deck: Deck): Promise<boolean> {
-		return await this.repository.existAny(deck.id, GraphService.elementType);
+		return await this.deckElementService.existAny(deck.id, GraphService.elementType);
 	}
 
-	async create(deck: Deck, name: string) {
-		await this.repository.add({
+	async create(deck: Deck, name: string) : Promise<Graph> {
+		const graph : Graph = {
 			id: uuid(),
 			deckId: deck.id,
 			name: name,
 			defaultMaxScore: 5,
-			defaultStartingScore: 3
-		}, GraphService.elementType);
+			defaultStartingScore: 3,
+			nodes: [],
+		};
+		await this.deckElementService.add(graph, GraphService.elementType);
 		this._graphsChanged.next(deck.id);
+		return graph;
 	}
 
-	public async delete(id: ElementId) {
-		await this.repository.delete(id);
+	public async delete(id: ElementId) : Promise<void> {
+		await this.deckElementService.delete(id);
 
 		this._graphsChanged.next(id.deck);
 	}
 
-	public async deleteAllInDeck(deck: Deck) {
+	public async deleteAllInDeck(deck: Deck) : Promise<void> {
 		const tables = await this.getByDeck(deck);
 		for (let table of tables) {
 			await this.delete({element: table.id, deck: deck.id});
@@ -88,8 +95,9 @@ export class GraphService {
 		this._graphsChanged.next(deck.id);
 	}
 
-	public async update(graph: Graph) {
-		await this.repository.updateElement(graph);
+	public async update(graph: Graph) : Promise<Graph> {
+		const result = await this.deckElementService.updateElement(graph) as Graph;
+		this._graphChanged.next(result);
+		return result;
 	}
-
 }

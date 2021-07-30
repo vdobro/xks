@@ -67,7 +67,7 @@ import {AlternativeAnswerEditorComponent} from './components/alternative-answer-
 
 const DECK_ROUTE = `decks/:${DECK_ID_PARAM}`;
 const TABLE_ROUTE = `${DECK_ROUTE}/tables/:${TABLE_ID_PARAM}`;
-const GRAPH_ROUTE = `${DECK_ROUTE}/graph/:${GRAPH_ID_PARAM}`;
+const GRAPH_ROUTE = `${DECK_ROUTE}/graphs/:${GRAPH_ID_PARAM}`;
 
 /**
  * @author Vitalijus Dobrovolskis

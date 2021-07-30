@@ -112,7 +112,7 @@ export class NavigationService {
 	async openGraph(id: ElementId) {
 		await this.selectGraph(id);
 		this.studySessionActive = false;
-		await this.router.navigate(['/deck', id.deck, 'graphs', id.element, 'edit']);
+		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'edit']);
 	}
 
 	async navigateToCurrentDeck() {

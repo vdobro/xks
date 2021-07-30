@@ -19,12 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {Subject, Subscribable} from "rxjs";
+
 import {Injectable} from '@angular/core';
+
 import {Deck} from "@app/models/Deck";
 import {Graph} from "@app/models/Graph";
 import {Table} from "@app/models/Table";
+
 import {NavigationControlService} from "./navigation-control.service";
-import {Subject, Subscribable} from "rxjs";
 import {DeckService} from "./deck.service";
 
 /**

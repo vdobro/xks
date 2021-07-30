@@ -27,7 +27,6 @@ import {Table} from '@app/models/Table';
 import {Deck} from '@app/models/Deck';
 import {ElementId} from "@app/models/ElementId";
 import {DeckElementService} from "@app/services/deck-element.service";
-import {DeckElementRepository} from "@app/repositories/deck-element-repository";
 import {DeckElementType} from "@app/models/DeckElement";
 
 /**
@@ -44,11 +43,10 @@ export class TableService {
 	readonly tablesChanged: Subscribable<string> = this._tablesChanged.asObservable();
 
 	private readonly _tableChanged = new Subject<Table>();
-	readonly tableChanged = this._tableChanged;
+	readonly tableChanged = this._tableChanged.asObservable();
 
 	constructor(
-		private readonly deckElementService: DeckElementService,
-		private readonly repository: DeckElementRepository) {
+		private readonly deckElementService: DeckElementService) {
 	}
 
 	public async getById(id: ElementId): Promise<Table> {
@@ -64,10 +62,10 @@ export class TableService {
 	}
 
 	public async anyExistForDeck(deck: Deck): Promise<boolean> {
-		return await this.repository.existAnyOfType(deck.id, TableService.elementType);
+		return await this.deckElementService.existAny(deck.id, TableService.elementType);
 	}
 
-	public async create(deck: Deck, name: string): Promise<Table> {
+	public async create(deck: Deck, name: string) : Promise<void> {
 		const table: Table = {
 			id: uuid(),
 			deckId: deck.id,
@@ -79,18 +77,17 @@ export class TableService {
 			columns: [],
 			rows: []
 		};
-		await this.repository.add(table, TableService.elementType);
+		await this.deckElementService.add(table, TableService.elementType);
 		this._tablesChanged.next(deck.id);
-		return table;
 	}
 
 	public async delete(id: ElementId): Promise<void> {
-		await this.repository.delete(id);
+		await this.deckElementService.delete(id);
 		this._tablesChanged.next(id.deck);
 	}
 
 	public async update(table: Table): Promise<Table> {
-		const result = await this.repository.update(table) as Table;
+		const result = await this.deckElementService.updateElement(table) as Table;
 		this._tableChanged.next(result);
 		return result;
 	}

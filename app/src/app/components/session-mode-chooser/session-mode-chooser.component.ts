@@ -80,7 +80,7 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 	async changeSelection() {
 		let id = this.modeSelectElement?.nativeElement?.value || this.table?.defaultSessionModeId;
 		if (!id && this.table?.sessionModes?.length) {
-			id = this.table.sessionModes[0];
+			id = this.table.sessionModes[0].id;
 		}
 		const table = this.table;
 		if (id && table) {

@@ -98,7 +98,7 @@ export class DeckElementService {
 		await this.updateElement(deckElement);
 	}
 
-	async updateElement(element: DeckElement): Promise<void> {
-		await this.repository.update(element);
+	async updateElement(element: DeckElement): Promise<DeckElement> {
+		return await this.repository.update(element);
 	}
 }

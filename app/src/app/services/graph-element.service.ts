@@ -50,7 +50,7 @@ export class GraphElementService {
 		if (nodes.length === 0) {
 			return false;
 		}
-		const edges = await this.getEdges(graph);
+		const edges = this.getEdges(graph);
 		return edges.length !== 0;
 	}
 

@@ -254,9 +254,10 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		const nodes = this.graph.nodes;
 		for (let node of nodes) {
 			this.nodes.add(GraphViewComponent.mapToNodeView(node));
-			this.edges.add(node.edges.map(edge => {
-				GraphViewComponent.mapToEdgeView(edge, node);
-			}));
+			const edges = node.edges.map(edge => {
+				return GraphViewComponent.mapToEdgeView(edge, node);
+			});
+			this.edges.add(edges);
 		}
 	}
 
