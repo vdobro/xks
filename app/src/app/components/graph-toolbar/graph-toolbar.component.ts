@@ -21,10 +21,12 @@
 
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 
-import {Graph} from "@app/models/Graph";
-import {GraphNode} from "@app/models/GraphNode";
+import {GraphNode} from "@app/models/graph-node";
+import {GraphEdge} from "@app/models/graph-edge";
+import {ElementId} from "@app/models/ElementId";
+
 import {GraphElementService} from "@app/services/graph-element.service";
-import {GraphEdge} from "@app/models/GraphEdge";
+import {GraphService} from "@app/services/graph.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,7 +43,7 @@ export class GraphToolbarComponent implements OnInit {
 	tutorialModal: ElementRef | undefined;
 
 	@Input()
-	graph: Graph | null = null;
+	graphId: ElementId | null = null;
 
 	@Input()
 	selectedNode: GraphNode | null = null;
@@ -54,23 +56,27 @@ export class GraphToolbarComponent implements OnInit {
 	@Output()
 	currentlyInEdit = new EventEmitter<boolean>();
 
-	constructor(private readonly elementService: GraphElementService) {
-
-		//TODO: close when entities change
+	constructor(private readonly elementService: GraphElementService,
+				graphService: GraphService) {
+		graphService.graphChanged.subscribe(graph => {
+			if (this.graphId?.element === graph.id) {
+				this.closeEditor();
+			}
+		})
 	}
 
 	ngOnInit(): void {
 	}
 
 	async deleteSelectedElement() {
-		if (!this.graph) {
+		if (!this.graphId) {
 			return;
 		}
 
 		if (this.selectedNode) {
-			await this.elementService.removeNode(this.selectedNode, this.graph);
+			await this.elementService.removeNodeFromGraph(this.selectedNode, this.graphId);
 		} else if (this.selectedEdge) {
-			await this.elementService.removeEdge(this.selectedEdge, this.graph);
+			await this.elementService.removeEdgeFromGraph(this.selectedEdge, this.graphId);
 		}
 	}
 

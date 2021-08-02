@@ -134,8 +134,9 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 		};
 
 		const result = await this.db.put(dataEntity);
+		result.id = entity.id; // The ID prefix has to be removed
 		this._entityUpdated.next(entity);
-		return result;
+		return entity;
 	}
 
 	async close() : Promise<void> {

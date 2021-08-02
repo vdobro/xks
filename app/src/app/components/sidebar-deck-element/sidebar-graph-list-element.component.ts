@@ -21,7 +21,7 @@
 
 import {Component, OnInit} from '@angular/core';
 
-import {Graph} from "@app/models/Graph";
+import {Graph} from "@app/models/graph";
 
 import {NavigationService} from "@app/services/navigation.service";
 import {GraphService} from "@app/services/graph.service";
@@ -76,7 +76,7 @@ export class SidebarGraphListElementComponent
 	private refreshCounter() {
 		if (this.element) {
 			const graph = this.element as Graph;
-			const edges = (this.graphElementService.getEdges(graph)).length;
+			const edges = graph.edges.length;
 			const nodes = graph.nodes.length;
 			if (edges && nodes) {
 				this.elementCount = `${nodes} + ${edges}`;

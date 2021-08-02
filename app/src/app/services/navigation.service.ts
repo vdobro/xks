@@ -20,17 +20,20 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Router} from "@angular/router";
-import {Deck} from "../models/Deck";
-import {Table} from "../models/Table";
-import {DeckService} from "./deck.service";
-import {TableService} from "./table.service";
-import {SidebarService} from "./sidebar.service";
-import {Graph} from "../models/Graph";
-import {GraphService} from "./graph.service";
-import {ScoreParams,} from "../components/session-view/session-view.component";
+import {Router} from '@angular/router';
+
+import {Deck} from "@app/models/Deck";
+import {Graph} from "@app/models/graph";
+import {Table} from "@app/models/Table";
 import {ElementId} from "@app/models/ElementId";
 import {DeckElement} from "@app/models/DeckElement";
+
+import {DeckService} from "@app/services/deck.service";
+import {TableService} from "@app/services/table.service";
+import {SidebarService} from "@app/services/sidebar.service";
+import {GraphService} from "@app/services/graph.service";
+
+import {ScoreParams,} from "@app/components/session-view/session-view.component";
 
 /**
  * @author Vitalijus Dobrovolskis

@@ -19,6 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {find, findIndex, remove} from "lodash-es";
 import {v4 as uuid} from 'uuid';
 import arrayMove from "array-move";
 import {Subject, Subscribable} from "rxjs";
@@ -28,12 +29,11 @@ import {Injectable} from '@angular/core';
 import {Table} from "@app/models/Table";
 import {TableColumn} from "@app/models/TableColumn";
 import {TableRow, TableRowValue} from "@app/models/TableRow";
+import {ElementId} from "@app/models/ElementId";
+import {AnswerValue} from "@app/models/answer-value";
 
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
 import {TableService} from "@app/services/table.service";
-import {find, findIndex, remove} from "lodash-es";
-import {ElementId} from "@app/models/ElementId";
-import {AnswerValue} from "@app/models/AnswerValue";
 
 /**
  * @author Vitalijus Dobrovolskis

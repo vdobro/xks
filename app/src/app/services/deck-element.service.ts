@@ -22,7 +22,7 @@
 import {Injectable} from '@angular/core';
 
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-import {Graph, isGraph} from "@app/models/Graph";
+import {Graph, isGraph} from "@app/models/graph";
 import {isTable, Table} from "@app/models/Table";
 import {ElementId} from "@app/models/ElementId";
 

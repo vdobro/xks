@@ -25,7 +25,7 @@ import {Subject, Subscribable} from "rxjs";
 import {Injectable} from '@angular/core';
 
 import {DeckElementType} from "@app/models/DeckElement";
-import {Graph} from "@app/models/Graph";
+import {Graph} from "@app/models/graph";
 import {Deck} from "@app/models/Deck";
 
 import {ElementId} from "@app/models/ElementId";
@@ -75,6 +75,7 @@ export class GraphService {
 			defaultMaxScore: 5,
 			defaultStartingScore: 3,
 			nodes: [],
+			edges: [],
 		};
 		await this.deckElementService.add(graph, GraphService.elementType);
 		this._graphsChanged.next(deck.id);

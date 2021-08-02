@@ -26,7 +26,7 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
 
 import {Table} from "@app/models/Table";
 import {TableSessionMode} from "@app/models/TableSessionMode";
-import {Graph} from "@app/models/Graph";
+import {Graph} from "@app/models/graph";
 import {DeckElement} from "@app/models/DeckElement";
 
 import {TableSessionService} from "@app/services/table-session.service";

@@ -20,12 +20,12 @@
  */
 
 import {BaseEntity} from "./BaseEntity";
+import {AnswerValue} from "./answer-value";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
-export interface GraphEdge extends BaseEntity {
-	name: string,
-	targetId: string,
+export interface GraphNode extends BaseEntity {
+	value: AnswerValue,
 }

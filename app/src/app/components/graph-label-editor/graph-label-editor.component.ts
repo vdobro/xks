@@ -32,11 +32,11 @@ import {
 } from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {GraphNode} from "@app/models/GraphNode";
-import {Graph} from "@app/models/Graph";
-import {GraphEdge} from "@app/models/GraphEdge";
+import {GraphNode} from "@app/models/graph-node";
+import {GraphEdge} from "@app/models/graph-edge";
 
 import {GraphElementService} from "@app/services/graph-element.service";
+import {ElementId} from "@app/models/ElementId";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,7 +55,8 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	nodeLabelInputElement: ElementRef | undefined;
 
 	@Input()
-	graph: Graph | null = null;
+	graphId: ElementId | null = null;
+
 	@Input()
 	selectedNode: GraphNode | null = null;
 	@Input()
@@ -79,12 +80,12 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 		setTimeout(async () => {
 			if (this.edgeLabelInputElement) {
 				this.edgeLabelInputElement.nativeElement.focus();
-				this.edgeLabelInput.setValue(this.selectedEdge?.name);
+				this.edgeLabelInput.setValue(this.selectedEdge?.value?.default);
 			} else if (this.nodeLabelInputElement) {
 				this.nodeLabelInputElement.nativeElement.focus();
 			}
 			if (this.nodeLabelInputElement && !this.shouldAppend) {
-				const value = this.selectedNode?.value || '';
+				const value = this.selectedNode?.value?.default || '';
 				this.nodeLabelInput.setValue(value);
 			}
 		});
@@ -96,19 +97,16 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	}
 
 	async submitValue() {
-		if (!this.graph || (!this.nodeLabelInput.value && !this.edgeLabelInput.value)) {
+		if (!this.graphId) {
 			return;
 		}
 
 		if (this.shouldAppend && this.selectedNode) {
 			await this.appendNewNode();
-		} else if (this.selectedNode || this.selectedEdge) {
-			if (this.selectedEdge) {
-				await this.renameEdge();
-			}
-			if (this.selectedNode) {
-				await this.renameNode();
-			}
+		} else if (this.selectedEdge) {
+			await this.renameEdge();
+		} else if (this.selectedNode) {
+			await this.renameNode();
 		} else {
 			await this.createNode();
 		}
@@ -118,35 +116,34 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	private async appendNewNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
 		const edgeLabel = this.edgeLabelInput.value?.trim();
-		if (!nodeLabel || !this.graph || !this.selectedNode) {
+		if (!nodeLabel || !this.graphId || !this.selectedNode) {
 			return;
 		}
-		const newNode = await this.elementService.addNode(nodeLabel, this.graph);
-		await this.elementService.addEdge(this.graph, this.selectedNode, newNode, edgeLabel);
+		const newNode = await this.elementService.addNodeToGraph(this.graphId, nodeLabel);
+		await this.elementService.addEdgeToGraph(this.graphId, this.selectedNode, newNode, edgeLabel);
 	}
 
 	private async renameEdge() {
-		if (!this.selectedEdge || !this.graph) {
+		if (!this.selectedEdge || !this.graphId) {
 			return;
 		}
-		this.selectedEdge.name = this.edgeLabelInput.value.trim();
-		await this.elementService.updateEdge(this.selectedEdge, this.graph);
+		const label = this.edgeLabelInput.value.trim();
+		await this.elementService.updateEdge(label, this.selectedEdge.id, this.graphId);
 	}
 
 	private async renameNode() {
-		const newLabel = this.nodeLabelInput.value.trim();
-		if (!newLabel || !this.selectedNode || !this.graph) {
+		if (!this.selectedNode || !this.graphId) {
 			return;
 		}
-		this.selectedNode.value.default = newLabel;
-		await this.elementService.updateNode(this.selectedNode, this.graph);
+		const newLabel = this.nodeLabelInput.value.trim();
+		await this.elementService.updateNode(newLabel, this.selectedNode.id, this.graphId);
 	}
 
 	private async createNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
-		if (!nodeLabel || !this.graph) {
+		if (!nodeLabel || !this.graphId) {
 			return;
 		}
-		await this.elementService.addNode(nodeLabel, this.graph);
+		await this.elementService.addNodeToGraph(this.graphId, nodeLabel);
 	}
 }

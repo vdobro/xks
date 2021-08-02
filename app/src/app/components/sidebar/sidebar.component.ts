@@ -24,7 +24,7 @@ import UIkit from 'uikit';
 import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/Graph";
+import {Graph} from "@app/models/graph";
 import {Table} from "@app/models/Table";
 
 import {NavigationControlService} from "@app/services/navigation-control.service";

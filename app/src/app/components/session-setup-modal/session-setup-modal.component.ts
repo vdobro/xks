@@ -26,7 +26,7 @@ import {FormControl} from "@angular/forms";
 
 import {DeckElement} from "@app/models/DeckElement";
 import {isTable, Table} from "@app/models/Table";
-import {Graph, isGraph} from "@app/models/Graph";
+import {Graph, isGraph} from "@app/models/graph";
 
 import {NavigationService} from "@app/services/navigation.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";

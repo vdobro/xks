@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {AnswerValue} from "@app/models/AnswerValue";
+import {AnswerValue} from "@app/models/answer-value";
 import {NamedEntity} from "./named-entity";
 
 /**

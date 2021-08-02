@@ -28,9 +28,9 @@ import {levenshtein} from "@environments/utils";
 import {Table} from "@app/models/Table";
 import {TableColumn} from "@app/models/TableColumn";
 import {TableRow} from "@app/models/TableRow";
-import {Graph} from "@app/models/Graph";
-import {GraphNode} from "@app/models/GraphNode";
-import {AnswerValue} from "@app/models/AnswerValue";
+import {Graph} from "@app/models/graph";
+import {GraphNode} from "@app/models/graph-node";
+import {AnswerValue} from "@app/models/answer-value";
 
 import {TableElementService} from "@app/services/table-element.service";
 import {GraphElementService} from "@app/services/graph-element.service";
@@ -84,17 +84,17 @@ export class ExerciseTaskService {
 						   maxScore: number): ExerciseTask[] {
 		const exercises: ExerciseTask[] = [];
 		for (let node of graph.nodes) {
-			const edges = node.edges;
+			const edges = GraphElementService.getOutgoingEdges(node, graph);
 			const transitions: EdgeWithDestinationNode[] = [];
 			for (let edge of edges) {
-				const targetNode = this.graphElementService.findNode(edge.targetId, graph);
+				const targetNode = this.graphElementService.getNode(edge.targetId, graph);
 				transitions.push({
-					edgeName: edge.name,
+					edgeName: edge.value.default,
 					node: targetNode,
 				});
 			}
 			const answerFields = transitions.map(transition => ExerciseTaskService.mapEdgeToFlashcardField(transition));
-			const ignoreAnswerOrder = edges.every(x => x.name === '');
+			const ignoreAnswerOrder = edges.every(x => x.value.default === '');
 			if (answerFields.length > 0) {
 				exercises.push({
 					id: uuid(),

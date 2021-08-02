@@ -21,7 +21,7 @@
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
-import {AnswerValue} from "@app/models/AnswerValue";
+import {AnswerValue} from "@app/models/answer-value";
 import {Table} from "@app/models/Table";
 import {TableRow} from "@app/models/TableRow";
 import {TableColumn} from "@app/models/TableColumn";

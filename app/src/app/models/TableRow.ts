@@ -20,7 +20,7 @@
  */
 
 import {BaseEntity} from "@app/models/BaseEntity";
-import {AnswerValue} from "@app/models/AnswerValue";
+import {AnswerValue} from "@app/models/answer-value";
 
 /**
  * @author Vitalijus Dobrovolskis

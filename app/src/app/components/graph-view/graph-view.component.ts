@@ -20,18 +20,23 @@
  */
 
 import {DataSet, Network, Options} from "vis-network/standalone";
+
 import {AfterContentChecked, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
-import {Graph} from "@app/models/Graph";
+
+import {GraphElements} from "@app/models/graph";
+import {GraphEdge} from "@app/models/graph-edge";
+import {GraphNode} from "@app/models/graph-node";
+import {ElementId} from "@app/models/ElementId";
+
 import {GraphService} from "@app/services/graph.service";
 import {NavigationService} from "@app/services/navigation.service";
 import {TopBarService} from "@app/services/top-bar.service";
 import {SidebarService} from "@app/services/sidebar.service";
 import {GraphElementService} from "@app/services/graph-element.service";
-import {GraphNode} from "@app/models/GraphNode";
-import {GraphEdge} from "@app/models/GraphEdge";
-import {GraphToolbarComponent} from "@app/components/graph-toolbar/graph-toolbar.component";
 import {NavigationControlService} from "@app/services/navigation-control.service";
+
+import {GraphToolbarComponent} from "@app/components/graph-toolbar/graph-toolbar.component";
 import {DECK_ID_PARAM} from "@app/components/deck-view/deck-view.component";
 
 export const GRAPH_ID_PARAM: string = 'graphId';
@@ -59,9 +64,6 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 	@ViewChild('graphViewContainer', {static: true})
 	container: ElementRef | undefined;
 
-	graph: Graph | null = null;
-	network: Network | null = null;
-
 	renderingOptions: Options = {
 		nodes: {
 			shape: "box"
@@ -78,6 +80,10 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		}
 	};
 
+	graphId: ElementId | null = null;
+	graphName: string | null = null;
+	graphElements: GraphElements | null = null;
+
 	selectedEdge: GraphEdge | null = null;
 	selectedNode: GraphNode | null = null;
 	selectedSourceNode: GraphNode | null = null;
@@ -86,6 +92,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 
 	private rootContainerWidth: number = 0;
 
+	network: Network | null = null;
 	private readonly nodes = new DataSet<any>();
 	private readonly edges = new DataSet<any>();
 
@@ -124,13 +131,13 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 
 	@HostListener("document:keydown.delete")
 	async onDeleteClick(_: KeyboardEvent) {
-		if (this.editMode || !this.graph) {
+		if (this.editMode || !this.graphId) {
 			return;
 		}
 		if (this.selectedNode) {
-			await this.graphElementService.removeNode(this.selectedNode, this.graph);
+			await this.graphElementService.removeNodeFromGraph(this.selectedNode, this.graphId);
 		} else if (this.selectedEdge) {
-			await this.graphElementService.removeEdge(this.selectedEdge, this.graph);
+			await this.graphElementService.removeEdgeFromGraph(this.selectedEdge, this.graphId);
 		}
 	}
 
@@ -160,13 +167,17 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(GRAPH_ID_PARAM);
 			const deckId = params.get(DECK_ID_PARAM);
-			this.graph = (id && deckId) ? await this.graphService.getById({
+
+			const graph = (id && deckId) ? await this.graphService.getById({
 				element: id,
 				deck: deckId
 			}) : null;
+			this.graphId = (id && deckId) ? {element: id, deck: deckId} : null;
+			this.graphElements = (graph) ? GraphElementService.cloneGraphElements(graph) : null;
+			this.graphName = graph?.name || null;
 
-			if (this.graph) {
-				await this.sidebarService.selectGraph(this.graph);
+			if (graph) {
+				await this.sidebarService.selectGraph(graph);
 				await this.setUpNetworkView();
 			} else {
 				await this.navigationService.goToDeckList();
@@ -175,41 +186,34 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 	}
 
 	private setUpDataEvents() {
-		// TODO node and edge changes
-		/*this.nodeRepository.entityCreated.subscribe(async (entity: GraphNode) => {
-			this.nodes.add(await GraphViewComponent.mapToNodeView(entity));
-			this.network?.fit();
+		this.graphService.graphChanged.subscribe(updatedGraph => {
+			if (this.graphId?.element !== updatedGraph.id) {
+				return;
+			}
+			this.graphName = updatedGraph?.name || null;
+
+			const oldGraph = this.graphElements!!;
+			const diff = this.graphElementService.getDiff(oldGraph, updatedGraph);
+			for (let addedNode of diff.added.nodes) {
+				this.addNode(addedNode, true);
+			}
+			for (let editedNode of diff.edited.nodes) {
+				this.updateNode(editedNode);
+			}
+			for (let removedNode of diff.removed.nodes) {
+				this.removeNode(removedNode);
+			}
+			for (let addedEdge of diff.added.edges) {
+				this.addEdge(addedEdge, true);
+			}
+			for (let editedEdge of diff.edited.edges) {
+				this.updateEdge(editedEdge);
+			}
+			for (let removedEdge of diff.removed.edges) {
+				this.removeEdge(removedEdge);
+			}
+			this.graphElements = GraphElementService.cloneGraphElements(updatedGraph);
 		});
-		this.nodeRepository.entityUpdated.subscribe(async (entity: GraphNode) => {
-			this.nodes.update(await GraphViewComponent.mapToNodeView(entity));
-			this.selectedSourceNode = null;
-		})
-		this.nodeRepository.entityDeleted.subscribe((id: string) => {
-			this.nodes.remove(id);
-			this.network?.fit();
-			this.selectedSourceNode = null;
-			this.selectedNode = null;
-		});
-		this.edgeRepository.entityCreated.subscribe((entity: GraphEdge) => {
-			this.edges.add(GraphViewComponent.mapToEdgeView(entity));
-			this.network?.fit();
-		});
-		this.edgeRepository.entityUpdated.subscribe((entity: GraphEdge) => {
-			this.edges.update(GraphViewComponent.mapToEdgeView(entity));
-		});
-		this.edgeRepository.entityDeleted.subscribe((id: string) => {
-			this.edges.remove(id);
-			this.selectedEdge = null;
-		});
-		this.valueRepository.entityUpdated.subscribe((answerValue: AnswerValue) => {
-			this.nodes.forEach(async (view: NodeView, _) => {
-				const node = await this.nodeRepository.getById(view.id);
-				if (answerValue.id === node.valueId) {
-					const newView = await GraphViewComponent.mapToNodeView(node);
-					this.nodes.update(newView);
-				}
-			});
-		});*/
 	}
 
 	private async setUpNetworkView() {
@@ -247,25 +251,27 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		this.edges.clear();
 		this.nodes.clear();
 
-		if (!this.graph) {
+		if (!this.graphElements) {
 			return;
 		}
 
-		const nodes = this.graph.nodes;
+		const nodes = this.graphElements.nodes;
+		const edges = this.graphElements.edges;
+
 		for (let node of nodes) {
-			this.nodes.add(GraphViewComponent.mapToNodeView(node));
-			const edges = node.edges.map(edge => {
-				return GraphViewComponent.mapToEdgeView(edge, node);
-			});
-			this.edges.add(edges);
+			this.addNode(node, false);
 		}
+		for (let edge of edges) {
+			this.addEdge(edge, false);
+		}
+		this.network?.fit();
 	}
 
 	private onSelectEdge(id: string) {
-		if (!this.graph) {
+		if (!this.graphElements) {
 			return;
 		}
-		this.selectedEdge = this.graphElementService.findEdge(id, this.graph);
+		this.selectedEdge = this.graphElementService.getEdge(id, this.graphElements);
 	}
 
 	private async onDeselectEdge() {
@@ -278,21 +284,21 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		if (!id) {
 			this.selectedNode = null;
 		}
-		if (!this.graph) {
+		if (!this.graphElements || !this.graphId) {
 			return;
 		}
 		if (this.selectedNode?.id !== id) {
-			this.selectedNode = this.graphElementService.findNode(id, this.graph);
+			this.selectedNode = this.graphElementService.getNode(id, this.graphElements);
 		}
 		if (this.selectedSourceNode) {
 			const source = this.selectedSourceNode;
 			this.selectedSourceNode = null;
-			await this.graphElementService.addEdge(this.graph, source, this.selectedNode);
+			await this.graphElementService.addEdgeToGraph(this.graphId!!, source, this.selectedNode);
 		}
 	}
 
 	private onDoubleClickNode(id: string) {
-		if (!this.graph) {
+		if (!this.graphElements) {
 			return;
 		}
 		if (!id) {
@@ -300,7 +306,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		}
 		this.toolbar?.openEditor();
 		if (this.selectedSourceNode?.id !== id) {
-			this.selectedSourceNode = this.graphElementService.findNode(id, this.graph);
+			this.selectedSourceNode = this.graphElementService.getNode(id, this.graphElements);
 		}
 	}
 
@@ -319,6 +325,42 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		} else {
 			await this.onSelectNode(nextNode);
 		}
+	}
+
+	private addNode(node: GraphNode, fitNetwork: boolean) {
+		this.nodes.add(GraphViewComponent.mapToNodeView(node));
+		if (fitNetwork) {
+			this.network?.fit();
+		}
+	}
+
+	private addEdge(edge: GraphEdge, fitNetwork: boolean) {
+		this.edges.add(GraphViewComponent.mapToEdgeView(edge));
+		if (fitNetwork) {
+			this.network?.fit();
+		}
+	}
+
+	private updateNode(node: GraphNode) {
+		this.nodes.update(GraphViewComponent.mapToNodeView(node));
+		this.selectedSourceNode = null;
+	}
+
+	private updateEdge(edge: GraphEdge) {
+		this.edges.update(GraphViewComponent.mapToEdgeView(edge));
+	}
+
+	private removeNode(node: GraphNode) {
+		this.nodes.remove(node.id);
+		this.selectedSourceNode = null;
+		this.selectedNode = null;
+		this.network?.fit();
+	}
+
+	private removeEdge(edge: GraphEdge) {
+		this.edges.remove(edge.id);
+		this.selectedEdge = null;
+		this.network?.fit();
 	}
 
 	private static mapToNodeView(node: GraphNode): NodeView {
@@ -347,12 +389,12 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		};
 	}
 
-	private static mapToEdgeView(edge: GraphEdge, from: GraphNode): EdgeView {
+	private static mapToEdgeView(edge: GraphEdge): EdgeView {
 		return {
 			id: edge.id,
-			from: from.id,
+			from: edge.sourceId,
 			to: edge.targetId,
-			label: edge.name,
+			label: edge.value.default,
 			arrows: "to",
 			color: "#000000",
 			arrowStrikethrough: false,

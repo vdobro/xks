@@ -21,7 +21,7 @@
 
 import {Injectable} from '@angular/core';
 
-import {Graph} from "@app/models/Graph";
+import {Graph} from "@app/models/graph";
 import {LearningSessionState} from "./models/learning-session-state";
 
 import {StudySessionService} from "./study-session.service";
