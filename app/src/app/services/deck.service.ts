@@ -80,12 +80,13 @@ export class DeckService {
 	}
 
 	async delete(deck: Deck) {
-		const params = new HttpParams()
-			.append('token', deck.ownerToken)
-			.append('username', this.userSessionService.getUserName()!!);
-		const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
-		await this.httpClient.delete(url).toPromise();
-
+		if (this.userSessionService.isLoggedIn()) {
+			const params = new HttpParams()
+				.append('token', deck.ownerToken)
+				.append('username', this.userSessionService.getUserName()!!);
+			const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
+			await this.httpClient.delete(url).toPromise();
+		}
 		await this.repository.delete(deck.id)
 	}
 

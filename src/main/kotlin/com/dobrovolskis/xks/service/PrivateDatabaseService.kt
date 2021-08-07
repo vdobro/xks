@@ -48,6 +48,7 @@ class PrivateDatabaseService(
 	): String {
 		val id = randomUUID().toString().replace("-", "")
 		val deckDatabaseName = prefixDeckDatabaseName(id)
+		Thread.sleep(200) //TODO: Deck owners should be separately kept up to date, PouchDB + CouchDB are not fast enough
 		verifyAccessToDeck(username, deckId)
 
 		val db = assertDatabaseNotCreated(deckDatabaseName)
