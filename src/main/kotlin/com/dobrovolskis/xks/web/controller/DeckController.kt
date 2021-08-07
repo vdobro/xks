@@ -51,9 +51,9 @@ class DeckController(private val privateDatabaseService: PrivateDatabaseService)
 	fun removeDeck(
 		@PathVariable id: UUID,
 		@RequestParam(required = true) username: String,
-		//TODO cookies don't work, auth alternative: secret document
+		@RequestParam(required = true) token: String,
 	) {
-		privateDatabaseService.removeById(username, id)
+		privateDatabaseService.removeById(username, id, token)
 	}
 }
 

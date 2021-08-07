@@ -48,7 +48,7 @@ class PrivateDatabaseService(
 	): String {
 		val id = randomUUID().toString().replace("-", "")
 		val deckDatabaseName = prefixDeckDatabaseName(id)
-		require(hasAccess(username, deckId))
+		verifyAccessToDeck(username, deckId)
 
 		val db = assertDatabaseNotCreated(deckDatabaseName)
 
@@ -59,6 +59,7 @@ class PrivateDatabaseService(
 
 	fun removeAll(username: String) {
 		val db = getPrivateDatabase(username)
+
 		//TODO filter docs to be only of type "deck"
 		val response = db.allDocsRequestBuilder.build().response
 		for (doc in response.getDocsAs(DeckInfo::class.java)) {
@@ -71,21 +72,16 @@ class PrivateDatabaseService(
 		db.ensureFullCommit()
 	}
 
-	fun hasAccess(username: String, id: UUID): Boolean {
-		val db = getPrivateDatabase(username)
-		return try {
-			db.find(DeckInfo::class.java, prefixDeckId(id))
-			true
-		} catch (e: NoDocumentException) {
-			false
+	fun removeById(ownerUsername: String, id: UUID, ownerToken: String) {
+		val deck = verifyAccessToDeck(ownerUsername, id)
+		require(deck.ownerToken == ownerToken) {
+			"Incorrect deck owner token"
 		}
-	}
 
-	fun removeById(username: String, id: UUID) {
-		require(hasAccess(username, id)) {
-			"No access to deck"
-		}
-		removeByName(prefixDeckDatabaseName(id.toString()))
+		val db = getPrivateDatabase(ownerUsername)
+
+		db.remove(deck)
+		removeByName(deck.database)
 	}
 
 	fun removeByName(databaseName: String) {
@@ -106,6 +102,15 @@ class PrivateDatabaseService(
 	private fun getPrivateDatabase(username: String, forceCreate: Boolean = false): Database {
 		val name = getPrivateDatabaseName(username)
 		return client.database(name, forceCreate)
+	}
+
+	private fun verifyAccessToDeck(username: String, id: UUID): DeckInfo {
+		val db = getPrivateDatabase(username)
+		try {
+			return db.find(DeckInfo::class.java, prefixDeckId(id))
+		} catch (e: NoDocumentException) {
+			throw IllegalArgumentException("No access to deck")
+		}
 	}
 
 	private fun prefixDeckDatabaseName(id: String) = "xks_deck_${id}"
@@ -162,4 +167,5 @@ data class DeckInfo(
 	val name: String,
 	val description: String,
 	val database: String,
+	val ownerToken: String,
 )

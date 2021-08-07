@@ -72,5 +72,6 @@ function generateDeck(): Deck {
 		name: uuid() + ' name',
 		description: uuid() + ' description',
 		database: '',
+		ownerToken: uuid(),
 	}
 }

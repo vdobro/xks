@@ -28,7 +28,7 @@ import {Deck} from "@app/models/Deck";
 
 import {stripTrailingSlash} from "@environments/utils";
 import {environment} from "@environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {UserSessionService} from "@app/services/user-session.service";
 import {DeckRepository} from "@app/repositories/deck-repository.service";
 
@@ -64,7 +64,8 @@ export class DeckService {
 			id: uuid(),
 			name: name,
 			description: description,
-			database: ''
+			database: '',
+			ownerToken: uuid(),
 		};
 		await this.repository.add(newDeck, "deck");
 		const databaseName = await this.getRemoteDatabaseName(newDeck);
@@ -79,10 +80,11 @@ export class DeckService {
 	}
 
 	async delete(deck: Deck) {
-		await this.repository.delete(deck.id);
-		//TODO API call? id validation
-
-		this._decksChanged.next();
+		const params = new HttpParams()
+			.append('token', deck.ownerToken)
+			.append('username', this.userSessionService.getUserName()!!);
+		const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
+		await this.httpClient.delete(url).toPromise();
 	}
 
 	private async getRemoteDatabaseName(deck: Deck): Promise<string> {
