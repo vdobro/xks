@@ -53,7 +53,7 @@ class DeckController(private val privateDatabaseService: PrivateDatabaseService)
 		@RequestParam(required = true) username: String,
 		@RequestParam(required = true) token: String,
 	) {
-		privateDatabaseService.removeById(username, id, token)
+		privateDatabaseService.removeDeckDatabase(username, id, token)
 	}
 }
 

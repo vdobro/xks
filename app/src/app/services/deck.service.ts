@@ -85,6 +85,8 @@ export class DeckService {
 			.append('username', this.userSessionService.getUserName()!!);
 		const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
 		await this.httpClient.delete(url).toPromise();
+
+		await this.repository.delete(deck.id)
 	}
 
 	private async getRemoteDatabaseName(deck: Deck): Promise<string> {

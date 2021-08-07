@@ -72,15 +72,11 @@ class PrivateDatabaseService(
 		db.ensureFullCommit()
 	}
 
-	fun removeById(ownerUsername: String, id: UUID, ownerToken: String) {
+	fun removeDeckDatabase(ownerUsername: String, id: UUID, ownerToken: String) {
 		val deck = verifyAccessToDeck(ownerUsername, id)
 		require(deck.ownerToken == ownerToken) {
 			"Incorrect deck owner token"
 		}
-
-		val db = getPrivateDatabase(ownerUsername)
-
-		db.remove(deck)
 		removeByName(deck.database)
 	}
 
