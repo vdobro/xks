@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,26 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.dobrovolskis.xks.model
-
-import kotlinx.serialization.Serializable
-
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.08
+ * @since 2021.07.25
  */
-@Serializable
-data class UserTableConfiguration(
-		val decks: String,
-
-		val tables: String,
-		val tableColumns: String,
-		val tableRows: String,
-		val tableSessionModes: String,
-
-		val graphs: String,
-		val graphNodes: String,
-		val graphEdges: String,
-
-		val answerValues: String
-)
+export interface ElementId {
+	deck: string,
+	element: string,
+}

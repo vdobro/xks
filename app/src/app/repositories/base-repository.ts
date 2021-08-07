@@ -19,15 +19,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {IdEntity} from "@app/repositories/id-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2020.08.01
  */
-export interface GraphEdge extends BaseEntity {
-	graphId: string,
-	sourceNodeId: string,
-	name: string,
-	targetNodeId: string,
+export interface BaseRepository<Entity extends IdEntity> {
+	getAll(): Promise<Entity[]>
+
+	getById(id: string): Promise<Entity>
+
+	add(entity: Entity, type?: string): Promise<void>
+
+	delete(id: string): Promise<void>
+
+	update(entity: Entity): Promise<Entity>
 }
+

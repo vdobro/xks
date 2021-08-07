@@ -19,26 +19,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {TableColumnRepository} from './table-column-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {xor} from "lodash-es";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.02
+ * @since 2020.10.20
  */
-describe('TableColumnRepository', () => {
-	let service: TableColumnRepository;
+export interface AnswerValue {
+	default: string,
+	alternatives: string[],
+}
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(TableColumnRepository);
-	});
+export function answersEqual(value: AnswerValue, other: AnswerValue) : boolean {
+	return value.default === other.default
+		&& (xor(value.alternatives, other.alternatives).length === 0)
+}
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export function cloneAnswer(value: AnswerValue) : AnswerValue {
+	return {
+		default: value.default,
+		alternatives: new Array(...value.alternatives),
+	}
+}

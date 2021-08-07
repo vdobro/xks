@@ -28,9 +28,9 @@ describe('workspace-project App', () => {
 		page = new AppPage();
 	});
 
-	it('should display welcome message', () => {
-		page.navigateTo();
-		expect(page.getTitleText()).toEqual('xks');
+	it('should display welcome message',async () => {
+		await page.navigateTo();
+		expect(await page.getTitleText()).toEqual("xks");
 	});
 
 	afterEach(async () => {

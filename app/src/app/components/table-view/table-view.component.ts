@@ -19,21 +19,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnChanges, OnInit, Output} from '@angular/core';
-import {Table} from "../../models/Table";
-import {TableCellService} from "../../services/table-cell.service";
-import {TableColumn} from "../../models/TableColumn";
-import {TableRow} from "../../models/TableRow";
-import {CdkDragDrop} from "@angular/cdk/drag-drop";
-import {TableRowComponent} from "../table-row/table-row.component";
-import {TableColumnComponent} from "../table-column/table-column.component";
+import {Component, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
-import {TableService} from "../../services/table.service";
-import {DeckService} from "../../services/deck.service";
-import {NavigationControlService} from "../../services/navigation-control.service";
-import {NavigationService} from "../../services/navigation.service";
-import {SidebarService} from "../../services/sidebar.service";
-import {TopBarService} from "../../services/top-bar.service";
+import {CdkDragDrop} from "@angular/cdk/drag-drop";
+
+import {Table} from "@app/models/Table";
+import {TableColumn} from "@app/models/TableColumn";
+import {TableRow} from "@app/models/TableRow";
+
+import {TableService} from "@app/services/table.service";
+import {DeckService} from "@app/services/deck.service";
+import {TableElementService} from "@app/services/table-element.service";
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {NavigationService} from "@app/services/navigation.service";
+import {SidebarService} from "@app/services/sidebar.service";
+import {TopBarService} from "@app/services/top-bar.service";
+
+import {TableRowComponent} from "@app/components/table-row/table-row.component";
+import {TableColumnComponent} from "@app/components/table-column/table-column.component";
+import {DECK_ID_PARAM} from "@app/components/deck-view/deck-view.component";
 
 export const TABLE_ID_PARAM: string = 'tableId';
 
@@ -46,10 +50,7 @@ export const TABLE_ID_PARAM: string = 'tableId';
 	templateUrl: './table-view.component.html',
 	styleUrls: ['./table-view.component.sass']
 })
-export class TableViewComponent implements OnInit, OnChanges {
-
-	columns: TableColumn[] = [];
-	rows: TableRow[] = [];
+export class TableViewComponent implements OnInit {
 
 	@Output()
 	columnInCreation: boolean = false;
@@ -60,12 +61,14 @@ export class TableViewComponent implements OnInit, OnChanges {
 
 	columnDragEnabled: boolean = true;
 	rowDragEnabled: boolean = true;
+	excludeLastRow: boolean = false;
 
 	table: Table | null = null;
+	rows : TableRow[] = [];
 
 	constructor(private readonly tableService: TableService,
 				private readonly deckService: DeckService,
-				private readonly cellService: TableCellService,
+				private readonly cellService: TableElementService,
 				private readonly sidebarService: SidebarService,
 				private readonly topBarService: TopBarService,
 				private readonly navigationControlService: NavigationControlService,
@@ -76,11 +79,12 @@ export class TableViewComponent implements OnInit, OnChanges {
 	async ngOnInit() {
 		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(TABLE_ID_PARAM);
-			this.table = id ? await this.tableService.getById(id) : null;
+			const deckId = params.get(DECK_ID_PARAM);
+			this.table = (id && deckId) ? await this.tableService.getById({element: id, deck: deckId}) : null;
 
 			if (this.table) {
 				await this.sidebarService.selectTable(this.table);
-				await this.reloadAll();
+				this.reloadRows();
 			} else {
 				await this.navigationService.goToDeckList();
 			}
@@ -89,81 +93,45 @@ export class TableViewComponent implements OnInit, OnChanges {
 		this.topBarService.setBackButtonLabel('Back to deck');
 	}
 
-	async ngOnChanges() {
-		await this.reloadAll();
-	}
-
 	addColumn() {
 		this.columnInCreation = true;
 	}
 
 	async columnAdded() {
 		this.columnDragEnabled = true;
-		if (this.rows.length > 1) {
-			await this.reloadAll();
-		} else {
-			await this.reloadColumns();
+		if (!this.table) {
+			return;
 		}
 		this.columnInCreation = false;
 	}
 
-	rowAdded(row: TableRow) {
-		this.rowDragEnabled = true;
-		this.rows.push(row);
-	}
-
 	async deleteColumn(column: TableColumn) {
-		if (!this.table) {
-			return;
+		if (this.table!!.columns.length === 1) {
+			await this.cellService.deleteAllRowsIn(this.table!!);
 		}
-		if (this.columns.length === 1) {
-			await this.cellService.deleteAllRowsIn(this.table);
-		}
-		await this.cellService.deleteColumn(column);
-		await this.reloadAll();
+		await this.cellService.deleteColumn(column, this.table!!);
 	}
 
 	async deleteRow(row: TableRow) {
-		await this.cellService.deleteRow(row);
-		await this.reloadRows();
-	}
-
-	private async reloadAll() {
-		if (this.table) {
-			await this.reloadColumns();
-			await this.reloadRows();
-		}
-	}
-
-	private async reloadColumns() {
-		if (this.table) {
-			this.columns = await this.cellService.getColumns(this.table);
-		}
-	}
-
-	private async reloadRows() {
-		if (this.table) {
-			this.rows = await this.cellService.getRows(this.table);
-		}
+		await this.cellService.deleteRow(row, this.table!!);
+		this.reloadRows();
 	}
 
 	async dropRow(event: CdkDragDrop<TableViewComponent, TableRowComponent>) {
-		const row = this.rows.splice(event.previousIndex, 1)[0];
-		this.rows.splice(event.currentIndex, 0, row);
-		await this.cellService.moveRow(row, event.currentIndex);
-		await this.reloadAll();
+		await this.cellService.moveRow(event.previousIndex, event.currentIndex, this.table!!);
+		this.reloadRows();
 	}
 
 	async dropColumn(event: CdkDragDrop<TableViewComponent, TableColumnComponent>) {
-		const column = this.columns.splice(event.previousIndex, 1)[0];
-		this.columns.splice(event.currentIndex, 0, column);
-		await this.cellService.moveColumn(column, event.currentIndex);
-		await this.reloadAll();
+		await this.cellService.moveColumn(event.previousIndex, event.currentIndex, this.table!!);
 	}
 
 	async columnChanged(column: TableColumn) {
 		this.columnDragEnabled = true;
-		await this.cellService.updateColumn(column);
+		if (!this.table) {
+			return;
+		}
+		await this.cellService.updateColumn(column, {element: this.table.id, deck: this.table.deckId});
 	}
 
 	cancelColumnCreation() {
@@ -179,5 +147,28 @@ export class TableViewComponent implements OnInit, OnChanges {
 
 	disableRowDrag() {
 		this.rowDragEnabled = false;
+	}
+
+	private reloadRows() {
+		if (!this.table) {
+			this.rows = [];
+			return;
+		}
+		if (this.excludeLastRow) {
+			this.rows = this.table.rows.slice(0, -1);
+		} else {
+			this.rows = this.table.rows.slice();
+		}
+	}
+
+	onNewRowCreationBegin() {
+		this.excludeLastRow = true;
+		this.reloadRows();
+	}
+
+	onRowComplete(_row: TableRow) {
+		this.excludeLastRow = false;
+		this.reloadRows();
+		this.rowDragEnabled = true;
 	}
 }

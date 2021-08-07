@@ -20,9 +20,11 @@
  */
 
 import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {TableRow} from "../../models/TableRow";
-import {TableColumn} from "../../models/TableColumn";
-import {AnswerValueService} from "../../services/answer-value.service";
+
+import {TableRow} from "@app/models/TableRow";
+import {TableColumn} from "@app/models/TableColumn";
+
+import {TableElementService} from "@app/services/table-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -52,9 +54,9 @@ export class TableCellComponent implements OnInit, OnChanges {
 	editMode: boolean = false;
 	currentValue: string = '';
 	currentAlternatives: string[] = [];
-	allowLoseFocus : boolean = true;
+	allowLoseFocus: boolean = true;
 
-	constructor(private readonly answerService: AnswerValueService) {
+	constructor(private readonly cellService: TableElementService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -96,12 +98,17 @@ export class TableCellComponent implements OnInit, OnChanges {
 		});
 	}
 
-	private async updateExistingValue() {
-		if (this.row && this.column) {
-			const value = await this.answerService.getForCell(this.row, this.column);
-			this.currentValue = value.defaultValue;
-		} else {
+	private updateExistingValue() {
+		const row = this.row;
+		const column = this.column;
+
+		if (!row || !column) {
 			this.currentValue = '';
+			return;
+		}
+		const cell = this.cellService.getCell(row, column);
+		if (cell) {
+			this.currentValue = cell.value.default;
 		}
 	}
 
@@ -114,11 +121,11 @@ export class TableCellComponent implements OnInit, OnChanges {
 		}
 	}
 
-	async onAlternativesEditorStatusChange(dialogVisible: boolean) {
+	onAlternativesEditorStatusChange(dialogVisible: boolean) {
 		this.allowLoseFocus = !dialogVisible;
 		if (this.row && this.column) {
-			const oldValue = await this.answerService.getForCell(this.row, this.column);
-			if (this.currentValue === oldValue.defaultValue) {
+			const oldValue = this.cellService.getCell(this.row, this.column);
+			if (this.currentValue === oldValue.value.default) {
 				this.cancelEditingIfExisting();
 			}
 		}

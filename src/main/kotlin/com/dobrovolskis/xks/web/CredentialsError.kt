@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,13 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+package com.dobrovolskis.xks.web
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2021.07.26
  */
-export interface GraphNode extends BaseEntity {
-	graphId: string,
-	valueId: string,
+class CredentialsError : RuntimeException("Incorrect credentials") {
 }

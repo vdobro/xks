@@ -20,22 +20,22 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {TableCellService} from './table-cell.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TableElementService} from '@app/services/table-element.service';
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.08.03
  */
-describe('TableCellService', () => {
-	let service: TableCellService;
+describe('TableElementService', () => {
+	let service: TableElementService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule]
 		});
-		service = TestBed.inject(TableCellService);
+		service = TestBed.inject(TableElementService);
 	});
 
 	it('should be created', () => {

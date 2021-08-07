@@ -20,10 +20,12 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TableColumn} from "../../models/TableColumn";
-import {Table} from "../../models/Table";
-import {TableRow} from "../../models/TableRow";
-import {TableCellService} from "../../services/table-cell.service";
+
+import {TableColumn} from "@app/models/TableColumn";
+import {Table} from "@app/models/Table";
+import {TableRow} from "@app/models/TableRow";
+
+import {TableElementService} from "@app/services/table-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -44,12 +46,14 @@ export class TableNewRowEditorComponent implements OnInit {
 	@Output()
 	editingStarted = new EventEmitter();
 	@Output()
-	newRow = new EventEmitter<TableRow>();
+	rowCompleted = new EventEmitter<TableRow>();
+	@Output()
+	rowUpdated = new EventEmitter();
 
 	rowInEditing: TableRow | null = null;
 	newColumnIndex: number = 0;
 
-	constructor(private readonly cellService: TableCellService) {
+	constructor(private readonly cellService: TableElementService) {
 	}
 
 	async ngOnInit() {
@@ -57,20 +61,21 @@ export class TableNewRowEditorComponent implements OnInit {
 
 	async onCellSubmitted(value: { default: string, alternatives: string[] },
 						  column: TableColumn) {
+		if (value.default.length === 0) {
+			return;
+		}
 		if (this.newColumnIndex === 0) {
 			await this.initNewRow();
 		}
 		await this.updateRow(value, column);
 
-		if (value.default.length === 0) {
-			return;
-		}
 		if (this.newColumnIndex === this.columns.length - 1) {
 			this.newColumnIndex = 0;
-			this.newRow.next(this.rowInEditing!!);
+			this.rowCompleted.next(this.rowInEditing!!);
 			this.rowInEditing = null;
 		} else {
 			this.newColumnIndex++;
+			this.rowUpdated.emit();
 		}
 	}
 
@@ -80,6 +85,6 @@ export class TableNewRowEditorComponent implements OnInit {
 
 	async updateRow(cellValue: { default: string, alternatives: string[] }, column: TableColumn) {
 		this.rowInEditing = await this.cellService.changeCellValue(cellValue,
-			this.rowInEditing!!, column);
+			this.rowInEditing!!, column, this.table!!);
 	}
 }

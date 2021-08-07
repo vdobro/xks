@@ -21,12 +21,9 @@
 
 package com.dobrovolskis.xks.web.controller
 
-import com.dobrovolskis.xks.service.UserCredentialsService
-import com.dobrovolskis.xks.service.UserDataRetriever
+import com.dobrovolskis.xks.model.User
 import com.dobrovolskis.xks.web.model.UserCredentialsDto
-import org.springframework.http.HttpStatus.OK
-import org.springframework.http.HttpStatus.UNAUTHORIZED
-import org.springframework.http.ResponseEntity
+import com.dobrovolskis.xks.web.usecase.SetUpUser
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod.POST
@@ -39,27 +36,16 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping(value = ["/api/user"])
-class UserController(private val userDataRetriever: UserDataRetriever,
-                     private val userCredentialsService: UserCredentialsService) {
+class UserController(
+	private val setUpUser: SetUpUser
+) {
 
 	@RequestMapping(value = ["/register"], method = [POST])
 	@ResponseBody
-	fun createUser(@RequestBody dto: UserCredentialsDto) {
-		return userDataRetriever.createUser(
-				username = dto.name,
-				password = dto.password)
-	}
-
-	@RequestMapping(value = ["/forget"], method = [POST])
-	fun forgetUser(@RequestBody dto: UserCredentialsDto): ResponseEntity<Void> {
-		return if (!userCredentialsService.credentialsCorrect(
-						username = dto.name,
-						password = dto.password)) {
-			ResponseEntity(UNAUTHORIZED)
-		} else {
-			userDataRetriever.removeUser(dto.name)
-			ResponseEntity(OK)
-		}
+	fun createUser(@RequestBody dto: UserCredentialsDto): User {
+		return setUpUser(
+			username = dto.name,
+			password = dto.password
+		)
 	}
 }
-

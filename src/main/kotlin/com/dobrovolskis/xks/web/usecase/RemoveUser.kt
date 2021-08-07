@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,26 +19,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
+package com.dobrovolskis.xks.web.usecase
 
-import {TableRowRepository} from './table-row-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import com.dobrovolskis.xks.service.PrivateDatabaseService
+import com.dobrovolskis.xks.service.UserService
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.02
+ * @since 2021.06.10
  */
-describe('TableRowRepository', () => {
-	let service: TableRowRepository;
+@Service
+class RemoveUser(
+	private val userService: UserService,
+	private val privateDatabaseService: PrivateDatabaseService
+) {
+	private val logger = LoggerFactory.getLogger(RemoveUser::class.java)
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(TableRowRepository);
-	});
+	operator fun invoke(username: String) {
+		userService.removeUser(username)
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+		try {
+			privateDatabaseService.removeAll(username)
+		} catch (_: Throwable) {
+			logger.warn("Could not delete decks for user $username")
+		}
+	}
+}

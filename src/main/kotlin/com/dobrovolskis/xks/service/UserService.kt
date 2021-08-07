@@ -23,7 +23,6 @@ package com.dobrovolskis.xks.service
 
 import com.cloudant.client.api.CloudantClient
 import com.cloudant.client.api.Database
-import com.dobrovolskis.xks.model.UserTableConfiguration
 import kotlinx.serialization.Serializable
 import org.springframework.stereotype.Service
 
@@ -32,47 +31,41 @@ import org.springframework.stereotype.Service
  * @since 2020.09.17
  */
 @Service
-class UserDataRetriever(databaseClient: CloudantClient,
-                        private val userDatabaseService: UserDatabaseService) {
-	private val usersDb: Database = databaseClient.database("_users", false)
+class UserService(
+	databaseClient: CloudantClient,
+	private val privateDatabaseService: PrivateDatabaseService
+) {
 
-	private val usernamePattern = Regex("[a-zA-Z0-9]*")
-	private val requiredUsernameLength = 5
-	private val requiredPasswordLength = 8
+	private val usersDb: Database = databaseClient.database(USER_DATABASE, false)
 
-	fun createUser(username: String, password: String) {
-		validateUsername(username)
+	private val usernamePattern = Regex("^[a-zA-Z]+[a-zA-Z0-9]{${MINIMUM_USERNAME_LENGTH - 1},}\$")
+
+	fun createUser(username: String, password: String): FullUser {
+		validateUsername(username, password)
 		validatePassword(password)
 		require(!userExists(username)) {
-			"User with given name already exists."
+			"Username not available."
 		}
-		usersDb.save(CreationRequest(
+		usersDb.save(
+			CreationRequest(
 				_id = prefixUsername(username),
 				name = username,
 				roles = emptyList(),
-				password = password))
+				password = password
+			)
+		)
 		usersDb.ensureFullCommit()
-		val newUser = getUser(username)
-		usersDb.update(newUser.copy(tableConfig = userDatabaseService.createAll(username)))
-	}
-
-	fun getUserTableConfiguration(username: String): UserTableConfiguration {
-		val user = usersDb.find(FullUser::class.java, prefixUsername(username))
-		return user.tableConfig!!
+		privateDatabaseService.createTypeIndex(username)
+		return getUser(username)
 	}
 
 	fun removeUser(username: String) {
 		val user = getUser(username)
 		usersDb.remove(user)
-
-		try {
-			userDatabaseService.removeAll(user.tableConfig!!)
-		} catch (_: Throwable) {
-			//User could be deleted, but their database information could not - this is tolerable
-		}
+		usersDb.ensureFullCommit()
 	}
 
-	private fun getUser(username: String): FullUser {
+	fun getUser(username: String): FullUser {
 		require(userExists(username)) {
 			"User not found"
 		}
@@ -83,18 +76,19 @@ class UserDataRetriever(databaseClient: CloudantClient,
 		return usersDb.contains(prefixUsername(username))
 	}
 
-	private fun validateUsername(username: String) {
+	private fun validateUsername(username: String, password: String) {
 		require(usernamePattern.matches(username)) {
-			"Username can only contain letters and numbers"
+			"Username can only contain Latin letters and digits, " +
+					"must begin with a letter and has to be at least 3 characters long."
 		}
-		require(username.length >= requiredUsernameLength) {
-			"Username must be at least 5 characters long"
+		require(!password.contains(username)) {
+			"Username may not be included in the password."
 		}
 	}
 
 	private fun validatePassword(password: String) {
-		require(password.length >= requiredPasswordLength) {
-			"Password must be at least $requiredPasswordLength characters long"
+		require(password.length >= MINIMUM_PASSWORD_LENGTH) {
+			"Password must be at least $MINIMUM_PASSWORD_LENGTH characters long."
 		}
 	}
 
@@ -104,28 +98,30 @@ class UserDataRetriever(databaseClient: CloudantClient,
 
 	@Serializable
 	data class CreationRequest(
-			val _id: String,
-			val name: String,
-			val password: String,
-			val roles: List<String> = emptyList(),
-			val type: String = "user"
+		val _id: String,
+		val name: String,
+		val password: String,
+		val roles: List<String> = emptyList(),
+		val type: String = "user"
 	)
 
 	@Serializable
 	data class FullUser(
-			val _id: String,
-			val _rev: String? = null,
-			val name: String,
-			val roles: List<String>,
+		val _id: String,
+		val _rev: String? = null,
+		val name: String,
+		val roles: List<String>,
 
-			val type: String? = null,
-			val password_scheme: String? = null,
-			val iterations: Int? = null,
-			val derived_key: String? = null,
-			val salt: String? = null,
-
-			val tableConfig: UserTableConfiguration?
+		val type: String? = null,
+		val password_scheme: String? = null,
+		val iterations: Int? = null,
+		val derived_key: String? = null,
+		val salt: String? = null,
 	)
 }
 
 private const val USER_PREFIX = "org.couchdb.user:"
+private const val USER_DATABASE = USERS_DB
+
+private const val MINIMUM_USERNAME_LENGTH = 3
+private const val MINIMUM_PASSWORD_LENGTH = 8

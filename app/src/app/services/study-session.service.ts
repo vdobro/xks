@@ -19,9 +19,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// @ts-ignore
 import {v4 as uuid} from 'uuid';
+
 import {ExerciseTaskService} from "./exercise-task.service";
+
 import {ExerciseTask} from "./models/exercise-task";
 import {AnswerFeedback} from "./models/answer-feedback";
 import {LearningSession} from "./models/learning-session";
@@ -109,7 +110,7 @@ export class StudySessionService {
 
 		state.lastAnswer = {
 			correct: answerFeedback.correct,
-			expectedAnswer: answerFeedback.actualField.value.defaultValue, //TODO: alternative value???
+			expectedAnswer: answerFeedback.actualField.value.default, //TODO: alternative value???
 			task: state.currentTask,
 			fieldId: fieldId
 		};

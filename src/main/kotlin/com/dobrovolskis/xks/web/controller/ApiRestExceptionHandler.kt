@@ -21,8 +21,10 @@
 
 package com.dobrovolskis.xks.web.controller
 
+import com.dobrovolskis.xks.web.CredentialsError
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -40,17 +42,13 @@ class ApiRestExceptionHandler : ResponseEntityExceptionHandler() {
 	@ExceptionHandler(IllegalArgumentException::class)
 	protected fun handleException(e: IllegalArgumentException, request: WebRequest): ResponseEntity<Any> {
 		val msg = ValidationResponse(e.message ?: "Unknown error")
-		return handleExceptionInternal(e as Exception, msg, headers(), HttpStatus.BAD_REQUEST, request)
+		return handleExceptionInternal(e as Exception, msg, headers(), BAD_REQUEST, request)
 	}
-}
 
-@ControllerAdvice
-class CredentialExceptionHandler : ResponseEntityExceptionHandler() {
-
-	@ExceptionHandler(IllegalStateException::class)
-	protected fun handleException(e: IllegalStateException, request: WebRequest): ResponseEntity<Any> {
+	@ExceptionHandler(CredentialsError::class)
+	protected fun handleException(e: CredentialsError, request: WebRequest): ResponseEntity<Any> {
 		val msg = ValidationResponse(e.message ?: "Unknown error")
-		return handleExceptionInternal(e as Exception, msg, headers(), HttpStatus.UNAUTHORIZED, request)
+		return handleExceptionInternal(e as Exception, msg, headers(), UNAUTHORIZED, request)
 	}
 }
 
@@ -61,5 +59,5 @@ private fun headers(): HttpHeaders {
 }
 
 data class ValidationResponse(
-		val error: String,
+	val error: String,
 )

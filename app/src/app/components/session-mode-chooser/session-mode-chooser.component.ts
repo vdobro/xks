@@ -30,11 +30,12 @@ import {
 	SimpleChanges,
 	ViewChild
 } from '@angular/core';
-import {TableSessionModeService} from "../../services/table-session-mode.service";
-import {Table} from "../../models/Table";
-import {TableSessionMode} from "../../models/TableSessionMode";
-import {TableColumnRepository} from "../../repositories/table-column-repository.service";
-import {TableSessionModeRepository} from "../../repositories/table-session-mode-repository.service";
+
+import {Table} from "@app/models/Table";
+import {TableSessionMode} from "@app/models/TableSessionMode";
+
+import {TableSessionModeService} from "@app/services/table-session-mode.service";
+import {TableElementService} from "@app/services/table-element.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -60,10 +61,8 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 	sessionModes: ModeOption[] = [];
 
 	constructor(private readonly sessionModeService: TableSessionModeService,
-				private readonly columnRepository: TableColumnRepository,
-				sessionModeRepository: TableSessionModeRepository) {
-
-		sessionModeRepository.entityDeleted.subscribe(async _ => {
+				private readonly tableElementService: TableElementService) {
+		sessionModeService.$modesChanged.subscribe(async _ => {
 			await this.loadSessionModes();
 		});
 	}
@@ -80,27 +79,29 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 
 	async changeSelection() {
 		let id = this.modeSelectElement?.nativeElement?.value || this.table?.defaultSessionModeId;
-		if (!id && this.table?.sessionModeIds?.length) {
-			id = this.table.sessionModeIds[0];
+		if (!id && this.table?.sessionModes?.length) {
+			id = this.table.sessionModes[0].id;
 		}
-		if (id) {
-			this.currentSelection = await this.mapModeToOption(await this.sessionModeService.getById(id));
+		const table = this.table;
+		if (id && table) {
+			this.currentSelection = this.mapModeToOption(this.sessionModeService.getById(id, table), table);
 		}
 		this.configurationChanged.emit();
 	}
 
 	private async loadSessionModes(): Promise<void> {
-		if (this.table) {
-			const modes = await this.sessionModeService.getAllIn(this.table);
-			this.sessionModes = await Promise.all(modes.map(mode => this.mapModeToOption(mode)));
+		const table = this.table;
+		if (table) {
+			const modes = table.sessionModes;
+			this.sessionModes = modes.map(mode => this.mapModeToOption(mode, table));
 		} else {
 			this.sessionModes = [];
 		}
 	}
 
-	private async mapModeToOption(mode: TableSessionMode): Promise<ModeOption> {
-		const questionColumns = await this.getColumnNames(mode.questionColumnIds);
-		const answerColumns = await this.getColumnNames(mode.answerColumnIds);
+	private mapModeToOption(mode: TableSessionMode, table: Table): ModeOption {
+		const questionColumns = this.getColumnNames(mode.questionColumnIds, table);
+		const answerColumns = this.getColumnNames(mode.answerColumnIds, table);
 		const separator = ', ';
 		return {
 			id: mode.id,
@@ -108,8 +109,9 @@ export class SessionModeChooserComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private async getColumnNames(columnIds: string[]): Promise<string[]> {
-		return (await Promise.all(columnIds.map(id => this.columnRepository.getById(id))))
+	private getColumnNames(columnIds: string[], table: Table): string[] {
+		return columnIds
+			.map(id => this.tableElementService.findColumn(id, table))
 			.map(column => column.name);
 	}
 }

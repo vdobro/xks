@@ -13,7 +13,7 @@
     {
       "name": "db.url",
       "type": "java.lang.String",
-      "description": "Full URL of the CouchDB instance."
+      "description": "Fully qualified domain name (with path) of the CouchDB instance."
     },
     {
       "name": "xks.host",

@@ -20,10 +20,13 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {TableService} from "../../services/table.service";
-import {Table} from "../../models/Table";
-import {NavigationService} from "../../services/navigation.service";
-import {TableCellService} from "../../services/table-cell.service";
+
+import {Table} from "@app/models/Table";
+
+import {TableService} from "@app/services/table.service";
+import {NavigationService} from "@app/services/navigation.service";
+import {TableElementService} from "@app/services/table-element.service";
+
 import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
 
 /**
@@ -39,8 +42,10 @@ export class SidebarTableListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
+	private table : Table|  null = null;
+
 	constructor(
-		private readonly tableCellService: TableCellService,
+		private readonly tableCellService: TableElementService,
 		private readonly tableService: TableService,
 		private readonly navigationService: NavigationService) {
 		super();
@@ -52,8 +57,8 @@ export class SidebarTableListElementComponent
 		});
 	}
 
-	async ngOnInit(): Promise<void> {
-		await super.ngOnInit();
+	async ngOnInit() {
+		super.ngOnInit();
 
 		if (this.element) {
 			await this.updateRowCount();
@@ -61,19 +66,32 @@ export class SidebarTableListElementComponent
 	}
 
 	private async updateRowCount() {
-		const rows = await this.tableCellService.getRows(this.element as Table);
-		this.elementCount = rows.length;
+		if (!this.element) {
+			return;
+		}
+		await this.refreshTable(this.element.id);
+		this.elementCount = this.table!!.rows.length;
 	}
 
 	protected async onClickHandler(id: string) {
-		await this.navigationService.openTable(id);
+		if (this.deck) {
+			await this.navigationService.openTable({element: id, deck: this.deck.id});
+		}
 	}
 
 	protected async onDeleteHandler(id: string) {
-		await this.tableService.delete(id);
+		if (this.deck) {
+			await this.tableService.delete({element: id, deck: this.deck.id});
+		}
 	}
 
 	protected async onUpdateHandler(element: SidebarDeckElement) {
 		await this.tableService.update(element as Table);
+	}
+
+	private async refreshTable(elementId: string) {
+		if (this.deck) {
+			this.table = await this.tableService.getById({element: elementId, deck: this.deck.id});
+		}
 	}
 }

@@ -20,11 +20,14 @@
  */
 
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {TableColumn} from "../../models/TableColumn";
 import {FormControl} from "@angular/forms";
-import {TableCellService} from "../../services/table-cell.service";
-import {Table} from "../../models/Table";
-import {ConfirmDeleteTableColumnModalComponent} from "../confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
+
+import {TableColumn} from "@app/models/TableColumn";
+import {Table} from "@app/models/Table";
+
+import {TableElementService} from "@app/services/table-element.service";
+
+import {ConfirmDeleteTableColumnModalComponent} from "@app/components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
 
 
 /**
@@ -66,7 +69,7 @@ export class TableColumnEditorComponent implements OnInit {
 	column: TableColumn | null = null;
 	nameInput = new FormControl('');
 
-	constructor(private readonly cellService: TableCellService) {
+	constructor(private readonly cellService: TableElementService) {
 	}
 
 	ngOnInit(): void {

@@ -20,10 +20,12 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {Deck} from "../../models/Deck";
 import {FormControl} from "@angular/forms";
-import {DeckService} from "../../services/deck.service";
-import {NavigationService} from "../../services/navigation.service";
+
+import {Deck} from "@app/models/Deck";
+
+import {DeckService} from "@app/services/deck.service";
+import {NavigationService} from "@app/services/navigation.service";
 
 @Component({
 	selector: 'app-deck-list-card',

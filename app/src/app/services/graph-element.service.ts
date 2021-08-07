@@ -20,14 +20,16 @@
  */
 
 import {v4 as uuid} from 'uuid';
+import {find} from "lodash-es";
 
 import {Injectable} from '@angular/core';
-import {GraphNodeRepository} from "../repositories/graph-node-repository.service";
-import {GraphEdgeRepository} from "../repositories/graph-edge-repository.service";
-import {Graph} from "../models/Graph";
-import {GraphNode} from "../models/GraphNode";
-import {GraphEdge} from "../models/GraphEdge";
-import {AnswerValueService} from "./answer-value.service";
+import {Graph, GraphElements} from "@app/models/graph";
+import {GraphNode} from "@app/models/graph-node";
+import {GraphEdge} from "@app/models/graph-edge";
+import {answersEqual, AnswerValue, cloneAnswer} from "@app/models/answer-value";
+
+import {GraphService} from "@app/services/graph.service";
+import {ElementId} from "@app/models/ElementId";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,106 +39,233 @@ import {AnswerValueService} from "./answer-value.service";
 	providedIn: 'root'
 })
 export class GraphElementService {
-	private unnamedEdgeNumber: number = 1;
 
-	constructor(private readonly nodeRepository: GraphNodeRepository,
-				private readonly edgeRepository: GraphEdgeRepository,
-				private readonly answerService: AnswerValueService) {
+	private static unnamedEdgePlaceholderNumber: number = 1;
+
+	constructor(private readonly graphService: GraphService) {
 
 	}
 
-	async addNode(graph: Graph, value: string): Promise<GraphNode> {
-		const answer = await this.answerService.create(value);
+	async anyNodesAndEdgesExist(graph: Graph): Promise<boolean> {
+		const nodes = graph.nodes;
+		if (nodes.length === 0) {
+			return false;
+		}
+		const edges = graph.edges;
+		return edges.length !== 0;
+	}
+
+	async addNode(value: string, graph: Graph): Promise<GraphNode> {
+		const answer: AnswerValue = {alternatives: [], default: value};
 		const node: GraphNode = {
-			graphId: graph.id,
 			id: uuid(),
-			valueId: answer.id
+			value: answer,
 		};
-		await this.nodeRepository.add(node);
+		graph.nodes.push(node);
+		await this.graphService.update(graph);
 		return node;
 	}
 
-	async removeNode(node: GraphNode) {
-		const outgoingEdges = await this.edgeRepository.getAllFrom(node);
-		for (let edge of outgoingEdges) {
-			await this.removeEdge(edge);
-		}
-		const incomingEdges = await this.edgeRepository.getAllTo(node);
-		for (let edge of incomingEdges) {
-			await this.edgeRepository.delete(edge.id);
-		}
-		await this.nodeRepository.delete(node.id);
-		await this.answerService.delete(node.valueId);
+	async removeNode(node: GraphNode, graph: Graph) {
+		graph.nodes = graph.nodes.filter(x => x.id !== node.id);
+		await this.graphService.update(graph);
 	}
 
-	async removeEdge(edge: GraphEdge) {
-		await this.edgeRepository.delete(edge.id);
+	async removeNodeFromGraph(node: GraphNode, graphId: ElementId) {
+		const graph = await this.graphService.getById(graphId);
+		await this.removeNode(node, graph);
+	}
+
+	async removeEdge(edge: GraphEdge, graph: Graph) {
+		graph.edges = graph.edges.filter(x => x.id !== edge.id);
+		await this.graphService.update(graph);
+	}
+
+	async removeEdgeFromGraph(edge: GraphEdge, graphId: ElementId) {
+		const graph = await this.graphService.getById(graphId);
+		await this.removeEdge(edge, graph);
 	}
 
 	async addEdge(graph: Graph, from: GraphNode, to: GraphNode, label: string = ''): Promise<GraphEdge> {
 		const edge: GraphEdge = {
-			graphId: graph.id,
 			id: uuid(),
-			name: label,
-			sourceNodeId: from.id,
-			targetNodeId: to.id
+			value: {default: label, alternatives: []},
+			sourceId: from.id,
+			targetId: to.id
 		};
-		await this.edgeRepository.add(edge);
+		graph.edges.push(edge);
+		await this.graphService.update(graph);
 
-		await this.nameAllEdgesIfAnyAreLabeled(from);
+		GraphElementService.nameAllEdgesIfAnyAreLabeled(from, graph);
+		await this.graphService.update(graph);
+
 		return edge;
 	}
 
-	async removeAll(graph: Graph) {
-		await this.edgeRepository.deleteAllInGraph(graph);
-		await this.nodeRepository.deleteAllInGraph(graph);
+	async addNodeToGraph(graphId: ElementId, value: string) : Promise<GraphNode> {
+		const graph = await this.graphService.getById(graphId);
+		return await this.addNode(value, graph);
 	}
 
-	async getNodes(graph: Graph): Promise<GraphNode[]> {
-		return await this.nodeRepository.getAllInGraph(graph);
+	async addEdgeToGraph(graphId: ElementId, from: GraphNode, to: GraphNode, label: string = ''): Promise<GraphEdge> {
+		const graph = await this.graphService.getById(graphId);
+		return await this.addEdge(graph, from, to, label);
 	}
 
-	async getEdges(graph: Graph): Promise<GraphEdge[]> {
-		return await this.edgeRepository.getAllInGraph(graph);
+	getNode(id: string, graph: GraphElements): GraphNode {
+		const node = this.findNode(id, graph);
+		if (!node) {
+			throw new Error("Node not found");
+		}
+		return node;
 	}
 
-	async getNodeById(id: string): Promise<GraphNode> {
-		return await this.nodeRepository.getById(id);
+	getEdge(id: string, graph: GraphElements): GraphEdge {
+		const edge = this.findEdge(id, graph);
+		if (!edge) {
+			throw Error("Edge not found");
+		}
+		return edge;
 	}
 
-	async updateEdge(edge: GraphEdge) {
-		await this.edgeRepository.update(edge);
+	async updateEdge(newLabel: string,
+					 edgeId: string,
+					 graphId: ElementId) {
+		const graph = await this.graphService.getById(graphId);
+		const edge = this.getEdge(edgeId, graph);
+		edge.value.default = newLabel;
 
-		const from = await this.nodeRepository.getById(edge.sourceNodeId);
-		await this.nameAllEdgesIfAnyAreLabeled(from);
+		for (let node of graph.nodes) {
+			await GraphElementService.nameAllEdgesIfAnyAreLabeled(node, graph);
+		}
+		await this.graphService.update(graph);
 	}
 
-	private async nameAllEdgesIfAnyAreLabeled(node: GraphNode) {
-		if (await this.anyOutgoingEdgesHaveLabels(node)) {
-			await this.renameAllUnnamedEdges(node);
+	async updateNode(label: string,
+					 nodeId: string,
+					 graphId: ElementId) {
+		const graph = await this.graphService.getById(graphId);
+		const node = this.getNode(nodeId, graph);
+		node.value.default = label;
+
+		await this.graphService.update(graph);
+	}
+
+	static cloneGraphElements(graph: GraphElements): GraphElements {
+		return {
+			edges: graph.edges.map(edge => this.cloneEdge(edge)),
+			nodes: graph.nodes.map(node => this.cloneNode(node)),
+		};
+	}
+
+	getDiff(oldGraph: GraphElements, newGraph: GraphElements): GraphDifference {
+		const removed: GraphElements = {
+			nodes: oldGraph.nodes.filter(x => !this.findNode(x.id, newGraph)),
+			edges: oldGraph.edges.filter(x => !this.findEdge(x.id, newGraph)),
+		};
+		const added: GraphElements = {
+			nodes: newGraph.nodes.filter(x => !this.findNode(x.id, oldGraph)),
+			edges: newGraph.edges.filter(x => !this.findEdge(x.id, oldGraph))
+		};
+		const edited: GraphElements = {
+			nodes: newGraph.nodes.filter(node => this.editedNodeExists(node, oldGraph)),
+			edges: newGraph.edges.filter(edge => this.editedEdgeExists(edge, oldGraph)),
+		}
+		return {
+			added: added,
+			edited: edited,
+			removed: removed
+		};
+	}
+
+	static getOutgoingEdges(node: GraphNode, graph: GraphElements): GraphEdge[] {
+		return graph.edges.filter(edge => edge.sourceId === node.id);
+	}
+
+	private findNode(id: string, graph: GraphElements): GraphNode | null {
+		return find(graph.nodes, (node) => node.id === id) || null;
+	}
+
+	private findEdge(id: string, graph: GraphElements): GraphEdge | null {
+		return find(graph.edges, (edge) => edge.id === id) || null;
+	}
+
+	private static cloneNode(node: GraphNode) : GraphNode {
+		return {
+			id: node.id,
+			value: cloneAnswer(node.value)
+		};
+	}
+
+	private static cloneEdge(edge: GraphEdge) : GraphEdge {
+		return {
+			id: edge.id,
+			value: cloneAnswer(edge.value),
+			sourceId: edge.sourceId,
+			targetId: edge.targetId,
 		}
 	}
 
-	private async renameAllUnnamedEdges(node: GraphNode) {
-		if (await this.allOutgoingEdgesHaveLabels(node)) {
+	private editedNodeExists(node: GraphNode, graph: GraphElements): boolean {
+		const found = this.findNode(node.id, graph);
+		if (!found) {
+			return false;
+		}
+		return !GraphElementService.nodesEqual(node, found);
+	}
+
+	private editedEdgeExists(edge: GraphEdge, graph: GraphElements): boolean {
+		const found = this.findEdge(edge.id, graph);
+		if (!found) {
+			return false;
+		}
+		return !GraphElementService.edgesEqual(edge, found);
+	}
+
+	private static nodesEqual(node: GraphNode, other: GraphNode): boolean {
+		return node.id === other.id
+			&& answersEqual(node.value, other.value);
+	}
+
+	private static edgesEqual(edge: GraphEdge, other: GraphEdge): boolean {
+		return edge.id === other.id
+			&& answersEqual(edge.value, other.value)
+			&& edge.sourceId === other.sourceId
+			&& edge.targetId === other.targetId;
+	}
+
+	private static nameAllEdgesIfAnyAreLabeled(node: GraphNode, graph: Graph) {
+		if (GraphElementService.anyOutgoingEdgesHaveLabels(node, graph)) {
+			GraphElementService.renameAllUnnamedEdges(node, graph);
+		}
+	}
+
+	private static renameAllUnnamedEdges(node: GraphNode, graph: Graph) {
+		if (GraphElementService.allOutgoingEdgesHaveLabels(node, graph)) {
 			return;
 		}
-		const edges = (await this.edgeRepository.getAllFrom(node)).filter(edge => edge.name === '');
-
+		const edges = GraphElementService.getOutgoingEdges(node, graph)
+			.filter(edge => edge.value.default.length === 0);
+		if (edges.length === 0) {
+			return;
+		}
 		for (let edge of edges) {
-			edge.name = 'Unnamed edge ' + this.unnamedEdgeNumber;
-			this.unnamedEdgeNumber++;
-			await this.edgeRepository.update(edge);
+			edge.value.default = 'Unnamed edge ' + GraphElementService.unnamedEdgePlaceholderNumber++;
 		}
 	}
 
-	private async allOutgoingEdgesHaveLabels(node: GraphNode): Promise<boolean> {
-		const edges = await this.edgeRepository.getAllFrom(node);
-		return edges.every(edge => edge.name !== '');
+	private static allOutgoingEdgesHaveLabels(node: GraphNode, graph: Graph): boolean {
+		return this.getOutgoingEdges(node, graph).every(edge => edge.value.default !== '');
 	}
 
-	private async anyOutgoingEdgesHaveLabels(node: GraphNode): Promise<boolean> {
-		const edges = await this.edgeRepository.getAllFrom(node);
-		return edges.find(edge => edge.name !== '') !== undefined;
+	private static anyOutgoingEdgesHaveLabels(node: GraphNode, graph: Graph): boolean {
+		const edges = this.getOutgoingEdges(node, graph);
+		return find(edges, edge => edge.value.default !== '') !== undefined;
 	}
+}
+
+export type GraphDifference = {
+	added: GraphElements,
+	edited: GraphElements,
+	removed: GraphElements,
 }

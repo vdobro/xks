@@ -23,7 +23,7 @@ import {AfterContentChecked, ChangeDetectorRef, Component, ElementRef, OnInit, V
 
 import {NavigationControlService} from "./services/navigation-control.service";
 import {NavigationService} from "./services/navigation.service";
-import {DeckRepository} from "./repositories/deck-repository.service";
+import {DeckRepository} from "@app/repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis

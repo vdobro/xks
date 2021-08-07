@@ -19,12 +19,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-import {Deck} from "../models/Deck";
 import {v4 as uuid} from 'uuid';
-import {DeckRepository} from "../repositories/deck-repository.service";
-import {TableService} from "./table.service";
 import {Subject, Subscribable} from "rxjs";
+
+import {Injectable} from '@angular/core';
+
+import {Deck} from "@app/models/Deck";
+
+import {stripTrailingSlash} from "@environments/utils";
+import {environment} from "@environments/environment";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {UserSessionService} from "@app/services/user-session.service";
+import {DeckRepository} from "@app/repositories/deck-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,12 +40,15 @@ import {Subject, Subscribable} from "rxjs";
 	providedIn: 'root'
 })
 export class DeckService {
+	private readonly apiRoot = stripTrailingSlash(environment.serverUrl);
+	private readonly deckApiRoot = `${this.apiRoot}/api/deck`;
 
 	private readonly _decksChanged = new Subject<void>();
 	readonly decksChanged: Subscribable<void> = this._decksChanged;
 
 	constructor(private readonly repository: DeckRepository,
-				private readonly tableService: TableService) {
+				private readonly userSessionService: UserSessionService,
+				private readonly httpClient: HttpClient) {
 	}
 
 	async getById(id: string): Promise<Deck> {
@@ -47,17 +56,22 @@ export class DeckService {
 	}
 
 	async getAll(): Promise<Deck[]> {
-		return this.repository.getAll();
+		return await this.repository.getAll();
 	}
 
 	async create(name: string, description: string): Promise<Deck> {
 		const newDeck: Deck = {
 			id: uuid(),
 			name: name,
-			description: description
+			description: description,
+			database: '',
+			ownerToken: uuid(),
 		};
-		await this.repository.add(newDeck);
+		await this.repository.add(newDeck, "deck");
+		const databaseName = await this.getRemoteDatabaseName(newDeck);
+
 		this._decksChanged.next();
+		newDeck.database = databaseName;
 		return newDeck;
 	}
 
@@ -66,8 +80,25 @@ export class DeckService {
 	}
 
 	async delete(deck: Deck) {
-		await this.tableService.deleteAllInDeck(deck);
-		await this.repository.delete(deck.id);
-		this._decksChanged.next();
+		if (this.userSessionService.isLoggedIn()) {
+			const params = new HttpParams()
+				.append('token', deck.ownerToken)
+				.append('username', this.userSessionService.getUserName()!!);
+			const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
+			await this.httpClient.delete(url).toPromise();
+		}
+		await this.repository.delete(deck.id)
+	}
+
+	private async getRemoteDatabaseName(deck: Deck): Promise<string> {
+		if (!this.userSessionService.isLoggedIn()) {
+			return '';
+		}
+		const result = await this.httpClient.post<{
+			database: string
+		}>(this.deckApiRoot + "/" + deck.id, {
+			username: this.userSessionService.getUserName()!!
+		}).toPromise();
+		return result.database;
 	}
 }

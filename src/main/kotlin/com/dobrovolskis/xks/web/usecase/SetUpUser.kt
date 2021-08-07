@@ -19,34 +19,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
+package com.dobrovolskis.xks.web.usecase
 
-import {Deck} from "@app/models/Deck";
-
-import {User} from "@app/models/User";
-import {DualRepository} from "@app/repositories/dual-repository";
-import {UserSessionService} from "@app/services/user-session.service";
+import com.dobrovolskis.xks.model.User
+import com.dobrovolskis.xks.service.PrivateDatabaseService
+import com.dobrovolskis.xks.service.UserService
+import org.springframework.stereotype.Service
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.01
+ * @since 2021.06.10
  */
-@Injectable({
-	providedIn: 'root'
-})
-export class DeckRepository extends DualRepository<Deck> {
-
-	constructor(userSessionService: UserSessionService) {
-		super("decks", (id: string, user: User) => {
-			return DeckRepository.resolveRemoteDatabaseName(user);
-		}, userSessionService);
+@Service
+class SetUpUser(
+	private val userService: UserService,
+	private val privateDatabaseService: PrivateDatabaseService
+) {
+	operator fun invoke(username: String, password: String): User {
+		val user = userService.createUser(username, password)
+		val database = privateDatabaseService.getPrivateDatabaseName(username)
+		return toPublicUser(user, database)
 	}
 
-	private static resolveRemoteDatabaseName(user: User): string {
-		const hex = user.name
-			.split('')
-			.map(c => c.charCodeAt(0).toString(16))
-			.join('');
-		return "userdb-" + hex;
+	private fun toPublicUser(
+		user: UserService.FullUser,
+		privateDatabase: String
+	): User {
+		return User(username = user.name, database = privateDatabase)
 	}
 }

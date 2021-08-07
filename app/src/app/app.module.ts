@@ -65,6 +65,10 @@ import {SessionModeChooserComponent} from './components/session-mode-chooser/ses
 import {SessionScoreSettingsComponent} from './components/session-score-settings/session-score-settings.component';
 import {AlternativeAnswerEditorComponent} from './components/alternative-answer-editor/alternative-answer-editor.component';
 
+const DECK_ROUTE = `decks/:${DECK_ID_PARAM}`;
+const TABLE_ROUTE = `${DECK_ROUTE}/tables/:${TABLE_ID_PARAM}`;
+const GRAPH_ROUTE = `${DECK_ROUTE}/graphs/:${GRAPH_ID_PARAM}`;
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.03.11
@@ -117,11 +121,11 @@ import {AlternativeAnswerEditorComponent} from './components/alternative-answer-
 		RouterModule.forRoot([
 			{path: '', redirectTo: '/decks', pathMatch: 'full'},
 			{path: 'decks', component: DeckListPageComponent},
-			{path: `decks/:${DECK_ID_PARAM}`, component: DeckViewComponent},
-			{path: `tables/:${TABLE_ID_PARAM}/edit`, component: TableViewComponent},
-			{path: `tables/:${TABLE_ID_PARAM}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
-			{path: `graphs/:${GRAPH_ID_PARAM}/edit`, component: GraphViewComponent},
-			{path: `graphs/:${GRAPH_ID_PARAM}/learn`, component: SessionViewComponent},
+			{path: DECK_ROUTE, component: DeckViewComponent},
+			{path: `${TABLE_ROUTE}/edit`, component: TableViewComponent},
+			{path: `${TABLE_ROUTE}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
+			{path: `${GRAPH_ROUTE}/edit`, component: GraphViewComponent},
+			{path: `${GRAPH_ROUTE}/learn`, component: SessionViewComponent},
 			{path: '**', component: NotFoundViewComponent},
 		], { useHash: true, relativeLinkResolution: 'legacy' }),
 		FormsModule,

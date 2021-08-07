@@ -19,26 +19,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {GraphNodeRepository} from './graph-node-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {DeckElement} from "@app/models/DeckElement";
+import {BaseEntity} from "@app/models/BaseEntity";
+import {GraphNode} from "@app/models/graph-node";
+import {Table} from "@app/models/Table";
+import {GraphEdge} from "@app/models/graph-edge";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.12
  */
-describe('GraphNodeRepository', () => {
-	let service: GraphNodeRepository;
+export interface Graph extends DeckElement, BaseEntity, GraphElements {
+}
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(GraphNodeRepository);
-	});
+export interface GraphElements {
+	nodes: GraphNode[],
+	edges: GraphEdge[],
+}
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export function isGraph(element: DeckElement | null): element is Graph {
+	if (!element) {
+		return false;
+	}
+	return (element as Table).sessionModes === undefined;
+}

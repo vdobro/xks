@@ -23,25 +23,28 @@ import UIkit from 'uikit';
 
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
-import {TABLE_ID_PARAM} from "../table-view/table-view.component";
-import {TableService} from "../../services/table.service";
-import {TableSessionModeService} from "../../services/table-session-mode.service";
-import {Table} from "../../models/Table";
-import {TableSessionMode} from "../../models/TableSessionMode";
-import {TableSessionService} from "../../services/table-session.service";
-import {SidebarService} from "../../services/sidebar.service";
-import {TopBarService} from "../../services/top-bar.service";
-import {NavBarItem} from "../nav-bar-item";
-import {SessionNavigationComponent} from "../session-navigation/session-navigation.component";
-import {StudySessionService} from "../../services/study-session.service";
-import {Graph} from "../../models/Graph";
-import {GraphSessionService} from "../../services/graph-session.service";
-import {GRAPH_ID_PARAM} from "../graph-view/graph-view.component";
-import {GraphService} from "../../services/graph.service";
-import {NavigationService} from "../../services/navigation.service";
-import {DeckElement} from "../../models/DeckElement";
-import {FlashcardField} from "../../services/models/flashcard-field";
-import {LearningSessionState} from "../../services/models/learning-session-state";
+
+import {Table} from "@app/models/Table";
+import {TableSessionMode} from "@app/models/TableSessionMode";
+import {Graph} from "@app/models/graph";
+import {DeckElement} from "@app/models/DeckElement";
+
+import {TableSessionService} from "@app/services/table-session.service";
+import {SidebarService} from "@app/services/sidebar.service";
+import {TopBarService} from "@app/services/top-bar.service";
+import {StudySessionService} from "@app/services/study-session.service";
+import {GraphSessionService} from "@app/services/graph-session.service";
+import {GraphService} from "@app/services/graph.service";
+import {FlashcardField} from "@app/services/models/flashcard-field";
+import {TableService} from "@app/services/table.service";
+import {TableSessionModeService} from "@app/services/table-session-mode.service";
+import {LearningSessionState} from "@app/services/models/learning-session-state";
+
+import {TABLE_ID_PARAM} from "@app/components/table-view/table-view.component";
+import {NavBarItem} from "@app/components/nav-bar-item";
+import {SessionNavigationComponent} from "@app/components/session-navigation/session-navigation.component";
+import {GRAPH_ID_PARAM} from "@app/components/graph-view/graph-view.component";
+import {DECK_ID_PARAM} from "@app/components/deck-view/deck-view.component";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 export const SESSION_START_SCORE_PARAM = "initial-score";
@@ -80,30 +83,34 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		private readonly tableSessionService: TableSessionService,
 		private readonly graphSessionService: GraphSessionService,
 		private readonly sidebarService: SidebarService,
-		private readonly topBarService: TopBarService,
-		private readonly navigationService: NavigationService
+		private readonly topBarService: TopBarService
 	) {
 		this.route.paramMap.subscribe(async (params: ParamMap) => {
 			const tableId = params.get(TABLE_ID_PARAM);
 			const tableSessionModeId = params.get(TABLE_SESSION_MODE_ID_PARAM);
 			const graphId = params.get(GRAPH_ID_PARAM);
+			const deckId = params.get(DECK_ID_PARAM);
+			if (!deckId) {
+				return;
+			}
 
+			const id = {
+				element: (tableId || graphId)!!,
+				deck: deckId,
+			}
 			if (tableId && tableSessionModeId) {
-				this.table = await this.tableService.getById(tableId);
+				this.table = await this.tableService.getById(id);
 				this.deckElement = this.table;
-				this.sessionMode = await this.sessionModeService.getById(tableSessionModeId);
+				this.sessionMode = this.sessionModeService.getById(tableSessionModeId, this.table);
 				this.sessionService = this.tableSessionService;
 			} else if (graphId) {
-				this.graph = await this.graphService.getById(graphId);
+				this.graph = await this.graphService.getById(id);
 				this.deckElement = this.graph;
 				this.sessionService = this.graphSessionService;
-			} else {
-				await this.navigationService.goBack();
-				return;
 			}
 			this.loadScores(params);
 
-			await this.initSession();
+			this.initSession();
 		});
 	}
 
@@ -125,12 +132,12 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 			: this.deckElement!!.defaultMaxScore;
 	}
 
-	private async initSession() {
+	private initSession() {
 		if (this.table && this.sessionMode) {
-			this.state = await this.tableSessionService.startNew(this.table, this.sessionMode,
+			this.state = this.tableSessionService.startNew(this.table, this.sessionMode,
 				this.startScore, this.maxScore);
 		} else if (this.graph) {
-			this.state = await this.graphSessionService.startNew(this.graph,
+			this.state = this.graphSessionService.startNew(this.graph,
 				this.startScore, this.maxScore);
 		}
 
@@ -146,7 +153,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		}
 
 		SessionViewComponent.clearNotifications();
-		this.state = await this.sessionService.submitAnswer(
+		this.state = this.sessionService.submitAnswer(
 			event.value, event.field.identifier.id, this.state);
 
 		if (this.state.lastAnswer?.correct) {
@@ -163,7 +170,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		}
 
 		SessionViewComponent.clearNotifications();
-		this.state = await this.sessionService.acceptLastAnswer(currentInput, this.state);
+		this.state = this.sessionService.acceptLastAnswer(currentInput, this.state);
 		UIkit.notification("Answer accepted", {
 			status: 'warning',
 			timeout: 1000,

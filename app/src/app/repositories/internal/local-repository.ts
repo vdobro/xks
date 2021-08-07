@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,26 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {DeckRepository} from './deck-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {IdEntity} from "@app/repositories/id-entity";
+import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.01
+ * @since 2021.07.29
  */
-describe('DeckRepositoryService', () => {
-	let service: DeckRepository;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(DeckRepository);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export class LocalRepository<TEntity extends IdEntity> extends CouchDbRepository<TEntity> {
+	constructor(entityIdentifier: String) {
+		super(`local_${entityIdentifier}`);
+	}
+}

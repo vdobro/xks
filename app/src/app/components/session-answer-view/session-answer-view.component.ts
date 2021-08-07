@@ -21,7 +21,8 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {FlashcardField} from "../../services/models/flashcard-field";
+
+import {FlashcardField} from "@app/services/models/flashcard-field";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -54,11 +55,11 @@ export class SessionAnswerViewComponent implements OnInit {
 	ngOnInit(): void {
 		if (!this.pending && this.field !== null) {
 			const isAlternative = this.isAlternative();
-			const isMainAnswer = this.answerInput === this.field.value.defaultValue;
+			const isMainAnswer = this.answerInput === this.field.value.default;
 
 			this.control.setValue(this.answerInput +
 				(isAlternative && !isMainAnswer
-					? ` (${this.field.value.defaultValue})`
+					? ` (${this.field.value.default})`
 					: '')
 			);
 		}

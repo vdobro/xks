@@ -20,7 +20,7 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {NewDeckModalComponent} from "../new-deck-modal/new-deck-modal.component";
+import {NewDeckModalComponent} from "@app/components/new-deck-modal/new-deck-modal.component";
 
 @Component({
 	selector: 'li [deck-list-navbar]',

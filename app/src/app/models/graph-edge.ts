@@ -19,22 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
+import {BaseEntity} from "./BaseEntity";
+import {AnswerValue} from "@app/models/answer-value";
 
-import {AnswerValueService} from './answer-value.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-
-describe('AnswerValueService', () => {
-	let service: AnswerValueService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(AnswerValueService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.09.12
+ */
+export interface GraphEdge extends BaseEntity {
+	value: AnswerValue,
+	sourceId: string,
+	targetId: string,
+}
