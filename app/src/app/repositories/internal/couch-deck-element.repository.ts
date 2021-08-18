@@ -48,8 +48,7 @@ export abstract class CouchDeckElementRepository implements BaseRepository<DeckE
 		const result = await this.db.find({
 			selector: {
 				type: type
-			},
-			limit: 1
+			}
 		});
 		return result.docs as DeckElementData[];
 	}
