@@ -20,10 +20,11 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {UserSessionService} from "@app/services/user-session.service";
 
 import {TableColumnEditorComponent} from './table-column-editor.component';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {UserSessionService} from "../../services/user-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis

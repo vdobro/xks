@@ -104,17 +104,18 @@ export namespace MockData {
 		id: 'ee07eb82-e7d9-47e4-9be8-4ccd4d7a18ae',
 		description: "",
 		database: '',
+		ownerToken: uuid()
 	};
 	export const decks: Deck[] = [
 		sampleDeck,
-		{name: 'Another deck', id: uuid(), description: "", database: ''},
-		{name: 'DBWT 1', id: uuid(), description: "Datenbanken und Webtechnologien 1", database: ''},
-		{name: 'Finnish 1', id: uuid(), description: " 23", database: ''},
-		{name: 'Deutsche Artikel', id: uuid(), description: "Vokabeln mit dem dazugehörigen Geschlecht", database: ''},
-		{name: 'Medieval Lithuania', id: uuid(), description: "Historic dates and persons", database: ''},
-		{name: 'Random things', id: uuid(), description: "", database: ''},
-		{name: 'Cat names', id: uuid(), description: "", database: ''},
-		{name: 'Sumerian numbers', id: uuid(), description: "", database: ''},
-		{name: 'Friends\' phone numbers', id: uuid(), description: "", database: ''},
+		{name: 'Another deck', id: uuid(), description: "", database: '', ownerToken: uuid()},
+		{name: 'DBWT 1', id: uuid(), description: "Datenbanken und Webtechnologien 1", database: '', ownerToken: uuid()},
+		{name: 'Finnish 1', id: uuid(), description: " 23", database: '', ownerToken: uuid()},
+		{name: 'Deutsche Artikel', id: uuid(), description: "Vokabeln mit dem dazugehörigen Geschlecht", database: '', ownerToken: uuid()},
+		{name: 'Medieval Lithuania', id: uuid(), description: "Historic dates and persons", database: '', ownerToken: uuid()},
+		{name: 'Random things', id: uuid(), description: "", database: '', ownerToken: uuid()},
+		{name: 'Cat names', id: uuid(), description: "", database: '', ownerToken: uuid()},
+		{name: 'Sumerian numbers', id: uuid(), description: "", database: '', ownerToken: uuid()},
+		{name: 'Friends\' phone numbers', id: uuid(), description: "", database: '', ownerToken: uuid()},
 	];
 }
