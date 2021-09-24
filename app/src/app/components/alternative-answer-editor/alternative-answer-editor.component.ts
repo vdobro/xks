@@ -21,7 +21,17 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	OnInit,
+	Output,
+	QueryList,
+	ViewChild,
+	ViewChildren
+} from '@angular/core';
 import {FormArray, FormControl} from "@angular/forms";
 
 /**
@@ -41,6 +51,9 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 	@ViewChild('formElement')
 	form: ElementRef | undefined;
 
+	@ViewChildren('valueInput')
+	inputElements: QueryList<ElementRef> | undefined;
+
 	@Input()
 	existingValues: string[] = [];
 
@@ -52,6 +65,8 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 	inputs = new FormArray([]);
 	handlerInitialized: boolean = false;
 
+	anyInputEmpty : boolean = false;
+
 	constructor() {
 	}
 
@@ -61,6 +76,7 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 			this.inputs.push(control);
 			control.setValue(existingValue);
 		}
+		this.checkValuesValid();
 	}
 
 	openModal() {
@@ -73,12 +89,34 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 	onSubmit() {
 		if (this.modal && this.form) {
 			UIkit.modal(this.modal.nativeElement).hide();
-			this.valuesChanged.emit(this.inputs.value as string[]);
+			this.valuesChanged.emit(this.inputs.controls.map(control => control.value) as string[]);
 		}
 	}
 
+	onEnterKeyDown() {
+		this.onAddValueClick();
+	}
+
 	onAddValueClick() {
-		this.inputs.push(new FormControl(''));
+		if (this.inputElements?.last?.nativeElement?.value === '') {
+			return;
+		}
+		const control = new FormControl('');
+		this.inputs.push(control);
+		this.checkValuesValid();
+
+		setTimeout(() => {
+			this.inputElements?.last?.nativeElement?.focus();
+		});
+	}
+
+	onRemoveValueClick(index: number) {
+		this.inputs.controls.splice(index, 1);
+		this.checkValuesValid();
+	}
+
+	checkValuesValid() {
+		this.anyInputEmpty = !!this.inputs.controls.find(control => control.value === '');
 	}
 
 	private initializeCloseHandler() {

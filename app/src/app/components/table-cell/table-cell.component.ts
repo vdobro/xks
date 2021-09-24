@@ -109,6 +109,7 @@ export class TableCellComponent implements OnInit, OnChanges {
 		const cell = this.cellService.getCell(row, column);
 		if (cell) {
 			this.currentValue = cell.value.default;
+			this.currentAlternatives = cell.value.alternatives;
 		}
 	}
 
