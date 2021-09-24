@@ -20,8 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {FlashcardSetViewComponent} from './flashcard-set-view.component';
+import {RouterTestingModule} from "@angular/router/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,6 +35,10 @@ describe('FlashcardSetViewComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule
+			],
 			declarations: [FlashcardSetViewComponent]
 		}).compileComponents();
 	});

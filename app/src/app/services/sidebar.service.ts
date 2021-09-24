@@ -24,8 +24,7 @@ import {Subject, Subscribable} from "rxjs";
 import {Injectable} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/graph";
-import {Table} from "@app/models/Table";
+import {DeckElement} from "@app/models/DeckElement";
 
 import {NavigationControlService} from "./navigation-control.service";
 import {DeckService} from "./deck.service";
@@ -43,7 +42,7 @@ export class SidebarService {
 	private readonly _activeElement$ = new Subject<DeckElement | null>();
 
 	readonly activeDeck: Subscribable<Deck | null> = this._activeDeck$;
-	readonly activeElement: Subscribable<Graph | null> = this._activeElement$;
+	readonly activeElement: Subscribable<DeckElement | null> = this._activeElement$;
 
 	currentDeck: Deck | null = null;
 	currentElement: DeckElement | null = null;

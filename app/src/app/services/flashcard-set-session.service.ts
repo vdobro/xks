@@ -20,10 +20,12 @@
  */
 
 import {Injectable} from '@angular/core';
+
+import {FlashcardList} from "@app/models/flashcard-list";
+
+import {LearningSessionState} from "@app/services/models/learning-session-state";
 import {StudySessionService} from "./study-session.service";
 import {ExerciseTaskService} from "./exercise-task.service";
-import {LearningSessionState} from "./models/learning-session-state";
-import {FlashcardSet} from "../models/FlashcardSet";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,7 +39,7 @@ export class FlashcardSetSessionService extends StudySessionService {
 		super(taskService);
 	}
 
-	async startNew(set: FlashcardSet,
+	async startNew(set: FlashcardList,
 				   startScore: number,
 				   maxScore: number): Promise<LearningSessionState> {
 		const allTasks = await this.taskService.getFlashcardTaskList(set, startScore, maxScore);

@@ -20,11 +20,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {NavigationService} from "../../services/navigation.service";
+
+import {NavigationService} from "@app/services/navigation.service";
+
 import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
-import {FlashcardService} from "../../services/flashcard.service";
-import {FlashcardSet} from "../../models/FlashcardSet";
-import {FlashcardSetService} from "../../services/flashcard-set.service";
+import {FlashcardList} from "@app/models/flashcard-list";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,17 +40,16 @@ export class SidebarFlashcardSetListElementComponent
 	implements OnInit {
 
 	constructor(
-		private readonly cardSetService: FlashcardSetService,
-		private readonly cardService: FlashcardService,
 		private readonly navigationService: NavigationService) {
 		super();
 		this.elementType = 'flashcard collection';
 
-		this.cardService.cardCountChanged.subscribe(async (list: FlashcardSet) => {
+		//TODO:
+		/*this.cardService.cardCountChanged.subscribe(async (list: FlashcardList) => {
 			if (this.element?.id === list.id) {
 				await this.updateElementCount();
 			}
-		});
+		});*/
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -62,19 +61,19 @@ export class SidebarFlashcardSetListElementComponent
 	}
 
 	private async updateElementCount() {
-		const cards = await this.cardService.getBySet(this.element as FlashcardSet);
-		this.elementCount = cards.length;
+		//const cards = await this.cardService.getBySet(this.element as FlashcardList);
+		//this.elementCount = cards.length;
 	}
 
 	protected async onClickHandler(id: string) {
-		await this.navigationService.openFlashcardSet(id);
+		//await this.navigationService.openFlashcardSet(id);
 	}
 
 	protected async onDeleteHandler(id: string) {
-		await this.cardSetService.delete(id);
+		//await this.cardSetService.delete(id);
 	}
 
 	protected async onUpdateHandler(element: SidebarDeckElement) {
-		await this.cardSetService.update(element as FlashcardSet);
+		//await this.cardSetService.update(element as FlashcardList);
 	}
 }

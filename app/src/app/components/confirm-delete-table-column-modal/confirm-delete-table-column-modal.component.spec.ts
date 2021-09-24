@@ -35,7 +35,7 @@ describe('ConfirmDeleteTableColumnModalComponent', () => {
 		TestBed.configureTestingModule({
 			declarations: [ConfirmDeleteTableColumnModalComponent]
 		}).compileComponents();
-	});
+	}));
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(ConfirmDeleteTableColumnModalComponent);

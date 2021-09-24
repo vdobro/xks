@@ -35,7 +35,7 @@ describe('DeckListNavbarComponent', () => {
 		TestBed.configureTestingModule({
 			declarations: [DeckListNavbarComponent]
 		}).compileComponents();
-	});
+	}));
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(DeckListNavbarComponent);

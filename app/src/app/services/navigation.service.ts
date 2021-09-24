@@ -23,10 +23,11 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/graph";
-import {Table} from "@app/models/Table";
 import {ElementId} from "@app/models/ElementId";
 import {DeckElement} from "@app/models/DeckElement";
+import {isTable} from "@app/models/Table";
+import {isGraph} from "@app/models/graph";
+import {isFlashcardList} from "@app/models/flashcard-list";
 
 import {DeckService} from "@app/services/deck.service";
 import {TableService} from "@app/services/table.service";
@@ -52,7 +53,6 @@ export class NavigationService {
 		private readonly deckService: DeckService,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
-		private readonly flashcardSetService: FlashcardSetService,
 		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
 	}
@@ -74,10 +74,12 @@ export class NavigationService {
 			return;
 		}
 		const deckId = this.deck.id;
-		if (ElementTypeUtilities.isTable(this.deckElement)) {
+		if (isTable(this.deckElement)) {
 			await this.openTable({element: this.deckElement.id, deck: deckId});
-		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
+		} else if (isGraph(this.deckElement)) {
 			await this.openGraph({element: this.deckElement.id, deck: deckId});
+		} else if (isFlashcardList(this.deckElement)) {
+			//TODO:
 		}
 	}
 
@@ -106,6 +108,10 @@ export class NavigationService {
 		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'learn'], {
 			queryParams: difficultySettings
 		});
+	}
+
+	async studyFlashcards(id: string, difficultySettings: ScoreParams) {
+		//TODO:
 	}
 
 	async openGraph(id: ElementId) {
@@ -145,12 +151,12 @@ export class NavigationService {
 	}
 
 	private async selectTable(tableId: ElementId) {
-		this.table = await this.tableService.getById(tableId);
-		await this.sidebarService.selectTable(this.table);
+		this.deckElement = await this.tableService.getById(tableId);
+		await this.sidebarService.selectDeckElement(this.deckElement);
 	}
 
 	private async selectGraph(graphId: ElementId) {
-		this.graph = await this.graphService.getById(graphId);
-		await this.sidebarService.selectGraph(this.graph);
+		this.deckElement = await this.graphService.getById(graphId);
+		await this.sidebarService.selectDeckElement(this.deckElement);
 	}
 }

@@ -18,12 +18,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import {Observable, Subject} from "rxjs";
 
 import {Component, ElementRef, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Flashcard} from "../../models/Flashcard";
-import {AnswerValueService} from "../../services/answer-value.service";
-import {Observable, Subject} from "rxjs";
 import {FormControl} from "@angular/forms";
+
+import {Flashcard} from "@app/models/Flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -60,7 +60,7 @@ export class FlashcardEditorComponent implements OnInit {
 	@Output()
 	readonly deleted: Observable<void> = this._deleted;
 
-	constructor(private readonly answerValueService: AnswerValueService) {
+	constructor() {
 	}
 
 	async ngOnInit() {
@@ -70,8 +70,8 @@ export class FlashcardEditorComponent implements OnInit {
 	async resetFields() {
 		if (this.flashcard) {
 			this.question = this.flashcard.question;
-			const answerValue = await this.answerValueService.getForFlashcard(this.flashcard);
-			this.answer = answerValue.defaultValue;
+			const answerValue = this.flashcard.value;
+			this.answer = answerValue.default;
 		} else {
 			this.question = '';
 			this.answer = '';

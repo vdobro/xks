@@ -31,14 +31,13 @@ import {TableRow} from "@app/models/TableRow";
 import {Graph} from "@app/models/graph";
 import {GraphNode} from "@app/models/graph-node";
 import {AnswerValue} from "@app/models/answer-value";
-import {FlashcardSet} from "@app/models/FlashcardSet";
 
 import {TableElementService} from "@app/services/table-element.service";
 import {GraphElementService} from "@app/services/graph-element.service";
 import {ExerciseTask} from "@app/services/models/exercise-task";
 import {FlashcardField} from "@app/services/models/flashcard-field";
 import {AnswerFeedback} from "@app/services/models/answer-feedback";
-import {FlashcardRepository} from "@app/repositories/flashcard-repository.service";
+import {FlashcardList} from "@app/models/flashcard-list";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -113,8 +112,7 @@ export class ExerciseTaskService {
 		return exercises;
 	}
 
-	async getFlashcardTaskList(set: FlashcardSet, startScore: number, maxScore: number) : Promise<ExerciseTask[]> {
-		const cards = await this.flashcardRepository.getAllInSet(set.id);
+	async getFlashcardTaskList(set: FlashcardList, startScore: number, maxScore: number) : Promise<ExerciseTask[]> {
 		//TODO
 		return [];
 	}

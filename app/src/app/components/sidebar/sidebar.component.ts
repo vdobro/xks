@@ -24,8 +24,10 @@ import UIkit from 'uikit';
 import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/graph";
-import {Table} from "@app/models/Table";
+import {DeckElement} from "@app/models/DeckElement";
+import {Graph, isGraph} from "@app/models/graph";
+import {Table, isTable} from "@app/models/Table";
+import {FlashcardList, isFlashcardList} from "@app/models/flashcard-list";
 
 import {NavigationControlService} from "@app/services/navigation-control.service";
 import {TableService} from "@app/services/table.service";
@@ -64,7 +66,7 @@ export class SidebarComponent implements OnInit {
 
 	tables: Table[] = [];
 	graphs: Graph[] = [];
-	flashcardSets: FlashcardSet[] = []; //TODO: everything
+	flashcardSets: FlashcardList[] = []; //TODO: everything
 
 	active: boolean = false;
 
@@ -74,19 +76,14 @@ export class SidebarComponent implements OnInit {
 				private readonly tableService: TableService,
 				private readonly graphService: GraphService,
 				private readonly graphElementService: GraphElementService,
-				private readonly flashcardSetService: FlashcardSetService,
-				private readonly flashcardService: FlashcardService,
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
 		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
-		this.sidebarService.activeTable.subscribe((value: Table | null) => this.onActiveTableChanged(value));
-		this.sidebarService.activeGraph.subscribe((value: Graph | null) => this.onActiveGraphChanged(value));
+		this.sidebarService.activeElement.subscribe((value: DeckElement | null) => this.onActiveDeckElementChanged(value));
+
 		this.tableService.tablesChanged.subscribe((deckId: string) => this.onTablesChanged(deckId));
 		this.graphService.deckGraphsChanged.subscribe((deckId: string) => this.onGraphsChanged(deckId));
-		this.sidebarService.activeElement.subscribe((value: DeckElement | null) => this.onActiveDeckElementChanged(value));
-		this.tableService.tablesChanged.subscribe((value: Deck) => this.onTablesChanged(value));
-		this.graphService.graphsChanged.subscribe((value: Deck) => this.onGraphsChanged(value));
-		this.flashcardSetService.setsChanged.subscribe((value: Deck) => this.onCardListsChanged(value));
+		//TODO: this.flashcardSetService.setsChanged.subscribe((value: Deck) => this.onCardListsChanged(value));
 	}
 
 	async ngOnInit() {
@@ -116,7 +113,7 @@ export class SidebarComponent implements OnInit {
 		if (this.deck) {
 			this.tables = await this.tableService.getByDeck(this.deck);
 			this.graphs = await this.graphService.getByDeck(this.deck);
-			this.flashcardSets = await this.flashcardSetService.getByDeck(this.deck);
+			//TODO: this.flashcardSets = await this.flashcardSetService.getByDeck(this.deck);
 		} else {
 			this.resetCurrentDeckElements();
 		}
@@ -142,42 +139,43 @@ export class SidebarComponent implements OnInit {
 	}
 
 	async studyCurrent() {
-		if (ElementTypeUtilities.isTable(this.selectedDeckElement)) {
+		if (isTable(this.selectedDeckElement)) {
 			this.setupSessionModal?.openDialog();
-		} else if (ElementTypeUtilities.isGraph(this.selectedDeckElement)) {
+		} else if (isGraph(this.selectedDeckElement)) {
 			if (await this.graphElementService.anyNodesAndEdgesExist(this.selectedDeckElement!!)) {
 				this.setupSessionModal?.openDialog();
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
 			}
-		} else if (ElementTypeUtilities.isFlashcardSet(this.selectedDeckElement)) {
-			if (await this.flashcardService.anyCardsExist(this.selectedDeckElement)) {
+		} else if (isFlashcardList(this.selectedDeckElement)) {
+			//TODO
+			/*if (await this.flashcardService.anyCardsExist(this.selectedDeckElement)) {
 				this.setupSessionModal?.openDialog();
 			} else {
 				UIkit.notification("No cards to study in the set", {status: 'warning'});
-			}
+			}*/
 		}
 	}
 
-	private async onTablesChanged(deck: Deck) {
-		this.tables = await this.tableService.getByDeck(deck);
-		if (ElementTypeUtilities.isTable(this.selectedDeckElement)
+	private async onTablesChanged(deckId: string) {
+		this.tables = await this.tableService.getByDeckId(deckId);
+		if (isTable(this.selectedDeckElement)
 			&& !this.tables.find(x => x.id === this.selectedDeckElement!!.id)) {
 			this.sidebarService.deselectDeckElement();
 		}
 	}
 
-	private async onGraphsChanged(deck: Deck) {
-		this.graphs = await this.graphService.getByDeck(deck);
-		if (ElementTypeUtilities.isGraph(this.selectedDeckElement)
+	private async onGraphsChanged(deckId: string) {
+		this.graphs = await this.graphService.getByDeckId(deckId);
+		if (isGraph(this.selectedDeckElement)
 			&& !this.graphs.find(x => x.id === this.selectedDeckElement!!.id)) {
 			this.sidebarService.deselectDeckElement();
 		}
 	}
 
 	private async onCardListsChanged(deck: Deck) {
-		this.flashcardSets = await this.flashcardSetService.getByDeck(deck);
-		if (ElementTypeUtilities.isFlashcardSet(this.selectedDeckElement)
+		//TODO: this.flashcardSets = await this.flashcardSetService.getByDeck(deck);
+		if (isFlashcardList(this.selectedDeckElement)
 			&& !this.flashcardSets.find(x => x.id === this.selectedDeckElement!!.id)) {
 			this.sidebarService.deselectDeckElement();
 		}

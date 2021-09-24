@@ -25,7 +25,6 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Component, ViewChild} from "@angular/core";
 
 import {Table} from "@app/models/Table";
-import {DeckElementTypes} from "@app/models/DeckElementTypes";
 
 import {TableViewComponent} from './table-view.component';
 

@@ -20,13 +20,13 @@
  */
 
 import {BaseEntity} from "./BaseEntity";
+import {AnswerValue} from "@app/models/answer-value";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.15
  */
 export interface Flashcard extends BaseEntity {
-	setId: string;
 	question: string;
-	answerId: string;
+	value: AnswerValue;
 }

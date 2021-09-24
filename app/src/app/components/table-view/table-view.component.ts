@@ -83,7 +83,7 @@ export class TableViewComponent implements OnInit {
 			this.table = (id && deckId) ? await this.tableService.getById({element: id, deck: deckId}) : null;
 
 			if (this.table) {
-				await this.sidebarService.selectTable(this.table);
+				await this.sidebarService.selectDeckElement(this.table);
 				this.reloadRows();
 			} else {
 				await this.navigationService.goToDeckList();

@@ -19,26 +19,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {FlashcardService} from './flashcard.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {DeckElement} from "./DeckElement";
+import {BaseEntity} from "./BaseEntity";
+import {Flashcard} from "@app/models/Flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.11.21
+ * @since 2020.11.15
  */
-describe('FlashcardService', () => {
-	let service: FlashcardService;
+export interface FlashcardList extends DeckElement, BaseEntity {
+	cards: Flashcard[],
+}
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
-		service = TestBed.inject(FlashcardService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export function isFlashcardList(element: DeckElement | null): element is FlashcardList {
+	return element !== null && (element as FlashcardList).cards !== undefined;
+}

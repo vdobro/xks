@@ -21,15 +21,15 @@
 
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
-import {SidebarService} from "../../services/sidebar.service";
-import {TopBarService} from "../../services/top-bar.service";
-import {NavigationControlService} from "../../services/navigation-control.service";
-import {NavigationService} from "../../services/navigation.service";
-import {FlashcardSetService} from "../../services/flashcard-set.service";
-import {FlashcardSet} from "../../models/FlashcardSet";
-import {FlashcardService} from "../../services/flashcard.service";
-import {Flashcard} from "../../models/Flashcard";
-import {AnswerValueService} from "../../services/answer-value.service";
+
+import {Flashcard} from "@app/models/Flashcard";
+import {FlashcardList} from "@app/models/flashcard-list";
+
+import {SidebarService} from "@app/services/sidebar.service";
+import {TopBarService} from "@app/services/top-bar.service";
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {NavigationService} from "@app/services/navigation.service";
+
 import {FlashcardEditorComponent, FlashcardFields} from "../flashcard-editor/flashcard-editor.component";
 
 export const FLASHCARD_SET_ID_PARAM = "flashcardSetId";
@@ -48,13 +48,11 @@ export class FlashcardSetViewComponent implements OnInit {
 	@ViewChild('newCardEditor')
 	newCardEditor: FlashcardEditorComponent | undefined;
 
-	cardSet: FlashcardSet | null = null;
+	cardSet: FlashcardList | null = null;
 	cards: Flashcard[] = [];
 
 	constructor(
-		private readonly setService: FlashcardSetService,
-		private readonly flashcardService: FlashcardService,
-		private readonly answerValueService: AnswerValueService,
+
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService,
 		private readonly navigationControlService: NavigationControlService,
@@ -65,14 +63,14 @@ export class FlashcardSetViewComponent implements OnInit {
 	async ngOnInit() {
 		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(FLASHCARD_SET_ID_PARAM);
-			this.cardSet = id ? await this.setService.getById(id) : null;
+			/*this.cardSet = id ? await this.setService.getById(id) : null;
 
 			if (this.cardSet) {
 				await this.sidebarService.selectDeckElement(this.cardSet);
 				this.cards = await this.flashcardService.getBySet(this.cardSet);
 			} else {
 				await this.navigationService.goToDeckList();
-			}
+			}*/
 		});
 		this.topBarService.clearItems();
 		this.topBarService.setBackButtonLabel('Back to deck');
@@ -82,19 +80,18 @@ export class FlashcardSetViewComponent implements OnInit {
 		if (!this.cardSet || !this.newCardEditor) {
 			return;
 		}
-		const newCard = await this.flashcardService.create(
-			fields.question, fields.answer, this.cardSet);
-		this.cards.push(newCard);
-		await this.newCardEditor.resetFields();
+		//TODO: const newCard = await this.flashcardService.create(fields.question, fields.answer, this.cardSet);
+		/*this.cards.push(newCard);
+		await this.newCardEditor.resetFields();*/
 	}
 
 	async deleteCard(card: Flashcard) {
 		const index = this.cards.indexOf(card);
 		this.cards.splice(index, 1);
-		await this.flashcardService.delete(card);
+		//await this.flashcardService.delete(card);
 	}
 
 	async updateCard(card: Flashcard, fields: FlashcardFields) {
-		await this.flashcardService.update(card, fields.question, fields.answer);
+		//await this.flashcardService.update(card, fields.question, fields.answer);
 	}
 }

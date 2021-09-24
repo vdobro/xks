@@ -27,6 +27,7 @@ import {FormControl} from "@angular/forms";
 import {DeckElement} from "@app/models/DeckElement";
 import {isTable, Table} from "@app/models/Table";
 import {Graph, isGraph} from "@app/models/graph";
+import {FlashcardList, isFlashcardList} from "@app/models/flashcard-list";
 
 import {NavigationService} from "@app/services/navigation.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
@@ -66,16 +67,15 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (!this.deckElement) {
 			this.table = null;
 			this.graph = null;
-			this.flashcardSet = null;
+			this.flashcardList = null;
 			return;
 		}
-		this.table = ElementTypeUtilities.isTable(this.deckElement) ? this.deckElement : null;
-		this.graph = ElementTypeUtilities.isGraph(this.deckElement) ? this.deckElement : null;
-		this.flashcardSet = ElementTypeUtilities.isFlashcardSet(this.deckElement)
-			? this.deckElement : null;
+		this.table = isTable(this.deckElement) ? this.deckElement : null;
+		this.graph = isGraph(this.deckElement) ? this.deckElement : null;
+		this.flashcardList = isFlashcardList(this.deckElement) ? this.deckElement : null;
 	}
 
-	get deckElement() : DeckElement | null {
+	get deckElement(): DeckElement | null {
 		return this._deckElement;
 	}
 
@@ -83,7 +83,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 
 	table: Table | null = null;
 	graph: Graph | null = null;
-	flashcardSet: FlashcardSet | null = null;
+	flashcardList: FlashcardList | null = null;
 
 	anySessionModesAvailable: boolean = false;
 	startSessionEnabled: boolean = false;
@@ -116,17 +116,17 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		await this.scoreSettingsComponent?.saveScoreSettings();
 		const scores = this.getScoreParams(this.deckElement);
 
-		if (ElementTypeUtilities.isTable(this.deckElement)) {
+		if (isTable(this.deckElement)) {
 			const modeId = await this.getSessionModeId();
 
 			if (modeId) {
 				await this.saveDefaultTableOptions(modeId);
-				await this.navigationService.studyTable(this.deckElement.id, modeId, scores);
+				await this.navigationService.studyTable(this.deckElement, modeId, scores);
 			}
-		} else if (ElementTypeUtilities.isGraph(this.deckElement)) {
-			await this.navigationService.studyGraph(this.deckElement.id, scores);
-		} else if (ElementTypeUtilities.isFlashcardSet(this.deckElement)) {
-			const set = this.deckElement as FlashcardSet;
+		} else if (isGraph(this.deckElement)) {
+			await this.navigationService.studyGraph(this.deckElement, scores);
+		} else if (isFlashcardList(this.deckElement)) {
+			const set = this.deckElement as FlashcardList;
 			await this.navigationService.studyFlashcards(set.id, scores);
 		}
 	}
@@ -145,10 +145,9 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			this.startSessionEnabled = false;
 			return;
 		}
-		if (ElementTypeUtilities.isTable(this.deckElement)) {
+		if (isTable(this.deckElement)) {
 			this.validateTableConfiguration(this.deckElement);
-		} else if (ElementTypeUtilities.isGraph(this.deckElement)
-			|| ElementTypeUtilities.isFlashcardSet(this.deckElement)) {
+		} else if (isGraph(this.deckElement) || isFlashcardList(this.deckElement)) {
 			this.startSessionEnabled = true;
 			this.defaultSessionCheckbox.enable();
 		} else {
@@ -165,23 +164,23 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	private async checkIfSessionModesExist() {
-		if (ElementTypeUtilities.isTable(this.deckElement)) {
-			this.anySessionModesAvailable = await this.sessionModeService.anyExist(this.deckElement);
-			if (!this.anySessionModesAvailable) {
-				this.useExisting = false;
-			}
-		} else {
+		if (!isTable(this.deckElement)) {
 			this.anySessionModesAvailable = false;
+			return;
+		}
+		this.anySessionModesAvailable = this.sessionModeService.anyExist(this.deckElement);
+		if (!this.anySessionModesAvailable) {
+			this.useExisting = false;
 		}
 	}
 
 	private async saveDefaultTableOptions(modeId: string) {
-		if (!ElementTypeUtilities.isTable(this.deckElement)) {
+		if (!isTable(this.deckElement)) {
 			return;
 		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
-			const mode = await this.sessionModeService.getById(modeId, this.table);
-			await this.sessionModeService.setAsDefault(mode, this.table);
+			const mode = await this.sessionModeService.getById(modeId, this.deckElement);
+			await this.sessionModeService.setAsDefault(mode, this.deckElement);
 		}
 	}
 
