@@ -1927,10 +1927,10 @@
   resolved "https://registry.yarnpkg.com/@types/source-list-map/-/source-list-map-0.1.2.tgz#0078836063ffaf17412349bba364087e0ac02ec9"
   integrity sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==
 
-"@types/uikit@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@types/uikit/-/uikit-3.3.1.tgz#97c817d803aa7c3b4d0c7e8c2b50177c415845b8"
-  integrity sha512-8+Ejdntc9yMBkSyp1OhQv/eZotscum4EnZ53B07nqZS9H2js2CTwbBSMgjHc/EOJAntF1T4FDLJ4druM/wNhGA==
+"@types/uikit@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@types/uikit/-/uikit-3.3.2.tgz#8a1d279a46e4dd0c9dd74c5fd11a591f4f9eb223"
+  integrity sha512-Sa2d+Ari4S0IP7X3+Y+zhwu9nlhv07Jr3XQgeFVkvME3mGZQr8iTkifHCU3Jz4Z7c8/SQ8Ve0OFb0UAovnzb4Q==
 
 "@types/uuid@^8.3.0":
   version "8.3.0"
@@ -8895,10 +8895,10 @@ ua-parser-js@^0.7.23:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
   integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
-uikit@^3.6.22:
-  version "3.6.22"
-  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.6.22.tgz#bbf3d64f9715ec09b3dead80845f2784447d7048"
-  integrity sha512-c8jz0lzvGPrPbOG4K5HvOCgUe7i9A6blZmMq2M/EYqoY7FT9dBayGFZYbBeio2s9WCpADIcCAj2QX/5L3EByOQ==
+uikit@^3.7.4:
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.7.4.tgz#e55028abcce17e1e9ed6c404a37ad2c0c1729109"
+  integrity sha512-xm6o7e2nPrWWII4jVWp9t+neT5r4YwcQxZ6wfz4Y9GQSGDyjXkqHvbh+EmWURDhXQFLRAWoQPs2v+wEsFZ5jpw==
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
