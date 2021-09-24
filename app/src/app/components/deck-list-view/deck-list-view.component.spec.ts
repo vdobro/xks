@@ -19,13 +19,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {Component, ViewChild} from "@angular/core";
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
+import {Deck} from "@app/models/Deck";
+import {MockData} from "@app/services/mock-data";
+
 import {DeckListViewComponent} from './deck-list-view.component';
-import {Component, ViewChild} from "@angular/core";
-import {Deck} from "../../models/Deck";
-import {MockData} from "../../services/mock-data";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis

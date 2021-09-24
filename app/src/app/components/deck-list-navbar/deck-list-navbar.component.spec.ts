@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {DeckListNavbarComponent} from './deck-list-navbar.component';
 
@@ -31,8 +31,8 @@ describe('DeckListNavbarComponent', () => {
 	let component: DeckListNavbarComponent;
 	let fixture: ComponentFixture<DeckListNavbarComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
+	beforeEach(waitForAsync(() => {
+		TestBed.configureTestingModule({
 			declarations: [DeckListNavbarComponent]
 		}).compileComponents();
 	});

@@ -19,13 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {v4 as uuid} from 'uuid';
+
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {Component, ViewChild} from "@angular/core";
+
+import {Table} from "@app/models/Table";
+import {DeckElementTypes} from "@app/models/DeckElementTypes";
 
 import {TableViewComponent} from './table-view.component';
-import {Component, ViewChild} from "@angular/core";
-import {Table} from "../../models/Table";
-import {v4 as uuid} from 'uuid';
-import {DeckElementTypes} from "../../models/DeckElementTypes";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,11 +37,11 @@ describe('TableViewComponent', () => {
 	let component: TestHostComponent;
 	let fixture: ComponentFixture<TestHostComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
+	beforeEach(waitForAsync(() => {
+		TestBed.configureTestingModule({
 			declarations: [TableViewComponent]
 		}).compileComponents();
-	});
+	}));
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(TestHostComponent);
@@ -67,13 +69,14 @@ describe('TableViewComponent', () => {
 
 function generateTable(): Table {
 	return {
-		type: DeckElementTypes.Table,
 		id: uuid(),
 		deckId: uuid() + 'as deck ID',
 		name: 'name ' + uuid(),
-		sessionModeIds: [],
+		sessionModes: [],
 		defaultMaxScore: 8,
 		defaultStartingScore: 3,
 		defaultSessionModeId: uuid(),
+		columns: [],
+		rows: []
 	};
 }

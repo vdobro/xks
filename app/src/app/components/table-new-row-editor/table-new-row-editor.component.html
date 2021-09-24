@@ -1,8 +1,8 @@
-<td table-cell *ngFor="let column of columns"
+<td table-cell *ngFor="let column of columns; let position = index"
 	class="uk-padding-remove-right"
 	[row]="rowInEditing"
 	[column]="column"
-	[newCell]="newColumnIndex === column.index"
+	[newCell]="newColumnIndex === position"
 	(cellValueChanged)="onCellSubmitted($event, column)"
 	(editingStarted)="editingStarted.emit()">
 </td>

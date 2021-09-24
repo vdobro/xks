@@ -3,15 +3,23 @@
 	"compilerOptions": {
 		"baseUrl": "./",
 		"outDir": "./dist/out-tsc",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
 		"sourceMap": true,
 		"declaration": false,
 		"downlevelIteration": true,
 		"experimentalDecorators": true,
-		"module": "es2020",
 		"moduleResolution": "node",
 		"importHelpers": true,
 		"target": "es2015",
+		"module": "es2020",
 		"allowSyntheticDefaultImports": true,
+		"paths": {
+			"@app/*": ["src/app/*"],
+			"@environments/*": ["src/environments/*"]
+		},
 		"typeRoots": [
 			"node_modules/@types"
 		],
@@ -19,9 +27,6 @@
 			"es2018",
 			"dom"
 		],
-		"strict": true,
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true
 	},
 	"angularCompilerOptions": {
 		"strictTemplates": true,

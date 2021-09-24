@@ -19,20 +19,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElementTypes} from "./DeckElementTypes";
-import {BaseEntity} from "./BaseEntity";
+import {IdEntity} from "@app/repositories/id-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.10.11
  */
-export interface DeckElement extends DeckElementDataEntity, BaseEntity {
-	type: DeckElementTypes,
-}
-
-export interface DeckElementDataEntity {
-	name: string,
+export interface DeckElement extends IdEntity {
 	deckId: string,
+	name: string,
 	defaultStartingScore: number,
 	defaultMaxScore: number,
 }
+
+export type DeckElementType = "graph" | "table";

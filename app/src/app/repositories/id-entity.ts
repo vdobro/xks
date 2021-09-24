@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,13 +19,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
-
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.20
+ * @since 2020.08.01
  */
-export interface AnswerValue extends BaseEntity {
-	defaultValue: string,
-	alternatives: string[],
+export interface IdEntity {
+	id: string
 }

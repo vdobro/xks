@@ -22,7 +22,8 @@
 import UIkit from 'uikit';
 
 import {Component, OnInit} from '@angular/core';
-import {NavigationService} from "../../services/navigation.service";
+
+import {NavigationService} from "@app/services/navigation.service";
 
 /**
  * @author Vitalijus Dobrovolskis

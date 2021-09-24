@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "../../models/BaseEntity";
+import {BaseEntity} from "@app/models/BaseEntity";
 
 /**
  * @author Vitalijus Dobrovolskis

@@ -32,6 +32,8 @@ data class UserDbSecurityConfiguration(
 		val admins: MemberConfiguration,
 		val members: MemberConfiguration,
 
-		val _id: String = "_security",
+		val _id: String = SEC_ID,
 		val _rev: String? = null,
 )
+
+const val SEC_ID = "_security"

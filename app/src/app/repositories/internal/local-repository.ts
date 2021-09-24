@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,25 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "../models/BaseEntity";
+import {IdEntity} from "@app/repositories/id-entity";
+import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.01
+ * @since 2021.07.29
  */
-export interface BaseRepository<Entity extends BaseEntity> {
-	getAll(): Promise<Entity[]>
-
-	getById(id: string): Promise<Entity>
-
-	add(entity: Entity): Promise<void>
-
-	delete(id: string): Promise<void>
-
-	update(entity: Entity): Promise<Entity>
-}
-
-export interface BaseDataEntity {
-	_id: string,
-	_rev: string | undefined
+export class LocalRepository<TEntity extends IdEntity> extends CouchDbRepository<TEntity> {
+	constructor(entityIdentifier: String) {
+		super(`local_${entityIdentifier}`);
+	}
 }

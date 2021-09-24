@@ -19,7 +19,5 @@ then
   echo "\$XKS_HOST must not be empty and be a valid URL of this application instance."
   exit
 fi
-
-PATH_TO_ENVJS=/BOOT-INF/classes/static/assets
-envsubst < $PATH_TO_ENVJS/env.template.js > $PATH_TO_ENVJS/env.js
+envsubst < /application/BOOT-INF/classes/static/assets/env.template.js > /application/BOOT-INF/classes/static/assets/env.js
 java org.springframework.boot.loader.JarLauncher

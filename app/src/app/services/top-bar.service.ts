@@ -20,7 +20,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {NavBarItem} from "../components/nav-bar-item";
+import {NavBarItem} from "@app/components/nav-bar-item";
 import {Subject, Subscribable} from "rxjs";
 
 /**
@@ -31,8 +31,8 @@ import {Subject, Subscribable} from "rxjs";
 	providedIn: 'root'
 })
 export class TopBarService {
-
 	private readonly currentItems: NavBarItem[] = [];
+
 	private readonly _items$ = new Subject<NavBarItem[]>();
 	private readonly _backNavigationEnabled$ = new Subject<boolean>();
 	private readonly _backButtonLabel$ = new Subject<string>();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,12 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
+package com.dobrovolskis.xks.model
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2021.06.10
  */
-export interface Graph extends DeckElement, BaseEntity {
-}
+data class User(
+	val username: String,
+	val database: String,
+)

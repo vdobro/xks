@@ -28,4 +28,6 @@ import {BaseEntity} from "./BaseEntity";
 export interface Deck extends BaseEntity {
 	name: string;
 	description: string;
+	database: string;
+	ownerToken: string;
 }

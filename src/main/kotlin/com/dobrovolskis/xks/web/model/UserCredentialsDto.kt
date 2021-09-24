@@ -26,6 +26,6 @@ package com.dobrovolskis.xks.web.model
  * @since 2020.09.08
  */
 data class UserCredentialsDto(
-		val name: String,
-		val password: String
+	val name: String,
+	val password: String
 )

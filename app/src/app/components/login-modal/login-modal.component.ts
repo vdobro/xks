@@ -20,9 +20,11 @@
  */
 
 import UIkit from 'uikit';
+
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {UserSessionService} from "../../services/user-session.service";
+
+import {UserSessionService} from "@app/services/user-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis

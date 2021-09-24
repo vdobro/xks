@@ -8,6 +8,9 @@
 			"schematics": {
 				"@schematics/angular:component": {
 					"style": "sass"
+				},
+				"@schematics/angular:application": {
+					"strict": true
 				}
 			},
 			"root": "",
@@ -22,7 +25,6 @@
 						"main": "src/main.ts",
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "tsconfig.app.json",
-						"aot": true,
 						"assets": [
 							"src/favicon.ico",
 							"src/assets"
@@ -36,13 +38,18 @@
 							]
 						},
 						"scripts": [
-							"./node_modules/jquery/dist/jquery.min.js",
 							"./node_modules/uikit/dist/js/uikit.min.js",
 							"./node_modules/uikit/dist/js/uikit-icons.min.js"
 						],
 						"allowedCommonJsDependencies": [
 							"immediate"
-						]
+						],
+						"vendorChunk": true,
+						"extractLicenses": false,
+						"buildOptimizer": false,
+						"sourceMap": true,
+						"optimization": false,
+						"namedChunks": true
 					},
 					"configurations": {
 						"production": {
@@ -52,7 +59,14 @@
 									"with": "src/environments/environment.prod.ts"
 								}
 							],
-							"optimization": true,
+							"optimization": {
+								"scripts": true,
+								"styles": {
+									"minify": true,
+									"inlineCritical": false
+								},
+								"fonts": true
+							},
 							"outputHashing": "all",
 							"sourceMap": false,
 							"namedChunks": false,
@@ -72,7 +86,8 @@
 								}
 							]
 						}
-					}
+					},
+					"defaultConfiguration": ""
 				},
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",

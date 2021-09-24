@@ -23,11 +23,12 @@
 	<div class="uk-overflow-auto uk-margin uk-margin-xlarge-bottom">
 		<table class="uk-table uk-table-divider uk-text-nowrap">
 			<thead>
-			<tr cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)">
+			<tr cdkDropList cdkDropListOrientation="horizontal"
+				(cdkDropListDropped)="dropColumn($event)">
 				<th cdkDrag app-table-column
 					[cdkDragDisabled]="!columnDragEnabled"
 					class="uk-table-expand"
-					*ngFor="let column of columns; let position = index"
+					*ngFor="let column of table.columns; let position = index"
 					[table]="table"
 					[column]="column"
 					(editingStarted)="disableColumnDrag()"
@@ -35,7 +36,7 @@
 					(columnDeleted)="deleteColumn(column)">
 					<ng-template *cdkDragPreview></ng-template>
 				</th>
-				<th *ngIf="rows.length > 0">
+				<th *ngIf="table.rows.length > 0">
 					<span uk-icon="grid" class="uk-icon"></span>
 				</th>
 			</tr>
@@ -45,16 +46,17 @@
 				*ngFor="let row of rows"
 				[cdkDragDisabled]="!rowDragEnabled"
 				[row]="row"
-				[columns]="columns"
+				[table]="table"
 				(rowDeleted)="deleteRow(row)"
 				(editingStarted)="disableRowDrag()"
 				(editingStopped)="rowDragEnabled = true">
 				<ng-template *cdkDragPreview></ng-template>
 			</tr>
 			<tr table-new-row-editor
-				[columns]="columns"
+				[columns]="table.columns"
 				[table]="table"
-				(newRow)="rowAdded($event)">
+				(rowUpdated)="onNewRowCreationBegin()"
+				(rowCompleted)="onRowComplete($event)">
 			</tr>
 			</tbody>
 		</table>

@@ -20,11 +20,14 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DeckElement} from "../models/DeckElement";
-import {Table} from "../models/Table";
-import {TableRepository} from "../repositories/table-repository.service";
-import {GraphRepository} from "../repositories/graph-repository.service";
-import {Graph} from "../models/Graph";
+
+import {DeckElement, DeckElementType} from "@app/models/DeckElement";
+import {Graph, isGraph} from "@app/models/graph";
+import {isTable, Table} from "@app/models/Table";
+import {ElementId} from "@app/models/ElementId";
+
+import {DeckElementRepository} from "@app/repositories/deck-element-repository";
+import {filter} from "lodash-es";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,48 +38,67 @@ import {Graph} from "../models/Graph";
 })
 export class DeckElementService {
 
-	constructor(private readonly tableRepository: TableRepository,
-				private readonly graphRepository: GraphRepository) {
+	constructor(private readonly repository: DeckElementRepository) {
 	}
 
-	async setDefaultStartingScore(deckElement: DeckElement, startingScore: number): Promise<void> {
-		await this.updateElement(deckElement, (x: DeckElement) => {
-			x.defaultStartingScore = startingScore;
-		});
+	async add(element: DeckElement, type: DeckElementType) : Promise<void> {
+		await this.repository.add(element, type);
 	}
 
-	async setDefaultMaximumScore(deckElement: DeckElement, startingScore: number): Promise<void> {
-		await this.updateElement(deckElement, (x: DeckElement) => {
-			x.defaultMaxScore = startingScore;
-		});
+	async delete(id: ElementId) {
+		await this.repository.delete(id);
 	}
 
-	private async updateElement(element: DeckElement,
-								updateOperation: (x: DeckElement) => void): Promise<void> {
-		if (DeckElementService.isTable(element)) {
-			await this.updateTable(element, updateOperation);
-		} else if (DeckElementService.isGraph(element)) {
-			await this.updateGraph(element, updateOperation);
+	async deleteAll(deckId: string, type: DeckElementType) {
+		const all = await this.repository.getAllByType(deckId, type);
+		for (let element of all) {
+			await this.delete({element: element.id, deck: deckId});
 		}
 	}
 
-	private async updateTable(table: Table, operation: (table: Table) => void): Promise<void> {
-		const existing = await this.tableRepository.getById(table.id);
-		operation(existing);
-		await this.tableRepository.update(existing);
+	async findTable(id: ElementId): Promise<Table> {
+		const element = await this.repository.getById(id);
+		if (!isTable(element)) {
+			throw new Error(`Table ${id.element} not found`);
+		}
+		return element;
 	}
 
-	private async updateGraph(graph: Graph, operation: (graph: Graph) => void): Promise<void> {
-		const existing = await this.graphRepository.getById(graph.id);
-		operation(existing);
-		await this.graphRepository.update(existing);
+	async findGraph(id: ElementId) : Promise<Graph> {
+		const element = await this.repository.getById(id);
+		if (!isGraph(element)) {
+			throw new Error(`Graph ${id.element} not found`);
+		}
+		return element;
 	}
 
-	private static isTable(element: DeckElement | null): element is Table {
-		return element !== null && (element as Table).sessionModeIds !== undefined;
+	async getAllTables(deckId: string) : Promise<Table[]> {
+		const all = await this.repository.getAllByType(deckId, "table");
+		return filter(all, isTable) as Table[];
 	}
 
-	private static isGraph(element: DeckElement | null): element is Graph {
-		return element !== null;
+	async getAllGraphs(deckId: string) : Promise<Graph[]> {
+		const all = await this.repository.getAllByType(deckId, "graph");
+		return filter(all, isGraph) as Graph[];
+	}
+
+	async existAny(deckId: string, type: DeckElementType) : Promise<boolean> {
+		return await this.repository.existAnyOfType(deckId, type);
+	}
+
+	async setDefaultStartingScore(element: DeckElement,
+								  startingScore: number): Promise<void> {
+		element.defaultStartingScore = startingScore;
+		await this.updateElement(element);
+	}
+
+	async setDefaultMaximumScore(deckElement: DeckElement,
+								 startingScore: number): Promise<void> {
+		deckElement.defaultMaxScore = startingScore;
+		await this.updateElement(deckElement);
+	}
+
+	async updateElement(element: DeckElement): Promise<DeckElement> {
+		return await this.repository.update(element);
 	}
 }

@@ -19,17 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {Subject, Subscribable} from "rxjs";
+import {v4 as uuid} from 'uuid';
 import {Injectable} from '@angular/core';
 
-import {v4 as uuid} from 'uuid';
-import {Table} from "../models/Table";
-import {Deck} from "../models/Deck";
-import {TableRepository} from "../repositories/table-repository.service";
-import {TableCellService} from "./table-cell.service";
-import {TableSessionModeService} from "./table-session-mode.service";
-import {Subject, Subscribable} from "rxjs";
-import {DeckRepository} from "../repositories/deck-repository.service";
-import {DeckElementTypes} from "../models/DeckElementTypes";
+import {Table} from '@app/models/Table';
+import {Deck} from '@app/models/Deck';
+import {ElementId} from "@app/models/ElementId";
+import {DeckElementService} from "@app/services/deck-element.service";
+import {DeckElementType} from "@app/models/DeckElement";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -39,67 +37,58 @@ import {DeckElementTypes} from "../models/DeckElementTypes";
 	providedIn: 'root'
 })
 export class TableService {
+	private static readonly elementType: DeckElementType = "table";
 
-	private readonly _tablesChanged = new Subject<Deck>();
-	readonly tablesChanged: Subscribable<Deck> = this._tablesChanged;
+	private readonly _tablesChanged = new Subject<string>();
+	readonly tablesChanged: Subscribable<string> = this._tablesChanged.asObservable();
+
+	private readonly _tableChanged = new Subject<Table>();
+	readonly tableChanged = this._tableChanged.asObservable();
 
 	constructor(
-		private readonly repository: TableRepository,
-		private readonly deckRepository: DeckRepository,
-		private readonly cellService: TableCellService,
-		private readonly sessionModeService: TableSessionModeService) {
+		private readonly deckElementService: DeckElementService) {
 	}
 
-	public async getById(id: string): Promise<Table> {
-		return await this.repository.getById(id);
+	public async getById(id: ElementId): Promise<Table> {
+		return await this.deckElementService.findTable(id);
+	}
+
+	async getByDeckId(deckId: string): Promise<Table[]> {
+		return await this.deckElementService.getAllTables(deckId);
 	}
 
 	public async getByDeck(deck: Deck): Promise<Table[]> {
-		return await this.repository.getByDeck(deck.id);
+		return await this.getByDeckId(deck.id);
 	}
 
 	public async anyExistForDeck(deck: Deck): Promise<boolean> {
-		return await this.repository.existAnyForDeck(deck.id);
+		return await this.deckElementService.existAny(deck.id, TableService.elementType);
 	}
 
-	public async create(deck: Deck, name: string): Promise<Table> {
+	public async create(deck: Deck, name: string) : Promise<void> {
 		const table: Table = {
 			id: uuid(),
 			deckId: deck.id,
 			name: name,
-			type: DeckElementTypes.Table,
-			sessionModeIds: [],
+			sessionModes: [],
 			defaultSessionModeId: null,
 			defaultStartingScore: 3,
 			defaultMaxScore: 8,
+			columns: [],
+			rows: []
 		};
-		await this.repository.add(table);
-		this._tablesChanged.next(deck);
-		return table;
+		await this.deckElementService.add(table, TableService.elementType);
+		this._tablesChanged.next(deck.id);
 	}
 
-	public async delete(id: string): Promise<void> {
-		const table = await this.getById(id);
-		await this.sessionModeService.deleteAllForTable(table);
-		await this.cellService.deleteAllRowsIn(table);
-		await this.cellService.deleteAllColumnsIn(table);
-		await this.repository.delete(id);
-		this._tablesChanged.next(await this.getDeck(table));
+	public async delete(id: ElementId): Promise<void> {
+		await this.deckElementService.delete(id);
+		this._tablesChanged.next(id.deck);
 	}
 
-	public async deleteAllInDeck(deck: Deck): Promise<void> {
-		const tables = await this.getByDeck(deck);
-		for (let table of tables) {
-			await this.delete(table.id);
-		}
-		this._tablesChanged.next(deck);
-	}
-
-	public async update(table: Table): Promise<void> {
-		await this.repository.update(table);
-	}
-
-	private async getDeck(table: Table): Promise<Deck> {
-		return await this.deckRepository.getById(table.deckId);
+	public async update(table: Table): Promise<Table> {
+		const result = await this.deckElementService.updateElement(table) as Table;
+		this._tableChanged.next(result);
+		return result;
 	}
 }

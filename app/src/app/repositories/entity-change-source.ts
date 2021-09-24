@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,13 +19,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {Subscribable, Unsubscribable} from "rxjs";
+import {IdEntity} from "@app/repositories/id-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.12
+ * @since 2021.07.29
  */
-export interface GraphNode extends BaseEntity {
-	graphId: string,
-	valueId: string,
+export interface EntityChangeSource<TEntity extends IdEntity> {
+	entityCreated: Subscribable<TEntity>;
+	entityDeleted: Subscribable<string>;
+	entityUpdated: Subscribable<TEntity>;
+}
+
+export interface EntityChangeSubscription<TEntity extends IdEntity> {
+	entityCreated : Unsubscribable;
+	entityDeleted: Unsubscribable;
+	entityUpdated: Unsubscribable;
 }

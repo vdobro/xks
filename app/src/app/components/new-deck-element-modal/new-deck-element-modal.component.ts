@@ -24,10 +24,11 @@ import UIkit from 'uikit';
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {Deck} from "../../models/Deck";
-import {GraphService} from "../../services/graph.service";
-import {TableService} from "../../services/table.service";
-import {FlashcardSetService} from "../../services/flashcard-set.service";
+import {Deck} from "@app/models/Deck";
+
+import {GraphService} from "@app/services/graph.service";
+import {TableService} from "@app/services/table.service";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
 
 /**
  * @author Vitalijus Dobrovolskis

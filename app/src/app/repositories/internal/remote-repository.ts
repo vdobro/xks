@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,20 +19,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {IdEntity} from "@app/repositories/id-entity";
+import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
+import {User} from "@app/models/User";
+
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.09.09
+ * @since 2021.07.29
  */
-export interface TableConfiguration {
-	decks: string,
-	tables: string,
-	tableColumns: string,
-	tableRows: string,
-	tableSessionModes: string
-	graphs: string,
-	graphNodes: string,
-	graphEdges: string,
-	flashcards: string,
-	flashcardSets: string,
-	answerValues: string,
+export class RemoteRepository<TEntity extends IdEntity> extends CouchDbRepository<TEntity> {
+	constructor(entityIdentifier: String, user: User, remoteDbName: string) {
+		super(`remote_${entityIdentifier}`, remoteDbName);
+	}
 }

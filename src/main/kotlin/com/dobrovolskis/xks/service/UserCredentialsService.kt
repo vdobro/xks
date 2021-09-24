@@ -22,12 +22,12 @@
 package com.dobrovolskis.xks.service
 
 import com.dobrovolskis.xks.config.PersistenceConfiguration
+import com.dobrovolskis.xks.web.CredentialsError
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 
 /**
@@ -38,22 +38,30 @@ import org.springframework.web.client.RestTemplate
 class UserCredentialsService(persistenceConfiguration: PersistenceConfiguration) {
 	private val sessionUrl = persistenceConfiguration.url + "_session"
 
-	fun credentialsCorrect(username: String, password: String): Boolean {
-		return try {
+	fun getCurrentUser(cookie: String): String {
+		try {
 			val restTemplate = RestTemplate()
 			val headers = HttpHeaders()
 			headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
+			headers.add("Cookie", "AuthSession=${cookie}")
 
-			val map: MultiValueMap<String, String> = LinkedMultiValueMap()
-			map.add("name", username)
-			map.add("password", password)
-
-			val request = HttpEntity(map, headers)
-			restTemplate.postForEntity(sessionUrl, request, String::class.java)
-			true
+			val request = HttpEntity(null, headers)
+			val response = restTemplate.exchange(sessionUrl, HttpMethod.GET, request, SessionResponse::class.java)
+			val body = response.body!!
+			require(body.ok)
+			return body.userCtx.name
 		} catch (e: Throwable) {
-			false
+			throw CredentialsError()
 		}
 	}
-
 }
+
+private data class SessionResponse(
+	val ok: Boolean,
+	val userCtx: SessionUserInfo,
+)
+
+private data class SessionUserInfo(
+	val name: String,
+	val roles: List<String>,
+)

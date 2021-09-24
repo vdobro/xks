@@ -19,11 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-
 import UIkit from 'uikit';
+
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {DeckService} from "../../services/deck.service";
+
+import {DeckService} from "@app/services/deck.service";
 
 /**
  * @author Vitalijus Dobrovolskis

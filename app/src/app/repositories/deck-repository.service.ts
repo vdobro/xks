@@ -20,11 +20,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Deck} from "../models/Deck";
-import {BaseDataEntity} from "./BaseRepository";
-import {AbstractRepository} from "./AbstractRepository";
-import {UserSessionService} from "../services/user-session.service";
-import {TableConfiguration} from "../models/TableConfiguration";
+
+import {Deck} from "@app/models/Deck";
+
+import {User} from "@app/models/User";
+import {DualRepository} from "@app/repositories/dual-repository";
+import {UserSessionService} from "@app/services/user-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,39 +34,19 @@ import {TableConfiguration} from "../models/TableConfiguration";
 @Injectable({
 	providedIn: 'root'
 })
-export class DeckRepository extends AbstractRepository<Deck, DeckEntity> {
+export class DeckRepository extends DualRepository<Deck> {
 
 	constructor(userSessionService: UserSessionService) {
-		super('deck', userSessionService);
+		super("decks", (id: string, user: User) => {
+			return DeckRepository.resolveRemoteDatabaseName(user);
+		}, userSessionService);
 	}
 
-	protected mapToDataEntity(entity: Deck): DeckEntity {
-		return {
-			_id: entity.id,
-			_rev: '',
-			name: entity.name,
-			description: entity.description
-		};
+	private static resolveRemoteDatabaseName(user: User): string {
+		const hex = user.name
+			.split('')
+			.map(c => c.charCodeAt(0).toString(16))
+			.join('');
+		return "userdb-" + hex;
 	}
-
-	protected mapToEntity(entity: DeckEntity): Deck {
-		return {
-			id: entity._id,
-			name: entity.name,
-			description: entity.description,
-		};
-	}
-
-	protected resolveRemoteDatabaseName(tableConfig: TableConfiguration): string {
-		return tableConfig.decks;
-	}
-
-	protected getIndexFields(): string[] {
-		return [];
-	}
-}
-
-interface DeckEntity extends BaseDataEntity {
-	name: string;
-	description: string
 }

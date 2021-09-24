@@ -34,7 +34,7 @@ export const environment = {
 // @ts-ignore
 	serverUrl: window["env"]["apiUrl"] || "http://localhost:8080",
 // @ts-ignore
-	databaseUrl: window["env"]["dbUrl"] || "http://172.17.0.3:5984"
+	databaseUrl: window["env"]["dbUrl"] || "http://172.19.0.5:5984"
 };
 
 /*
@@ -44,4 +44,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+import 'zone.js/plugins/zone-error'; // Included with Angular CLI.

@@ -19,26 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {TableCellService} from './table-cell.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {BaseEntity} from "./BaseEntity";
+import {AnswerValue} from "./answer-value";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.03
+ * @since 2020.09.12
  */
-describe('TableCellService', () => {
-	let service: TableCellService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
-		service = TestBed.inject(TableCellService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+export interface GraphNode extends BaseEntity {
+	value: AnswerValue,
+}

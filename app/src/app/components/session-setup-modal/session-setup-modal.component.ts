@@ -22,20 +22,20 @@
 import UIkit from 'uikit';
 
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {Table} from "../../models/Table";
-import {NavigationService} from "../../services/navigation.service";
-import {TableSessionModeWizardComponent} from "../table-session-mode-wizard/table-session-mode-wizard.component";
-import {TableSessionModeService} from "../../services/table-session-mode.service";
-import {SessionModeChooserComponent} from "../session-mode-chooser/session-mode-chooser.component";
 import {FormControl} from "@angular/forms";
-import {TableService} from "../../services/table.service";
-import {TableSessionModeRepository} from "../../repositories/table-session-mode-repository.service";
-import {SessionScoreSettingsComponent} from "../session-score-settings/session-score-settings.component";
-import {DeckElement} from "../../models/DeckElement";
-import {ScoreParams} from "../session-view/session-view.component";
-import {ElementTypeUtilities} from "../../models/DeckElementTypes";
-import {Graph} from "../../models/Graph";
-import {FlashcardSet} from "../../models/FlashcardSet";
+
+import {DeckElement} from "@app/models/DeckElement";
+import {isTable, Table} from "@app/models/Table";
+import {Graph, isGraph} from "@app/models/graph";
+
+import {NavigationService} from "@app/services/navigation.service";
+import {TableSessionModeService} from "@app/services/table-session-mode.service";
+import {TableService} from "@app/services/table.service";
+
+import {ScoreParams} from "@app/components/session-view/session-view.component";
+import {SessionScoreSettingsComponent} from "@app/components/session-score-settings/session-score-settings.component";
+import {SessionModeChooserComponent} from "@app/components/session-mode-chooser/session-mode-chooser.component";
+import {TableSessionModeWizardComponent} from "@app/components/table-session-mode-wizard/table-session-mode-wizard.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -94,10 +94,9 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	constructor(
 		private readonly navigationService: NavigationService,
 		private readonly tableService: TableService,
-		private readonly sessionModeService: TableSessionModeService,
-		sessionModeRepository: TableSessionModeRepository) {
+		private readonly sessionModeService: TableSessionModeService) {
 
-		sessionModeRepository.entityDeleted.subscribe(async _ => {
+		sessionModeService.$modesChanged.subscribe(async _ => {
 			await this.checkIfSessionModesExist();
 		})
 	}
@@ -181,8 +180,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			return;
 		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
-			const mode = await this.sessionModeService.getById(modeId);
-			await this.sessionModeService.setAsDefault(mode);
+			const mode = await this.sessionModeService.getById(modeId, this.table);
+			await this.sessionModeService.setAsDefault(mode, this.table);
 		}
 	}
 

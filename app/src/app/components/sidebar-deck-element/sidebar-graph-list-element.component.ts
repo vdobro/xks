@@ -20,12 +20,14 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+
+import {Graph} from "@app/models/graph";
+
+import {NavigationService} from "@app/services/navigation.service";
+import {GraphService} from "@app/services/graph.service";
+import {GraphElementService} from "@app/services/graph-element.service";
+
 import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
-import {Graph} from "../../models/Graph";
-import {NavigationService} from "../../services/navigation.service";
-import {GraphService} from "../../services/graph.service";
-import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
-import {GraphEdgeRepository} from "../../repositories/graph-edge-repository.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -42,36 +44,41 @@ export class SidebarGraphListElementComponent
 
 	constructor(
 		private readonly graphService: GraphService,
-		private readonly nodeRepository: GraphNodeRepository,
-		private readonly edgeRepository: GraphEdgeRepository,
+		private readonly graphElementService: GraphElementService,
 		private readonly navigationService: NavigationService) {
 		super();
 		this.elementType = 'graph';
 	}
 
-	async ngOnInit() {
-		await super.ngOnInit();
+	ngOnInit() {
+		super.ngOnInit();
 
-		await this.refreshCounter();
+		this.refreshCounter();
 	}
 
 	protected async onClickHandler(id: string): Promise<void> {
-		await this.navigationService.openGraph(id);
+		if (!this.deck) {
+			return;
+		}
+		await this.navigationService.openGraph({element: id, deck: this.deck.id});
 	}
 
 	protected async onDeleteHandler(id: string): Promise<void> {
-		await this.graphService.delete(id);
+		if (!this.deck) {
+			return;
+		}
+		await this.graphService.delete({element: id, deck: this.deck.id});
 	}
 
 	protected async onUpdateHandler(element: SidebarDeckElement): Promise<void> {
 		await this.graphService.update(element as Graph);
 	}
 
-	private async refreshCounter() {
+	private refreshCounter() {
 		if (this.element) {
 			const graph = this.element as Graph;
-			const edges = (await this.edgeRepository.getAllInGraph(graph)).length;
-			const nodes = (await this.nodeRepository.getAllInGraph(graph)).length;
+			const edges = graph.edges.length;
+			const nodes = graph.nodes.length;
 			if (edges && nodes) {
 				this.elementCount = `${nodes} + ${edges}`;
 			} else if (nodes) {

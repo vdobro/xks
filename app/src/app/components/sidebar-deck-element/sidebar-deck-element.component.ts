@@ -21,7 +21,10 @@
 
 import {Directive, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {ConfirmDeleteElementModalComponent} from "../confirm-delete-element-modal/confirm-delete-element-modal.component";
+
+import {Deck} from "@app/models/Deck";
+
+import {ConfirmDeleteElementModalComponent} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,6 +44,9 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 	@Input()
 	element: SidebarDeckElement | undefined;
 
+	@Input()
+	deck: Deck | null = null;
+
 	editMode: boolean = false;
 	nameInput = new FormControl('');
 	elementCount: string | number = 0;
@@ -49,7 +55,7 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 	protected constructor() {
 	}
 
-	async ngOnInit() {
+	ngOnInit() {
 		this.nameInput.setValue(this.element?.name);
 	}
 

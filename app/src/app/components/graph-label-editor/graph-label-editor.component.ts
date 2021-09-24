@@ -30,13 +30,13 @@ import {
 	Output,
 	ViewChild
 } from '@angular/core';
-import {GraphElementService} from "../../services/graph-element.service";
-import {GraphNode} from "../../models/GraphNode";
 import {FormControl} from "@angular/forms";
-import {Graph} from "../../models/Graph";
-import {GraphNodeRepository} from "../../repositories/graph-node-repository.service";
-import {GraphEdge} from "../../models/GraphEdge";
-import {AnswerValueService} from "../../services/answer-value.service";
+
+import {GraphNode} from "@app/models/graph-node";
+import {GraphEdge} from "@app/models/graph-edge";
+
+import {GraphElementService} from "@app/services/graph-element.service";
+import {ElementId} from "@app/models/ElementId";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,7 +55,8 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	nodeLabelInputElement: ElementRef | undefined;
 
 	@Input()
-	graph: Graph | null = null;
+	graphId: ElementId | null = null;
+
 	@Input()
 	selectedNode: GraphNode | null = null;
 	@Input()
@@ -69,10 +70,7 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	nodeLabelInput = new FormControl('');
 	edgeLabelInput = new FormControl('');
 
-	constructor(
-		private readonly nodeRepository: GraphNodeRepository,
-		private readonly elementService: GraphElementService,
-		private readonly answerService: AnswerValueService) {
+	constructor(private readonly elementService: GraphElementService) {
 	}
 
 	ngOnInit(): void {
@@ -82,14 +80,12 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 		setTimeout(async () => {
 			if (this.edgeLabelInputElement) {
 				this.edgeLabelInputElement.nativeElement.focus();
-				this.edgeLabelInput.setValue(this.selectedEdge?.name);
+				this.edgeLabelInput.setValue(this.selectedEdge?.value?.default);
 			} else if (this.nodeLabelInputElement) {
 				this.nodeLabelInputElement.nativeElement.focus();
 			}
 			if (this.nodeLabelInputElement && !this.shouldAppend) {
-				const value = this.selectedNode
-					? (await this.answerService.getForNode(this.selectedNode)).defaultValue
-					: '';
+				const value = this.selectedNode?.value?.default || '';
 				this.nodeLabelInput.setValue(value);
 			}
 		});
@@ -101,19 +97,16 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	}
 
 	async submitValue() {
-		if (!this.graph || (!this.nodeLabelInput.value && !this.edgeLabelInput.value)) {
+		if (!this.graphId) {
 			return;
 		}
 
 		if (this.shouldAppend && this.selectedNode) {
 			await this.appendNewNode();
-		} else if (this.selectedNode || this.selectedEdge) {
-			if (this.selectedEdge) {
-				await this.renameEdge();
-			}
-			if (this.selectedNode) {
-				await this.renameNode();
-			}
+		} else if (this.selectedEdge) {
+			await this.renameEdge();
+		} else if (this.selectedNode) {
+			await this.renameNode();
 		} else {
 			await this.createNode();
 		}
@@ -123,35 +116,34 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	private async appendNewNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
 		const edgeLabel = this.edgeLabelInput.value?.trim();
-		if (!nodeLabel || !this.graph || !this.selectedNode) {
+		if (!nodeLabel || !this.graphId || !this.selectedNode) {
 			return;
 		}
-		const newNode = await this.elementService.addNode(this.graph, nodeLabel);
-		await this.elementService.addEdge(this.graph, this.selectedNode, newNode, edgeLabel);
+		const newNode = await this.elementService.addNodeToGraph(this.graphId, nodeLabel);
+		await this.elementService.addEdgeToGraph(this.graphId, this.selectedNode, newNode, edgeLabel);
 	}
 
 	private async renameEdge() {
-		if (!this.selectedEdge) {
+		if (!this.selectedEdge || !this.graphId) {
 			return;
 		}
-		this.selectedEdge.name = this.edgeLabelInput.value.trim();
-		await this.elementService.updateEdge(this.selectedEdge);
+		const label = this.edgeLabelInput.value.trim();
+		await this.elementService.updateEdge(label, this.selectedEdge.id, this.graphId);
 	}
 
 	private async renameNode() {
-		const nodeLabel = this.nodeLabelInput.value.trim();
-		if (!nodeLabel || !this.selectedNode) {
+		if (!this.selectedNode || !this.graphId) {
 			return;
 		}
-		const existingValue = await this.answerService.getForNode(this.selectedNode);
-		await this.answerService.setDefault(nodeLabel, existingValue);
+		const newLabel = this.nodeLabelInput.value.trim();
+		await this.elementService.updateNode(newLabel, this.selectedNode.id, this.graphId);
 	}
 
 	private async createNode() {
 		const nodeLabel = this.nodeLabelInput.value.trim();
-		if (!nodeLabel || !this.graph) {
+		if (!nodeLabel || !this.graphId) {
 			return;
 		}
-		await this.elementService.addNode(this.graph, nodeLabel);
+		await this.elementService.addNodeToGraph(this.graphId, nodeLabel);
 	}
 }

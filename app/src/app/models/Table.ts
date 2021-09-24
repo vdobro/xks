@@ -21,13 +21,21 @@
 
 import {DeckElement} from "./DeckElement";
 import {BaseEntity} from "./BaseEntity";
+import {TableColumn} from "./TableColumn";
+import {TableRow} from "./TableRow";
+import {TableSessionMode} from "./TableSessionMode";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.04.03
  */
 export interface Table extends DeckElement, BaseEntity {
-	sessionModeIds: string[]
 	defaultSessionModeId: string | null,
+	columns: TableColumn[],
+	rows: TableRow[],
+	sessionModes: TableSessionMode[]
 }
 
+export function isTable(element: DeckElement | null): element is Table {
+	return element !== null && (element as Table).defaultSessionModeId !== undefined;
+}

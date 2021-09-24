@@ -19,11 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Deck} from "../../models/Deck";
-
 import UIkit from 'uikit';
-import {SidebarService} from "../../services/sidebar.service";
+
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+
+import {Deck} from "@app/models/Deck";
+
+import {SidebarService} from "@app/services/sidebar.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,6 +57,8 @@ export class DeckListViewComponent implements OnInit {
 		}
 
 		// @ts-ignore It can actually scroll to an index
-		UIkit.scroll(0).scrollTo(this.deckListFooter.nativeElement);
+		if (this.decks.length > 0) {
+			UIkit.scroll(this.deckListFooter.nativeElement);
+		}
 	}
 }

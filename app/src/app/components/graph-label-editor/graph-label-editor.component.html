@@ -21,7 +21,7 @@
 			<input #nodeLabelInputElement
 				   class="uk-input uk-form-width-medium uk-form-small"
 				   type="text"
-				   placeholder="{{selectedNode && !shouldAppend ? 'Change' : 'New'}} node name"
+				   placeholder="{{selectedNode?.value?.default && !shouldAppend ? 'Change' : 'New'}} node name"
 				   [formControl]="nodeLabelInput">
 		</div>
 	</div>

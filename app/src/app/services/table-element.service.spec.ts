@@ -20,22 +20,22 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {AnswerValueRepository} from './answer-value-repository.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TableElementService} from '@app/services/table-element.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.20
+ * @since 2020.08.03
  */
-describe('AnswerValueRepositoryService', () => {
-	let service: AnswerValueRepository;
+describe('TableElementService', () => {
+	let service: TableElementService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [HttpClientTestingModule]
 		});
-		service = TestBed.inject(AnswerValueRepository);
+		service = TestBed.inject(TableElementService);
 	});
 
 	it('should be created', () => {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,26 +19,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TestBed} from '@angular/core/testing';
-
-import {TableColumnRepository} from './table-column-repository.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+package com.dobrovolskis.xks.web
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.02
+ * @since 2021.07.26
  */
-describe('TableColumnRepository', () => {
-	let service: TableColumnRepository;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
-		service = TestBed.inject(TableColumnRepository);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+class CredentialsError : RuntimeException("Incorrect credentials") {
+}
