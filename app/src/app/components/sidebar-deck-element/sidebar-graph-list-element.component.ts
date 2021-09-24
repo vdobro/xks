@@ -42,17 +42,25 @@ export class SidebarGraphListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
+	private graph: Graph | null = null;
+
 	constructor(
 		private readonly graphService: GraphService,
 		private readonly graphElementService: GraphElementService,
 		private readonly navigationService: NavigationService) {
 		super();
+
+		this.graphElementService.elementCountChanged.subscribe(async graph => {
+			if (this.element?.id === graph.id) {
+				await this.refreshGraph();
+			}
+		});
 	}
 
-	ngOnInit() {
+	async ngOnInit() {
 		super.ngOnInit();
 
-		this.refreshCounter();
+		await this.refreshGraph();
 	}
 
 	protected async onClickHandler(id: string): Promise<void> {
@@ -73,18 +81,27 @@ export class SidebarGraphListElementComponent
 		await this.graphService.update(element as Graph);
 	}
 
-	private refreshCounter() {
-		if (this.element) {
-			const graph = this.element as Graph;
-			const edges = graph.edges.length;
-			const nodes = graph.nodes.length;
-			if (edges && nodes) {
-				this.elementCount = `${nodes} + ${edges}`;
-			} else if (nodes) {
-				this.elementCount = nodes;
-			} else {
-				this.elementCount = 0;
-			}
+	private async refreshGraph() {
+		if (!this.deck || !this.element) {
+			return;
 		}
+		this.graph = await this.graphService.getById({element: this.element.id, deck: this.deck.id});
+		this.elementCount = this.formatElementCount();
+	}
+
+	private formatElementCount(): string {
+		if (!this.graph) {
+			return '-';
+		}
+
+		const edges = this.graph.edges.length;
+		const nodes = this.graph.nodes.length;
+		if (edges > 0 && nodes > 0) {
+			return `${nodes} + ${edges}`;
+		}
+		if (nodes) {
+			return `${nodes}`;
+		}
+		return '0';
 	}
 }
