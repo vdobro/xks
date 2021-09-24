@@ -42,7 +42,7 @@ export class SidebarTableListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
-	private table : Table|  null = null;
+	private table : Table |  null = null;
 
 	constructor(
 		private readonly tableCellService: TableElementService,
@@ -70,8 +70,8 @@ export class SidebarTableListElementComponent
 		if (!this.element) {
 			return;
 		}
-		await this.refreshTable(this.element.id);
-		this.elementCount = this.table!!.rows.length;
+		await this.refreshTable();
+		this.elementCount = this.table?.rows?.length || 0;
 	}
 
 	protected async onClickHandler(id: string) {
@@ -90,9 +90,9 @@ export class SidebarTableListElementComponent
 		await this.tableService.update(element as Table);
 	}
 
-	private async refreshTable(elementId: string) {
-		if (this.deck) {
-			this.table = await this.tableService.getById({element: elementId, deck: this.deck.id});
+	private async refreshTable() {
+		if (this.deck && this.element) {
+			this.table = await this.tableService.getById({element: this.element.id, deck: this.deck.id});
 		}
 	}
 }

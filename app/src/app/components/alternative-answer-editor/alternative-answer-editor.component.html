@@ -10,20 +10,27 @@
 				<div class="uk-inline uk-width-1-1"
 					 *ngFor="let inputControl of inputs.controls; index as i">
 					<a class="uk-form-icon uk-form-icon-flip"
-					   (click)="inputs.controls.splice(i, 1)"
+					   (click)="onRemoveValueClick(i)"
 					   uk-icon="trash"></a>
-					<input [formControl]="$any(inputControl)" class="uk-input"/>
+					<input [formControl]="$any(inputControl)"
+						   #valueInput
+						   [autofocus]="i===inputs.controls.length - 1"
+						   (ngModelChange)="checkValuesValid()"
+						   (keydown.enter)="onEnterKeyDown();$event.preventDefault();$event.stopPropagation();"
+						   class="uk-input" />
 				</div>
 				<div class="uk-inline uk-width-1-1">
 					<button type="button"
-							[disabled]="inputs.controls.length > 0 && !inputs.controls[inputs.controls.length - 1]?.value"
+							[disabled]="inputs.controls.length > 0 && anyInputEmpty"
 							(click)="onAddValueClick()"
 							class="uk-button uk-button-default uk-button-small">
 						Add value
 					</button>
 				</div>
 				<div class="uk-inline uk-width-1-1">
-					<button type="submit" class="uk-button uk-button-primary uk-float-right">
+					<button type="submit"
+							[disabled]="anyInputEmpty"
+							class="uk-button uk-button-primary uk-float-right">
 						Save
 					</button>
 				</div>

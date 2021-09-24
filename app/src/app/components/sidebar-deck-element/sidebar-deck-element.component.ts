@@ -35,7 +35,7 @@ import {ConfirmDeleteElementModalComponent} from "@app/components/confirm-delete
 })
 export abstract class SidebarDeckElementComponent implements OnInit {
 
-	@ViewChild('inputElement', {static: true})
+	@ViewChild('inputElement')
 	inputElement: ElementRef | undefined;
 
 	@ViewChild(ConfirmDeleteElementModalComponent)
@@ -71,7 +71,7 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 	}
 
 	async onChangesSubmit() {
-		if (!this.element) {
+		if (!this.element || !this.nameInput.value) {
 			return;
 		}
 		this.element.name = this.nameInput.value;
