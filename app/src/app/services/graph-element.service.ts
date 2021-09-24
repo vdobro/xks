@@ -19,17 +19,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {v4 as uuid} from 'uuid';
+import {v4 as uuid} from "uuid";
 import {find} from "lodash-es";
+import {Subject} from "rxjs";
 
 import {Injectable} from '@angular/core';
+
 import {Graph, GraphElements} from "@app/models/graph";
 import {GraphNode} from "@app/models/graph-node";
 import {GraphEdge} from "@app/models/graph-edge";
 import {answersEqual, AnswerValue, cloneAnswer} from "@app/models/answer-value";
+import {ElementId} from "@app/models/ElementId";
 
 import {GraphService} from "@app/services/graph.service";
-import {ElementId} from "@app/models/ElementId";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -42,8 +44,11 @@ export class GraphElementService {
 
 	private static unnamedEdgePlaceholderNumber: number = 1;
 
-	constructor(private readonly graphService: GraphService) {
+	private readonly _elementCountChanged = new Subject<Graph>();
 
+	readonly elementCountChanged = this._elementCountChanged.asObservable();
+
+	constructor(private readonly graphService: GraphService) {
 	}
 
 	async anyNodesAndEdgesExist(graph: Graph): Promise<boolean> {
@@ -62,13 +67,15 @@ export class GraphElementService {
 			value: answer,
 		};
 		graph.nodes.push(node);
-		await this.graphService.update(graph);
+		const updatedGraph = await this.graphService.update(graph);
+		this._elementCountChanged.next(updatedGraph);
 		return node;
 	}
 
 	async removeNode(node: GraphNode, graph: Graph) {
 		graph.nodes = graph.nodes.filter(x => x.id !== node.id);
-		await this.graphService.update(graph);
+		const updatedGraph = await this.graphService.update(graph);
+		this._elementCountChanged.next(updatedGraph);
 	}
 
 	async removeNodeFromGraph(node: GraphNode, graphId: ElementId) {
@@ -78,7 +85,9 @@ export class GraphElementService {
 
 	async removeEdge(edge: GraphEdge, graph: Graph) {
 		graph.edges = graph.edges.filter(x => x.id !== edge.id);
-		await this.graphService.update(graph);
+		const updatedGraph = await this.graphService.update(graph);
+		this._elementCountChanged.next(updatedGraph);
+		return updatedGraph;
 	}
 
 	async removeEdgeFromGraph(edge: GraphEdge, graphId: ElementId) {
@@ -97,7 +106,8 @@ export class GraphElementService {
 		await this.graphService.update(graph);
 
 		GraphElementService.nameAllEdgesIfAnyAreLabeled(from, graph);
-		await this.graphService.update(graph);
+		const updatedGraph = await this.graphService.update(graph);
+		this._elementCountChanged.next(updatedGraph);
 
 		return edge;
 	}
