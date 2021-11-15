@@ -4,10 +4,10 @@
 	[row]="row"
 	[column]="column"
 	[newCell]="false"
-	(cellValueChanged)="cellChanged($event, row!!, column)"
+	(cellValueChanged)="cellChanged($event, row!, column)"
 	(editingStarted)="editingStarted.emit()"
 	(editingStopped)="editingStopped.emit()">
 </td>
 <td>
-	<a uk-icon="trash" (click)="this.rowDeleted.emit(this.row!!)"></a>
+	<a uk-icon="trash" (click)="this.rowDeleted.emit(this.row!)"></a>
 </td>

@@ -20,7 +20,7 @@
  */
 
 import {v4 as uuid} from 'uuid';
-import {Subject, Subscribable} from "rxjs";
+import {BehaviorSubject, firstValueFrom, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
@@ -43,12 +43,15 @@ export class DeckService {
 	private readonly apiRoot = stripTrailingSlash(environment.serverUrl);
 	private readonly deckApiRoot = `${this.apiRoot}/api/deck`;
 
-	private readonly _decksChanged = new Subject<void>();
-	readonly decksChanged: Subscribable<void> = this._decksChanged;
+	private readonly _decksChanged = new BehaviorSubject<Deck[]>([]);
+	readonly decksChanged: Subscribable<Deck[]> = this._decksChanged;
 
 	constructor(private readonly repository: DeckRepository,
 				private readonly userSessionService: UserSessionService,
 				private readonly httpClient: HttpClient) {
+		this.repository.sourceChanged.subscribe(async () => {
+			await this.onDecksChanged();
+		});
 	}
 
 	async getById(id: string): Promise<Deck> {
@@ -59,46 +62,53 @@ export class DeckService {
 		return await this.repository.getAll();
 	}
 
-	async create(name: string, description: string): Promise<Deck> {
+	async create(name: string, description: string): Promise<void> {
+		const ownerToken = uuid();
 		const newDeck: Deck = {
 			id: uuid(),
 			name: name,
 			description: description,
 			database: '',
-			ownerToken: uuid(),
+			ownerToken: ownerToken,
 		};
 		await this.repository.add(newDeck, "deck");
-		const databaseName = await this.getRemoteDatabaseName(newDeck);
+		newDeck.database = await this.getRemoteDatabaseName(newDeck);
+		await this.repository.update(newDeck);
 
-		this._decksChanged.next();
-		newDeck.database = databaseName;
-		return newDeck;
+		await this.onDecksChanged();
 	}
 
 	async update(deck: Deck) {
 		await this.repository.update(deck);
+		await this.onDecksChanged();
 	}
 
 	async delete(deck: Deck) {
 		if (this.userSessionService.isLoggedIn()) {
+			await this.repository.destroy();
 			const params = new HttpParams()
 				.append('token', deck.ownerToken)
-				.append('username', this.userSessionService.getUserName()!!);
+				.append('username', this.userSessionService.getUserName()!);
 			const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
-			await this.httpClient.delete(url).toPromise();
+			await firstValueFrom(this.httpClient.delete(url));
 		}
-		await this.repository.delete(deck.id)
+		await this.repository.delete(deck.id);
+		await this.onDecksChanged();
 	}
 
 	private async getRemoteDatabaseName(deck: Deck): Promise<string> {
 		if (!this.userSessionService.isLoggedIn()) {
 			return '';
 		}
-		const result = await this.httpClient.post<{
+		const result = await firstValueFrom(this.httpClient.post<{
 			database: string
 		}>(this.deckApiRoot + "/" + deck.id, {
-			username: this.userSessionService.getUserName()!!
-		}).toPromise();
+			username: this.userSessionService.getUserName()!
+		}));
 		return result.database;
+	}
+
+	private async onDecksChanged() {
+		this._decksChanged.next(await this.getAll());
 	}
 }

@@ -104,9 +104,11 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		private readonly topBarService: TopBarService,
 		private readonly sidebarService: SidebarService,
 		private readonly activatedRoute: ActivatedRoute) {
-		this.navControlService.rootContainerWidth.subscribe((value: number) => {
-			this.rootContainerWidth = value;
-		})
+		this.navControlService.rootContainerWidth.subscribe({
+			next: (value: number) => {
+				this.rootContainerWidth = value;
+			}
+		});
 	}
 
 	async ngOnInit() {
@@ -177,7 +179,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 			this.graphName = graph?.name || null;
 
 			if (graph) {
-				await this.sidebarService.selectGraph(graph);
+				await this.sidebarService.selectDeckElement(graph);
 				await this.setUpNetworkView();
 			} else {
 				await this.navigationService.goToDeckList();
@@ -192,7 +194,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 			}
 			this.graphName = updatedGraph?.name || null;
 
-			const oldGraph = this.graphElements!!;
+			const oldGraph = this.graphElements!;
 			const diff = this.graphElementService.getDiff(oldGraph, updatedGraph);
 			for (let addedNode of diff.added.nodes) {
 				this.addNode(addedNode, true);
@@ -293,7 +295,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		if (this.selectedSourceNode) {
 			const source = this.selectedSourceNode;
 			this.selectedSourceNode = null;
-			await this.graphElementService.addEdgeToGraph(this.graphId!!, source, this.selectedNode);
+			await this.graphElementService.addEdgeToGraph(this.graphId!, source, this.selectedNode);
 		}
 	}
 

@@ -20,13 +20,13 @@
 			<div class="uk-navbar-right">
 				<ul class="uk-navbar-nav">
 					<li *ngIf="loginEnabled">
-						<a (click)="openLoginDialog()">Login</a>
+						<a (click)="openLoginDialog()">Log in</a>
 					</li>
 					<li *ngIf="loginEnabled">
 						<a (click)="openRegisterDialog()">Register</a>
 					</li>
 					<li *ngIf="!loginEnabled">
-						<a (click)="logout()">Logout</a>
+						<a (click)="logout()">Log out</a>
 					</li>
 				</ul>
 			</div>

@@ -83,7 +83,7 @@ export class TableViewComponent implements OnInit {
 			this.table = (id && deckId) ? await this.tableService.getById({element: id, deck: deckId}) : null;
 
 			if (this.table) {
-				await this.sidebarService.selectTable(this.table);
+				await this.sidebarService.selectDeckElement(this.table);
 				this.reloadRows();
 			} else {
 				await this.navigationService.goToDeckList();
@@ -106,24 +106,24 @@ export class TableViewComponent implements OnInit {
 	}
 
 	async deleteColumn(column: TableColumn) {
-		if (this.table!!.columns.length === 1) {
-			await this.cellService.deleteAllRowsIn(this.table!!);
+		if (this.table!.columns.length === 1) {
+			await this.cellService.deleteAllRowsIn(this.table!);
 		}
-		await this.cellService.deleteColumn(column, this.table!!);
+		await this.cellService.deleteColumn(column, this.table!);
 	}
 
 	async deleteRow(row: TableRow) {
-		await this.cellService.deleteRow(row, this.table!!);
+		await this.cellService.deleteRow(row, this.table!);
 		this.reloadRows();
 	}
 
 	async dropRow(event: CdkDragDrop<TableViewComponent, TableRowComponent>) {
-		await this.cellService.moveRow(event.previousIndex, event.currentIndex, this.table!!);
+		await this.cellService.moveRow(event.previousIndex, event.currentIndex, this.table!);
 		this.reloadRows();
 	}
 
 	async dropColumn(event: CdkDragDrop<TableViewComponent, TableColumnComponent>) {
-		await this.cellService.moveColumn(event.previousIndex, event.currentIndex, this.table!!);
+		await this.cellService.moveColumn(event.previousIndex, event.currentIndex, this.table!);
 	}
 
 	async columnChanged(column: TableColumn) {

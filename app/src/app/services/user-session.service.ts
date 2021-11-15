@@ -20,13 +20,17 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Subject, Subscribable} from "rxjs";
+import {firstValueFrom, Subject, Subscribable} from "rxjs";
 import {User} from "@app/models/User";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "@environments/environment";
 import {stripTrailingSlash} from "@environments/utils";
 
 const USERNAME_KEY = "current_user_name";
+
+const HTTP_OPTIONS = {
+	withCredentials: true
+}
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,10 +41,6 @@ const USERNAME_KEY = "current_user_name";
 })
 export class UserSessionService {
 
-	private readonly httpOptions = {
-		withCredentials: true
-	}
-
 	private readonly apiRoot = stripTrailingSlash(environment.serverUrl);
 	private readonly databaseRoot = stripTrailingSlash(environment.databaseUrl);
 
@@ -49,7 +49,7 @@ export class UserSessionService {
 	private readonly forgetUrl = this.userApiRoot + "/forget";
 
 	private readonly sessionUrl = this.databaseRoot + "/_session";
-	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:"
+	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:";
 
 	private readonly _userLoggedIn = new Subject<boolean>();
 	private readonly _currentUserChanged = new Subject<User | null>();
@@ -59,10 +59,9 @@ export class UserSessionService {
 
 	private currentUser: User | null = null;
 
-	constructor(private httpClient: HttpClient) {
-		this.getUser().then(async () => {
-			const user = await this.getUser();
-			await this.updateCurrentUser(user);
+	constructor(private readonly httpClient: HttpClient) {
+		this.getUser().then((result) => {
+			this.updateCurrentUser(result);
 		}).catch(async () => {
 			await this.logout();
 		});
@@ -70,27 +69,31 @@ export class UserSessionService {
 
 	async login(username: string, password: string) {
 		try {
-			await this.httpClient.post(
+			await firstValueFrom(this.httpClient.post(
 				this.sessionUrl,
 				UserSessionService.authRequest(username, password),
-				this.httpOptions).toPromise();
+				HTTP_OPTIONS));
 
 			UserSessionService.saveUsername(username);
 			const user = await this.getUser();
 			this.updateCurrentUser(user);
 		} catch (e) {
-			await this.handleCredentialException(e);
+			if (e instanceof HttpErrorResponse) {
+				await this.handleCredentialException(e);
+			}
 		}
 	}
 
 	async register(username: string, password: string) {
 		try {
-			await this.httpClient.post(this.registrationUrl,
-				UserSessionService.authRequest(username, password)).toPromise();
+			await firstValueFrom(this.httpClient.post(this.registrationUrl,
+				UserSessionService.authRequest(username, password)));
 			await this.logout();
 			await this.login(username, password);
 		} catch (e) {
-			await this.handleCredentialException(e);
+			if (e instanceof HttpErrorResponse) {
+				await this.handleCredentialException(e);
+			}
 		}
 	}
 
@@ -101,9 +104,9 @@ export class UserSessionService {
 
 	async deleteUser(username: string, password: string) {
 		await this.logout();
-		await this.httpClient.post(this.forgetUrl,
+		await firstValueFrom(this.httpClient.post(this.forgetUrl,
 			UserSessionService.authRequest(username, password),
-			this.httpOptions).toPromise();
+			HTTP_OPTIONS));
 	}
 
 	isLoggedIn() : boolean {
@@ -140,7 +143,7 @@ export class UserSessionService {
 	private async deleteSession() {
 		try {
 			UserSessionService.forgetUsername();
-			await this.httpClient.delete(this.sessionUrl).toPromise();
+			await firstValueFrom(this.httpClient.delete(this.sessionUrl));
 		} catch (e) {
 		}
 	}
@@ -148,9 +151,7 @@ export class UserSessionService {
 	private async getUser(): Promise<User | null> {
 		const username = localStorage.getItem(USERNAME_KEY);
 		if (username) {
-			return await this.httpClient.get<User>(
-				this.infoUrlPrefix + username,
-				this.httpOptions).toPromise();
+			return await firstValueFrom(this.httpClient.get<User>(this.infoUrlPrefix + username, HTTP_OPTIONS));
 		} else {
 			return null;
 		}

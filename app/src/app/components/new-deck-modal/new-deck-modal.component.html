@@ -23,8 +23,9 @@
 							  [formControl]="descriptionInput"></textarea>
 				</div>
 			</div>
-
-			<button class="uk-float-right uk-button uk-button-primary" type="submit">Save</button>
+			<button class="uk-float-right uk-button uk-button-primary"
+					[disabled]=submitDisabled
+					type="submit">Save</button>
 		</form>
 	</div>
 </div>

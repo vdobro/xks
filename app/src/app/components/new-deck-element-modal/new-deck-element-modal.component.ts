@@ -49,7 +49,7 @@ export class NewDeckElementModalComponent implements OnInit {
 	@Input()
 	deck: Deck | null = null;
 
-	type: DeckElementType = DeckElementType.GRAPH;
+	type: DeckElementType = DeckElementType.TABLE;
 
 	nameInput = new FormControl('');
 
@@ -70,7 +70,7 @@ export class NewDeckElementModalComponent implements OnInit {
 		await this.createElement(name);
 
 		this.nameInput.reset();
-		UIkit.modal(this.modal!!.nativeElement).hide();
+		UIkit.modal(this.modal!.nativeElement).hide();
 	}
 
 	openDialog() {

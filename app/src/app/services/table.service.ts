@@ -47,6 +47,7 @@ export class TableService {
 
 	constructor(
 		private readonly deckElementService: DeckElementService) {
+		this.tableChanged.subscribe((table) => this._tablesChanged.next(table.deckId));
 	}
 
 	public async getById(id: ElementId): Promise<Table> {

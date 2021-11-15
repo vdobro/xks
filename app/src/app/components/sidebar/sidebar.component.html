@@ -1,7 +1,7 @@
 <div *ngIf="active" class="uk-container uk-container-expand"
 	 uk-sticky="offset: 100; top: #navigation-top-bar; show-on-up: true">
 	<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav="multiple: true">
-		<li *ngIf="deck && !graphSelected && !tableSelected"
+		<li *ngIf="deck && !elementSelected"
 			class="uk-parent uk-open">
 			<a href="#">Tables</a>
 			<ul class="uk-nav-sub">
@@ -11,7 +11,7 @@
 					[deck]="deck"></li>
 			</ul>
 		</li>
-		<li *ngIf="deck && !graphSelected && !tableSelected"
+		<li *ngIf="deck && !elementSelected"
 			class="uk-parent uk-open">
 			<a href="#">Graphs</a>
 			<ul class="uk-nav-sub">
@@ -22,36 +22,36 @@
 			</ul>
 		</li>
 		<li class="uk-nav-header">Actions</li>
-		<li *ngIf="deck && graphSelected || tableSelected">
+		<li *ngIf="deck && elementSelected">
 			<a (click)="studyCurrent()">
 				<span class="uk-margin-small-right"
 					  uk-icon="play"></span>
 				Study
 			</a>
 		</li>
-		<li *ngIf="deck && !(graphSelected || tableSelected)">
+		<li *ngIf="deck && !elementSelected">
 			<a (click)="newElementModal?.openDialog()">
 				<span class="uk-margin-small-right"
 					  uk-icon="plus"></span>
 				Create
 			</a>
 		</li>
-		<li *ngIf="deck && graphSelected || tableSelected">
+		<li *ngIf="deck && elementSelected">
 			<a (click)="openDeckDetails()">
 					<span class="uk-margin-small-right"
 						  uk-icon="album"></span>
 				Deck details
 			</a>
 		</li>
-		<li *ngIf="!(graphSelected || tableSelected)">
+		<li *ngIf="!elementSelected">
 			<a (click)="goHome()">
 					<span class="uk-margin-small-right"
 						  uk-icon="icon: table"></span>
 				Deck list
 			</a>
 		</li>
-		<li *ngIf="deck && !(graphSelected || tableSelected)" class="uk-nav-divider"></li>
-		<li *ngIf="deck && !(graphSelected || tableSelected)">
+		<li *ngIf="deck && !elementSelected" class="uk-nav-divider"></li>
+		<li *ngIf="deck && !elementSelected">
 			<a (click)="confirmDeleteDeckModal?.openModal()">
 				<span class="uk-margin-small-right" uk-icon="icon: trash"></span>
 				Delete deck
@@ -70,6 +70,6 @@
 		(confirmed)="onDeckDeleted()">
 	</app-confirm-delete-element-modal>
 	<app-setup-table-session-modal
-		[deckElement]="selectedTable || selectedGraph">
+		[deckElement]="selectedElement">
 	</app-setup-table-session-modal>
 </div>

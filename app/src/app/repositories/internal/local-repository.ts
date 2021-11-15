@@ -28,6 +28,6 @@ import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository"
  */
 export class LocalRepository<TEntity extends IdEntity> extends CouchDbRepository<TEntity> {
 	constructor(entityIdentifier: String) {
-		super(`local_${entityIdentifier}`);
+		super(`local_${entityIdentifier}`, false);
 	}
 }
