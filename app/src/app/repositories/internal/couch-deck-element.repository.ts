@@ -20,13 +20,12 @@
  */
 
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-
-import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
-import {BaseRepository} from "@app/repositories/base-repository";
 import {Deck} from "@app/models/Deck";
+
+import {CouchDatabase, CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
+import {BaseRepository} from "@app/repositories/base-repository";
 import {LocalRepository} from "@app/repositories/internal/local-repository";
 import {RemoteRepository} from "@app/repositories/internal/remote-repository";
-import {User} from "@app/models/User";
 
 export type DeckElementData = Omit<DeckElement, "deckId">
 
@@ -35,13 +34,15 @@ export type DeckElementData = Omit<DeckElement, "deckId">
  * @since 2020.09.12
  */
 export abstract class CouchDeckElementRepository implements BaseRepository<DeckElementData> {
-	private indexCreated: boolean = false;
+	protected readonly db : CouchDatabase<DeckElementData>;
 
-	private readonly db;
-
-	protected constructor(private readonly source: CouchDbRepository<DeckElementData>) {
+	protected constructor(
+		private readonly source: CouchDbRepository<DeckElementData>
+	) {
 		this.db = this.source.getHandle();
 	}
+
+	protected abstract checkIndexes() : Promise<void>;
 
 	async getAllOfType(type: DeckElementType): Promise<DeckElementData[]> {
 		await this.checkIndexes();
@@ -50,21 +51,11 @@ export abstract class CouchDeckElementRepository implements BaseRepository<DeckE
 				type: type
 			}
 		});
-		return result.docs as DeckElementData[];
+		return result.docs.map((value) => this.source.mapToEntity(value));
 	}
 
 	async existAnyOfType(type: DeckElementType): Promise<boolean> {
 		return (await this.getAllOfType(type)).length > 0;
-	}
-
-	private async checkIndexes() {
-		if (this.indexCreated) {
-			return;
-		}
-		await this.db.createIndex({
-			index: {fields: ['type']}
-		});
-		this.indexCreated = true;
 	}
 
 	async add(entity: DeckElementData, type: DeckElementType): Promise<void> {
@@ -89,13 +80,31 @@ export abstract class CouchDeckElementRepository implements BaseRepository<DeckE
 }
 
 export class LocalDeckElementRepository extends CouchDeckElementRepository {
+	private indexCreated: boolean = false;
+
 	constructor(deck: Deck) {
 		super(new LocalRepository<DeckElementData>(deck.id));
+	}
+
+	protected async checkIndexes(): Promise<void> {
+		if (this.indexCreated) {
+			return;
+		}
+		await this.db.createIndex({
+			index: {
+				fields: ['type']
+			}
+		});
+		this.indexCreated = true;
 	}
 }
 
 export class RemoteDeckElementRepository extends CouchDeckElementRepository {
-	constructor(deck: Deck, user: User) {
-		super(new RemoteRepository<DeckElementData>(deck.id, user, deck.database));
+	constructor(deck: Deck) {
+		super(new RemoteRepository<DeckElementData>(deck.database));
+	}
+
+	protected async checkIndexes(): Promise<void> {
+		// done on the server side, no action needed
 	}
 }

@@ -97,7 +97,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 			}
 
 			const id = {
-				element: (tableId || graphId || flashcardSetId)!!,
+				element: (tableId || graphId || flashcardSetId)!,
 				deck: deckId,
 			}
 			if (tableId && tableSessionModeId) {
@@ -133,9 +133,9 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		const startScoreParam = params.get(SESSION_START_SCORE_PARAM);
 		const maxScoreParam = params.get(SESSION_MAX_SCORE_PARAM);
 		this.startScore = startScoreParam ? parseInt(startScoreParam)
-			: this.deckElement!!.defaultStartingScore;
+			: this.deckElement!.defaultStartingScore;
 		this.maxScore = maxScoreParam ? parseInt(maxScoreParam)
-			: this.deckElement!!.defaultMaxScore;
+			: this.deckElement!.defaultMaxScore;
 	}
 
 	private initSession() {

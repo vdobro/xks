@@ -42,7 +42,7 @@ export class SidebarTableListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
-	private table : Table |  null = null;
+	private table: Table | null = null;
 
 	constructor(
 		private readonly tableCellService: TableElementService,
@@ -51,9 +51,11 @@ export class SidebarTableListElementComponent
 		super();
 		this.elementType = 'table';
 
-		this.tableCellService.rowCountChanged.subscribe(async table => {
-			if (this.element?.id === table.id) {
-				await this.updateRowCount();
+		this.tableCellService.rowCountChanged.subscribe({
+			next: async table => {
+				if (this.element?.id === table.id) {
+					await this.updateRowCount();
+				}
 			}
 		});
 	}

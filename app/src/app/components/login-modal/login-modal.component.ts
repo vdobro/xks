@@ -98,7 +98,9 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 					UIkit.modal(this.modal.nativeElement).hide();
 				}
 			} catch (e) {
-				this.loginErrorMessage = e.message;
+				if (e instanceof Error) {
+					this.loginErrorMessage = e.message;
+				}
 			}
 		}
 		this.requestInProgress = false;

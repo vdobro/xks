@@ -71,7 +71,7 @@ export class TableNewRowEditorComponent implements OnInit {
 
 		if (this.newColumnIndex === this.columns.length - 1) {
 			this.newColumnIndex = 0;
-			this.rowCompleted.next(this.rowInEditing!!);
+			this.rowCompleted.next(this.rowInEditing!);
 			this.rowInEditing = null;
 		} else {
 			this.newColumnIndex++;
@@ -80,11 +80,11 @@ export class TableNewRowEditorComponent implements OnInit {
 	}
 
 	async initNewRow() {
-		this.rowInEditing = await this.cellService.createRow(this.table!!);
+		this.rowInEditing = await this.cellService.createRow(this.table!);
 	}
 
 	async updateRow(cellValue: { default: string, alternatives: string[] }, column: TableColumn) {
 		this.rowInEditing = await this.cellService.changeCellValue(cellValue,
-			this.rowInEditing!!, column, this.table!!);
+			this.rowInEditing!, column, this.table!);
 	}
 }

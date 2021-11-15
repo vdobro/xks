@@ -48,10 +48,12 @@ export class AppComponent implements OnInit, AfterContentChecked {
 		private readonly navControlService: NavigationControlService,
 		private readonly cdr: ChangeDetectorRef) {
 
-		this.navControlService.sidebarVisible.subscribe(visible => {
-			if (this.sidebarVisible !== visible) {
-				this.sidebarVisible = visible;
-				this.cdr.detectChanges();
+		this.navControlService.sidebarVisible.subscribe({
+			next: (visible: boolean) => {
+				if (this.sidebarVisible !== visible) {
+					this.sidebarVisible = visible;
+					this.cdr.detectChanges();
+				}
 			}
 		});
 		this.deckRepository.sourceChanged.subscribe(async () => {

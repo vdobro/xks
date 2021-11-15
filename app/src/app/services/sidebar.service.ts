@@ -26,8 +26,8 @@ import {Injectable} from '@angular/core';
 import {Deck} from "@app/models/Deck";
 import {DeckElement} from "@app/models/DeckElement";
 
-import {NavigationControlService} from "./navigation-control.service";
-import {DeckService} from "./deck.service";
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {DeckService} from "@app/services/deck.service";
 
 /**
  * @author Vitalijus Dobrovolskis

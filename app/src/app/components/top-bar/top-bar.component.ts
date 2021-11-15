@@ -54,7 +54,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
 	loginEnabled: boolean = true;
 
-	private componentRefs: ComponentRef<any>[] = []
+	private componentRefs: ComponentRef<any>[] = [];
 
 	constructor(
 		private readonly componentFactoryResolver: ComponentFactoryResolver,
@@ -63,27 +63,38 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		private readonly navigationService: NavigationService,
 		private readonly userSessionService: UserSessionService) {
 
-		this.userSessionService.userLoggedIn.subscribe(value =>
-			this.updateUserSessionControls(value));
+		this.userSessionService.userLoggedIn.subscribe({
+			next: (value: boolean) => {
+				this.updateUserSessionControls(value);
+			}
+		});
 	}
 
 	ngOnInit(): void {
-		this.navControlService.topBarVisible.subscribe((isVisible) => {
-			if (this.active !== isVisible) {
-				this.active = isVisible;
+		this.navControlService.topBarVisible.subscribe({
+			next: (isVisible: boolean) => {
+				if (this.active !== isVisible) {
+					this.active = isVisible;
+				}
 			}
 		});
-		this.topBarService.allItems.subscribe((items) => {
-			this.updateItemsList(items);
-		});
-		this.topBarService.backNavigationEnabled.subscribe((value) => {
-			if (this.backNavigationEnabled !== value) {
-				this.backNavigationEnabled = value;
+		this.topBarService.allItems.subscribe({
+			next: (items: NavBarItem[]) => {
+				this.updateItemsList(items);
 			}
 		});
-		this.topBarService.backButtonLabel.subscribe(value => {
-			if (this.backButtonLabel !== value) {
-				this.backButtonLabel = value;
+		this.topBarService.backNavigationEnabled.subscribe({
+			next: (value: boolean) => {
+				if (this.backNavigationEnabled !== value) {
+					this.backNavigationEnabled = value;
+				}
+			}
+		});
+		this.topBarService.backButtonLabel.subscribe({
+			next: (value: string) => {
+				if (this.backButtonLabel !== value) {
+					this.backButtonLabel = value;
+				}
 			}
 		});
 	}
@@ -121,7 +132,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	}
 
 	private updateItemsList(items: NavBarItem[]) {
-		const viewContainerRef = this.navBarItems!!.viewContainerRef;
+		const viewContainerRef = this.navBarItems!.viewContainerRef;
 		viewContainerRef.clear();
 
 		for (const item of items) {

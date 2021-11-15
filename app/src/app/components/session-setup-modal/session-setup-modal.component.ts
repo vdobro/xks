@@ -25,7 +25,7 @@ import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChil
 import {FormControl} from "@angular/forms";
 
 import {DeckElement} from "@app/models/DeckElement";
-import {isTable, Table} from "@app/models/Table";
+import {Table, isTable} from "@app/models/Table";
 import {Graph, isGraph} from "@app/models/graph";
 import {FlashcardList, isFlashcardList} from "@app/models/flashcard-list";
 
@@ -168,7 +168,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			this.anySessionModesAvailable = false;
 			return;
 		}
-		this.anySessionModesAvailable = this.sessionModeService.anyExist(this.deckElement);
+
+		this.anySessionModesAvailable = this.deckElement.sessionModes.length > 0;
 		if (!this.anySessionModesAvailable) {
 			this.useExisting = false;
 		}
@@ -188,7 +189,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (this.useExisting) {
 			return this.sessionModeChooser?.currentSelection?.id || null;
 		} else {
-			const mode = await this.sessionModeWizard!!.createSessionMode();
+			const mode = await this.sessionModeWizard!.createSessionMode();
 			return mode.id;
 		}
 	}
@@ -197,7 +198,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		const selection = this.sessionModeChooser?.currentSelection;
 		if (selection && this.useExisting) {
 			this.startSessionEnabled = true;
-			if (selection.id === table.defaultSessionModeId) {
+			if (selection.id === table.defaultSessionModeId
+				|| table.sessionModes.length === 1) {
 				this.defaultSessionCheckbox.setValue(true);
 				this.defaultSessionCheckbox.disable();
 			} else {
