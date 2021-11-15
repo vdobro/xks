@@ -49,7 +49,7 @@ export class NewDeckElementModalComponent implements OnInit {
 	@Input()
 	deck: Deck | null = null;
 
-	type: DeckElementType = DeckElementType.GRAPH;
+	type: DeckElementType = DeckElementType.TABLE;
 
 	nameInput = new FormControl('');
 

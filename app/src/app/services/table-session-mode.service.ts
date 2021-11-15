@@ -46,10 +46,6 @@ export class TableSessionModeService {
 	constructor(private readonly tableService: TableService) {
 	}
 
-	anyExist(table: Table): boolean {
-		return table.sessionModes.length > 0;
-	}
-
 	async create(table: Table,
 				 questionColumns: TableColumn[],
 				 answerColumns: TableColumn[]): Promise<TableSessionMode> {

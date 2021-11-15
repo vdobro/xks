@@ -118,8 +118,7 @@ export class NavigationService {
 		if (this.deck) {
 			this.table = null;
 			this.graph = null;
-			this.sidebarService.deselectTable();
-			this.sidebarService.deselectGraph();
+			this.sidebarService.deselectDeckElement();
 			await this.openDeck(this.deck.id);
 		}
 	}
@@ -148,11 +147,11 @@ export class NavigationService {
 
 	private async selectTable(tableId: ElementId) {
 		this.table = await this.tableService.getById(tableId);
-		await this.sidebarService.selectTable(this.table);
+		await this.sidebarService.selectDeckElement(this.table);
 	}
 
 	private async selectGraph(graphId: ElementId) {
 		this.graph = await this.graphService.getById(graphId);
-		await this.sidebarService.selectGraph(this.graph);
+		await this.sidebarService.selectDeckElement(this.graph);
 	}
 }

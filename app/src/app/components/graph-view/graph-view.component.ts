@@ -177,7 +177,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 			this.graphName = graph?.name || null;
 
 			if (graph) {
-				await this.sidebarService.selectGraph(graph);
+				await this.sidebarService.selectDeckElement(graph);
 				await this.setUpNetworkView();
 			} else {
 				await this.navigationService.goToDeckList();

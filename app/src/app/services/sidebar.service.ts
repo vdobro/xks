@@ -24,11 +24,10 @@ import {Subject, Subscribable} from "rxjs";
 import {Injectable} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/graph";
-import {Table} from "@app/models/Table";
+import {DeckElement} from "@app/models/DeckElement";
 
-import {NavigationControlService} from "./navigation-control.service";
-import {DeckService} from "./deck.service";
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {DeckService} from "@app/services/deck.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -40,16 +39,13 @@ import {DeckService} from "./deck.service";
 export class SidebarService {
 
 	private readonly _activeDeck$ = new Subject<Deck | null>();
-	private readonly _activeTable$ = new Subject<Table | null>();
-	private readonly _activeGraph$ = new Subject<Graph | null>();
+	private readonly _activeDeckElement$ = new Subject<DeckElement | null>();
 
 	readonly activeDeck: Subscribable<Deck | null> = this._activeDeck$;
-	readonly activeTable: Subscribable<Table | null> = this._activeTable$;
-	readonly activeGraph: Subscribable<Graph | null> = this._activeGraph$;
+	readonly activeElement : Subscribable<DeckElement | null> = this._activeDeckElement$;
 
 	currentDeck: Deck | null = null;
-	currentTable: Table | null = null;
-	currentGraph: Graph | null = null;
+	currentDeckElement: DeckElement | null = null;
 
 	constructor(
 		private readonly deckService: DeckService,
@@ -60,26 +56,14 @@ export class SidebarService {
 		this.navigationControlService.setSidebarVisibility(false);
 	}
 
-	deselectTable() {
-		this.updateTable(null);
+	deselectDeckElement() {
+		this.updateDeckElement(null);
 	}
 
-	deselectGraph() {
-		this.updateGraph(null);
-	}
-
-	async selectTable(table: Table) {
-		this.updateTable(table);
-		if (table) {
-			const deck = await this.deckService.getById(table.deckId);
-			this.populate(deck);
-		}
-	}
-
-	async selectGraph(graph: Graph) {
-		this.updateGraph(graph);
-		if (graph) {
-			const deck = await this.deckService.getById(graph.deckId);
+	async selectDeckElement(element: DeckElement) {
+		this.updateDeckElement(element);
+		if (element) {
+			const deck = await this.deckService.getById(element.deckId);
 			this.populate(deck);
 		}
 	}
@@ -87,21 +71,12 @@ export class SidebarService {
 	depopulate() {
 		this.navigationControlService.setSidebarVisibility(false);
 		this.updateDeck(null);
-		this.deselectTable();
-		this.deselectGraph();
+		this.deselectDeckElement();
 	}
 
 	populate(deck: Deck) {
 		this.navigationControlService.setSidebarVisibility(true);
 		this.updateDeck(deck);
-	}
-
-	private updateTable(table: Table | null): void {
-		if (this.currentTable?.id === table?.id) {
-			return;
-		}
-		this.currentTable = table;
-		this._activeTable$.next(this.currentTable);
 	}
 
 	private updateDeck(deck: Deck | null): void {
@@ -113,11 +88,11 @@ export class SidebarService {
 		this._activeDeck$.next(this.currentDeck);
 	}
 
-	private updateGraph(graph: Graph | null) {
-		if (this.currentGraph?.id === graph?.id) {
+	private updateDeckElement(element: DeckElement | null) {
+		if (this.currentDeckElement?.id === element?.id) {
 			return;
 		}
-		this.currentGraph = graph;
-		this._activeGraph$.next(this.currentGraph);
+		this.currentDeckElement = element;
+		this._activeDeckElement$.next(this.currentDeckElement);
 	}
 }

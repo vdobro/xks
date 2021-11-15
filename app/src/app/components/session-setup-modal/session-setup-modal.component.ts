@@ -167,7 +167,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			return;
 		}
 
-		this.anySessionModesAvailable = this.sessionModeService.anyExist(this.table);
+		this.anySessionModesAvailable = this.table.sessionModes.length > 0;
 		if (!this.anySessionModesAvailable) {
 			this.useExisting = false;
 		}
@@ -196,7 +196,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		const selection = this.sessionModeChooser?.currentSelection;
 		if (selection && this.useExisting) {
 			this.startSessionEnabled = true;
-			if (selection.id === table.defaultSessionModeId) {
+			if (selection.id === table.defaultSessionModeId || table.sessionModes.length === 1) {
 				this.defaultSessionCheckbox.setValue(true);
 				this.defaultSessionCheckbox.disable();
 			} else {

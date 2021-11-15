@@ -24,8 +24,10 @@ import UIkit from 'uikit';
 import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/graph";
-import {Table} from "@app/models/Table";
+import {Graph, isGraph} from "@app/models/graph";
+import {isTable, Table} from "@app/models/Table";
+import {DeckElement} from "@app/models/DeckElement";
+import {ElementId} from "@app/models/ElementId";
 
 import {NavigationControlService} from "@app/services/navigation-control.service";
 import {TableService} from "@app/services/table.service";
@@ -64,11 +66,8 @@ export class SidebarComponent implements OnInit {
 	tables: Table[] = [];
 	graphs: Graph[] = [];
 
-	selectedTable: Table | null = null;
-	tableSelected: boolean = false;
-
-	selectedGraph: Graph | null = null;
-	graphSelected: boolean = false;
+	selectedElement: DeckElement | null = null;
+	elementSelected : boolean = false;
 
 	active: boolean = false;
 
@@ -81,15 +80,15 @@ export class SidebarComponent implements OnInit {
 				private readonly navigationService: NavigationService) {
 		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
 		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
-		this.sidebarService.activeTable.subscribe((value: Table | null) => this.onActiveTableChanged(value));
-		this.sidebarService.activeGraph.subscribe((value: Graph | null) => this.onActiveGraphChanged(value));
+
+		this.sidebarService.activeElement.subscribe((value: DeckElement | null) => this.onActiveElementChanged(value));
+
 		this.tableService.tablesChanged.subscribe((deckId: string) => this.onTablesChanged(deckId));
 		this.graphService.graphsChanged.subscribe((deckId: string) => this.onGraphsChanged(deckId));
 	}
 
 	async ngOnInit() {
-		this.onActiveTableChanged(this.sidebarService.currentTable);
-		this.onActiveGraphChanged(this.sidebarService.currentGraph);
+		this.onActiveElementChanged(this.sidebarService.currentDeckElement);
 		await this.onActiveDeckChanged(this.sidebarService.currentDeck);
 		this.onVisibilityChanged(this.deck !== null);
 	}
@@ -100,23 +99,13 @@ export class SidebarComponent implements OnInit {
 		}
 	}
 
-	private onActiveTableChanged(table: Table | null) {
-		if (this.selectedTable?.id === table?.id && table === null) {
+	private onActiveElementChanged(table: DeckElement | null) {
+		if (this.selectedElement?.id === table?.id && table === null) {
 			return;
 		}
-		this.tableSelected = !!table;
-		if (this.selectedTable?.id !== table?.id) {
-			this.selectedTable = table;
-		}
-	}
-
-	private onActiveGraphChanged(graph: Graph | null) {
-		if (this.selectedGraph?.id === graph?.id && graph === null) {
-			return;
-		}
-		this.graphSelected = !!graph;
-		if (this.selectedGraph?.id !== graph?.id) {
-			this.selectedGraph = graph;
+		this.elementSelected = !!table;
+		if (this.selectedElement?.id !== table?.id) {
+			this.selectedElement = table;
 		}
 	}
 
@@ -144,8 +133,7 @@ export class SidebarComponent implements OnInit {
 	}
 
 	async openDeckDetails() {
-		this.sidebarService.deselectTable();
-		this.sidebarService.deselectGraph();
+		this.sidebarService.deselectDeckElement();
 		await this.navigationService.openDeck(this.deck!.id);
 	}
 
@@ -154,10 +142,12 @@ export class SidebarComponent implements OnInit {
 	}
 
 	async studyCurrent() {
-		if (this.tableSelected) {
+		if (isTable(this.selectedElement)) {
 			this.setupSessionModal?.openDialog();
-		} else if (this.graphSelected) {
-			if (this.graphElementService.anyNodesAndEdgesExist(this.selectedGraph!)) {
+			return;
+		}
+		if (isGraph(this.selectedElement)) {
+			if (this.graphElementService.anyNodesAndEdgesExist(this.selectedElement!)) {
 				this.setupSessionModal?.openDialog();
 			} else {
 				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
@@ -167,39 +157,41 @@ export class SidebarComponent implements OnInit {
 
 	private async onTablesChanged(deckId: string) {
 		this.tables = await this.tableService.getByDeckId(deckId);
-		if (!this.selectedTable) {
+		if (!isTable(this.selectedElement)) {
 			return;
-		} if (this.tables.find(x => x.id === this.selectedTable!.id)) {
-			this.selectedTable = await this.tableService.getById({
-				element: this.selectedTable.id,
-				deck: this.selectedTable.deckId
-			});
+		} if (this.tables.find(x => x.id === this.selectedElement!.id)) {
+			this.selectedElement = await this.tableService.getById(this.getElementId());
 			return;
 		}
-		this.sidebarService.deselectTable();
+		this.sidebarService.deselectDeckElement();
 	}
 
 	private async onGraphsChanged(deckId: string) {
 		this.graphs = await this.graphService.getByDeckId(deckId);
-		if (!this.selectedGraph) {
+		if (!isGraph(this.selectedElement)) {
 			return;
 		}
-		if (this.graphs.find(x => x.id === this.selectedGraph!.id)) {
-			this.selectedGraph = await this.graphService.getById({
-				element: this.selectedGraph.id,
-				deck: this.selectedGraph.deckId
-			});
+		if (this.graphs.find(x => x.id === this.selectedElement!.id)) {
+			this.selectedElement = await this.graphService.getById(this.getElementId());
 			return;
 		}
-		this.sidebarService.deselectGraph();
+		this.sidebarService.deselectDeckElement();
 	}
 
 	private resetCurrentDeckElements() {
-		this.graphSelected = false;
-		this.tableSelected = false;
+		this.elementSelected = false;
+		this.selectedElement = null;
 		this.tables = [];
 		this.graphs = [];
-		this.selectedTable = null;
-		this.selectedGraph = null;
+	}
+
+	private getElementId() : ElementId {
+		if (!this.selectedElement) {
+			throw Error("No selected deck element");
+		}
+		return {
+			element: this.selectedElement!.id,
+			deck: this.selectedElement!.deckId
+		}
 	}
 }
