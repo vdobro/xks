@@ -28,6 +28,10 @@ import {stripTrailingSlash} from "@environments/utils";
 
 const USERNAME_KEY = "current_user_name";
 
+const HTTP_OPTIONS = {
+	withCredentials: true
+}
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.07
@@ -37,10 +41,6 @@ const USERNAME_KEY = "current_user_name";
 })
 export class UserSessionService {
 
-	private readonly httpOptions = {
-		withCredentials: true
-	}
-
 	private readonly apiRoot = stripTrailingSlash(environment.serverUrl);
 	private readonly databaseRoot = stripTrailingSlash(environment.databaseUrl);
 
@@ -49,7 +49,7 @@ export class UserSessionService {
 	private readonly forgetUrl = this.userApiRoot + "/forget";
 
 	private readonly sessionUrl = this.databaseRoot + "/_session";
-	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:"
+	private readonly infoUrlPrefix = this.databaseRoot + "/_users/org.couchdb.user:";
 
 	private readonly _userLoggedIn = new Subject<boolean>();
 	private readonly _currentUserChanged = new Subject<User | null>();
@@ -59,10 +59,11 @@ export class UserSessionService {
 
 	private currentUser: User | null = null;
 
-	constructor(private httpClient: HttpClient) {
-		this.getUser().then(async () => {
-			const user = await this.getUser();
-			await this.updateCurrentUser(user);
+	constructor(private readonly httpClient: HttpClient) {
+		this.getUser().then((result) => {
+			//if (result !== null) {
+				this.updateCurrentUser(result);
+			//}
 		}).catch(async () => {
 			await this.logout();
 		});
@@ -73,7 +74,7 @@ export class UserSessionService {
 			await this.httpClient.post(
 				this.sessionUrl,
 				UserSessionService.authRequest(username, password),
-				this.httpOptions).toPromise();
+				HTTP_OPTIONS).toPromise();
 
 			UserSessionService.saveUsername(username);
 			const user = await this.getUser();
@@ -103,7 +104,7 @@ export class UserSessionService {
 		await this.logout();
 		await this.httpClient.post(this.forgetUrl,
 			UserSessionService.authRequest(username, password),
-			this.httpOptions).toPromise();
+			HTTP_OPTIONS).toPromise();
 	}
 
 	isLoggedIn() : boolean {
@@ -148,9 +149,7 @@ export class UserSessionService {
 	private async getUser(): Promise<User | null> {
 		const username = localStorage.getItem(USERNAME_KEY);
 		if (username) {
-			return await this.httpClient.get<User>(
-				this.infoUrlPrefix + username,
-				this.httpOptions).toPromise();
+			return await this.httpClient.get<User>(this.infoUrlPrefix + username, HTTP_OPTIONS).toPromise();
 		} else {
 			return null;
 		}

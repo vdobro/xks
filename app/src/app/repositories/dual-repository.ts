@@ -19,15 +19,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {Subject, Subscribable} from "rxjs";
+
+import {User} from "@app/models/User";
+
 import {BaseRepository} from "@app/repositories/base-repository";
 import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
-import {UserSessionService} from "@app/services/user-session.service";
-import {User} from "@app/models/User";
 import {IdEntity} from "@app/repositories/id-entity";
 import {LocalRepository} from "@app/repositories/internal/local-repository";
 import {RemoteRepository} from "@app/repositories/internal/remote-repository";
-import {Subject, Subscribable} from "rxjs";
 import {EntityChangeSource, EntityChangeSubscription} from "@app/repositories/entity-change-source";
+
+import {UserSessionService} from "@app/services/user-session.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,7 +39,7 @@ import {EntityChangeSource, EntityChangeSubscription} from "@app/repositories/en
 export class DualRepository<TEntity extends IdEntity>
 	implements BaseRepository<TEntity>, EntityChangeSource<TEntity> {
 
-	private selected: BaseRepository<TEntity>;
+	private selectedRepository: BaseRepository<TEntity>;
 	private readonly localRepository: CouchDbRepository<TEntity>;
 	private remoteRepository: CouchDbRepository<TEntity> | null = null;
 
@@ -59,7 +62,7 @@ export class DualRepository<TEntity extends IdEntity>
 		private readonly userSessionService: UserSessionService) {
 
 		this.localRepository = new LocalRepository<TEntity>(entityIdentifier);
-		this.selected = this.localRepository;
+		this.selectedRepository = this.localRepository;
 
 		this.userSessionService.userChanged.subscribe(async user => {
 			await this.userChangedHandler(user);
@@ -69,34 +72,38 @@ export class DualRepository<TEntity extends IdEntity>
 	}
 
 	public async add(entity: TEntity, type?: string): Promise<void> {
-		await this.selected.add(entity, type);
+		await this.selectedRepository.add(entity, type);
 	}
 
 	public async delete(id: string): Promise<void> {
-		await this.selected.delete(id);
+		await this.selectedRepository.delete(id);
 	}
 
 	public async getAll(): Promise<TEntity[]> {
-		return await this.selected.getAll();
+		return await this.selectedRepository.getAll();
 	}
 
 	public async getById(id: string): Promise<TEntity> {
-		return await this.selected.getById(id);
+		return await this.selectedRepository.getById(id);
 	}
 
 	public async update(entity: TEntity): Promise<TEntity> {
-		return await this.selected.update(entity);
+		return await this.selectedRepository.update(entity);
+	}
+
+	public async destroy() : Promise<void> {
+
 	}
 
 	private async userChangedHandler(user: User | null): Promise<void> {
 		if (user) {
 			await this.initRemoteDatabase(user);
-			this.selected = this.remoteRepository!!;
+			this.selectedRepository = this.remoteRepository!!;
 			this.forwardEntityChanges(this.remoteRepository!!);
 		} else {
 			await this.remoteRepository?.close();
 			this.remoteRepository = null;
-			this.selected = this.localRepository;
+			this.selectedRepository = this.localRepository;
 			this.forwardEntityChanges(this.localRepository);
 		}
 		this._sourceChanged.next();
@@ -129,7 +136,7 @@ export class DualRepository<TEntity extends IdEntity>
 	private async initRemoteDatabase(user: User) {
 		await this.remoteRepository?.close();
 		const remoteName = this.remoteDatabaseNameResolver(this.entityIdentifier, user);
-		this.remoteRepository = new RemoteRepository<TEntity>(this.entityIdentifier, user, remoteName);
+		this.remoteRepository = new RemoteRepository<TEntity>(remoteName);
 		this.forwardEntityChanges(this.remoteRepository);
 	}
 }

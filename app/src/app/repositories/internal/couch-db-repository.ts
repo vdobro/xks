@@ -36,10 +36,12 @@ type BaseDataEntity = {
 	type?: string
 }
 
-type DataLayerEntity<T extends IdEntity> = BaseDataEntity & Omit<T, keyof IdEntity>;
+type DataLayerEntity<T extends IdEntity> = BaseDataEntity & Omit<Partial<T>, keyof IdEntity>;
 
 const ID_PREFIX = "xks-";
 const ID_PREFIX_LENGTH = ID_PREFIX.length;
+
+export type CouchDatabase<TEntity extends IdEntity> = PouchDB.Database<DataLayerEntity<TEntity>>;
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -50,9 +52,7 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 
 	private static pouchFindInitialized = false;
 
-	protected db: any;
-	private remoteDb: any;
-	private remoteSyncHandler: any;
+	protected readonly db: CouchDatabase<TEntity>;
 
 	private readonly _entityCreated = new Subject<TEntity>();
 	private readonly _entityDeleted = new Subject<string>();
@@ -62,10 +62,10 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 	readonly entityDeleted: Subscribable<string> = this._entityDeleted;
 	readonly entityUpdated: Subscribable<TEntity> = this._entityUpdated;
 
-	protected mapToEntity(dataEntity: DataLayerEntity<TEntity>): TEntity {
-		let result : any = {
+	mapToEntity(dataEntity: DataLayerEntity<TEntity>): TEntity {
+		let result: any = {
 			...dataEntity,
-			id : dataEntity._id.substring(ID_PREFIX_LENGTH)
+			id: dataEntity._id.substring(ID_PREFIX_LENGTH)
 		};
 		delete result._id;
 		delete result._rev;
@@ -73,24 +73,24 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 		return result;
 	}
 
-	protected constructor(
-		private readonly localDbName: string,
-		private readonly remoteDbName?: string,) {
-
+	protected constructor(dbName: string, remote: boolean) {
 		if (!CouchDbRepository.pouchFindInitialized) {
 			PouchDB.plugin(PouchFind);
 			CouchDbRepository.pouchFindInitialized = true;
 		}
-		if (remoteDbName) {
-			this.setUpToSync();
-		} else {
-			this.db = new PouchDB(this.localDbName);
-		}
+		this.db = remote
+			? this.createRemoteDatabase(dbName)
+			: new PouchDB(dbName);
 	}
 
 	async add(entity: TEntity, type: string): Promise<void> {
-		const dataEntity : DataLayerEntity<TEntity> = {
+		const entityWithoutId: Omit<TEntity, keyof IdEntity> = {
 			...entity,
+			id: undefined
+		};
+
+		const dataEntity: DataLayerEntity<TEntity> = {
+			...entityWithoutId,
 			_id: ID_PREFIX + entity.id,
 		};
 		if (type) {
@@ -102,7 +102,7 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 
 	async delete(id: string): Promise<void> {
 		const entity = await this.getDataEntity(id);
-		const revision = entity._rev;
+		const revision = entity._rev!!;
 		await this.db.remove(ID_PREFIX + id, revision);
 		this._entityDeleted.next(id);
 	}
@@ -112,7 +112,10 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 			include_docs: true,
 			startkey: ID_PREFIX,
 		});
-		return allDocsResponse.rows.map((value: { doc?: DataLayerEntity<TEntity>; }) => this.mapToEntity(value.doc!!));
+		return allDocsResponse.rows.map((value: { doc?: DataLayerEntity<TEntity>; }) => {
+			const doc = value.doc!!;
+			return this.mapToEntity(doc);
+		});
 	}
 
 	async getById(id: string): Promise<TEntity> {
@@ -127,10 +130,11 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 		const existingEntity = await this.getDataEntity(entity.id);
 
 		let dataEntity: DataLayerEntity<TEntity> = {
+			...entity,
 			_id: existingEntity._id,
 			_rev: existingEntity._rev,
 			type: existingEntity.type,
-			...entity,
+			id: undefined,
 		};
 
 		const result = await this.db.put(dataEntity);
@@ -139,29 +143,27 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 		return entity;
 	}
 
-	async close() : Promise<void> {
-		if (this.remoteDb) {
-			await this.remoteDb.close();
-		}
+	async close(): Promise<void> {
 		await this.db.close();
 	}
 
-	getHandle() : any {
+	async destroy() {
+		await this.db.destroy();
+	}
+
+	getHandle(): CouchDatabase<TEntity> {
 		return this.db;
 	}
 
-	private setUpToSync() : void {
-		const dbName = this.remoteDbName;
-		this.db = new PouchDB(dbName);
+	private createRemoteDatabase(dbName: string): CouchDatabase<TEntity> {
 		const remoteUrl = stripTrailingSlash(environment.databaseUrl) + "/" + dbName;
-		this.remoteDb = new PouchDB(remoteUrl, {
+		return new PouchDB<DataLayerEntity<TEntity>>(remoteUrl, {
 			fetch(url, opts) {
 				// @ts-ignore
 				opts.credentials = 'include';
 				return PouchDB.fetch(url, opts);
 			}
 		});
-		this.syncToRemoteDb(this.remoteDb);
 	}
 
 	private async getDataEntity(id: string): Promise<DataLayerEntity<TEntity>> {
@@ -170,16 +172,5 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 		} catch (e) {
 			throw new Error('Could not get document ' + id);
 		}
-	}
-
-	private syncToRemoteDb(remoteDb: PouchDB.Database<{}>) : void {
-		this.remoteSyncHandler = this.db.sync(remoteDb, {
-			live: true,
-			retry: true,
-		}).on('error', (err: string) => {
-			console.log('(P|C)ouchDB sync error: ' + err);
-		}).on('change', () => {
-			//this._sourceChanged.next();
-		});
 	}
 }

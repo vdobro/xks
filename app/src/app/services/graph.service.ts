@@ -43,12 +43,13 @@ export class GraphService {
 	private static readonly elementType: DeckElementType = "graph";
 
 	private readonly _graphsChanged = new Subject<string>();
-	readonly deckGraphsChanged: Subscribable<string> = this._graphsChanged.asObservable();
+	readonly graphsChanged: Subscribable<string> = this._graphsChanged.asObservable();
 
 	private readonly _graphChanged = new Subject<Graph>();
 	readonly graphChanged = this._graphChanged.asObservable();
 
 	constructor(private readonly deckElementService: DeckElementService) {
+		this.graphChanged.subscribe((graph) => this._graphsChanged.next(graph.deckId));
 	}
 
 	public async getById(id: ElementId): Promise<Graph> {

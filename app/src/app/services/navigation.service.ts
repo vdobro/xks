@@ -58,19 +58,15 @@ export class NavigationService {
 	}
 
 	async goBack() {
-		if (this.deck) {
-			if (this.table || this.graph) {
-				if (this.studySessionActive) {
-					await this.navigateToCurrentDeckElement();
-				} else {
-					await this.navigateToCurrentDeck();
-				}
-			} else {
-				await this.goHome();
-			}
-		} else {
+		if (!this.deck || !this.table && !this.graph) {
 			await this.goHome();
+			return;
 		}
+		if (this.studySessionActive) {
+			await this.navigateToCurrentDeckElement();
+			return;
+		}
+		await this.navigateToCurrentDeck();
 	}
 
 	async navigateToCurrentDeckElement() {

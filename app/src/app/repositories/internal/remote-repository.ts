@@ -21,14 +21,13 @@
 
 import {IdEntity} from "@app/repositories/id-entity";
 import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
-import {User} from "@app/models/User";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2021.07.29
  */
 export class RemoteRepository<TEntity extends IdEntity> extends CouchDbRepository<TEntity> {
-	constructor(entityIdentifier: String, user: User, remoteDbName: string) {
-		super(`remote_${entityIdentifier}`, remoteDbName);
+	constructor(remoteDbName: string) {
+		super(remoteDbName, true);
 	}
 }

@@ -23,8 +23,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {Deck} from "@app/models/Deck";
 
-import {DeckRepository} from "@app/repositories/deck-repository.service";
-
 import {DeckService} from "@app/services/deck.service";
 import {TopBarService} from "@app/services/top-bar.service";
 
@@ -49,28 +47,21 @@ export class DeckListPageComponent implements OnInit {
 	decks: Deck[] = [];
 
 	constructor(private readonly deckService: DeckService,
-				deckRepository: DeckRepository,
 				private readonly topBarService: TopBarService) {
-		deckRepository.sourceChanged.subscribe(async () => {
-			await this.reloadDecks();
-		});
 	}
 
 	async ngOnInit() {
-		await this.reloadDecks();
-
 		this.topBarService.clearItems();
 		this.topBarService.disableBackButton();
 		this.topBarService.addItem(new NavBarItem(DeckListNavbarComponent));
-		this.deckService.decksChanged.subscribe(async () => await this.onDecksChanged());
+
+		this.deckService.decksChanged.subscribe(async (decks) => {
+			await this.onDecksChanged(decks);
+		});
 	}
 
-	async onDecksChanged() {
+	async onDecksChanged(decks: Deck[]) {
+		this.decks = decks;
 		this.deckListView?.onNewDeckCreated();
-		await this.reloadDecks();
-	}
-
-	private async reloadDecks() {
-		this.decks = await this.deckService.getAll();
 	}
 }

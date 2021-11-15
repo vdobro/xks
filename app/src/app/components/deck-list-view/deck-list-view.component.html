@@ -1,9 +1,10 @@
 <div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-3@m"
-	 uk-grid="masonry: true" *ngIf="decks">
+	 uk-grid="masonry: true"
+	 *ngIf="decks">
 	<div *ngIf="decks.length === 0">
 		<h2 class="uk-heading-bullet">No decks</h2>
 		<p class="uk-text-small uk-text-normal">
-			Press <span class="uk-text-uppercase uk-text-light">New deck</span> to create one
+			Click <span class="uk-text-uppercase uk-text-light">New deck</span> to create one
 		</p>
 	</div>
 	<app-deck-list-card *ngFor="let deck of decks"

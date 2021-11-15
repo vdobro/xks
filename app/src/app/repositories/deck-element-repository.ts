@@ -23,18 +23,18 @@ import {Injectable} from "@angular/core";
 
 import {ElementId} from "@app/models/ElementId";
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
+import {Deck} from "@app/models/Deck";
+import {User} from "@app/models/User";
 
 import {
 	CouchDeckElementRepository,
-	DeckElementData, LocalDeckElementRepository,
+	DeckElementData,
+	LocalDeckElementRepository,
 	RemoteDeckElementRepository
 } from "@app/repositories/internal/couch-deck-element.repository";
 
 import {UserSessionService} from "@app/services/user-session.service";
 import {DeckService} from "@app/services/deck.service";
-import {Deck} from "@app/models/Deck";
-import {DeckRepository} from "@app/repositories/deck-repository.service";
-import {User} from "@app/models/User";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -48,24 +48,9 @@ export class DeckElementRepository {
 	private readonly deckRepos = new Map<string, CouchDeckElementRepository>();
 
 	constructor(private readonly userSessionService: UserSessionService,
-				private readonly deckService: DeckService,
-				private readonly deckRepository: DeckRepository) {
-
-		this.deckRepository.sourceChanged.subscribe(async () => {
-			// TODO need for a mutex due to both event handlers below and possible user change?
-			this.deckRepos.clear();
-			const decks = await this.deckRepository.getAll();
-			const user = this.userSessionService.getCurrentUser();
-			for (let deck of decks) {
-				this.addRepository(deck, user);
-			}
-		});
-		this.deckRepository.entityCreated.subscribe(deck => {
-			const user = this.userSessionService.getCurrentUser();
-			this.addRepository(deck, user);
-		});
-		this.deckRepository.entityDeleted.subscribe(deckId => {
-			this.deckRepos.delete(deckId);
+				private readonly deckService: DeckService) {
+		this.deckService.decksChanged.subscribe(async (decks) => {
+			await this.onDecksChanged(decks);
 		});
 	}
 
@@ -99,11 +84,23 @@ export class DeckElementRepository {
 		return await this.resolveDeckRepository(deckId).existAnyOfType(type);
 	}
 
-	private addRepository(deck: Deck, user: User | null) {
-		const repo = user !== null
-			? new RemoteDeckElementRepository(deck, user)
-			: new LocalDeckElementRepository(deck);
-		this.deckRepos.set(deck.id, repo);
+	private async onDecksChanged(decks: Deck[]) {
+		// TODO need for a mutex due to both event handlers below and possible user change?
+
+		const user = this.userSessionService.getCurrentUser();
+		const newDecks = decks.filter(deck => !this.deckRepos.has(deck.id));
+		const removedDecks = decks.filter(deck => this.deckRepos.has(deck.id));
+
+		for (let deck of newDecks) {
+			if (this.deckRepos.get(deck.id)) {
+				continue; //this assumes that a deck does not change its database
+			}
+			const repo = DeckElementRepository.createRepository(deck, user);
+			this.deckRepos.set(deck.id, repo);
+		}
+		for (let deck of removedDecks) {
+			this.deckRepos.delete(deck.id);
+		}
 	}
 
 	private resolveDeckRepository(deck: string) : CouchDeckElementRepository {
@@ -123,5 +120,11 @@ export class DeckElementRepository {
 			...data,
 			deckId: deckId
 		}
+	}
+
+	private static createRepository(deck: Deck, user: User | null) : CouchDeckElementRepository {
+		return user !== null
+			? new RemoteDeckElementRepository(deck)
+			: new LocalDeckElementRepository(deck);
 	}
 }

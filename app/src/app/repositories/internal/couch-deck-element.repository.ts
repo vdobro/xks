@@ -20,13 +20,12 @@
  */
 
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-
-import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
-import {BaseRepository} from "@app/repositories/base-repository";
 import {Deck} from "@app/models/Deck";
+
+import {CouchDatabase, CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
+import {BaseRepository} from "@app/repositories/base-repository";
 import {LocalRepository} from "@app/repositories/internal/local-repository";
 import {RemoteRepository} from "@app/repositories/internal/remote-repository";
-import {User} from "@app/models/User";
 
 export type DeckElementData = Omit<DeckElement, "deckId">
 
@@ -37,9 +36,11 @@ export type DeckElementData = Omit<DeckElement, "deckId">
 export abstract class CouchDeckElementRepository implements BaseRepository<DeckElementData> {
 	private indexCreated: boolean = false;
 
-	private readonly db;
+	private readonly db : CouchDatabase<DeckElementData>;
 
-	protected constructor(private readonly source: CouchDbRepository<DeckElementData>) {
+	protected constructor(
+		private readonly source: CouchDbRepository<DeckElementData>
+	) {
 		this.db = this.source.getHandle();
 	}
 
@@ -50,7 +51,13 @@ export abstract class CouchDeckElementRepository implements BaseRepository<DeckE
 				type: type
 			}
 		});
-		return result.docs as DeckElementData[];
+		return result.docs.map((value) => this.source.mapToEntity(value));
+		/*return result.docs.map((value) => ({
+			id: value._id,
+			name: value.name!!,
+			defaultStartingScore: value.defaultStartingScore!!,
+			defaultMaxScore: value.defaultMaxScore!!,
+		}));*/
 	}
 
 	async existAnyOfType(type: DeckElementType): Promise<boolean> {
@@ -95,7 +102,7 @@ export class LocalDeckElementRepository extends CouchDeckElementRepository {
 }
 
 export class RemoteDeckElementRepository extends CouchDeckElementRepository {
-	constructor(deck: Deck, user: User) {
-		super(new RemoteRepository<DeckElementData>(deck.id, user, deck.database));
+	constructor(deck: Deck) {
+		super(new RemoteRepository<DeckElementData>(deck.database));
 	}
 }

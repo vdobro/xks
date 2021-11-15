@@ -43,6 +43,8 @@ export class NewDeckModalComponent implements OnInit {
 	@ViewChild("deckNameInput", {static: true})
 	nameInputElement: ElementRef | undefined;
 
+	submitDisabled : boolean = false;
+
 	nameInput = new FormControl('');
 	descriptionInput = new FormControl('');
 
@@ -53,6 +55,7 @@ export class NewDeckModalComponent implements OnInit {
 	}
 
 	async onSaveClick() {
+		this.submitDisabled = true;
 		const name = this.nameInput.value.trim();
 		if (name === '') {
 			return;
@@ -74,6 +77,7 @@ export class NewDeckModalComponent implements OnInit {
 			return;
 		}
 		UIkit.modal(this.modal.nativeElement).show();
+		this.submitDisabled = false;
 		setTimeout(() => {
 			this.nameInputElement?.nativeElement.focus()
 		});
