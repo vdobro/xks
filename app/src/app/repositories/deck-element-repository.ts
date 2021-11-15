@@ -35,6 +35,7 @@ import {
 
 import {UserSessionService} from "@app/services/user-session.service";
 import {DeckService} from "@app/services/deck.service";
+import {find} from "lodash-es";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -89,7 +90,6 @@ export class DeckElementRepository {
 
 		const user = this.userSessionService.getCurrentUser();
 		const newDecks = decks.filter(deck => !this.deckRepos.has(deck.id));
-		const removedDecks = decks.filter(deck => this.deckRepos.has(deck.id));
 
 		for (let deck of newDecks) {
 			if (this.deckRepos.get(deck.id)) {
@@ -98,8 +98,11 @@ export class DeckElementRepository {
 			const repo = DeckElementRepository.createRepository(deck, user);
 			this.deckRepos.set(deck.id, repo);
 		}
-		for (let deck of removedDecks) {
-			this.deckRepos.delete(deck.id);
+		// Remove previously used decks not present in the updated list anymore
+		for (let existingDeckId of this.deckRepos.keys()) {
+			if (!find(decks, x => existingDeckId === x.id)) {
+				this.deckRepos.delete(existingDeckId);
+			}
 		}
 	}
 
