@@ -53,6 +53,7 @@ class PrivateDatabaseService(
 
 		val db = assertDatabaseNotCreated(deckDatabaseName)
 
+		createTypeIndex(db)
 		grantPermissionsToUse(username, db)
 		addDeckDatabase(username, deckId, deckDatabaseName)
 		return deckDatabaseName
@@ -88,6 +89,11 @@ class PrivateDatabaseService(
 	fun createTypeIndex(username: String) {
 		val db = getPrivateDatabase(username)
 		Thread.sleep(200) // couch_per_user is too slow
+
+		createTypeIndex(db)
+	}
+
+	fun createTypeIndex(db: Database) {
 		db.createIndex("""{ "index": { "fields": ["type"] }, "name": "type-index", "type": "json" }""")
 	}
 

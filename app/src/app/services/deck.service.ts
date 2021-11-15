@@ -88,7 +88,7 @@ export class DeckService {
 			await this.repository.destroy();
 			const params = new HttpParams()
 				.append('token', deck.ownerToken)
-				.append('username', this.userSessionService.getUserName()!!);
+				.append('username', this.userSessionService.getUserName()!);
 			const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
 			await this.httpClient.delete(url).toPromise();
 		}
@@ -103,7 +103,7 @@ export class DeckService {
 		const result = await this.httpClient.post<{
 			database: string
 		}>(this.deckApiRoot + "/" + deck.id, {
-			username: this.userSessionService.getUserName()!!
+			username: this.userSessionService.getUserName()!
 		}).toPromise();
 		return result.database;
 	}

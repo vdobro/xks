@@ -102,7 +102,7 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 
 	async delete(id: string): Promise<void> {
 		const entity = await this.getDataEntity(id);
-		const revision = entity._rev!!;
+		const revision = entity._rev!;
 		await this.db.remove(ID_PREFIX + id, revision);
 		this._entityDeleted.next(id);
 	}
@@ -113,7 +113,7 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 			startkey: ID_PREFIX,
 		});
 		return allDocsResponse.rows.map((value: { doc?: DataLayerEntity<TEntity>; }) => {
-			const doc = value.doc!!;
+			const doc = value.doc!;
 			return this.mapToEntity(doc);
 		});
 	}

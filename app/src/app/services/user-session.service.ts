@@ -61,9 +61,7 @@ export class UserSessionService {
 
 	constructor(private readonly httpClient: HttpClient) {
 		this.getUser().then((result) => {
-			//if (result !== null) {
-				this.updateCurrentUser(result);
-			//}
+			this.updateCurrentUser(result);
 		}).catch(async () => {
 			await this.logout();
 		});

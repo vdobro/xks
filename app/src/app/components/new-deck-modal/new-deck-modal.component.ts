@@ -64,7 +64,7 @@ export class NewDeckModalComponent implements OnInit {
 		await this.deckService.create(name, description ? description : '');
 
 		this.clearForm();
-		UIkit.modal(this.modal!!.nativeElement).hide();
+		UIkit.modal(this.modal!.nativeElement).hide();
 	}
 
 	private clearForm() {

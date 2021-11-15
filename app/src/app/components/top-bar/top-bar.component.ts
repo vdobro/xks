@@ -121,7 +121,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 	}
 
 	private updateItemsList(items: NavBarItem[]) {
-		const viewContainerRef = this.navBarItems!!.viewContainerRef;
+		const viewContainerRef = this.navBarItems!.viewContainerRef;
 		viewContainerRef.clear();
 
 		for (const item of items) {

@@ -143,14 +143,17 @@ export class SidebarComponent implements OnInit {
 
 	async studyCurrent() {
 		if (isTable(this.selectedElement)) {
-			this.setupSessionModal?.openDialog();
-			return;
+			if (this.selectedElement!.rows.length > 0) {
+				this.setupSessionModal?.openDialog();
+			} else {
+				UIkit.notification("Add columns and rows to study.", {status: 'warning'});
+			}
 		}
 		if (isGraph(this.selectedElement)) {
 			if (this.graphElementService.anyNodesAndEdgesExist(this.selectedElement!)) {
 				this.setupSessionModal?.openDialog();
 			} else {
-				UIkit.notification("Add nodes and edges to study", {status: 'warning'});
+				UIkit.notification("Add nodes and edges to study.", {status: 'warning'});
 			}
 		}
 	}

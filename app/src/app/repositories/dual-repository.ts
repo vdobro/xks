@@ -98,8 +98,8 @@ export class DualRepository<TEntity extends IdEntity>
 	private async userChangedHandler(user: User | null): Promise<void> {
 		if (user) {
 			await this.initRemoteDatabase(user);
-			this.selectedRepository = this.remoteRepository!!;
-			this.forwardEntityChanges(this.remoteRepository!!);
+			this.selectedRepository = this.remoteRepository!;
+			this.forwardEntityChanges(this.remoteRepository!);
 		} else {
 			await this.remoteRepository?.close();
 			this.remoteRepository = null;

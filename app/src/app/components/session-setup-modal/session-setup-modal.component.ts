@@ -187,7 +187,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		if (this.useExisting) {
 			return this.sessionModeChooser?.currentSelection?.id || null;
 		} else {
-			const mode = await this.sessionModeWizard!!.createSessionMode();
+			const mode = await this.sessionModeWizard!.createSessionMode();
 			return mode.id;
 		}
 	}

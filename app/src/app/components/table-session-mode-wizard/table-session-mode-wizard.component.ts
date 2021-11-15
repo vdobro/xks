@@ -101,7 +101,7 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	}
 
 	async createSessionMode(): Promise<TableSessionMode> {
-		return await this.sessionModeService.create(this.table!!, this.questionColumns, this.answerColumns);
+		return await this.sessionModeService.create(this.table!, this.questionColumns, this.answerColumns);
 	}
 
 	private reportValidity() {

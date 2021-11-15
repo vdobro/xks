@@ -133,7 +133,7 @@ export class ExerciseTaskService {
 
 	forceAcceptAnswer(currentValue: string, fieldId: string, task: ExerciseTask): AnswerFeedback {
 		const currentState = this.getState(task);
-		const field = task.answers.find(field => field.identifier.id === fieldId)!!;
+		const field = task.answers.find(field => field.identifier.id === fieldId)!;
 
 		ExerciseTaskService.revertTaskState(currentState, field);
 
@@ -163,7 +163,7 @@ export class ExerciseTaskService {
 	}
 
 	private getState(task: ExerciseTask): TaskState {
-		return this.taskStates.get(task.id)!!;
+		return this.taskStates.get(task.id)!;
 	}
 
 	private determineFieldToCheck(answerValue: string,
@@ -173,9 +173,9 @@ export class ExerciseTaskService {
 		if (task.ignoreAnswerOrder && task.pendingAnswers.length > 0) {
 			return this.getFieldWithClosestValue(answerValue, task.pendingAnswers);
 		} else if (!task.ignoreAnswerOrder) {
-			return task.answers.find(field => field.identifier.id === fieldId)!!;
+			return task.answers.find(field => field.identifier.id === fieldId)!;
 		} else {
-			return task.answers.find(field => field.identifier.id === lastAnswerFieldId)!!;
+			return task.answers.find(field => field.identifier.id === lastAnswerFieldId)!;
 		}
 	}
 
@@ -220,7 +220,7 @@ export class ExerciseTaskService {
 		const columnId = field.identifier.id;
 		if (answerCorrect) {
 			const subscores = currentState.columnSubscores;
-			const subscore = subscores.get(columnId)!!;
+			const subscore = subscores.get(columnId)!;
 			const globalMaxScore = maximumScoreAllowed;
 			const localMaxScore = currentState.score.value + 2;
 			if (subscore.value < globalMaxScore && subscore.value < localMaxScore) {
@@ -256,7 +256,7 @@ export class ExerciseTaskService {
 	}
 
 	private mapColumnToFlashcardField(row: TableRow, column: TableColumn): FlashcardField {
-		const columnValue = row.columnValues.find(x => x.columnId === column.id)!!;
+		const columnValue = row.columnValues.find(x => x.columnId === column.id)!;
 		return {
 			identifier: column,
 			value: columnValue.value,
@@ -291,7 +291,7 @@ export class ExerciseTaskService {
 	private static revertTaskState(state: TaskState, field: FlashcardField) {
 		const subscores = state.columnSubscores;
 		const columnId = field.identifier.id;
-		const subscore = subscores.get(columnId)!!;
+		const subscore = subscores.get(columnId)!;
 		subscores.set(columnId, this.revertScoreIfLess(subscore));
 		state.score = this.revertScoreIfLess(state.score);
 	}
@@ -317,13 +317,13 @@ export class ExerciseTaskService {
 
 	private static incrementSubscore(state: TaskState, columnId: string): void {
 		const subscores = state.columnSubscores;
-		const subscore = subscores.get(columnId)!!;
+		const subscore = subscores.get(columnId)!;
 		subscores.set(columnId, this.incrementScore(subscore));
 	}
 
 	private static changeSubscore(state: TaskState, columnId: string, value: number): void {
 		const subscores = state.columnSubscores;
-		const subscore = subscores.get(columnId)!!;
+		const subscore = subscores.get(columnId)!;
 		subscores.set(columnId, this.changeScore(subscore, value));
 	}
 
