@@ -78,7 +78,9 @@ export class UserSessionService {
 			const user = await this.getUser();
 			this.updateCurrentUser(user);
 		} catch (e) {
-			await this.handleCredentialException(e);
+			if (e instanceof HttpErrorResponse) {
+				await this.handleCredentialException(e);
+			}
 		}
 	}
 
@@ -89,7 +91,9 @@ export class UserSessionService {
 			await this.logout();
 			await this.login(username, password);
 		} catch (e) {
-			await this.handleCredentialException(e);
+			if (e instanceof HttpErrorResponse) {
+				await this.handleCredentialException(e);
+			}
 		}
 	}
 
