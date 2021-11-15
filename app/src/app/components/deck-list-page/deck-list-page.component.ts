@@ -55,8 +55,10 @@ export class DeckListPageComponent implements OnInit {
 		this.topBarService.disableBackButton();
 		this.topBarService.addItem(new NavBarItem(DeckListNavbarComponent));
 
-		this.deckService.decksChanged.subscribe(async (decks) => {
-			await this.onDecksChanged(decks);
+		this.deckService.decksChanged.subscribe({
+			next: async (decks: Deck[]) => {
+				await this.onDecksChanged(decks);
+			}
 		});
 	}
 

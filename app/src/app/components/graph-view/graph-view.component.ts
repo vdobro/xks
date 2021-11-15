@@ -104,9 +104,11 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		private readonly topBarService: TopBarService,
 		private readonly sidebarService: SidebarService,
 		private readonly activatedRoute: ActivatedRoute) {
-		this.navControlService.rootContainerWidth.subscribe((value: number) => {
-			this.rootContainerWidth = value;
-		})
+		this.navControlService.rootContainerWidth.subscribe({
+			next: (value: number) => {
+				this.rootContainerWidth = value;
+			}
+		});
 	}
 
 	async ngOnInit() {

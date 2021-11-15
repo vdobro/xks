@@ -72,9 +72,11 @@ export class DeckViewComponent implements OnInit {
 				await this.navigationService.goToDeckList();
 			}
 		});
-		this.tableService.tablesChanged.subscribe(async (deckId: string) => {
-			if (this.deck?.id === deckId) {
-				await this.checkIfAnyElementsAvailable();
+		this.tableService.tablesChanged.subscribe({
+			next: async (deckId: string) => {
+				if (this.deck?.id === deckId) {
+					await this.checkIfAnyElementsAvailable();
+				}
 			}
 		});
 

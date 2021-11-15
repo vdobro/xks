@@ -50,8 +50,10 @@ export class DeckElementRepository {
 
 	constructor(private readonly userSessionService: UserSessionService,
 				private readonly deckService: DeckService) {
-		this.deckService.decksChanged.subscribe(async (decks) => {
-			await this.onDecksChanged(decks);
+		this.deckService.decksChanged.subscribe({
+			next: async (decks: Deck[]) => {
+				await this.onDecksChanged(decks);
+			}
 		});
 	}
 
@@ -63,7 +65,7 @@ export class DeckElementRepository {
 		await this.resolveDeckRepository(id.deck).delete(id.element);
 	}
 
-	async getAllByType(deckId: string, type: DeckElementType) : Promise<DeckElement[]> {
+	async getAllByType(deckId: string, type: DeckElementType): Promise<DeckElement[]> {
 		return DeckElementRepository.mapToEntities(
 			await this.resolveDeckRepository(deckId).getAllOfType(type),
 			deckId
@@ -81,7 +83,7 @@ export class DeckElementRepository {
 		return DeckElementRepository.mapToEntity(updated, entity.deckId);
 	}
 
-	async existAnyOfType(deckId: string, type: DeckElementType) : Promise<boolean> {
+	async existAnyOfType(deckId: string, type: DeckElementType): Promise<boolean> {
 		return await this.resolveDeckRepository(deckId).existAnyOfType(type);
 	}
 
@@ -106,7 +108,7 @@ export class DeckElementRepository {
 		}
 	}
 
-	private resolveDeckRepository(deck: string) : CouchDeckElementRepository {
+	private resolveDeckRepository(deck: string): CouchDeckElementRepository {
 		const repo = this.deckRepos.get(deck);
 		if (!repo) {
 			throw new Error("Deck element repository could not be resolved.");
@@ -125,7 +127,7 @@ export class DeckElementRepository {
 		}
 	}
 
-	private static createRepository(deck: Deck, user: User | null) : CouchDeckElementRepository {
+	private static createRepository(deck: Deck, user: User | null): CouchDeckElementRepository {
 		return user !== null
 			? new RemoteDeckElementRepository(deck)
 			: new LocalDeckElementRepository(deck);

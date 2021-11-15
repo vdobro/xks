@@ -20,7 +20,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Subject, Subscribable} from "rxjs";
+import {firstValueFrom, Subject, Subscribable} from "rxjs";
 import {User} from "@app/models/User";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "@environments/environment";
@@ -69,10 +69,10 @@ export class UserSessionService {
 
 	async login(username: string, password: string) {
 		try {
-			await this.httpClient.post(
+			await firstValueFrom(this.httpClient.post(
 				this.sessionUrl,
 				UserSessionService.authRequest(username, password),
-				HTTP_OPTIONS).toPromise();
+				HTTP_OPTIONS));
 
 			UserSessionService.saveUsername(username);
 			const user = await this.getUser();
@@ -86,8 +86,8 @@ export class UserSessionService {
 
 	async register(username: string, password: string) {
 		try {
-			await this.httpClient.post(this.registrationUrl,
-				UserSessionService.authRequest(username, password)).toPromise();
+			await firstValueFrom(this.httpClient.post(this.registrationUrl,
+				UserSessionService.authRequest(username, password)));
 			await this.logout();
 			await this.login(username, password);
 		} catch (e) {
@@ -104,9 +104,9 @@ export class UserSessionService {
 
 	async deleteUser(username: string, password: string) {
 		await this.logout();
-		await this.httpClient.post(this.forgetUrl,
+		await firstValueFrom(this.httpClient.post(this.forgetUrl,
 			UserSessionService.authRequest(username, password),
-			HTTP_OPTIONS).toPromise();
+			HTTP_OPTIONS));
 	}
 
 	isLoggedIn() : boolean {
@@ -143,7 +143,7 @@ export class UserSessionService {
 	private async deleteSession() {
 		try {
 			UserSessionService.forgetUsername();
-			await this.httpClient.delete(this.sessionUrl).toPromise();
+			await firstValueFrom(this.httpClient.delete(this.sessionUrl));
 		} catch (e) {
 		}
 	}
@@ -151,7 +151,7 @@ export class UserSessionService {
 	private async getUser(): Promise<User | null> {
 		const username = localStorage.getItem(USERNAME_KEY);
 		if (username) {
-			return await this.httpClient.get<User>(this.infoUrlPrefix + username, HTTP_OPTIONS).toPromise();
+			return await firstValueFrom(this.httpClient.get<User>(this.infoUrlPrefix + username, HTTP_OPTIONS));
 		} else {
 			return null;
 		}

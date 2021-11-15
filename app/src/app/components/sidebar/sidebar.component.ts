@@ -67,7 +67,7 @@ export class SidebarComponent implements OnInit {
 	graphs: Graph[] = [];
 
 	selectedElement: DeckElement | null = null;
-	elementSelected : boolean = false;
+	elementSelected: boolean = false;
 
 	active: boolean = false;
 
@@ -78,13 +78,13 @@ export class SidebarComponent implements OnInit {
 				private readonly graphService: GraphService,
 				private readonly graphElementService: GraphElementService,
 				private readonly navigationService: NavigationService) {
-		this.navControlService.sidebarVisible.subscribe((value: boolean) => this.onVisibilityChanged(value));
-		this.sidebarService.activeDeck.subscribe(async (value: Deck | null) => this.onActiveDeckChanged(value));
+		this.navControlService.sidebarVisible.subscribe({next: (value: boolean) => this.onVisibilityChanged(value)});
+		this.sidebarService.activeDeck.subscribe({next: async (value: Deck | null) => this.onActiveDeckChanged(value)});
 
-		this.sidebarService.activeElement.subscribe((value: DeckElement | null) => this.onActiveElementChanged(value));
+		this.sidebarService.activeElement.subscribe({next: (value: DeckElement | null) => this.onActiveElementChanged(value)});
 
-		this.tableService.tablesChanged.subscribe((deckId: string) => this.onTablesChanged(deckId));
-		this.graphService.graphsChanged.subscribe((deckId: string) => this.onGraphsChanged(deckId));
+		this.tableService.tablesChanged.subscribe({next: (deckId: string) => this.onTablesChanged(deckId)});
+		this.graphService.graphsChanged.subscribe({next: (deckId: string) => this.onGraphsChanged(deckId)});
 	}
 
 	async ngOnInit() {
@@ -162,7 +162,8 @@ export class SidebarComponent implements OnInit {
 		this.tables = await this.tableService.getByDeckId(deckId);
 		if (!isTable(this.selectedElement)) {
 			return;
-		} if (this.tables.find(x => x.id === this.selectedElement!.id)) {
+		}
+		if (this.tables.find(x => x.id === this.selectedElement!.id)) {
 			this.selectedElement = await this.tableService.getById(this.getElementId());
 			return;
 		}
@@ -188,7 +189,7 @@ export class SidebarComponent implements OnInit {
 		this.graphs = [];
 	}
 
-	private getElementId() : ElementId {
+	private getElementId(): ElementId {
 		if (!this.selectedElement) {
 			throw Error("No selected deck element");
 		}

@@ -43,7 +43,7 @@ export class DualRepository<TEntity extends IdEntity>
 	private readonly localRepository: CouchDbRepository<TEntity>;
 	private remoteRepository: CouchDbRepository<TEntity> | null = null;
 
-	private readonly _sourceChanged = new Subject();
+	private readonly _sourceChanged = new Subject<void>();
 	readonly sourceChanged = this._sourceChanged.asObservable();
 
 	private readonly _entityCreated = new Subject<TEntity>();
@@ -64,8 +64,10 @@ export class DualRepository<TEntity extends IdEntity>
 		this.localRepository = new LocalRepository<TEntity>(entityIdentifier);
 		this.selectedRepository = this.localRepository;
 
-		this.userSessionService.userChanged.subscribe(async user => {
-			await this.userChangedHandler(user);
+		this.userSessionService.userChanged.subscribe({
+			next: async (user: User | null) => {
+				await this.userChangedHandler(user);
+			}
 		});
 
 		this.entitySubscriptions = this.createChangeSubscription(this.localRepository);
@@ -91,7 +93,7 @@ export class DualRepository<TEntity extends IdEntity>
 		return await this.selectedRepository.update(entity);
 	}
 
-	public async destroy() : Promise<void> {
+	public async destroy(): Promise<void> {
 
 	}
 
@@ -109,16 +111,22 @@ export class DualRepository<TEntity extends IdEntity>
 		this._sourceChanged.next();
 	}
 
-	private createChangeSubscription(source: EntityChangeSource<TEntity>) : EntityChangeSubscription<TEntity> {
+	private createChangeSubscription(source: EntityChangeSource<TEntity>): EntityChangeSubscription<TEntity> {
 		return {
-			entityCreated: source.entityCreated.subscribe(entity => {
-				this._entityCreated.next(entity);
+			entityCreated: source.entityCreated.subscribe({
+				next: (entity: TEntity) => {
+					this._entityCreated.next(entity);
+				}
 			}),
-			entityDeleted: source.entityDeleted.subscribe(next => {
-				this._entityDeleted.next(next);
+			entityDeleted: source.entityDeleted.subscribe({
+				next: (entityId: string) => {
+					this._entityDeleted.next(entityId);
+				}
 			}),
-			entityUpdated: source.entityUpdated.subscribe(next => {
-				this._entityUpdated.next(next);
+			entityUpdated: source.entityUpdated.subscribe({
+				next: (entity: TEntity) => {
+					this._entityUpdated.next(entity);
+				}
 			})
 		}
 	}

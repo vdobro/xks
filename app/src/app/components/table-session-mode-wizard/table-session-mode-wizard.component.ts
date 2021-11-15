@@ -71,11 +71,13 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 	constructor(
 		private readonly sessionModeService: TableSessionModeService,
 		private readonly tableCellService: TableElementService) {
-		this.tableCellService.columnsChanged.subscribe(async table => {
-			if (this.table?.id === table.id) {
-				setTimeout(() => {
-					this.reloadColumns();
-				});
+		this.tableCellService.columnsChanged.subscribe({
+			next: async (table: Table) => {
+				if (this.table?.id === table.id) {
+					setTimeout(() => {
+						this.reloadColumns();
+					});
+				}
 			}
 		});
 	}

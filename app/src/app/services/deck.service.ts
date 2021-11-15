@@ -20,7 +20,7 @@
  */
 
 import {v4 as uuid} from 'uuid';
-import {BehaviorSubject, Subscribable} from "rxjs";
+import {BehaviorSubject, firstValueFrom, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
@@ -90,7 +90,7 @@ export class DeckService {
 				.append('token', deck.ownerToken)
 				.append('username', this.userSessionService.getUserName()!);
 			const url = this.deckApiRoot + "/" + deck.id + "?" + params.toString();
-			await this.httpClient.delete(url).toPromise();
+			await firstValueFrom(this.httpClient.delete(url));
 		}
 		await this.repository.delete(deck.id);
 		await this.onDecksChanged();
@@ -100,11 +100,11 @@ export class DeckService {
 		if (!this.userSessionService.isLoggedIn()) {
 			return '';
 		}
-		const result = await this.httpClient.post<{
+		const result = await firstValueFrom(this.httpClient.post<{
 			database: string
 		}>(this.deckApiRoot + "/" + deck.id, {
 			username: this.userSessionService.getUserName()!
-		}).toPromise();
+		}));
 		return result.database;
 	}
 
