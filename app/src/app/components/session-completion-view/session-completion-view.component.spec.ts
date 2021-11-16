@@ -20,10 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionCompletionViewComponent} from './session-completion-view.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+
+import {SessionCompletionViewComponent} from '@app/components/session-completion-view/session-completion-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

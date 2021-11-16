@@ -20,9 +20,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionModeChooserComponent} from './session-mode-chooser.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {SessionModeChooserComponent} from '@app/components/session-mode-chooser/session-mode-chooser.component';
 
 /**
  * @author Vitalijus Dobrovolskis

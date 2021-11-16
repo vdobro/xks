@@ -21,7 +21,7 @@
 
 import {Subject, Subscribable} from "rxjs";
 
-import {User} from "@app/models/User";
+import {User} from "@app/models/user";
 
 import {BaseRepository} from "@app/repositories/base-repository";
 import {CouchDbRepository} from "@app/repositories/internal/couch-db-repository";

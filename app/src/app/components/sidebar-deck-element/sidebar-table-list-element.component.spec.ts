@@ -22,7 +22,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
-import {SidebarTableListElementComponent} from "./sidebar-table-list-element.component";
+
+import {SidebarTableListElementComponent} from "@app/components/sidebar-deck-element/sidebar-table-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis

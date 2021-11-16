@@ -21,8 +21,9 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {TopBarService} from './top-bar.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TopBarService} from '@app/services/top-bar.service';
 
 /**
  * @author Vitalijus Dobrovolskis

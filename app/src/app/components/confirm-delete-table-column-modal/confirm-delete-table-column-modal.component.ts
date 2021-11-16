@@ -23,7 +23,7 @@ import UIkit from 'uikit';
 
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 
-import {TableColumn} from "@app/models/TableColumn";
+import {TableColumn} from "@app/models/table-column";
 
 /**
  * @author Vitalijus Dobrovolskis

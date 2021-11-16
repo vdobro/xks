@@ -20,9 +20,9 @@
  */
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-
-import {TableRowComponent} from './table-row.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TableRowComponent} from '@app/components/table-row/table-row.component';
 
 /**
  * @author Vitalijus Dobrovolskis

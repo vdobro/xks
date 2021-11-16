@@ -21,9 +21,10 @@
 
 import {AfterContentChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
-import {NavigationControlService} from "./services/navigation-control.service";
-import {NavigationService} from "./services/navigation.service";
 import {DeckRepository} from "@app/repositories/deck-repository.service";
+
+import {NavigationControlService} from "@app/services/navigation-control.service";
+import {NavigationService} from "@app/services/navigation.service";
 
 /**
  * @author Vitalijus Dobrovolskis

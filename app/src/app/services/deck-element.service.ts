@@ -23,10 +23,10 @@ import {filter} from "lodash-es";
 
 import {Injectable} from '@angular/core';
 
-import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-import {ElementId} from "@app/models/ElementId";
+import {DeckElement, DeckElementType} from "@app/models/deck-element";
+import {ElementId} from "@app/models/element-id";
 import {Graph, isGraph} from "@app/models/graph";
-import {Table, isTable} from "@app/models/Table";
+import {Table, isTable} from "@app/models/table";
 import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 
 import {DeckElementRepository} from "@app/repositories/deck-element-repository";

@@ -22,10 +22,10 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {Deck} from "@app/models/Deck";
-import {ElementId} from "@app/models/ElementId";
-import {DeckElement, DeckElementType, getId} from "@app/models/DeckElement";
-import {isTable, Table} from "@app/models/Table";
+import {Deck} from "@app/models/deck";
+import {ElementId} from "@app/models/element-id";
+import {DeckElement, DeckElementType, getId} from "@app/models/deck-element";
+import {isTable, Table} from "@app/models/table";
 import {Graph, isGraph} from "@app/models/graph";
 import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 

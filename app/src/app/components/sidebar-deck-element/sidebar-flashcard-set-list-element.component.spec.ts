@@ -22,7 +22,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
-import {SidebarFlashcardSetListElementComponent} from "./sidebar-flashcard-set-list-element.component";
+
+import {SidebarFlashcardSetListElementComponent} from "@app/components/sidebar-deck-element/sidebar-flashcard-set-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis

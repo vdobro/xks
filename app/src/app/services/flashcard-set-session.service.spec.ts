@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {FlashcardSetSessionService} from './flashcard-set-session.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {FlashcardSetSessionService} from '@app/services/flashcard-set-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis

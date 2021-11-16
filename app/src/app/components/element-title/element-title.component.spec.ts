@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ElementTitleComponent} from './element-title.component';
+import {ElementTitleComponent} from '@app/components/element-title/element-title.component';
 
 /**
  * @author Vitalijus Dobrovolskis

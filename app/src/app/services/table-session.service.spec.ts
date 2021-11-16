@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {TableSessionService} from './table-session.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TableSessionService} from '@app/services/table-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis

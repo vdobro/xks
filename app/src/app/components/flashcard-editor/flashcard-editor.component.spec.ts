@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {FlashcardEditorComponent} from './flashcard-editor.component';
+import {FlashcardEditorComponent} from '@app/components/flashcard-editor/flashcard-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis

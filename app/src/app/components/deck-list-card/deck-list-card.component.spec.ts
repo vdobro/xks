@@ -19,14 +19,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {DeckListCardComponent} from './deck-list-card.component';
-import {Component, ViewChild} from "@angular/core";
-import {Deck} from "@app/models/Deck";
 import {v4 as uuid} from 'uuid';
+
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+import {Component, ViewChild} from "@angular/core";
+
+import {Deck} from "@app/models/deck";
+
+import {DeckListCardComponent} from '@app/components/deck-list-card/deck-list-card.component';
 
 describe('DeckListCardComponent', () => {
 	let component: TestHostComponent;

@@ -23,8 +23,8 @@ import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
-import {DeckElement} from "@app/models/DeckElement";
+import {Deck} from "@app/models/deck";
+import {DeckElement} from "@app/models/deck-element";
 
 import {NavigationControlService} from "@app/services/navigation-control.service";
 import {DeckService} from "@app/services/deck.service";

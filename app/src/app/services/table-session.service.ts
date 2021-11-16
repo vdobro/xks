@@ -21,8 +21,8 @@
 
 import {Injectable} from '@angular/core';
 
-import {Table} from "@app/models/Table";
-import {TableSessionMode} from "@app/models/TableSessionMode";
+import {Table} from "@app/models/table";
+import {TableSessionMode} from "@app/models/table-session-mode";
 
 import {ExerciseTaskService} from "@app/services/exercise-task.service";
 import {StudySessionService} from "@app/services/study-session.service";

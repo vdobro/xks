@@ -23,7 +23,7 @@ import {Observable, Subject} from "rxjs";
 import {Component, ElementRef, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {Flashcard} from "@app/models/Flashcard";
+import {Flashcard} from "@app/models/flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis

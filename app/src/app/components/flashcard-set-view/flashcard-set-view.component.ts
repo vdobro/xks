@@ -22,7 +22,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 
-import {Flashcard} from "@app/models/Flashcard";
+import {Flashcard} from "@app/models/flashcard";
 import {FlashcardSet} from "@app/models/flashcard-set";
 
 import {SidebarService} from "@app/services/sidebar.service";

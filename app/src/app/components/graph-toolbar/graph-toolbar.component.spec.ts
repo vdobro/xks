@@ -21,8 +21,9 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {GraphToolbarComponent} from './graph-toolbar.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {GraphToolbarComponent} from '@app/components/graph-toolbar/graph-toolbar.component';
 
 /**
  * @author Vitalijus Dobrovolskis

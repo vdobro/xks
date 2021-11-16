@@ -21,7 +21,7 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {TableSessionModeService} from './table-session-mode.service';
+import {TableSessionModeService} from '@app/services/table-session-mode.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**

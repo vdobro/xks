@@ -19,23 +19,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
-import {TableColumn} from "./TableColumn";
-import {TableRow} from "./TableRow";
-import {TableSessionMode} from "./TableSessionMode";
+import {BaseEntity} from "@app/models/base-entity";
+import {AnswerValue} from "@app/models/answer-value";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.11.15
  */
-export interface Table extends DeckElement, BaseEntity {
-	defaultSessionModeId: string | null,
-	columns: TableColumn[],
-	rows: TableRow[],
-	sessionModes: TableSessionMode[]
-}
-
-export function isTable(element: DeckElement | null): element is Table {
-	return element !== null && (element as Table).defaultSessionModeId !== undefined;
+export interface Flashcard extends BaseEntity {
+	question: string;
+	value: AnswerValue;
 }

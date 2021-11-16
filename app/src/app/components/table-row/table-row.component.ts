@@ -22,9 +22,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 import {AnswerValue} from "@app/models/answer-value";
-import {Table} from "@app/models/Table";
-import {TableRow} from "@app/models/TableRow";
-import {TableColumn} from "@app/models/TableColumn";
+import {Table} from "@app/models/table";
+import {TableRow} from "@app/models/table-row";
+import {TableColumn} from "@app/models/table-column";
 
 import {TableElementService} from "@app/services/table-element.service";
 

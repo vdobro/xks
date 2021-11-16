@@ -19,12 +19,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {IdEntity} from "@app/repositories/id-entity";
+import {ElementId} from "@app/models/element-id";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.10.11
  */
-export interface TableColumn extends BaseEntity {
-	name: string;
+export interface DeckElement extends IdEntity {
+	deckId: string,
+	name: string,
+	defaultStartingScore: number,
+	defaultMaxScore: number,
+}
+
+export type DeckElementType = "graph" | "table" | "flashcards";
+
+export const getId = (element: DeckElement): ElementId => {
+	return {element: element.id, deck: element.deckId}
 }

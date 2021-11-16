@@ -23,11 +23,11 @@ import {Subject, Subscribable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 import {Injectable} from '@angular/core';
 
-import {Table} from '@app/models/Table';
-import {Deck} from '@app/models/Deck';
-import {ElementId} from "@app/models/ElementId";
+import {Table} from '@app/models/table';
+import {Deck} from '@app/models/deck';
+import {ElementId} from "@app/models/element-id";
 import {DeckElementService} from "@app/services/deck-element.service";
-import {DeckElementType} from "@app/models/DeckElement";
+import {DeckElementType} from "@app/models/deck-element";
 
 /**
  * @author Vitalijus Dobrovolskis

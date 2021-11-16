@@ -19,9 +19,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
-import {Flashcard} from "@app/models/Flashcard";
+import {DeckElement} from "@app/models/deck-element";
+import {BaseEntity} from "@app/models/base-entity";
+import {Flashcard} from "@app/models/flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis

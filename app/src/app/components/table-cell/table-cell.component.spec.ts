@@ -21,8 +21,9 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {TableCellComponent} from './table-cell.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TableCellComponent} from '@app/components/table-cell/table-cell.component';
 
 /**
  * @author Vitalijus Dobrovolskis

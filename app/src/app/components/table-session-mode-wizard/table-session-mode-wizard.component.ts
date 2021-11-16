@@ -34,13 +34,17 @@ import {
 	ViewChild
 } from '@angular/core';
 
-import {Table} from "@app/models/Table";
-import {TableColumn} from "@app/models/TableColumn";
-import {TableSessionMode} from "@app/models/TableSessionMode";
+import {Table} from "@app/models/table";
+import {TableColumn} from "@app/models/table-column";
+import {TableSessionMode} from "@app/models/table-session-mode";
 
 import {TableElementService} from "@app/services/table-element.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.09.06
+ */
 @Component({
 	selector: 'app-table-session-mode-wizard',
 	templateUrl: './table-session-mode-wizard.component.html',

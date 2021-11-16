@@ -21,10 +21,9 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-
-import {FlashcardSetViewComponent} from './flashcard-set-view.component';
 import {RouterTestingModule} from "@angular/router/testing";
 
+import {FlashcardSetViewComponent} from '@app/components/flashcard-set-view/flashcard-set-view.component';
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.22

@@ -19,19 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "@app/models/BaseEntity";
-import {AnswerValue} from "@app/models/answer-value";
+import {DeckElement} from "@app/models/deck-element";
+import {BaseEntity} from "@app/models/base-entity";
+import {TableColumn} from "@app/models/table-column";
+import {TableRow} from "@app/models/table-row";
+import {TableSessionMode} from "@app/models/table-session-mode";
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.04.03
  */
-export interface TableRow extends BaseEntity {
-	id: string;
-	columnValues: TableRowValue[],
+export interface Table extends DeckElement, BaseEntity {
+	defaultSessionModeId: string | null,
+	columns: TableColumn[],
+	rows: TableRow[],
+	sessionModes: TableSessionMode[]
 }
 
-export interface TableRowValue {
-	columnId: string,
-	value: AnswerValue
+export function isTable(element: DeckElement | null): element is Table {
+	return element !== null && (element as Table).defaultSessionModeId !== undefined;
 }

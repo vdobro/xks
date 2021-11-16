@@ -23,9 +23,9 @@ import {Component, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
-import {Table} from "@app/models/Table";
-import {TableColumn} from "@app/models/TableColumn";
-import {TableRow} from "@app/models/TableRow";
+import {Table} from "@app/models/table";
+import {TableColumn} from "@app/models/table-column";
+import {TableRow} from "@app/models/table-row";
 
 import {TableService} from "@app/services/table.service";
 import {DeckService} from "@app/services/deck.service";

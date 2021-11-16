@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {GraphSessionService} from './graph-session.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {GraphSessionService} from '@app/services/graph-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis

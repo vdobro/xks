@@ -21,7 +21,7 @@
 
 import {Component, OnInit, ViewChild} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {DeckService} from "@app/services/deck.service";
 import {TopBarService} from "@app/services/top-bar.service";

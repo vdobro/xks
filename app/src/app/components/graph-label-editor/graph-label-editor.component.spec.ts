@@ -20,9 +20,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {GraphLabelEditorComponent} from './graph-label-editor.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {GraphLabelEditorComponent} from '@app/components/graph-label-editor/graph-label-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis

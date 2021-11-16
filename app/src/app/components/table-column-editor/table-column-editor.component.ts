@@ -22,8 +22,8 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {TableColumn} from "@app/models/TableColumn";
-import {Table} from "@app/models/Table";
+import {TableColumn} from "@app/models/table-column";
+import {Table} from "@app/models/table";
 
 import {TableElementService} from "@app/services/table-element.service";
 

@@ -24,7 +24,7 @@ import {BehaviorSubject, firstValueFrom, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {stripTrailingSlash} from "@environments/utils";
 import {environment} from "@environments/environment";

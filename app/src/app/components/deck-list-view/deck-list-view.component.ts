@@ -23,7 +23,7 @@ import UIkit from 'uikit';
 
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {SidebarService} from "@app/services/sidebar.service";
 

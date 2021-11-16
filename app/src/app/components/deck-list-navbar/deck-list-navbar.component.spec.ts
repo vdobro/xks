@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import {DeckListNavbarComponent} from './deck-list-navbar.component';
+import {DeckListNavbarComponent} from '@app/components/deck-list-navbar/deck-list-navbar.component';
 
 /**
  * @author Vitalijus Dobrovolskis

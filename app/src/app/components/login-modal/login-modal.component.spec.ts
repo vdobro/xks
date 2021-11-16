@@ -21,8 +21,9 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {LoginModalComponent} from './login-modal.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {LoginModalComponent} from '@app/components/login-modal/login-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis

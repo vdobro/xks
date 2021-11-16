@@ -21,9 +21,10 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {NavigationService} from './navigation.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+
+import {NavigationService} from '@app/services/navigation.service';
 
 /**
  * @author Vitalijus Dobrovolskis

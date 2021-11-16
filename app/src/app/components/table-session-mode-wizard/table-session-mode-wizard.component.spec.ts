@@ -20,10 +20,14 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {TableSessionModeWizardComponent} from './table-session-mode-wizard.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
+import {TableSessionModeWizardComponent} from '@app/components/table-session-mode-wizard/table-session-mode-wizard.component';
+
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.09.06
+ */
 describe('TableSessionModeWizardComponent', () => {
 	let component: TableSessionModeWizardComponent;
 	let fixture: ComponentFixture<TableSessionModeWizardComponent>;

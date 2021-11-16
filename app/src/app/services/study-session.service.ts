@@ -21,12 +21,12 @@
 
 import {v4 as uuid} from 'uuid';
 
-import {ExerciseTaskService} from "./exercise-task.service";
+import {ExerciseTask} from "@app/services/models/exercise-task";
+import {AnswerFeedback} from "@app/services/models/answer-feedback";
+import {LearningSession} from "@app/services/models/learning-session";
+import {LearningSessionState} from "@app/services/models/learning-session-state";
 
-import {ExerciseTask} from "./models/exercise-task";
-import {AnswerFeedback} from "./models/answer-feedback";
-import {LearningSession} from "./models/learning-session";
-import {LearningSessionState} from "./models/learning-session-state";
+import {ExerciseTaskService} from "@app/services/exercise-task.service";
 
 /**
  * @author Vitalijus Dobrovolskis

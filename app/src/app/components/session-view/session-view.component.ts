@@ -24,12 +24,12 @@ import UIkit from 'uikit';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 
-import {isTable} from "@app/models/Table";
+import {isTable} from "@app/models/table";
 import {isGraph} from "@app/models/graph";
 import {isFlashcardList} from "@app/models/flashcard-set";
 
-import {TableSessionMode} from "@app/models/TableSessionMode";
-import {DeckElement} from "@app/models/DeckElement";
+import {TableSessionMode} from "@app/models/table-session-mode";
+import {DeckElement} from "@app/models/deck-element";
 
 import {TableSessionService} from "@app/services/table-session.service";
 import {SidebarService} from "@app/services/sidebar.service";

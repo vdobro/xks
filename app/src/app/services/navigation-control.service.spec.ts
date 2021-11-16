@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {NavigationControlService} from './navigation-control.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {NavigationControlService} from '@app/services/navigation-control.service';
 
 /**
  * @author Vitalijus Dobrovolskis

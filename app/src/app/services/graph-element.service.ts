@@ -29,7 +29,7 @@ import {Graph, GraphElements} from "@app/models/graph";
 import {GraphNode} from "@app/models/graph-node";
 import {GraphEdge} from "@app/models/graph-edge";
 import {answersEqual, AnswerValue, cloneAnswer} from "@app/models/answer-value";
-import {ElementId} from "@app/models/ElementId";
+import {ElementId} from "@app/models/element-id";
 
 import {GraphService} from "@app/services/graph.service";
 

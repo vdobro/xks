@@ -25,9 +25,9 @@ import {find, remove} from "lodash-es";
 
 import {Injectable} from '@angular/core';
 
-import {Table} from "@app/models/Table";
-import {TableColumn} from "@app/models/TableColumn";
-import {TableSessionMode} from "@app/models/TableSessionMode";
+import {Table} from "@app/models/table";
+import {TableColumn} from "@app/models/table-column";
+import {TableSessionMode} from "@app/models/table-session-mode";
 
 import {TableService} from "@app/services/table.service";
 

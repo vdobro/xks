@@ -20,7 +20,8 @@
  */
 
 import {AnswerValue} from "@app/models/answer-value";
-import {NamedEntity} from "./named-entity";
+
+import {NamedEntity} from "@app/services/models/named-entity";
 
 /**
  * @author Vitalijus Dobrovolskis

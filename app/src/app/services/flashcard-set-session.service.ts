@@ -24,8 +24,8 @@ import {Injectable} from '@angular/core';
 import {FlashcardSet} from "@app/models/flashcard-set";
 
 import {LearningSessionState} from "@app/services/models/learning-session-state";
-import {StudySessionService} from "./study-session.service";
-import {ExerciseTaskService} from "./exercise-task.service";
+import {StudySessionService} from "@app/services/study-session.service";
+import {ExerciseTaskService} from "@app/services/exercise-task.service";
 
 /**
  * @author Vitalijus Dobrovolskis

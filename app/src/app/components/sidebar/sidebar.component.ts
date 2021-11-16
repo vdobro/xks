@@ -23,12 +23,12 @@ import UIkit from 'uikit';
 
 import {Component, OnInit, ViewChild} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
-import {DeckElement} from "@app/models/DeckElement";
+import {Deck} from "@app/models/deck";
+import {DeckElement} from "@app/models/deck-element";
 import {anyNodesAndEdgesExist, Graph, isGraph} from "@app/models/graph";
-import {Table, isTable} from "@app/models/Table";
+import {Table, isTable} from "@app/models/table";
 import {anyCardsExist, FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
-import {ElementId} from "@app/models/ElementId";
+import {ElementId} from "@app/models/element-id";
 
 import {NavigationControlService} from "@app/services/navigation-control.service";
 import {TableService} from "@app/services/table.service";

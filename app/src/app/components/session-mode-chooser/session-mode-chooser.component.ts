@@ -31,8 +31,8 @@ import {
 	ViewChild
 } from '@angular/core';
 
-import {Table} from "@app/models/Table";
-import {TableSessionMode} from "@app/models/TableSessionMode";
+import {Table} from "@app/models/table";
+import {TableSessionMode} from "@app/models/table-session-mode";
 
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
 import {TableElementService} from "@app/services/table-element.service";

@@ -20,9 +20,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionScoreSettingsComponent} from './session-score-settings.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {SessionScoreSettingsComponent} from '@app/components/session-score-settings/session-score-settings.component';
 
 /**
  * @author Vitalijus Dobrovolskis

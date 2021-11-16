@@ -19,15 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {BaseEntity} from "@app/models/base-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.03.14
+ * @since 2020.04.03
  */
-export interface Deck extends BaseEntity {
+export interface TableColumn extends BaseEntity {
 	name: string;
-	description: string;
-	database: string;
-	ownerToken: string;
 }

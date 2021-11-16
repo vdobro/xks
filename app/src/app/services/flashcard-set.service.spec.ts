@@ -21,7 +21,8 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {FlashcardSetService} from './flashcard-set.service';
+import {FlashcardSetService} from '@app/services/flashcard-set.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,7 +32,11 @@ describe('FlashcardSetService', () => {
 	let service: FlashcardSetService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			]
+		});
 		service = TestBed.inject(FlashcardSetService);
 	});
 

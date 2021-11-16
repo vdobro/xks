@@ -24,8 +24,8 @@ import UIkit from 'uikit';
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {DeckElement} from "@app/models/DeckElement";
-import {Table, isTable} from "@app/models/Table";
+import {DeckElement} from "@app/models/deck-element";
+import {Table, isTable} from "@app/models/table";
 import {Graph, isGraph} from "@app/models/graph";
 import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 

@@ -24,11 +24,11 @@ import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
-import {DeckElementType} from "@app/models/DeckElement";
+import {DeckElementType} from "@app/models/deck-element";
 import {Graph} from "@app/models/graph";
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
-import {ElementId} from "@app/models/ElementId";
+import {ElementId} from "@app/models/element-id";
 import {DeckElementService} from "@app/services/deck-element.service";
 
 /**

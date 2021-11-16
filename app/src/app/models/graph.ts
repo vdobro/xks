@@ -19,10 +19,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "@app/models/DeckElement";
-import {BaseEntity} from "@app/models/BaseEntity";
+import {DeckElement} from "@app/models/deck-element";
+import {BaseEntity} from "@app/models/base-entity";
 import {GraphNode} from "@app/models/graph-node";
-import {Table} from "@app/models/Table";
+import {Table} from "@app/models/table";
 import {GraphEdge} from "@app/models/graph-edge";
 import {FlashcardSet} from "@app/models/flashcard-set";
 

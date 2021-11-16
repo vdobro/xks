@@ -21,8 +21,8 @@
 
 import {v4 as uuid} from 'uuid';
 
-import {Deck} from "@app/models/Deck";
-import {Table} from "@app/models/Table";
+import {Deck} from "@app/models/deck";
+import {Table} from "@app/models/table";
 
 const sampleDeckId = 'ee07eb82-e7d9-47e4-9be8-4ccd4d7a18ae';
 

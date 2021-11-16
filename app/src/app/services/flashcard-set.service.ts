@@ -24,13 +24,13 @@ import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
-import {DeckElementType, getId} from "@app/models/DeckElement";
+import {DeckElementType, getId} from "@app/models/deck-element";
 import {FlashcardSet} from "@app/models/flashcard-set";
-import {ElementId} from "@app/models/ElementId";
-import {Deck} from "@app/models/Deck";
+import {ElementId} from "@app/models/element-id";
+import {Deck} from "@app/models/deck";
 
 import {DeckElementService} from "@app/services/deck-element.service";
-import {Flashcard} from "@app/models/Flashcard";
+import {Flashcard} from "@app/models/flashcard";
 import {filter, find} from "lodash-es";
 
 /**

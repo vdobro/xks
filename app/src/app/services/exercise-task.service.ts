@@ -25,9 +25,9 @@ import {Injectable} from '@angular/core';
 
 import {levenshtein} from "@environments/utils";
 
-import {Table} from "@app/models/Table";
-import {TableColumn} from "@app/models/TableColumn";
-import {TableRow} from "@app/models/TableRow";
+import {Table} from "@app/models/table";
+import {TableColumn} from "@app/models/table-column";
+import {TableRow} from "@app/models/table-row";
 import {Graph} from "@app/models/graph";
 import {GraphNode} from "@app/models/graph-node";
 import {FlashcardSet} from "@app/models/flashcard-set";

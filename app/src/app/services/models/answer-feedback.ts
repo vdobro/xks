@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {FlashcardField} from "./flashcard-field";
+import {FlashcardField} from "@app/services/models/flashcard-field";
 
 /**
  * @author Vitalijus Dobrovolskis

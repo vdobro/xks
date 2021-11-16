@@ -19,14 +19,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
-import {AnswerValue} from "@app/models/answer-value";
+import {BaseEntity} from "@app/models/base-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.11.15
+ * @since 2020.03.14
  */
-export interface Flashcard extends BaseEntity {
-	question: string;
-	value: AnswerValue;
+export interface Deck extends BaseEntity {
+	name: string;
+	description: string;
+	database: string;
+	ownerToken: string;
 }

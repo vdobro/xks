@@ -24,7 +24,7 @@ import UIkit from 'uikit';
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {GraphService} from "@app/services/graph.service";
 import {TableService} from "@app/services/table.service";
