@@ -21,10 +21,12 @@
 
 import {Component, OnInit} from '@angular/core';
 
-import {NavigationService} from "@app/services/navigation.service";
+import {FlashcardSet} from "@app/models/flashcard-set";
 
-import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
-import {FlashcardList} from "@app/models/flashcard-list";
+import {NavigationService} from "@app/services/navigation.service";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
+
+import {SidebarDeckElement, SidebarDeckElementComponent} from "@app/components/sidebar-deck-element/sidebar-deck-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -39,41 +41,53 @@ export class SidebarFlashcardSetListElementComponent
 	extends SidebarDeckElementComponent
 	implements OnInit {
 
-	constructor(
-		private readonly navigationService: NavigationService) {
+	private cards: FlashcardSet | null = null;
+
+	constructor(private readonly flashcardSetService: FlashcardSetService,
+				private readonly navigationService: NavigationService) {
 		super();
+
 		this.elementType = 'flashcard collection';
 
-		//TODO:
-		/*this.cardService.cardCountChanged.subscribe(async (list: FlashcardList) => {
-			if (this.element?.id === list.id) {
-				await this.updateElementCount();
+		this.flashcardSetService.setChanged.subscribe(async (set: FlashcardSet) => {
+			if (this.element?.id === set.id) {
+				await this.updateElementCount(set);
 			}
-		});*/
+		});
 	}
 
 	async ngOnInit(): Promise<void> {
 		await super.ngOnInit();
 
 		if (this.element) {
-			await this.updateElementCount();
+			this.cards = this.element as FlashcardSet;
+			await this.updateElementCount(this.cards);
 		}
 	}
 
-	private async updateElementCount() {
-		//const cards = await this.cardService.getBySet(this.element as FlashcardList);
-		//this.elementCount = cards.length;
+	private async updateElementCount(set: FlashcardSet) {
+		if (!this.deck || !this.element) {
+			return;
+		}
+		this.cards = this.element as FlashcardSet;
+		this.elementCount = set.cards.length;
 	}
 
 	protected async onClickHandler(id: string) {
-		//await this.navigationService.openFlashcardSet(id);
+		if (!this.deck) {
+			return;
+		}
+		await this.navigationService.openFlashcardSet({element: id, deck: this.deck.id});
 	}
 
 	protected async onDeleteHandler(id: string) {
-		//await this.cardSetService.delete(id);
+		if (!this.deck) {
+			return;
+		}
+		await this.flashcardSetService.delete({element: id, deck: this.deck.id});
 	}
 
 	protected async onUpdateHandler(element: SidebarDeckElement) {
-		//await this.cardSetService.update(element as FlashcardList);
+		await this.flashcardSetService.update(element as FlashcardSet);
 	}
 }

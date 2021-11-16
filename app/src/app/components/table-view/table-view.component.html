@@ -1,8 +1,6 @@
 <div *ngIf="table" class="uk-container">
 	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid>
-		<div class="uk-width-expand">
-			<h2 class="uk-heading-medium uk-text-truncate">{{table.name}}</h2>
-		</div>
+		<app-element-title [name]="table.name"></app-element-title>
 		<div class="uk-width-auto">
 			<button *ngIf="!columnInCreation" class="uk-button uk-button-default"
 					type="button"

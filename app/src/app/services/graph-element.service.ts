@@ -51,15 +51,6 @@ export class GraphElementService {
 	constructor(private readonly graphService: GraphService) {
 	}
 
-	anyNodesAndEdgesExist(graph: Graph): boolean {
-		const nodes = graph.nodes;
-		if (nodes.length === 0) {
-			return false;
-		}
-		const edges = graph.edges;
-		return edges.length !== 0;
-	}
-
 	async addNode(value: string, graph: Graph): Promise<GraphNode> {
 		const answer: AnswerValue = {alternatives: [], default: value};
 		const node: GraphNode = {

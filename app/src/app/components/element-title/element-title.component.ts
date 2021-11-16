@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,22 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {IdEntity} from "@app/repositories/id-entity";
-import {ElementId} from "@app/models/ElementId";
+import {Component, Input, OnInit} from '@angular/core';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2021.11.16
  */
-export interface DeckElement extends IdEntity {
-	deckId: string,
-	name: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
-}
+@Component({
+	selector: 'app-element-title',
+	templateUrl: './element-title.component.html',
+	styleUrls: ['./element-title.component.sass'],
+	host: {'class': 'uk-width-expand'},
+})
+export class ElementTitleComponent implements OnInit {
 
-export type DeckElementType = "graph" | "table" | "flashcards";
+	@Input()
+	name: string = '';
 
-export const getId = (element: DeckElement): ElementId => {
-	return {element: element.id, deck: element.deckId}
+	constructor() {
+	}
+
+	ngOnInit(): void {
+	}
 }

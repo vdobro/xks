@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,22 +19,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {IdEntity} from "@app/repositories/id-entity";
-import {ElementId} from "@app/models/ElementId";
+import {TestBed} from '@angular/core/testing';
+
+import {FlashcardSetService} from './flashcard-set.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2021.11.15
  */
-export interface DeckElement extends IdEntity {
-	deckId: string,
-	name: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
-}
+describe('FlashcardSetService', () => {
+	let service: FlashcardSetService;
 
-export type DeckElementType = "graph" | "table" | "flashcards";
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(FlashcardSetService);
+	});
 
-export const getId = (element: DeckElement): ElementId => {
-	return {element: element.id, deck: element.deckId}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

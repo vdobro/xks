@@ -26,7 +26,7 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
 
 import {isTable} from "@app/models/Table";
 import {isGraph} from "@app/models/graph";
-import {isFlashcardList} from "@app/models/flashcard-list";
+import {isFlashcardList} from "@app/models/flashcard-set";
 
 import {TableSessionMode} from "@app/models/TableSessionMode";
 import {DeckElement} from "@app/models/DeckElement";
@@ -49,6 +49,8 @@ import {SessionNavigationComponent} from "@app/components/session-navigation/ses
 import {GRAPH_ID_PARAM} from "@app/components/graph-view/graph-view.component";
 import {DECK_ID_PARAM} from "@app/components/deck-view/deck-view.component";
 import {FLASHCARD_SET_ID_PARAM} from "@app/components/flashcard-set-view/flashcard-set-view.component";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
+import {FlashcardSetSessionService} from "@app/services/flashcard-set-session.service";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 export const SESSION_START_SCORE_PARAM = "initial-score";
@@ -79,10 +81,12 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		private readonly route: ActivatedRoute,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
+		private readonly flashcardService: FlashcardSetService,
 		private readonly navigationService: NavigationService,
 		private readonly sessionModeService: TableSessionModeService,
 		private readonly tableSessionService: TableSessionService,
 		private readonly graphSessionService: GraphSessionService,
+		private readonly flashcardSessionService: FlashcardSetSessionService,
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService
 	) {
@@ -109,7 +113,8 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 				this.deckElement = await this.graphService.getById(id);
 				this.sessionService = this.graphSessionService;
 			} else if (flashcardSetId) {
-				//TODO:
+				this.deckElement = await this.flashcardService.getById(id);
+				this.sessionService = this.flashcardSessionService;
 			} else {
 				await this.navigationService.goBack();
 				return;
@@ -149,7 +154,8 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 			this.state = this.graphSessionService.startNew(this.deckElement,
 				this.startScore, this.maxScore);
 		} else if (isFlashcardList(this.deckElement)) {
-			//TODO
+			this.state = this.flashcardSessionService.startNew(this.deckElement,
+				this.startScore, this.maxScore);
 		}
 
 		this.sidebarService.hide();

@@ -27,7 +27,8 @@
 			<ul class="uk-nav-sub">
 				<li deck-element-flashcard-set
 					*ngFor="let cardSet of flashcardSets"
-					[element]="cardSet"></li>
+					[element]="cardSet"
+					[deck]="deck"></li>
 			</ul>
 		</li>
 		<li class="uk-nav-header">Actions</li>

@@ -28,6 +28,7 @@ import {Deck} from "@app/models/Deck";
 
 import {GraphService} from "@app/services/graph.service";
 import {TableService} from "@app/services/table.service";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -56,6 +57,7 @@ export class NewDeckElementModalComponent implements OnInit {
 	constructor(
 		private readonly graphService: GraphService,
 		private readonly tableService: TableService,
+		private readonly flashcardSetService: FlashcardSetService,
 	) {
 	}
 
@@ -97,7 +99,7 @@ export class NewDeckElementModalComponent implements OnInit {
 				await this.tableService.create(this.deck, name);
 				break;
 			case DeckElementType.FLASHCARDS:
-				//TODO: await this.cardListService.create(this.deck, name);
+				await this.flashcardSetService.create(this.deck, name);
 				break;
 			default:
 				break;

@@ -23,14 +23,16 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 
 import {Flashcard} from "@app/models/Flashcard";
-import {FlashcardList} from "@app/models/flashcard-list";
+import {FlashcardSet} from "@app/models/flashcard-set";
 
 import {SidebarService} from "@app/services/sidebar.service";
 import {TopBarService} from "@app/services/top-bar.service";
 import {NavigationControlService} from "@app/services/navigation-control.service";
 import {NavigationService} from "@app/services/navigation.service";
 
-import {FlashcardEditorComponent, FlashcardFields} from "../flashcard-editor/flashcard-editor.component";
+import {FlashcardEditorComponent, FlashcardFields} from "@app/components/flashcard-editor/flashcard-editor.component";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
+import {DECK_ID_PARAM} from "@app/components/deck-view/deck-view.component";
 
 export const FLASHCARD_SET_ID_PARAM = "flashcardSetId";
 
@@ -48,11 +50,11 @@ export class FlashcardSetViewComponent implements OnInit {
 	@ViewChild('newCardEditor')
 	newCardEditor: FlashcardEditorComponent | undefined;
 
-	cardSet: FlashcardList | null = null;
+	cardSet: FlashcardSet | null = null;
 	cards: Flashcard[] = [];
 
 	constructor(
-
+		private readonly cardService: FlashcardSetService,
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService,
 		private readonly navigationControlService: NavigationControlService,
@@ -63,35 +65,46 @@ export class FlashcardSetViewComponent implements OnInit {
 	async ngOnInit() {
 		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(FLASHCARD_SET_ID_PARAM);
-			/*this.cardSet = id ? await this.setService.getById(id) : null;
+			const deckId = params.get(DECK_ID_PARAM);
+			this.cardSet = (id && deckId)
+				? await this.cardService.getById({element: id, deck: deckId})
+				: null;
 
 			if (this.cardSet) {
 				await this.sidebarService.selectDeckElement(this.cardSet);
-				this.cards = await this.flashcardService.getBySet(this.cardSet);
+				this.cards = this.cardSet.cards;
 			} else {
 				await this.navigationService.goToDeckList();
-			}*/
+			}
 		});
 		this.topBarService.clearItems();
 		this.topBarService.setBackButtonLabel('Back to deck');
 	}
 
-	async createNewCard(fields: FlashcardFields) {
+	async addNewCard(fields: FlashcardFields) {
 		if (!this.cardSet || !this.newCardEditor) {
 			return;
 		}
-		//TODO: const newCard = await this.flashcardService.create(fields.question, fields.answer, this.cardSet);
-		/*this.cards.push(newCard);
-		await this.newCardEditor.resetFields();*/
+		const newCard = await this.cardService.addCard(fields.question, fields.answer, this.cardSet);
+		this.cards.push(newCard);
+		await this.newCardEditor.resetFields();
 	}
 
 	async deleteCard(card: Flashcard) {
+		if (!this.cardSet) {
+			return;
+		}
 		const index = this.cards.indexOf(card);
 		this.cards.splice(index, 1);
-		//await this.flashcardService.delete(card);
+
+		await this.cardService.deleteCard({card: card, set: this.cardSet});
 	}
 
 	async updateCard(card: Flashcard, fields: FlashcardFields) {
-		//await this.flashcardService.update(card, fields.question, fields.answer);
+		if (!this.cardSet) {
+			return;
+		}
+		await this.cardService.updateCard({card: card, set: this.cardSet},
+			fields.question, fields.answer);
 	}
 }

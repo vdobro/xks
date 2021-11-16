@@ -70,10 +70,12 @@ import {
 	FlashcardSetViewComponent
 } from './components/flashcard-set-view/flashcard-set-view.component';
 import {FlashcardEditorComponent} from './components/flashcard-editor/flashcard-editor.component';
+import {ElementTitleComponent} from './components/element-title/element-title.component';
 
 const DECK_ROUTE = `decks/:${DECK_ID_PARAM}`;
 const TABLE_ROUTE = `${DECK_ROUTE}/tables/:${TABLE_ID_PARAM}`;
 const GRAPH_ROUTE = `${DECK_ROUTE}/graphs/:${GRAPH_ID_PARAM}`;
+const FLASHCARD_ROUTE = `${DECK_ROUTE}/cards/:${FLASHCARD_SET_ID_PARAM}`;
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -123,6 +125,7 @@ const GRAPH_ROUTE = `${DECK_ROUTE}/graphs/:${GRAPH_ID_PARAM}`;
 		AlternativeAnswerEditorComponent,
 		FlashcardSetViewComponent,
 		FlashcardEditorComponent,
+		ElementTitleComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -135,10 +138,10 @@ const GRAPH_ROUTE = `${DECK_ROUTE}/graphs/:${GRAPH_ID_PARAM}`;
 			{path: `${TABLE_ROUTE}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
 			{path: `${GRAPH_ROUTE}/edit`, component: GraphViewComponent},
 			{path: `${GRAPH_ROUTE}/learn`, component: SessionViewComponent},
-			{path: `flashcards/:${FLASHCARD_SET_ID_PARAM}/edit`, component: FlashcardSetViewComponent},
-			{path: `flashcards/:${FLASHCARD_SET_ID_PARAM}/learn`, component: SessionViewComponent},
+			{path: `${FLASHCARD_ROUTE}/edit`, component: FlashcardSetViewComponent},
+			{path: `${FLASHCARD_ROUTE}/learn`, component: SessionViewComponent},
 			{path: '**', component: NotFoundViewComponent},
-		], { useHash: true, relativeLinkResolution: 'legacy' }),
+		], {useHash: true, relativeLinkResolution: 'legacy'}),
 		FormsModule,
 		ReactiveFormsModule,
 		DragDropModule,

@@ -27,7 +27,7 @@ import {FormControl} from "@angular/forms";
 import {DeckElement} from "@app/models/DeckElement";
 import {Table, isTable} from "@app/models/Table";
 import {Graph, isGraph} from "@app/models/graph";
-import {FlashcardList, isFlashcardList} from "@app/models/flashcard-list";
+import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 
 import {NavigationService} from "@app/services/navigation.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
@@ -83,7 +83,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 
 	table: Table | null = null;
 	graph: Graph | null = null;
-	flashcardList: FlashcardList | null = null;
+	flashcardList: FlashcardSet | null = null;
 
 	anySessionModesAvailable: boolean = false;
 	startSessionEnabled: boolean = false;
@@ -126,8 +126,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		} else if (isGraph(this.deckElement)) {
 			await this.navigationService.studyGraph(this.deckElement, scores);
 		} else if (isFlashcardList(this.deckElement)) {
-			const set = this.deckElement as FlashcardList;
-			await this.navigationService.studyFlashcards(set.id, scores);
+			const set = this.deckElement as FlashcardSet;
+			await this.navigationService.studyFlashcards(set, scores);
 		}
 	}
 

@@ -19,15 +19,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {filter} from "lodash-es";
+
 import {Injectable} from '@angular/core';
 
 import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-import {Graph, isGraph} from "@app/models/graph";
-import {isTable, Table} from "@app/models/Table";
 import {ElementId} from "@app/models/ElementId";
+import {Graph, isGraph} from "@app/models/graph";
+import {Table, isTable} from "@app/models/Table";
+import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 
 import {DeckElementRepository} from "@app/repositories/deck-element-repository";
-import {filter} from "lodash-es";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -72,6 +74,14 @@ export class DeckElementService {
 		return element;
 	}
 
+	async findFlashcardSet(id: ElementId) : Promise<FlashcardSet> {
+		const element = await this.repository.getById(id);
+		if (!isFlashcardList(element)) {
+			throw new Error(`Flashcard set ${id.element} not found`);
+		}
+		return element;
+	}
+
 	async getAllTables(deckId: string) : Promise<Table[]> {
 		const all = await this.repository.getAllByType(deckId, "table");
 		return filter(all, isTable) as Table[];
@@ -80,6 +90,11 @@ export class DeckElementService {
 	async getAllGraphs(deckId: string) : Promise<Graph[]> {
 		const all = await this.repository.getAllByType(deckId, "graph");
 		return filter(all, isGraph) as Graph[];
+	}
+
+	async getAllFlashcardSets(deckId: string) : Promise<FlashcardSet[]> {
+		const all = await this.repository.getAllByType(deckId, "flashcards");
+		return filter(all, isFlashcardList) as FlashcardSet[];
 	}
 
 	async existAny(deckId: string, type: DeckElementType) : Promise<boolean> {

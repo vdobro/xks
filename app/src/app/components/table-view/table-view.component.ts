@@ -138,7 +138,7 @@ export class TableViewComponent implements OnInit {
 		setTimeout(() => {
 			this.columnInCreation = false;
 			this.columnDragEnabled = true;
-		}, 500);
+		}, 100);
 	}
 
 	disableColumnDrag() {

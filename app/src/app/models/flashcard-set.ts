@@ -19,30 +19,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Injectable} from '@angular/core';
-
-import {FlashcardSet} from "@app/models/flashcard-set";
-
-import {LearningSessionState} from "@app/services/models/learning-session-state";
-import {StudySessionService} from "./study-session.service";
-import {ExerciseTaskService} from "./exercise-task.service";
+import {DeckElement} from "./DeckElement";
+import {BaseEntity} from "./BaseEntity";
+import {Flashcard} from "@app/models/Flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.12.04
+ * @since 2020.11.15
  */
-@Injectable({
-	providedIn: 'root'
-})
-export class FlashcardSetSessionService extends StudySessionService {
-	constructor(taskService: ExerciseTaskService) {
-		super(taskService);
-	}
+export interface FlashcardSet extends DeckElement, BaseEntity {
+	cards: Flashcard[],
+}
 
-	startNew(set: FlashcardSet,
-			 startScore: number,
-			 maxScore: number): LearningSessionState {
-		const allTasks = this.taskService.getFlashcardTaskList(set, startScore, maxScore);
-		return this.createSessionFromTasks(allTasks);
-	}
+export function isFlashcardList(element: DeckElement | null): element is FlashcardSet {
+	return element !== null && (element as FlashcardSet).cards !== undefined;
+}
+
+export const anyCardsExist = (list: FlashcardSet): boolean => {
+	return list.cards.length > 0;
 }

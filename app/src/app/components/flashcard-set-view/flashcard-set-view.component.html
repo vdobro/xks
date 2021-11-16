@@ -1,8 +1,6 @@
 <div *ngIf="cardSet" class="uk-container">
 	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
-		<div class="uk-width-expand">
-			<h2 class="uk-heading-medium uk-text-truncate uk-margin">{{cardSet.name}}</h2>
-		</div>
+		<app-element-title [name]="cardSet.name"></app-element-title>
 	</div>
 	<div class="uk-margin uk-margin-xlarge-bottom">
 		<div class="uk-grid-small uk-child-width-1-2@l uk-child-width-1-1@s"
@@ -13,7 +11,7 @@
 								  (valueChanged)="updateCard(card, $event)"
 								  [flashcard]="card"></app-flashcard-editor>
 			<app-flashcard-editor #newCardEditor
-								  (valueChanged)="createNewCard($event)"></app-flashcard-editor>
+								  (valueChanged)="addNewCard($event)"></app-flashcard-editor>
 		</div>
 	</div>
 </div>

@@ -30,6 +30,7 @@ import {TableColumn} from "@app/models/TableColumn";
 import {TableRow} from "@app/models/TableRow";
 import {Graph} from "@app/models/graph";
 import {GraphNode} from "@app/models/graph-node";
+import {FlashcardSet} from "@app/models/flashcard-set";
 import {AnswerValue} from "@app/models/answer-value";
 
 import {TableElementService} from "@app/services/table-element.service";
@@ -37,7 +38,6 @@ import {GraphElementService} from "@app/services/graph-element.service";
 import {ExerciseTask} from "@app/services/models/exercise-task";
 import {FlashcardField} from "@app/services/models/flashcard-field";
 import {AnswerFeedback} from "@app/services/models/answer-feedback";
-import {FlashcardList} from "@app/models/flashcard-list";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -58,13 +58,13 @@ export class ExerciseTaskService {
 	}
 
 	getTableTaskList(table: Table,
-						   questionColumns: TableColumn[],
-						   answerColumns: TableColumn[],
-						   startScore: number,
-						   maxScore: number): ExerciseTask[] {
+					 questionColumns: TableColumn[],
+					 answerColumns: TableColumn[],
+					 startScore: number,
+					 maxScore: number): ExerciseTask[] {
 		const tasks: ExerciseTask[] = [];
-		for (let row of  table.rows) {
-			const answerFields =answerColumns.map(column => this.mapColumnToFlashcardField(row, column));
+		for (let row of table.rows) {
+			const answerFields = answerColumns.map(column => this.mapColumnToFlashcardField(row, column));
 			const questions = questionColumns.map(column => this.mapColumnToFlashcardField(row, column));
 			tasks.push({
 				id: uuid(),
@@ -80,9 +80,7 @@ export class ExerciseTaskService {
 		return tasks;
 	}
 
-	getGraphTaskList(graph: Graph,
-						   startScore: number,
-						   maxScore: number): ExerciseTask[] {
+	getGraphTaskList(graph: Graph, startScore: number, maxScore: number): ExerciseTask[] {
 		const exercises: ExerciseTask[] = [];
 		for (let node of graph.nodes) {
 			const edges = GraphElementService.getOutgoingEdges(node, graph);
@@ -112,9 +110,37 @@ export class ExerciseTaskService {
 		return exercises;
 	}
 
-	async getFlashcardTaskList(set: FlashcardList, startScore: number, maxScore: number) : Promise<ExerciseTask[]> {
-		//TODO
-		return [];
+	getFlashcardTaskList(set: FlashcardSet, startScore: number, maxScore: number): ExerciseTask[] {
+		return set.cards.map(card => {
+			const questions : FlashcardField[] = [{
+				identifier: {
+					id: card.id,
+					name: 'Question',
+				},
+				value: {
+					default: card.question,
+					alternatives: [],
+				}
+			}];
+			const answers : FlashcardField[] = [{
+				identifier: {
+					id: card.id,
+					name: 'Answer',
+				},
+				value: card.value,
+			}];
+			const task: ExerciseTask = {
+				questions: questions,
+				pendingAnswers: answers,
+				answers: answers,
+				ignoreAnswerOrder: false,
+				doneAnswers: [],
+				startingScore: startScore,
+				maxScore: maxScore,
+				id: uuid(),
+			};
+			return task;
+		});
 	}
 
 	logInAnswer(answerValue: string,

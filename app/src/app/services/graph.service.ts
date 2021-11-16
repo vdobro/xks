@@ -90,9 +90,9 @@ export class GraphService {
 	}
 
 	public async deleteAllInDeck(deck: Deck) : Promise<void> {
-		const tables = await this.getByDeck(deck);
-		for (let table of tables) {
-			await this.delete({element: table.id, deck: deck.id});
+		const graphs = await this.getByDeck(deck);
+		for (let graph of graphs) {
+			await this.delete({element: graph.id, deck: deck.id});
 		}
 		this._graphsChanged.next(deck.id);
 	}

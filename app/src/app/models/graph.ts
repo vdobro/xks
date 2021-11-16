@@ -24,6 +24,7 @@ import {BaseEntity} from "@app/models/BaseEntity";
 import {GraphNode} from "@app/models/graph-node";
 import {Table} from "@app/models/Table";
 import {GraphEdge} from "@app/models/graph-edge";
+import {FlashcardSet} from "@app/models/flashcard-set";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -41,5 +42,15 @@ export function isGraph(element: DeckElement | null): element is Graph {
 	if (!element) {
 		return false;
 	}
-	return (element as Table).sessionModes === undefined;
+	return (element as Table).sessionModes === undefined
+		&& (element as FlashcardSet).cards === undefined;
+}
+
+export const anyNodesAndEdgesExist = (graph: Graph): boolean => {
+	const nodes = graph.nodes;
+	if (nodes.length === 0) {
+		return false;
+	}
+	const edges = graph.edges;
+	return edges.length !== 0;
 }

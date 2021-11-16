@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,18 +19,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
-import {Flashcard} from "@app/models/Flashcard";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {ElementTitleComponent} from './element-title.component';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.11.15
+ * @since 2021.11.16
  */
-export interface FlashcardList extends DeckElement, BaseEntity {
-	cards: Flashcard[],
-}
+describe('ElementTitleComponent', () => {
+	let component: ElementTitleComponent;
+	let fixture: ComponentFixture<ElementTitleComponent>;
 
-export function isFlashcardList(element: DeckElement | null): element is FlashcardList {
-	return element !== null && (element as FlashcardList).cards !== undefined;
-}
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [ElementTitleComponent]
+		})
+			.compileComponents();
+	});
+
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ElementTitleComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+});
