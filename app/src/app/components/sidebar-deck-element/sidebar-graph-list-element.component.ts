@@ -27,7 +27,7 @@ import {NavigationService} from "@app/services/navigation.service";
 import {GraphService} from "@app/services/graph.service";
 import {GraphElementService} from "@app/services/graph-element.service";
 
-import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
+import {SidebarDeckElement, SidebarDeckElementComponent} from "@app/components/sidebar-deck-element/sidebar-deck-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -55,6 +55,7 @@ export class SidebarGraphListElementComponent
 				await this.refreshGraph();
 			}
 		});
+		this.elementType = 'graph';
 	}
 
 	async ngOnInit() {

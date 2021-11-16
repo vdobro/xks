@@ -21,10 +21,10 @@
 
 import {Injectable} from "@angular/core";
 
-import {ElementId} from "@app/models/ElementId";
-import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-import {Deck} from "@app/models/Deck";
-import {User} from "@app/models/User";
+import {ElementId} from "@app/models/element-id";
+import {DeckElement, DeckElementType} from "@app/models/deck-element";
+import {Deck} from "@app/models/deck";
+import {User} from "@app/models/user";
 
 import {
 	CouchDeckElementRepository,

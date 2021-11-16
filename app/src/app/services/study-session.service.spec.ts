@@ -24,10 +24,11 @@
  * @since 2020.09.15
  */
 import {TestBed} from '@angular/core/testing';
-import {StudySessionService} from "./study-session.service";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
-import {ExerciseTaskService} from "./exercise-task.service";
+
+import {StudySessionService} from "@app/services/study-session.service";
+import {ExerciseTaskService} from "@app/services/exercise-task.service";
 
 /**
  * @author Vitalijus Dobrovolskis

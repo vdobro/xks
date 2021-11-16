@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {DeckElementService} from './deck-element.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {DeckElementService} from '@app/services/deck-element.service';
 
 /**
  * @author Vitalijus Dobrovolskis

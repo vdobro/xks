@@ -19,17 +19,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {IdEntity} from "@app/repositories/id-entity";
+import {DeckElement} from "@app/models/deck-element";
+import {BaseEntity} from "@app/models/base-entity";
+import {Flashcard} from "@app/models/flashcard";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.10.11
+ * @since 2020.11.15
  */
-export interface DeckElement extends IdEntity {
-	deckId: string,
-	name: string,
-	defaultStartingScore: number,
-	defaultMaxScore: number,
+export interface FlashcardSet extends DeckElement, BaseEntity {
+	cards: Flashcard[],
 }
 
-export type DeckElementType = "graph" | "table";
+export function isFlashcardList(element: DeckElement | null): element is FlashcardSet {
+	return element !== null && (element as FlashcardSet).cards !== undefined;
+}
+
+export const anyCardsExist = (list: FlashcardSet): boolean => {
+	return list.cards.length > 0;
+}

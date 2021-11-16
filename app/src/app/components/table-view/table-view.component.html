@@ -1,10 +1,9 @@
 <div *ngIf="table" class="uk-container">
-	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
-		<div class="uk-width-expand">
-			<h2 class="uk-heading-medium uk-text-truncate">{{table.name}}</h2>
-		</div>
+	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid>
+		<app-element-title [name]="table.name"></app-element-title>
 		<div class="uk-width-auto">
-			<button *ngIf="!columnInCreation" class="uk-button uk-button-default" type="button"
+			<button *ngIf="!columnInCreation" class="uk-button uk-button-default"
+					type="button"
 					(click)="addColumn()">
 				New column
 			</button>
@@ -19,7 +18,7 @@
 			</table-column-editor>
 		</div>
 	</div>
-	<div class="uk-overflow-auto uk-margin">
+	<div class="uk-overflow-auto uk-margin uk-margin-xlarge-bottom">
 		<table class="uk-table uk-table-divider uk-text-nowrap">
 			<thead>
 			<tr cdkDropList cdkDropListOrientation="horizontal"

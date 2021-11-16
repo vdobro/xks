@@ -21,9 +21,10 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {DeckViewComponent} from './deck-view.component';
 import {RouterTestingModule} from "@angular/router/testing";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {DeckViewComponent} from '@app/components/deck-view/deck-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

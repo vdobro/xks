@@ -20,9 +20,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionAnswerEditorComponent} from './session-answer-editor.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {SessionAnswerEditorComponent} from '@app/components/session-answer-editor/session-answer-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis

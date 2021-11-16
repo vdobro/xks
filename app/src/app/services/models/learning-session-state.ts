@@ -19,8 +19,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {LearningSession} from "./learning-session";
-import {ExerciseTask} from "./exercise-task";
+import {LearningSession} from "@app/services/models/learning-session";
+import {ExerciseTask} from "@app/services/models/exercise-task";
 
 /**
  * @author Vitalijus Dobrovolskis

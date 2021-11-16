@@ -20,10 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {GraphViewComponent} from './graph-view.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+
+import {GraphViewComponent} from '@app/components/graph-view/graph-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import {ConfirmDeleteElementModalComponent} from './confirm-delete-element-modal.component';
+import {ConfirmDeleteElementModalComponent} from '@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis

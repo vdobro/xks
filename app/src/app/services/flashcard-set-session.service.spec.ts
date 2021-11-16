@@ -19,13 +19,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {FlashcardSetSessionService} from '@app/services/flashcard-set-session.service';
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.08.14
+ * @since 2020.12.04
  */
-export interface TableSessionMode extends BaseEntity {
-	questionColumnIds: string[],
-	answerColumnIds: string[],
-}
+describe('FlashcardSetSessionService', () => {
+	let service: FlashcardSetSessionService;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(FlashcardSetSessionService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

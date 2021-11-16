@@ -20,10 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionNavigationComponent} from './session-navigation.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+
+import {SessionNavigationComponent} from '@app/components/session-navigation/session-navigation.component';
 
 /**
  * @author Vitalijus Dobrovolskis

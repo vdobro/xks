@@ -20,10 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {SessionViewComponent} from './session-view.component';
 import {RouterTestingModule} from "@angular/router/testing";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {SessionViewComponent} from '@app/components/session-view/session-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

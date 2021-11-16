@@ -1,0 +1,37 @@
+<div class="uk-card uk-card-small uk-display-block uk-card-body uk-cadr-hover uk-card-default uk-animation-fade uk-animation-fast">
+	<h4 *ngIf="!flashcard" class="uk-card-title">New card</h4>
+	<form>
+		<div class="uk-margin-small">
+			<label *ngIf="flashcard" class="uk-form-label">Question</label>
+			<div class="uk-form-controls">
+				<div class="uk-inline uk-width-expand">
+					<a *ngIf="flashcard" class="uk-form-icon uk-form-icon-flip"
+					   (click)="requestToDelete()"
+					   uk-icon="icon: trash"></a>
+					<input #questionInput
+						   class="uk-input uk-form-blank"
+						   [formControl]="questionFormControl"
+						   (input)="updateValuesIfNeeded()"
+						   (keyup.enter)="switchFocusToAnswer()"
+						   placeholder="Question">
+				</div>
+			</div>
+		</div>
+		<div class="uk-margin-top-small">
+			<label *ngIf="flashcard" class="uk-form-label">Answer</label>
+			<div class="uk-form-controls">
+				<div class="uk-inline uk-width-expand">
+					<a *ngIf="!flashcard" class="uk-form-icon uk-form-icon-flip"
+					   (click)="submitValues()"
+					   uk-icon="icon: check"></a>
+					<input #answerInput
+						   class="uk-input uk-text-break uk-form-blank"
+						   (input)="updateValuesIfNeeded()"
+						   (keyup.enter)="submitValues()"
+						   [formControl]="answerFormControl"
+						   placeholder="Answer">
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

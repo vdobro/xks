@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
-import {ExerciseTaskService} from './exercise-task.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {ExerciseTaskService} from '@app/services/exercise-task.service';
 
 /**
  * @author Vitalijus Dobrovolskis

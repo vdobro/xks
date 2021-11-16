@@ -22,10 +22,10 @@
 import {Injectable} from '@angular/core';
 
 import {Graph} from "@app/models/graph";
-import {LearningSessionState} from "./models/learning-session-state";
+import {LearningSessionState} from "@app/services/models/learning-session-state";
 
-import {StudySessionService} from "./study-session.service";
-import {ExerciseTaskService} from "./exercise-task.service";
+import {StudySessionService} from "@app/services/study-session.service";
+import {ExerciseTaskService} from "@app/services/exercise-task.service";
 
 /**
  * @author Vitalijus Dobrovolskis

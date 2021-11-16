@@ -23,10 +23,11 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {Component, ViewChild} from "@angular/core";
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
+
 import {MockData} from "@app/services/mock-data";
 
-import {DeckListViewComponent} from './deck-list-view.component';
+import {DeckListViewComponent} from '@app/components/deck-list-view/deck-list-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

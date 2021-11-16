@@ -21,9 +21,9 @@
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
-import {TableColumn} from "@app/models/TableColumn";
-import {Table} from "@app/models/Table";
-import {TableRow} from "@app/models/TableRow";
+import {TableColumn} from "@app/models/table-column";
+import {Table} from "@app/models/table";
+import {TableRow} from "@app/models/table-row";
 
 import {TableElementService} from "@app/services/table-element.service";
 

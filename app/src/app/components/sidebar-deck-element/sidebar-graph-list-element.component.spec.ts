@@ -20,9 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {SidebarGraphListElementComponent} from "./sidebar-graph-list-element.component";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+
+import {SidebarGraphListElementComponent} from "@app/components/sidebar-deck-element/sidebar-graph-list-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis

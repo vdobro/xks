@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import {TableCellEditorComponent} from './table-cell-editor.component';
+import {TableCellEditorComponent} from '@app/components/table-cell-editor/table-cell-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis

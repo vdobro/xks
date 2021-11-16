@@ -1,36 +1,35 @@
-<div class="uk-container uk-container-expand" id="navigation-top-bar">
-	<div uk-sticky="animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent;">
-		<nav class="uk-navbar-container uk-navbar-transparent uk-margin" uk-navbar="mode: click">
-			<div class="uk-navbar-left">
-				<a (click)="goHome()" class="uk-navbar-item uk-logo uk-padding-remove-left uk-margin-small-right">
-					<img width="32" height="32" alt="xks"
-						 uk-img="data-src:assets/logo.svg" uk-svg>
-				</a>
-				<ul [hidden]="!active" class="uk-navbar-nav">
-					<li *ngIf="backNavigationEnabled">
-						<a (click)="goBack()">
+<div id="navigation-top-bar"
+	 uk-sticky="animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent;">
+	<nav class="uk-navbar-container uk-navbar-transparent uk-margin" uk-navbar="mode: click">
+		<div class="uk-navbar-left uk-margin-medium-left">
+			<a (click)="goHome()" class="uk-navbar-item uk-logo uk-padding-remove-left">
+				<img width="32" height="32" alt="xks"
+					 uk-img="data-src:assets/logo.svg" uk-svg>
+			</a>
+			<ul [hidden]="!active" class="uk-navbar-nav">
+				<li *ngIf="backNavigationEnabled">
+					<a (click)="goBack()">
 							<span uk-icon="chevron-left"
 								  [ngClass]="{'uk-margin-small-right': backButtonLabel}"></span>
-							{{backButtonLabel}}
-						</a>
-					</li>
-					<ng-template appNavBarItems></ng-template>
-				</ul>
-			</div>
-			<div class="uk-navbar-right">
-				<ul class="uk-navbar-nav">
-					<li *ngIf="loginEnabled">
-						<a (click)="openLoginDialog()">Log in</a>
-					</li>
-					<li *ngIf="loginEnabled">
-						<a (click)="openRegisterDialog()">Register</a>
-					</li>
-					<li *ngIf="!loginEnabled">
-						<a (click)="logout()">Log out</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-	</div>
+						{{backButtonLabel}}
+					</a>
+				</li>
+				<ng-template appNavBarItems></ng-template>
+			</ul>
+		</div>
+		<div class="uk-navbar-right uk-margin-medium-right">
+			<ul class="uk-navbar-nav">
+				<li *ngIf="loginEnabled">
+					<a (click)="openLoginDialog()">Log in</a>
+				</li>
+				<li *ngIf="loginEnabled">
+					<a (click)="openRegisterDialog()">Register</a>
+				</li>
+				<li *ngIf="!loginEnabled">
+					<a (click)="logout()">Log out</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
 </div>
 <app-login-modal></app-login-modal>

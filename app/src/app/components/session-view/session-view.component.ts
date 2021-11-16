@@ -24,10 +24,12 @@ import UIkit from 'uikit';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 
-import {Table} from "@app/models/Table";
-import {TableSessionMode} from "@app/models/TableSessionMode";
-import {Graph} from "@app/models/graph";
-import {DeckElement} from "@app/models/DeckElement";
+import {isTable} from "@app/models/table";
+import {isGraph} from "@app/models/graph";
+import {isFlashcardList} from "@app/models/flashcard-set";
+
+import {TableSessionMode} from "@app/models/table-session-mode";
+import {DeckElement} from "@app/models/deck-element";
 
 import {TableSessionService} from "@app/services/table-session.service";
 import {SidebarService} from "@app/services/sidebar.service";
@@ -37,6 +39,7 @@ import {GraphSessionService} from "@app/services/graph-session.service";
 import {GraphService} from "@app/services/graph.service";
 import {FlashcardField} from "@app/services/models/flashcard-field";
 import {TableService} from "@app/services/table.service";
+import {NavigationService} from "@app/services/navigation.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
 import {LearningSessionState} from "@app/services/models/learning-session-state";
 
@@ -45,6 +48,9 @@ import {NavBarItem} from "@app/components/nav-bar-item";
 import {SessionNavigationComponent} from "@app/components/session-navigation/session-navigation.component";
 import {GRAPH_ID_PARAM} from "@app/components/graph-view/graph-view.component";
 import {DECK_ID_PARAM} from "@app/components/deck-view/deck-view.component";
+import {FLASHCARD_SET_ID_PARAM} from "@app/components/flashcard-set-view/flashcard-set-view.component";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
+import {FlashcardSetSessionService} from "@app/services/flashcard-set-session.service";
 
 export const TABLE_SESSION_MODE_ID_PARAM = "sessionModeId";
 export const SESSION_START_SCORE_PARAM = "initial-score";
@@ -63,12 +69,8 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 
 	state: LearningSessionState | null = null;
 
-	private table: Table | null = null;
-	private sessionMode: TableSessionMode | null = null;
-
-	private graph: Graph | null = null;
-
 	private deckElement: DeckElement | null = null;
+	private sessionMode: TableSessionMode | null = null;
 
 	private startScore: number = 0;
 	private maxScore: number = 8;
@@ -79,9 +81,12 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 		private readonly route: ActivatedRoute,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
+		private readonly flashcardService: FlashcardSetService,
+		private readonly navigationService: NavigationService,
 		private readonly sessionModeService: TableSessionModeService,
 		private readonly tableSessionService: TableSessionService,
 		private readonly graphSessionService: GraphSessionService,
+		private readonly flashcardSessionService: FlashcardSetSessionService,
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService
 	) {
@@ -89,24 +94,30 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 			const tableId = params.get(TABLE_ID_PARAM);
 			const tableSessionModeId = params.get(TABLE_SESSION_MODE_ID_PARAM);
 			const graphId = params.get(GRAPH_ID_PARAM);
+			const flashcardSetId = params.get(FLASHCARD_SET_ID_PARAM);
 			const deckId = params.get(DECK_ID_PARAM);
 			if (!deckId) {
 				return;
 			}
 
 			const id = {
-				element: (tableId || graphId)!,
+				element: (tableId || graphId || flashcardSetId)!,
 				deck: deckId,
 			}
 			if (tableId && tableSessionModeId) {
-				this.table = await this.tableService.getById(id);
-				this.deckElement = this.table;
-				this.sessionMode = this.sessionModeService.getById(tableSessionModeId, this.table);
+				const table = await this.tableService.getById(id);
+				this.deckElement = table;
+				this.sessionMode = await this.sessionModeService.getById(tableSessionModeId, table);
 				this.sessionService = this.tableSessionService;
 			} else if (graphId) {
-				this.graph = await this.graphService.getById(id);
-				this.deckElement = this.graph;
+				this.deckElement = await this.graphService.getById(id);
 				this.sessionService = this.graphSessionService;
+			} else if (flashcardSetId) {
+				this.deckElement = await this.flashcardService.getById(id);
+				this.sessionService = this.flashcardSessionService;
+			} else {
+				await this.navigationService.goBack();
+				return;
 			}
 			this.loadScores(params);
 
@@ -133,11 +144,17 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 	}
 
 	private initSession() {
-		if (this.table && this.sessionMode) {
-			this.state = this.tableSessionService.startNew(this.table, this.sessionMode,
+		if (isTable(this.deckElement) && this.sessionMode) {
+			this.state = this.tableSessionService.startNew(
+				this.deckElement,
+				this.sessionMode,
+				this.startScore,
+				this.maxScore);
+		} else if (isGraph(this.deckElement)) {
+			this.state = this.graphSessionService.startNew(this.deckElement,
 				this.startScore, this.maxScore);
-		} else if (this.graph) {
-			this.state = this.graphSessionService.startNew(this.graph,
+		} else if (isFlashcardList(this.deckElement)) {
+			this.state = this.flashcardSessionService.startNew(this.deckElement,
 				this.startScore, this.maxScore);
 		}
 

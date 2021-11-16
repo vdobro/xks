@@ -21,13 +21,13 @@
 
 import {Component, OnInit} from '@angular/core';
 
-import {Table} from "@app/models/Table";
+import {Table} from "@app/models/table";
 
 import {TableService} from "@app/services/table.service";
 import {NavigationService} from "@app/services/navigation.service";
 import {TableElementService} from "@app/services/table-element.service";
 
-import {SidebarDeckElement, SidebarDeckElementComponent} from "./sidebar-deck-element.component";
+import {SidebarDeckElement, SidebarDeckElementComponent} from "@app/components/sidebar-deck-element/sidebar-deck-element.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -49,6 +49,7 @@ export class SidebarTableListElementComponent
 		private readonly tableService: TableService,
 		private readonly navigationService: NavigationService) {
 		super();
+		this.elementType = 'table';
 
 		this.tableCellService.rowCountChanged.subscribe({
 			next: async table => {

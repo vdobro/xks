@@ -24,10 +24,11 @@ import UIkit from 'uikit';
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {GraphService} from "@app/services/graph.service";
 import {TableService} from "@app/services/table.service";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -56,6 +57,7 @@ export class NewDeckElementModalComponent implements OnInit {
 	constructor(
 		private readonly graphService: GraphService,
 		private readonly tableService: TableService,
+		private readonly flashcardSetService: FlashcardSetService,
 	) {
 	}
 
@@ -96,6 +98,9 @@ export class NewDeckElementModalComponent implements OnInit {
 			case DeckElementType.TABLE:
 				await this.tableService.create(this.deck, name);
 				break;
+			case DeckElementType.FLASHCARDS:
+				await this.flashcardSetService.create(this.deck, name);
+				break;
 			default:
 				break;
 		}
@@ -108,9 +113,14 @@ export class NewDeckElementModalComponent implements OnInit {
 	selectTypeTable() {
 		this.type = DeckElementType.TABLE;
 	}
+
+	selectTypeFlashcards() {
+		this.type = DeckElementType.FLASHCARDS;
+	}
 }
 
 export enum DeckElementType {
 	GRAPH = 'graph',
 	TABLE = 'table',
+	FLASHCARDS = 'flashcard list',
 }

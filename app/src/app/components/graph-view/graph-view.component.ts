@@ -27,7 +27,7 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
 import {GraphElements} from "@app/models/graph";
 import {GraphEdge} from "@app/models/graph-edge";
 import {GraphNode} from "@app/models/graph-node";
-import {ElementId} from "@app/models/ElementId";
+import {ElementId} from "@app/models/element-id";
 
 import {GraphService} from "@app/services/graph.service";
 import {NavigationService} from "@app/services/navigation.service";

@@ -21,8 +21,12 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import {DeckListNavbarComponent} from './deck-list-navbar.component';
+import {DeckListNavbarComponent} from '@app/components/deck-list-navbar/deck-list-navbar.component';
 
+/**
+ * @author Vitalijus Dobrovolskis
+ * @since 2020.03.23
+ */
 describe('DeckListNavbarComponent', () => {
 	let component: DeckListNavbarComponent;
 	let fixture: ComponentFixture<DeckListNavbarComponent>;
@@ -30,8 +34,7 @@ describe('DeckListNavbarComponent', () => {
 	beforeEach(waitForAsync(() => {
 		TestBed.configureTestingModule({
 			declarations: [DeckListNavbarComponent]
-		})
-			.compileComponents();
+		}).compileComponents();
 	}));
 
 	beforeEach(() => {

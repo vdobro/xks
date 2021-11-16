@@ -19,8 +19,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement, DeckElementType} from "@app/models/DeckElement";
-import {Deck} from "@app/models/Deck";
+import {DeckElement, DeckElementType} from "@app/models/deck-element";
+import {Deck} from "@app/models/deck";
 
 import {CouchDatabase, CouchDbRepository} from "@app/repositories/internal/couch-db-repository";
 import {BaseRepository} from "@app/repositories/base-repository";

@@ -26,10 +26,10 @@ import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
-import {Table} from "@app/models/Table";
-import {TableColumn} from "@app/models/TableColumn";
-import {TableRow, TableRowValue} from "@app/models/TableRow";
-import {ElementId} from "@app/models/ElementId";
+import {Table} from "@app/models/table";
+import {TableColumn} from "@app/models/table-column";
+import {TableRow, TableRowValue} from "@app/models/table-row";
+import {ElementId} from "@app/models/element-id";
 import {AnswerValue} from "@app/models/answer-value";
 
 import {TableSessionModeService} from "@app/services/table-session-mode.service";

@@ -19,19 +19,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "@app/models/BaseEntity";
-import {AnswerValue} from "@app/models/answer-value";
+import {Injectable} from '@angular/core';
+
+import {FlashcardSet} from "@app/models/flashcard-set";
+
+import {LearningSessionState} from "@app/services/models/learning-session-state";
+import {StudySessionService} from "@app/services/study-session.service";
+import {ExerciseTaskService} from "@app/services/exercise-task.service";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.12.04
  */
-export interface TableRow extends BaseEntity {
-	id: string;
-	columnValues: TableRowValue[],
-}
+@Injectable({
+	providedIn: 'root'
+})
+export class FlashcardSetSessionService extends StudySessionService {
+	constructor(taskService: ExerciseTaskService) {
+		super(taskService);
+	}
 
-export interface TableRowValue {
-	columnId: string,
-	value: AnswerValue
+	startNew(set: FlashcardSet,
+			 startScore: number,
+			 maxScore: number): LearningSessionState {
+		const allTasks = this.taskService.getFlashcardTaskList(set, startScore, maxScore);
+		return this.createSessionFromTasks(allTasks);
+	}
 }

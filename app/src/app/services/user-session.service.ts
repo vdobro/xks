@@ -21,7 +21,7 @@
 
 import {Injectable} from '@angular/core';
 import {firstValueFrom, Subject, Subscribable} from "rxjs";
-import {User} from "@app/models/User";
+import {User} from "@app/models/user";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "@environments/environment";
 import {stripTrailingSlash} from "@environments/utils";

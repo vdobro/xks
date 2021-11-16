@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import {ConfirmDeleteTableColumnModalComponent} from './confirm-delete-table-column-modal.component';
+import {ConfirmDeleteTableColumnModalComponent} from '@app/components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,8 +34,7 @@ describe('ConfirmDeleteTableColumnModalComponent', () => {
 	beforeEach(waitForAsync(() => {
 		TestBed.configureTestingModule({
 			declarations: [ConfirmDeleteTableColumnModalComponent]
-		})
-			.compileComponents();
+		}).compileComponents();
 	}));
 
 	beforeEach(() => {

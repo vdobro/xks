@@ -20,9 +20,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {TableNewRowEditorComponent} from './table-new-row-editor.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {TableNewRowEditorComponent} from '@app/components/table-new-row-editor/table-new-row-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis

@@ -20,10 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {NotFoundViewComponent} from './not-found-view.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+
+import {NotFoundViewComponent} from '@app/components/not-found-view/not-found-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

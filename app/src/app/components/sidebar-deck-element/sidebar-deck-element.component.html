@@ -26,7 +26,7 @@
 		</div>
 	</form>
 </div>
-<app-confirm-delete-element-modal [type]="'table'"
+<app-confirm-delete-element-modal [type]="elementType"
 								  [name]="element?.name || ''"
 								  (confirmed)="onDelete()">
 </app-confirm-delete-element-modal>

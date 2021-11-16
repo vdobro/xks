@@ -22,7 +22,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {DeckService} from "@app/services/deck.service";
 import {NavigationService} from "@app/services/navigation.service";
@@ -68,6 +68,8 @@ export class DeckListCardComponent implements OnInit {
 	}
 
 	async openDeckDetails() {
-		await this.navigationService.openDeck(this.deck!.id);
+		if (!this.editMode) {
+			await this.navigationService.openDeck(this.deck!.id);
+		}
 	}
 }

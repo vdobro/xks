@@ -19,12 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
+import {BaseEntity} from "@app/models/base-entity";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2020.08.14
  */
-export interface TableColumn extends BaseEntity {
-	name: string;
+export interface TableSessionMode extends BaseEntity {
+	questionColumnIds: string[],
+	answerColumnIds: string[],
 }

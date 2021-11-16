@@ -24,9 +24,10 @@ import UIkit from 'uikit';
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-import {DeckElement} from "@app/models/DeckElement";
-import {isTable, Table} from "@app/models/Table";
+import {DeckElement} from "@app/models/deck-element";
+import {Table, isTable} from "@app/models/table";
 import {Graph, isGraph} from "@app/models/graph";
+import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 
 import {NavigationService} from "@app/services/navigation.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
@@ -63,28 +64,26 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	@Input()
 	set deckElement(val: DeckElement | null) {
 		this._deckElement = val;
-		if (!this._deckElement) {
+		if (!this.deckElement) {
 			this.table = null;
 			this.graph = null;
-		}
-		if (!this._deckElement) {
+			this.flashcardList = null;
 			return;
 		}
-		if (isTable(this._deckElement)) {
-			this.table = this._deckElement;
-			this.graph = null;
-		} else if (isGraph(this._deckElement)) {
-			this.graph = this._deckElement;
-			this.table = null;
-		} else {
-			this.table = null;
-			this.graph = null;
-		}
+		this.table = isTable(this.deckElement) ? this.deckElement : null;
+		this.graph = isGraph(this.deckElement) ? this.deckElement : null;
+		this.flashcardList = isFlashcardList(this.deckElement) ? this.deckElement : null;
 	}
+
+	get deckElement(): DeckElement | null {
+		return this._deckElement;
+	}
+
+	_deckElement: DeckElement | null = null;
 
 	table: Table | null = null;
 	graph: Graph | null = null;
-	_deckElement: DeckElement | null = null;
+	flashcardList: FlashcardSet | null = null;
 
 	anySessionModesAvailable: boolean = false;
 	startSessionEnabled: boolean = false;
@@ -111,26 +110,29 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	async startSession(): Promise<void> {
-		if (!this._deckElement) {
+		if (!this.deckElement) {
 			return;
 		}
 		await this.scoreSettingsComponent?.saveScoreSettings();
-		const scores = this.getScoreParams(this._deckElement);
+		const scores = this.getScoreParams(this.deckElement);
 
-		if (this.table) {
+		if (isTable(this.deckElement)) {
 			const modeId = await this.getSessionModeId();
 
 			if (modeId) {
 				await this.saveDefaultTableOptions(modeId);
-				await this.navigationService.studyTable(this.table, modeId, scores);
+				await this.navigationService.studyTable(this.deckElement, modeId, scores);
 			}
-		} else if (this.graph) {
-			await this.navigationService.studyGraph(this.graph, scores);
+		} else if (isGraph(this.deckElement)) {
+			await this.navigationService.studyGraph(this.deckElement, scores);
+		} else if (isFlashcardList(this.deckElement)) {
+			const set = this.deckElement as FlashcardSet;
+			await this.navigationService.studyFlashcards(set, scores);
 		}
 	}
 
 	openDialog(): void {
-		if (!this.modal || !this._deckElement) {
+		if (!this.modal || !this.deckElement) {
 			return;
 		}
 		UIkit.modal(this.modal.nativeElement).show();
@@ -139,13 +141,13 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	validateConfiguration(): void {
-		if (!this._deckElement) {
+		if (!this.deckElement) {
 			this.startSessionEnabled = false;
 			return;
 		}
-		if (this.table) {
-			this.validateTableConfiguration(this.table);
-		} else if (this.graph) {
+		if (isTable(this.deckElement)) {
+			this.validateTableConfiguration(this.deckElement);
+		} else if (isGraph(this.deckElement) || isFlashcardList(this.deckElement)) {
 			this.startSessionEnabled = true;
 			this.defaultSessionCheckbox.enable();
 		} else {
@@ -162,24 +164,24 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	}
 
 	private async checkIfSessionModesExist() {
-		if (!this.table) {
+		if (!isTable(this.deckElement)) {
 			this.anySessionModesAvailable = false;
 			return;
 		}
 
-		this.anySessionModesAvailable = this.table.sessionModes.length > 0;
+		this.anySessionModesAvailable = this.deckElement.sessionModes.length > 0;
 		if (!this.anySessionModesAvailable) {
 			this.useExisting = false;
 		}
 	}
 
 	private async saveDefaultTableOptions(modeId: string) {
-		if (!this.table) {
+		if (!isTable(this.deckElement)) {
 			return;
 		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
-			const mode = await this.sessionModeService.getById(modeId, this.table);
-			await this.sessionModeService.setAsDefault(mode, this.table);
+			const mode = await this.sessionModeService.getById(modeId, this.deckElement);
+			await this.sessionModeService.setAsDefault(mode, this.deckElement);
 		}
 	}
 
@@ -196,7 +198,8 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		const selection = this.sessionModeChooser?.currentSelection;
 		if (selection && this.useExisting) {
 			this.startSessionEnabled = true;
-			if (selection.id === table.defaultSessionModeId || table.sessionModes.length === 1) {
+			if (selection.id === table.defaultSessionModeId
+				|| table.sessionModes.length === 1) {
 				this.defaultSessionCheckbox.setValue(true);
 				this.defaultSessionCheckbox.disable();
 			} else {

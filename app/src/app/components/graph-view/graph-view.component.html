@@ -3,9 +3,7 @@
 	 uk-height-viewport="offset-top: true; expand=true">
 	<div #graphToolbar class="uk-grid-divider uk-margin uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid
 		 uk-height-match>
-		<div class="uk-width-expand">
-			<h2 class="uk-heading-medium uk-text-truncate">{{graphName}}</h2>
-		</div>
+		<app-element-title [name]="graphName ?? ''"></app-element-title>
 		<div class="uk-width-auto">
 			<div class="uk-margin uk-flex uk-flex-bottom" *ngIf="graphId">
 				<app-graph-toolbar [selectedNode]="selectedNode"

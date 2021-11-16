@@ -21,8 +21,9 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {DeckListPageComponent} from './deck-list-page.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {DeckListPageComponent} from '@app/components/deck-list-page/deck-list-page.component';
 
 describe('DeckListPageComponent', () => {
 	let component: DeckListPageComponent;

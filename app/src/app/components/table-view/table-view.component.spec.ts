@@ -19,12 +19,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-
-import {TableViewComponent} from './table-view.component';
-import {Component, ViewChild} from "@angular/core";
-import {Table} from "@app/models/Table";
 import {v4 as uuid} from 'uuid';
+
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {Component, ViewChild} from "@angular/core";
+
+import {Table} from "@app/models/table";
+
+import {TableViewComponent} from '@app/components/table-view/table-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

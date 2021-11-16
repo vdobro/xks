@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Vitalijus Dobrovolskis
+ * Copyright (C) 2020 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -21,9 +21,9 @@
 
 import {Injectable} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
-import {User} from "@app/models/User";
+import {User} from "@app/models/user";
 import {DualRepository} from "@app/repositories/dual-repository";
 import {UserSessionService} from "@app/services/user-session.service";
 

@@ -21,8 +21,9 @@
 
 import {TestBed} from '@angular/core/testing';
 
-import {GraphService} from './graph.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+
+import {GraphService} from '@app/services/graph.service';
 
 /**
  * @author Vitalijus Dobrovolskis

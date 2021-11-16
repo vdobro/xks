@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Vitalijus Dobrovolskis
+ * Copyright (C) 2021 Vitalijus Dobrovolskis
  *
  * This file is part of xks.
  *
@@ -19,23 +19,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {DeckElement} from "./DeckElement";
-import {BaseEntity} from "./BaseEntity";
-import {TableColumn} from "./TableColumn";
-import {TableRow} from "./TableRow";
-import {TableSessionMode} from "./TableSessionMode";
+import {TestBed} from '@angular/core/testing';
+
+import {FlashcardSetService} from '@app/services/flashcard-set.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
- * @since 2020.04.03
+ * @since 2021.11.15
  */
-export interface Table extends DeckElement, BaseEntity {
-	defaultSessionModeId: string | null,
-	columns: TableColumn[],
-	rows: TableRow[],
-	sessionModes: TableSessionMode[]
-}
+describe('FlashcardSetService', () => {
+	let service: FlashcardSetService;
 
-export function isTable(element: DeckElement | null): element is Table {
-	return element !== null && (element as Table).defaultSessionModeId !== undefined;
-}
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			]
+		});
+		service = TestBed.inject(FlashcardSetService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

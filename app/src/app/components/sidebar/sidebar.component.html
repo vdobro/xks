@@ -1,5 +1,5 @@
 <div *ngIf="active" class="uk-container uk-container-expand"
-	 uk-sticky="offset: 100; top: #navigation-top-bar; show-on-up: true">
+	 uk-sticky="offset: 100px; media: @m; top: #navigation-top-bar">
 	<ul class="uk-nav-primary uk-nav-parent-icon" uk-nav="multiple: true">
 		<li *ngIf="deck && !elementSelected"
 			class="uk-parent uk-open">
@@ -18,6 +18,16 @@
 				<li deck-element-graph
 					*ngFor="let graph of graphs"
 					[element]="graph"
+					[deck]="deck"></li>
+			</ul>
+		</li>
+		<li *ngIf="deck && !elementSelected"
+			class="uk-parent uk-open">
+			<a href="#">Flashcards</a>
+			<ul class="uk-nav-sub">
+				<li deck-element-flashcard-set
+					*ngFor="let cardSet of flashcardSets"
+					[element]="cardSet"
 					[deck]="deck"></li>
 			</ul>
 		</li>

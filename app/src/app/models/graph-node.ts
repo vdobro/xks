@@ -19,8 +19,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {BaseEntity} from "./BaseEntity";
-import {AnswerValue} from "./answer-value";
+import {BaseEntity} from "@app/models/base-entity";
+import {AnswerValue} from "@app/models/answer-value";
 
 /**
  * @author Vitalijus Dobrovolskis

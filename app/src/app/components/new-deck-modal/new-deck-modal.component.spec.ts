@@ -20,10 +20,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {NewDeckModalComponent} from './new-deck-modal.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
+import {NewDeckModalComponent} from '@app/components/new-deck-modal/new-deck-modal.component';
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.03.14

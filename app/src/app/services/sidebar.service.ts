@@ -23,8 +23,8 @@ import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
-import {Deck} from "@app/models/Deck";
-import {DeckElement} from "@app/models/DeckElement";
+import {Deck} from "@app/models/deck";
+import {DeckElement} from "@app/models/deck-element";
 
 import {NavigationControlService} from "@app/services/navigation-control.service";
 import {DeckService} from "@app/services/deck.service";
@@ -39,13 +39,13 @@ import {DeckService} from "@app/services/deck.service";
 export class SidebarService {
 
 	private readonly _activeDeck$ = new Subject<Deck | null>();
-	private readonly _activeDeckElement$ = new Subject<DeckElement | null>();
+	private readonly _activeElement$ = new Subject<DeckElement | null>();
 
 	readonly activeDeck: Subscribable<Deck | null> = this._activeDeck$;
-	readonly activeElement : Subscribable<DeckElement | null> = this._activeDeckElement$;
+	readonly activeElement: Subscribable<DeckElement | null> = this._activeElement$;
 
 	currentDeck: Deck | null = null;
-	currentDeckElement: DeckElement | null = null;
+	currentElement: DeckElement | null = null;
 
 	constructor(
 		private readonly deckService: DeckService,
@@ -79,20 +79,20 @@ export class SidebarService {
 		this.updateDeck(deck);
 	}
 
+	private updateDeckElement(element: DeckElement | null): void {
+		if (this.currentElement?.id === element?.id) {
+			return;
+		}
+		this.currentElement = element;
+		this._activeElement$.next(this.currentElement);
+	}
+
 	private updateDeck(deck: Deck | null): void {
-		if (this.currentDeck?.id === deck?.id) {
+		if (this.currentElement?.id === deck?.id) {
 			return;
 		}
 
 		this.currentDeck = deck;
 		this._activeDeck$.next(this.currentDeck);
-	}
-
-	private updateDeckElement(element: DeckElement | null) {
-		if (this.currentDeckElement?.id === element?.id) {
-			return;
-		}
-		this.currentDeckElement = element;
-		this._activeDeckElement$.next(this.currentDeckElement);
 	}
 }

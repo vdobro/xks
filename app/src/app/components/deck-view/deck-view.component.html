@@ -1,5 +1,5 @@
 <div *ngIf="deck">
-	<h1 class="uk-heading-medium uk-text-truncate uk-margin">{{deck.name}}</h1>
+	<app-element-title [name]="deck.name"></app-element-title>
 	<p *ngIf="deck.description" class="uk-text-lead uk-text-break">{{deck.description}}</p>
 	<div *ngIf="!anyElementsAvailable">
 		<h2 class="uk-heading-bullet">No tables or graphs</h2>

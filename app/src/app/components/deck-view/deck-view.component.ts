@@ -22,7 +22,7 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 
-import {Deck} from "@app/models/Deck";
+import {Deck} from "@app/models/deck";
 
 import {DeckService} from "@app/services/deck.service";
 import {NavigationControlService} from "@app/services/navigation-control.service";

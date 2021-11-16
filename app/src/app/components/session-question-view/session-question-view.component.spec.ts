@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {SessionQuestionViewComponent} from './session-question-view.component';
+import {SessionQuestionViewComponent} from '@app/components/session-question-view/session-question-view.component';
 
 /**
  * @author Vitalijus Dobrovolskis

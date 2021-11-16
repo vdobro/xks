@@ -23,7 +23,7 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} f
 
 import {GraphNode} from "@app/models/graph-node";
 import {GraphEdge} from "@app/models/graph-edge";
-import {ElementId} from "@app/models/ElementId";
+import {ElementId} from "@app/models/element-id";
 
 import {GraphElementService} from "@app/services/graph-element.service";
 import {GraphService} from "@app/services/graph.service";

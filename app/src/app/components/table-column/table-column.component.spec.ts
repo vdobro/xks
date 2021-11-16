@@ -21,7 +21,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {TableColumnComponent} from './table-column.component';
+import {TableColumnComponent} from '@app/components/table-column/table-column.component';
 
 /**
  * @author Vitalijus Dobrovolskis

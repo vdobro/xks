@@ -29,7 +29,7 @@ import {Graph, GraphElements} from "@app/models/graph";
 import {GraphNode} from "@app/models/graph-node";
 import {GraphEdge} from "@app/models/graph-edge";
 import {answersEqual, AnswerValue, cloneAnswer} from "@app/models/answer-value";
-import {ElementId} from "@app/models/ElementId";
+import {ElementId} from "@app/models/element-id";
 
 import {GraphService} from "@app/services/graph.service";
 
@@ -49,15 +49,6 @@ export class GraphElementService {
 	readonly elementCountChanged = this._elementCountChanged.asObservable();
 
 	constructor(private readonly graphService: GraphService) {
-	}
-
-	anyNodesAndEdgesExist(graph: Graph): boolean {
-		const nodes = graph.nodes;
-		if (nodes.length === 0) {
-			return false;
-		}
-		const edges = graph.edges;
-		return edges.length !== 0;
 	}
 
 	async addNode(value: string, graph: Graph): Promise<GraphNode> {

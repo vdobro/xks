@@ -22,11 +22,12 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {Deck} from "@app/models/Deck";
-import {Graph} from "@app/models/graph";
-import {Table} from "@app/models/Table";
-import {ElementId} from "@app/models/ElementId";
-import {DeckElement} from "@app/models/DeckElement";
+import {Deck} from "@app/models/deck";
+import {ElementId} from "@app/models/element-id";
+import {DeckElement, DeckElementType, getId} from "@app/models/deck-element";
+import {isTable, Table} from "@app/models/table";
+import {Graph, isGraph} from "@app/models/graph";
+import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 
 import {DeckService} from "@app/services/deck.service";
 import {TableService} from "@app/services/table.service";
@@ -34,6 +35,7 @@ import {SidebarService} from "@app/services/sidebar.service";
 import {GraphService} from "@app/services/graph.service";
 
 import {ScoreParams,} from "@app/components/session-view/session-view.component";
+import {FlashcardSetService} from "@app/services/flashcard-set.service";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -45,28 +47,28 @@ import {ScoreParams,} from "@app/components/session-view/session-view.component"
 export class NavigationService {
 
 	private deck: Deck | null = null;
-	private table: Table | null = null;
-	private graph: Graph | null = null;
+	private deckElement: DeckElement | null = null;
 	private studySessionActive: boolean = false;
 
 	constructor(
 		private readonly deckService: DeckService,
 		private readonly tableService: TableService,
 		private readonly graphService: GraphService,
+		private readonly flashcardService: FlashcardSetService,
 		private readonly sidebarService: SidebarService,
 		private readonly router: Router) {
 	}
 
 	async goBack() {
-		if (!this.deck || !this.table && !this.graph) {
+		if (!this.deck || !this.deckElement) {
 			await this.goHome();
 			return;
 		}
 		if (this.studySessionActive) {
 			await this.navigateToCurrentDeckElement();
-			return;
+		} else {
+			await this.navigateToCurrentDeck();
 		}
-		await this.navigateToCurrentDeck();
 	}
 
 	async navigateToCurrentDeckElement() {
@@ -74,38 +76,18 @@ export class NavigationService {
 			return;
 		}
 		const deckId = this.deck.id;
-		if (this.table) {
-			await this.openTable({element: this.table.id, deck: deckId});
-		} else if (this.graph) {
-			await this.openGraph({element: this.graph.id, deck: deckId});
+		if (isTable(this.deckElement)) {
+			await this.openTable({element: this.deckElement.id, deck: deckId});
+		} else if (isGraph(this.deckElement)) {
+			await this.openGraph({element: this.deckElement.id, deck: deckId});
+		} else if (isFlashcardList(this.deckElement)) {
+			await this.openFlashcardSet({element: this.deckElement.id, deck: deckId});
 		}
 	}
-
 	async openTable(id: ElementId) {
 		await this.selectTable(id);
 		this.studySessionActive = false;
 		await this.router.navigate(['/decks', id.deck, 'tables', id.element, 'edit']);
-	}
-
-	async studyTable(table: DeckElement,
-					 sessionModeId: string,
-					 difficultySettings: ScoreParams) {
-		const id: ElementId = {element: table.id, deck: table.deckId};
-		await this.selectTable(id);
-		this.studySessionActive = true;
-		await this.router.navigate(['/decks', id.deck, 'tables', id.element, 'learn', sessionModeId], {
-			queryParams: difficultySettings
-		});
-	}
-
-	async studyGraph(graph: DeckElement, difficultySettings: ScoreParams) {
-		const id: ElementId = {element: graph.id, deck: graph.deckId};
-		await this.selectGraph(id);
-		this.studySessionActive = true;
-
-		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'learn'], {
-			queryParams: difficultySettings
-		});
 	}
 
 	async openGraph(id: ElementId) {
@@ -114,10 +96,47 @@ export class NavigationService {
 		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'edit']);
 	}
 
+	async openFlashcardSet(id: ElementId) {
+		await this.selectFlashcardList(id);
+		this.studySessionActive = false;
+		await this.router.navigate(['/decks', id.deck, 'cards', id.element, 'edit']);
+	}
+
+	async studyTable(table: Table,
+					 sessionModeId: string,
+					 difficultySettings: ScoreParams) {
+		const id = getId(table);
+		await this.selectTable(id);
+		this.studySessionActive = true;
+
+		await this.router.navigate(['/decks', id.deck, 'tables', id.element, 'learn', sessionModeId], {
+			queryParams: difficultySettings
+		});
+	}
+
+	async studyGraph(graph: Graph, difficultySettings: ScoreParams) {
+		const id = getId(graph);
+		await this.selectGraph(id);
+		this.studySessionActive = true;
+
+		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'learn'], {
+			queryParams: difficultySettings
+		});
+	}
+
+	async studyFlashcards(flashcards: FlashcardSet, difficultySettings: ScoreParams) {
+		const id = getId(flashcards);
+		await this.selectFlashcardList(id);
+		this.studySessionActive = true;
+
+		await this.router.navigate(['/decks', id.deck, 'cards', id.element, 'learn'], {
+			queryParams: difficultySettings
+		});
+	}
+
 	async navigateToCurrentDeck() {
 		if (this.deck) {
-			this.table = null;
-			this.graph = null;
+			this.deckElement = null;
 			this.sidebarService.deselectDeckElement();
 			await this.openDeck(this.deck.id);
 		}
@@ -133,25 +152,42 @@ export class NavigationService {
 	async goHome() {
 		this.studySessionActive = false;
 		this.deck = null;
-		this.table = null;
+		this.deckElement = null;
 		await this.router.navigate(['/']);
 	}
 
 	async goToDeckList() {
 		this.studySessionActive = false;
 		this.deck = null;
-		this.table = null;
+		this.deckElement = null;
 		this.sidebarService.depopulate();
 		await this.router.navigate(['/decks']);
 	}
 
-	private async selectTable(tableId: ElementId) {
-		this.table = await this.tableService.getById(tableId);
-		await this.sidebarService.selectDeckElement(this.table);
+	private async selectTable(id: ElementId) {
+		await this.selectDeckElement(id, "table");
 	}
 
-	private async selectGraph(graphId: ElementId) {
-		this.graph = await this.graphService.getById(graphId);
-		await this.sidebarService.selectDeckElement(this.graph);
+	private async selectGraph(id: ElementId) {
+		await this.selectDeckElement(id, "graph");
+	}
+
+	private async selectFlashcardList(id: ElementId) {
+		await this.selectDeckElement(id, "flashcards");
+	}
+
+	private async selectDeckElement(id: ElementId, type: DeckElementType) {
+		switch (type) {
+			case "graph":
+				this.deckElement = await this.graphService.getById(id);
+				break;
+			case "table":
+				this.deckElement = await this.tableService.getById(id);
+				break;
+			case "flashcards":
+				this.deckElement = await this.flashcardService.getById(id);
+				break;
+		}
+		await this.sidebarService.selectDeckElement(this.deckElement);
 	}
 }

@@ -24,7 +24,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {UserSessionService} from "@app/services/user-session.service";
 
-import {TableColumnEditorComponent} from './table-column-editor.component';
+import {TableColumnEditorComponent} from '@app/components/table-column-editor/table-column-editor.component';
 
 /**
  * @author Vitalijus Dobrovolskis
