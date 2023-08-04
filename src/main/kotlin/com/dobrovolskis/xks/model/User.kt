@@ -21,10 +21,13 @@
 
 package com.dobrovolskis.xks.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2021.06.10
  */
+@Serializable
 data class User(
 	val username: String,
 	val database: String,

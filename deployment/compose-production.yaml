@@ -1,0 +1,23 @@
+services:
+  db:
+    environment:
+      COUCHDB_USER: ${COUCHDB_USERNAME}
+      COUCHDB_PASSWORD: ${COUCHDB_PASSWORD}
+    labels:
+      - "traefik.http.routers.xks-couchdb.rule=Host(`${APPLICATION_HOST}`) && PathPrefix(`/db`)"
+    networks:
+      xks-bridge:
+  web:
+    environment:
+      EXTERNAL_COUCHDB_URL: ${APPLICATION_HOST}/db
+      COUCHDB_USERNAME: ${COUCHDB_USERNAME}
+      COUCHDB_PASSWORD: ${COUCHDB_PASSWORD}
+      APPLICATION_HOST: ${APPLICATION_HOST}
+    labels:
+      - "traefik.http.routers.xks-web.rule=Host(`${APPLICATION_HOST}`) && PathPrefix(`/`)"
+    networks:
+      xks-bridge:
+
+networks:
+  xks-bridge:
+    external: true

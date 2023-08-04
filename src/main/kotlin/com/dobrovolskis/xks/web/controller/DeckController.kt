@@ -22,10 +22,21 @@
 package com.dobrovolskis.xks.web.controller
 
 import com.dobrovolskis.xks.service.PrivateDatabaseService
+import kotlinx.serialization.Serializable
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RequestMethod.DELETE
 import org.springframework.web.bind.annotation.RequestMethod.POST
 import java.util.*
+
+@Serializable
+data class DeckCreatedDto(
+	val database: String
+)
+
+@Serializable
+data class UsernameRequest(
+	val username: String
+)
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -56,11 +67,3 @@ class DeckController(private val privateDatabaseService: PrivateDatabaseService)
 		privateDatabaseService.removeDeckDatabase(username, id, token)
 	}
 }
-
-data class DeckCreatedDto(
-	val database: String
-)
-
-data class UsernameRequest(
-	val username: String
-)

@@ -3,5 +3,5 @@
 
 	// Environment variables
 	window["env"]["apiUrl"] = "${API_URL}";
-	window["env"]["dbUrl"] = "${DB_URL}";
+	window["env"]["dbUrl"] = "${EXTERNAL_COUCHDB_URL}";
 })(this);

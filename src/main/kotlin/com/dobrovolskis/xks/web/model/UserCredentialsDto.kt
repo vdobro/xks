@@ -21,10 +21,13 @@
 
 package com.dobrovolskis.xks.web.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.08
  */
+@Serializable
 data class UserCredentialsDto(
 	val name: String,
 	val password: String

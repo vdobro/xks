@@ -23,18 +23,20 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import {ApplicationMode, EnvironmentSettings} from "@environments/utils";
+
 // @ts-ignore
 if (!window["env"]) {
 // @ts-ignore
 	window["env"] = [];
 }
 
-export const environment = {
-	production: false,
+export const environment: EnvironmentSettings = {
+	mode: ApplicationMode.DEFAULT,
 // @ts-ignore
-	serverUrl: window["env"]["apiUrl"] || "http://localhost:8080",
+	serverUrl: window["env"]["apiUrl"] ?? "http://localhost:9091",
 // @ts-ignore
-	databaseUrl: window["env"]["dbUrl"] || "http://172.19.0.5:5984"
+	databaseUrl: window["env"]["dbUrl"] ?? "http://localhost:5984"
 };
 
 /*

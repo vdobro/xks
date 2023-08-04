@@ -26,10 +26,13 @@ import com.cloudant.client.api.Database
 import com.cloudant.client.org.lightcouch.NoDocumentException
 import com.dobrovolskis.xks.config.PersistenceConfiguration
 import com.dobrovolskis.xks.model.MemberConfiguration
+import com.dobrovolskis.xks.model.SEC_ID
 import com.dobrovolskis.xks.model.UserDbSecurityConfiguration
 import com.dobrovolskis.xks.web.CredentialsError
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 import java.util.UUID.randomUUID
 
 /**
@@ -39,6 +42,7 @@ import java.util.UUID.randomUUID
 @Service
 class PrivateDatabaseService(
 	private val dbConfig: PersistenceConfiguration,
+	private val databaseSetupService: DatabaseSetupService,
 	private val client: CloudantClient
 ) {
 
@@ -54,7 +58,7 @@ class PrivateDatabaseService(
 		val db = assertDatabaseNotCreated(deckDatabaseName)
 
 		createTypeIndex(db)
-		grantPermissionsToUse(username, db)
+		grantPermissionsToUse(username, deckDatabaseName)
 		addDeckDatabase(username, deckId, deckDatabaseName)
 		return deckDatabaseName
 	}
@@ -132,14 +136,15 @@ class PrivateDatabaseService(
 
 	private fun grantPermissionsToUse(
 		username: String,
-		db: Database
+		databaseName: String
 	) {
-		db.save(
+		val configurationObject =
 			UserDbSecurityConfiguration(
 				admins = MemberConfiguration(names = listOf(dbConfig.username)),
 				members = MemberConfiguration(names = listOf(username))
 			)
-		)
+		val configuration = Json.encodeToString(configurationObject)
+		databaseSetupService.request("${databaseName}/${SEC_ID}", configuration)
 	}
 
 	private fun assertDatabaseNotCreated(deckDatabaseName: String): Database {
@@ -155,7 +160,7 @@ class PrivateDatabaseService(
 		return db
 	}
 
-	private fun prefixDeckId(id: UUID) : String {
+	private fun prefixDeckId(id: UUID): String {
 		return "xks-$id"
 	}
 }

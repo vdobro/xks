@@ -1,11 +1,11 @@
-FROM openjdk:11-jre-buster as builder
+FROM openjdk:17-slim-bullseye as builder
 WORKDIR application
 COPY setup_env.sh .
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM openjdk:11-jre-buster
+FROM openjdk:17-slim-bullseye
 LABEL maintainer="Vitalijus Dobrovolskis vitalijusdobro@gmail.com"
 VOLUME /tmp
 

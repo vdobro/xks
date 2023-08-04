@@ -48,9 +48,9 @@ import {AnswerFeedback} from "@app/services/models/answer-feedback";
 })
 export class ExerciseTaskService {
 
-	private readonly taskStates = new Map<string, TaskState>();
+	private readonly taskStates: Map<string, TaskState> = new Map<string, TaskState>();
 
-	private readonly defaultMinimumScore = 0;
+	private readonly defaultMinimumScore: number = 0;
 
 	constructor(
 		private readonly tableCellService: TableElementService,
