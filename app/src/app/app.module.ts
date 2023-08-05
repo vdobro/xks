@@ -141,7 +141,7 @@ const FLASHCARD_ROUTE = `${DECK_ROUTE}/cards/:${FLASHCARD_SET_ID_PARAM}`;
 			{path: `${FLASHCARD_ROUTE}/edit`, component: FlashcardSetViewComponent},
 			{path: `${FLASHCARD_ROUTE}/learn`, component: SessionViewComponent},
 			{path: '**', component: NotFoundViewComponent},
-		], {useHash: true, relativeLinkResolution: 'legacy'}),
+		], { useHash: true }),
 		FormsModule,
 		ReactiveFormsModule,
 		DragDropModule,
