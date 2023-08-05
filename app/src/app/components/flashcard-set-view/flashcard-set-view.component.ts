@@ -27,7 +27,6 @@ import {FlashcardSet} from "@app/models/flashcard-set";
 
 import {SidebarService} from "@app/services/sidebar.service";
 import {TopBarService} from "@app/services/top-bar.service";
-import {NavigationControlService} from "@app/services/navigation-control.service";
 import {NavigationService} from "@app/services/navigation.service";
 
 import {FlashcardEditorComponent, FlashcardFields} from "@app/components/flashcard-editor/flashcard-editor.component";
@@ -57,12 +56,11 @@ export class FlashcardSetViewComponent implements OnInit {
 		private readonly cardService: FlashcardSetService,
 		private readonly sidebarService: SidebarService,
 		private readonly topBarService: TopBarService,
-		private readonly navigationControlService: NavigationControlService,
 		private readonly navigationService: NavigationService,
 		private readonly activatedRoute: ActivatedRoute) {
 	}
 
-	async ngOnInit() {
+	public ngOnInit(): void {
 		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(FLASHCARD_SET_ID_PARAM);
 			const deckId = params.get(DECK_ID_PARAM);
@@ -81,26 +79,26 @@ export class FlashcardSetViewComponent implements OnInit {
 		this.topBarService.setBackButtonLabel('Back to deck');
 	}
 
-	async addNewCard(fields: FlashcardFields) {
+	async addNewCard(fields: FlashcardFields): Promise<void> {
 		if (!this.cardSet || !this.newCardEditor) {
 			return;
 		}
-		const newCard = await this.cardService.addCard(fields.question, fields.answer, this.cardSet);
+		const newCard: Flashcard = await this.cardService.addCard(fields.question, fields.answer, this.cardSet);
 		this.cards.push(newCard);
-		await this.newCardEditor.resetFields();
+		this.newCardEditor.resetFields();
 	}
 
-	async deleteCard(card: Flashcard) {
+	async deleteCard(card: Flashcard): Promise<void> {
 		if (!this.cardSet) {
 			return;
 		}
-		const index = this.cards.indexOf(card);
+		const index: number = this.cards.indexOf(card);
 		this.cards.splice(index, 1);
 
 		await this.cardService.deleteCard({card: card, set: this.cardSet});
 	}
 
-	async updateCard(card: Flashcard, fields: FlashcardFields) {
+	async updateCard(card: Flashcard, fields: FlashcardFields): Promise<void> {
 		if (!this.cardSet) {
 			return;
 		}

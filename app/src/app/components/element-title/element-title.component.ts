@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,14 +31,9 @@ import {Component, Input, OnInit} from '@angular/core';
 	styleUrls: ['./element-title.component.sass'],
 	host: {'class': 'uk-width-expand'},
 })
-export class ElementTitleComponent implements OnInit {
+export class ElementTitleComponent {
 
 	@Input()
 	name: string = '';
 
-	constructor() {
-	}
-
-	ngOnInit(): void {
-	}
 }

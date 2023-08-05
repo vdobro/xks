@@ -7,7 +7,7 @@
 				   [attr.disabled]="pending ? '' : null"
 				   class="uk-input"
 				   type="text"
-				   [placeholder]="field?.identifier?.name || indexNumber"
+				   [placeholder]="field?.identifier?.name ?? indexNumber"
 				   [formControl]="control">
 		</label>
 	</div>

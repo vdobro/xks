@@ -66,7 +66,7 @@ export class SessionAnswerEditorComponent implements OnInit, OnChanges {
 	@Output()
 	forceAcceptRequest = new EventEmitter<string>();
 
-	answerInput = new FormControl('');
+	answerInput: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	private lastAnswer: string = '';
 

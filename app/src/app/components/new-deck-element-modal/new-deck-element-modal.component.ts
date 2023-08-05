@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {Deck} from "@app/models/deck";
@@ -39,7 +39,7 @@ import {FlashcardSetService} from "@app/services/flashcard-set.service";
 	templateUrl: './new-deck-element-modal.component.html',
 	styleUrls: ['./new-deck-element-modal.component.sass']
 })
-export class NewDeckElementModalComponent implements OnInit {
+export class NewDeckElementModalComponent {
 
 	@ViewChild("modal")
 	modal: ElementRef | undefined;
@@ -52,7 +52,7 @@ export class NewDeckElementModalComponent implements OnInit {
 
 	type: DeckElementType = DeckElementType.TABLE;
 
-	nameInput = new FormControl('');
+	nameInput: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	constructor(
 		private readonly graphService: GraphService,
@@ -61,10 +61,7 @@ export class NewDeckElementModalComponent implements OnInit {
 	) {
 	}
 
-	ngOnInit(): void {
-	}
-
-	async onSaveClick() {
+	async onSaveClick(): Promise<void> {
 		const name = this.nameInput?.value?.trim();
 		if (name === null || name === '') {
 			return;
@@ -75,7 +72,7 @@ export class NewDeckElementModalComponent implements OnInit {
 		UIkit.modal(this.modal!.nativeElement).hide();
 	}
 
-	openDialog() {
+	public openDialog(): void {
 		if (!this.modal) {
 			return;
 		}

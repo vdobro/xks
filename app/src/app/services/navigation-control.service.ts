@@ -40,18 +40,15 @@ export class NavigationControlService {
 	readonly topBarVisible: Subscribable<boolean> = this._topBarVisible$;
 	readonly rootContainerWidth: Subscribable<number> = this._rootContainerWidth$;
 
-	constructor() {
-	}
-
-	setSidebarVisibility(visible: boolean) {
+	public setSidebarVisibility(visible: boolean): void {
 		this._sidebarVisible$.next(visible);
 	}
 
-	setTopBarVisibility(visible: boolean) {
+	public setTopBarVisibility(visible: boolean): void {
 		this._topBarVisible$.next(visible);
 	}
 
-	notifyRootContainerChange(width: number) {
+	public notifyRootContainerChange(width: number): void {
 		this._rootContainerWidth$.next(width);
 	}
 }

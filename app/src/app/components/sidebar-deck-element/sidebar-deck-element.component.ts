@@ -48,15 +48,15 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 	deck: Deck | null = null;
 
 	editMode: boolean = false;
-	nameInput = new FormControl('');
+	nameInput: FormControl<string> = new FormControl<string>('', { nonNullable: true });
 	elementCount: string | number = 0;
 	elementType: string = 'table';
 
 	protected constructor() {
 	}
 
-	ngOnInit() {
-		this.nameInput.setValue(this.element?.name);
+	async ngOnInit(): Promise<void> {
+		this.nameInput.setValue(this.element?.name ?? '');
 	}
 
 	async onDelete(): Promise<void> {
@@ -70,7 +70,7 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 		setTimeout(() => this.inputElement?.nativeElement.focus());
 	}
 
-	async onChangesSubmit() {
+	async onChangesSubmit(): Promise<void> {
 		if (!this.element || !this.nameInput.value) {
 			return;
 		}
@@ -80,17 +80,17 @@ export abstract class SidebarDeckElementComponent implements OnInit {
 		this.editMode = false;
 	}
 
-	async onNameClick() {
+	async onNameClick(): Promise<void> {
 		if (this.element) {
 			await this.onClickHandler(this.element.id);
 		}
 	}
 
-	confirmDeletion() {
+	confirmDeletion(): void {
 		this.confirmDeleteModal?.openModal();
 	}
 
-	cancelEditing() {
+	cancelEditing(): void {
 		setTimeout(() => this.editMode = false, 100);
 	}
 

@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -32,7 +32,7 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} f
 	templateUrl: './confirm-delete-element-modal.component.html',
 	styleUrls: ['./confirm-delete-element-modal.component.sass']
 })
-export class ConfirmDeleteElementModalComponent implements OnInit {
+export class ConfirmDeleteElementModalComponent {
 
 	@ViewChild('confirmElementModal')
 	modal: ElementRef | undefined;
@@ -52,10 +52,7 @@ export class ConfirmDeleteElementModalComponent implements OnInit {
 	constructor() {
 	}
 
-	ngOnInit(): void {
-	}
-
-	openModal() {
+	openModal(): void {
 		if (this.modal) {
 			UIkit.modal(this.modal.nativeElement).show();
 		}

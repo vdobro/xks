@@ -60,8 +60,8 @@ export class SidebarTableListElementComponent
 		});
 	}
 
-	async ngOnInit() {
-		super.ngOnInit();
+	async ngOnInit(): Promise<void> {
+		await super.ngOnInit();
 
 		if (this.element) {
 			await this.updateRowCount();

@@ -67,7 +67,7 @@ export class TableColumnEditorComponent implements OnInit {
 	editingCancelled = new EventEmitter();
 
 	column: TableColumn | null = null;
-	nameInput = new FormControl('');
+	nameInput: FormControl<string> = new FormControl<string>('', { nonNullable: true });
 
 	constructor(private readonly cellService: TableElementService) {
 	}
@@ -80,7 +80,7 @@ export class TableColumnEditorComponent implements OnInit {
 		this.columnNameInput?.nativeElement.focus();
 	}
 
-	async onNameSubmit() {
+	async onNameSubmit(): Promise<void> {
 		const name = this.nameInput.value.trim();
 		if (name === '' || !this.table) {
 			return;
@@ -93,13 +93,13 @@ export class TableColumnEditorComponent implements OnInit {
 		this.nameChanged.emit(this.column);
 	}
 
-	onColumnDelete() {
+	onColumnDelete(): void {
 		if (this.column) {
 			this.columnDeleted.emit(this.column);
 		}
 	}
 
-	confirmDeletion() {
+	confirmDeletion(): void {
 		this.confirmDeleteColumnModal?.openDialog();
 	}
 }

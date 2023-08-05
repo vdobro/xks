@@ -75,7 +75,7 @@
 	</app-new-deck-element-modal>
 	<app-confirm-delete-element-modal
 		[type]="'deck'"
-		[name]="deck?.name || ''"
+		[name]="deck.name"
 		[explanation]="'All tables belonging to this deck will be deleted as well.'"
 		(confirmed)="onDeckDeleted()">
 	</app-confirm-delete-element-modal>

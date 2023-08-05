@@ -39,12 +39,12 @@ export class SessionScoreSettingsComponent implements OnInit, OnChanges {
 	@Input()
 	deckElement: DeckElement | null = null;
 
-	startingScoreRange = new FormControl('');
-	maximumScoreRange = new FormControl('');
-	saveSettingsCheckbox = new FormControl('');
-
 	startingScore: number = 3;
 	maxScore: number = 8;
+
+	startingScoreRange: FormControl<number> = new FormControl(this.startingScore, { nonNullable: true });
+	maximumScoreRange: FormControl<number> = new FormControl(this.maxScore, { nonNullable: true });
+	saveSettingsCheckbox: FormControl<boolean> = new FormControl(false, { nonNullable: true });
 
 	constructor(private readonly deckElementService: DeckElementService) {
 	}

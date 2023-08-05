@@ -53,7 +53,7 @@ export class DeckElementService {
 
 	async deleteAll(deckId: string, type: DeckElementType) {
 		const all = await this.repository.getAllByType(deckId, type);
-		for (let element of all) {
+		for (const element of all) {
 			await this.delete({element: element.id, deck: deckId});
 		}
 	}

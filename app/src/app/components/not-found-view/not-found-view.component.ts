@@ -42,15 +42,15 @@ export class NotFoundViewComponent implements OnInit {
 	) {
 	}
 
-	async ngOnInit() {
+	public ngOnInit(): void {
 		this.topBarService.clearItems();
 		this.topBarService.setBackButtonLabel('Go home');
 
-		await this.sidebarService.deselectDeckElement();
-		await this.sidebarService.hide();
+		this.sidebarService.deselectDeckElement();
+		this.sidebarService.hide();
 	}
 
-	async goHome() {
+	public async goHome(): Promise<void> {
 		await this.navigationService.goHome();
 	}
 }

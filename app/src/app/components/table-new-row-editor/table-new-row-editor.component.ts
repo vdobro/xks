@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 import {TableColumn} from "@app/models/table-column";
 import {Table} from "@app/models/table";
@@ -36,7 +36,7 @@ import {TableElementService} from "@app/services/table-element.service";
 	templateUrl: './table-new-row-editor.component.html',
 	styleUrls: ['./table-new-row-editor.component.sass']
 })
-export class TableNewRowEditorComponent implements OnInit {
+export class TableNewRowEditorComponent {
 
 	@Input()
 	columns: TableColumn[] = [];
@@ -54,9 +54,6 @@ export class TableNewRowEditorComponent implements OnInit {
 	newColumnIndex: number = 0;
 
 	constructor(private readonly cellService: TableElementService) {
-	}
-
-	async ngOnInit() {
 	}
 
 	async onCellSubmitted(value: { default: string, alternatives: string[] },

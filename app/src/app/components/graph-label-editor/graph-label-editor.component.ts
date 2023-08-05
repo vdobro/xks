@@ -26,7 +26,6 @@ import {
 	EventEmitter,
 	HostListener,
 	Input,
-	OnInit,
 	Output,
 	ViewChild
 } from '@angular/core';
@@ -47,7 +46,7 @@ import {ElementId} from "@app/models/element-id";
 	templateUrl: './graph-label-editor.component.html',
 	styleUrls: ['./graph-label-editor.component.sass']
 })
-export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
+export class GraphLabelEditorComponent implements AfterContentInit {
 
 	@ViewChild('edgeLabelInputElement')
 	edgeLabelInputElement: ElementRef | undefined;
@@ -67,25 +66,22 @@ export class GraphLabelEditorComponent implements OnInit, AfterContentInit {
 	@Output()
 	editingAborted = new EventEmitter();
 
-	nodeLabelInput = new FormControl('');
-	edgeLabelInput = new FormControl('');
+	nodeLabelInput: FormControl<string> = new FormControl('', { nonNullable: true });
+	edgeLabelInput: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	constructor(private readonly elementService: GraphElementService) {
-	}
-
-	ngOnInit(): void {
 	}
 
 	ngAfterContentInit(): void {
 		setTimeout(async () => {
 			if (this.edgeLabelInputElement) {
 				this.edgeLabelInputElement.nativeElement.focus();
-				this.edgeLabelInput.setValue(this.selectedEdge?.value?.default);
+				this.edgeLabelInput.setValue(this.selectedEdge?.value?.default ?? '');
 			} else if (this.nodeLabelInputElement) {
 				this.nodeLabelInputElement.nativeElement.focus();
 			}
 			if (this.nodeLabelInputElement && !this.shouldAppend) {
-				const value = this.selectedNode?.value?.default || '';
+				const value = this.selectedNode?.value?.default ?? '';
 				this.nodeLabelInput.setValue(value);
 			}
 		});

@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NewDeckModalComponent} from "@app/components/new-deck-modal/new-deck-modal.component";
 
 /**
@@ -31,14 +31,9 @@ import {NewDeckModalComponent} from "@app/components/new-deck-modal/new-deck-mod
 	templateUrl: './deck-list-navbar.component.html',
 	styleUrls: ['./deck-list-navbar.component.sass']
 })
-export class DeckListNavbarComponent implements OnInit {
+export class DeckListNavbarComponent {
 
 	@ViewChild(NewDeckModalComponent)
 	childModal: NewDeckModalComponent | undefined;
 
-	constructor() {
-	}
-
-	ngOnInit(): void {
-	}
 }

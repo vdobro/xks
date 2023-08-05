@@ -26,6 +26,7 @@ import {LearningSessionState} from "@app/services/models/learning-session-state"
 
 import {StudySessionService} from "@app/services/study-session.service";
 import {ExerciseTaskService} from "@app/services/exercise-task.service";
+import {ExerciseTask} from "@app/services/models/exercise-task";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -43,7 +44,7 @@ export class GraphSessionService extends StudySessionService {
 	startNew(graph: Graph,
 				   startScore: number,
 				   maxScore: number): LearningSessionState {
-		const allTasks = this.taskService.getGraphTaskList(graph, startScore, maxScore);
+		const allTasks: ExerciseTask[] = this.taskService.getGraphTaskList(graph, startScore, maxScore);
 		return this.createSessionFromTasks(allTasks);
 	}
 }

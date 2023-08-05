@@ -20,7 +20,7 @@
  */
 
 import {v4 as uuid} from "uuid";
-import {Subject, Subscribable} from "rxjs";
+import {Observable, Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
@@ -44,13 +44,16 @@ export class FlashcardSetService {
 
 	private static readonly elementType: DeckElementType = "flashcards";
 
-	private readonly _setsChanged = new Subject<string>();
-	readonly setsChanged: Subscribable<string> = this._setsChanged.asObservable();
+	public readonly setsChanged: Subscribable<string>;
+	public readonly setChanged: Observable<FlashcardSet>;
 
+	private readonly _setsChanged = new Subject<string>();
 	private readonly _setChanged = new Subject<FlashcardSet>();
-	readonly setChanged = this._setChanged.asObservable();
 
 	constructor(private readonly deckElementService: DeckElementService) {
+		this.setChanged = this._setChanged.asObservable();
+		this.setsChanged = this._setsChanged.asObservable();
+
 		this.setChanged.subscribe((set) => this._setsChanged.next(set.deckId));
 	}
 
@@ -92,7 +95,7 @@ export class FlashcardSetService {
 
 	public async deleteAllInDeck(deck: Deck): Promise<void> {
 		const flashcardLists = await this.getByDeck(deck);
-		for (let list of flashcardLists) {
+		for (const list of flashcardLists) {
 			await this.delete({element: list.id, deck: deck.id});
 		}
 		this._setsChanged.next(deck.id);
@@ -120,7 +123,7 @@ export class FlashcardSetService {
 		return card;
 	}
 
-	async deleteCard(card: FlashCardInSet) {
+	async deleteCard(card: FlashCardInSet): Promise<void> {
 		//TODO: is the refetching really needed?
 		const flashcardSet = await this.getById(getId(card.set));
 		flashcardSet.cards = filter(flashcardSet.cards, x => x.id !== card.card.id);
@@ -128,7 +131,8 @@ export class FlashcardSetService {
 	}
 
 	async updateCard(card: FlashCardInSet,
-					 question: string, answer: string) {
+					 question: string, answer: string): Promise<void> {
+
 		const flashcardSet = await this.getById(getId(card.set));
 		const editedCard = find(flashcardSet.cards, c => c.id === card.card.id);
 		if (!editedCard) {

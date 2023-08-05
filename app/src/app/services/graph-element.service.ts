@@ -136,7 +136,7 @@ export class GraphElementService {
 		const edge = this.getEdge(edgeId, graph);
 		edge.value.default = newLabel;
 
-		for (let node of graph.nodes) {
+		for (const node of graph.nodes) {
 			await GraphElementService.nameAllEdgesIfAnyAreLabeled(node, graph);
 		}
 		await this.graphService.update(graph);
@@ -250,7 +250,7 @@ export class GraphElementService {
 		if (edges.length === 0) {
 			return;
 		}
-		for (let edge of edges) {
+		for (const edge of edges) {
 			edge.value.default = 'Unnamed edge ' + GraphElementService.unnamedEdgePlaceholderNumber++;
 		}
 	}

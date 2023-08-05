@@ -76,7 +76,7 @@ export class TableViewComponent implements OnInit {
 				private readonly activatedRoute: ActivatedRoute) {
 	}
 
-	async ngOnInit() {
+	async ngOnInit(): Promise<void> {
 		this.activatedRoute.paramMap.subscribe(async (params: ParamMap) => {
 			const id = params.get(TABLE_ID_PARAM);
 			const deckId = params.get(DECK_ID_PARAM);

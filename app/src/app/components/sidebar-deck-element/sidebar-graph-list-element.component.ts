@@ -58,7 +58,7 @@ export class SidebarGraphListElementComponent
 		this.elementType = 'graph';
 	}
 
-	async ngOnInit() {
+	async ngOnInit(): Promise<void> {
 		super.ngOnInit();
 
 		await this.refreshGraph();

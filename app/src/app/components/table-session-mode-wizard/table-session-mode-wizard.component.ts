@@ -86,7 +86,7 @@ export class TableSessionModeWizardComponent implements OnInit, OnChanges {
 		});
 	}
 
-	async ngOnInit() {
+	async ngOnInit(): Promise<void> {
 		if (!this.questionColumnsSortable || !this.answerColumnsSortable) {
 			return;
 		}

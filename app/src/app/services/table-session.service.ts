@@ -28,6 +28,8 @@ import {ExerciseTaskService} from "@app/services/exercise-task.service";
 import {StudySessionService} from "@app/services/study-session.service";
 import {LearningSessionState} from "@app/services/models/learning-session-state";
 import {TableElementService} from "@app/services/table-element.service";
+import {ExerciseTask} from "@app/services/models/exercise-task";
+import {TableColumn} from "@app/models/table-column";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -44,14 +46,15 @@ export class TableSessionService extends StudySessionService {
 		super(taskService);
 	}
 
-	startNew(table: Table,
+	public startNew(table: Table,
 			 sessionMode: TableSessionMode,
 			 startScore: number, maxScore: number): LearningSessionState {
-		const questionColumns = sessionMode.questionColumnIds
+
+		const questionColumns: TableColumn[] = sessionMode.questionColumnIds
 			.map(id => this.cellService.findColumn(id, table));
 		const answerColumns = sessionMode.answerColumnIds
 			.map(id => this.cellService.findColumn(id, table));
-		const allTasks = this.taskService.getTableTaskList(table,
+		const allTasks: ExerciseTask[] = this.taskService.getTableTaskList(table,
 			questionColumns, answerColumns,
 			startScore, maxScore);
 		return this.createSessionFromTasks(allTasks);

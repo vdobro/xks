@@ -33,7 +33,6 @@ import {GraphNode} from "@app/models/graph-node";
 import {FlashcardSet} from "@app/models/flashcard-set";
 import {AnswerValue} from "@app/models/answer-value";
 
-import {TableElementService} from "@app/services/table-element.service";
 import {GraphElementService} from "@app/services/graph-element.service";
 import {ExerciseTask} from "@app/services/models/exercise-task";
 import {FlashcardField} from "@app/services/models/flashcard-field";
@@ -53,7 +52,6 @@ export class ExerciseTaskService {
 	private readonly defaultMinimumScore: number = 0;
 
 	constructor(
-		private readonly tableCellService: TableElementService,
 		private readonly graphElementService: GraphElementService) {
 	}
 
@@ -63,7 +61,7 @@ export class ExerciseTaskService {
 					 startScore: number,
 					 maxScore: number): ExerciseTask[] {
 		const tasks: ExerciseTask[] = [];
-		for (let row of table.rows) {
+		for (const row of table.rows) {
 			const answerFields = answerColumns.map(column => this.mapColumnToFlashcardField(row, column));
 			const questions = questionColumns.map(column => this.mapColumnToFlashcardField(row, column));
 			tasks.push({
@@ -82,10 +80,10 @@ export class ExerciseTaskService {
 
 	getGraphTaskList(graph: Graph, startScore: number, maxScore: number): ExerciseTask[] {
 		const exercises: ExerciseTask[] = [];
-		for (let node of graph.nodes) {
+		for (const node of graph.nodes) {
 			const edges = GraphElementService.getOutgoingEdges(node, graph);
 			const transitions: EdgeWithDestinationNode[] = [];
-			for (let edge of edges) {
+			for (const edge of edges) {
 				const targetNode = this.graphElementService.getNode(edge.targetId, graph);
 				transitions.push({
 					edgeName: edge.value.default,
@@ -217,13 +215,13 @@ export class ExerciseTaskService {
 			flashcard: FlashcardField,
 			isAlternative: boolean
 		}[] = [];
-		for (let field of fields) {
+		for (const field of fields) {
 			fieldAnswers.push({
 				value: field.value.default,
 				isAlternative: false,
 				flashcard: field
 			});
-			for (let alternative of field.value.alternatives) {
+			for (const alternative of field.value.alternatives) {
 				fieldAnswers.push({
 					value: alternative,
 					isAlternative: true,
@@ -278,7 +276,7 @@ export class ExerciseTaskService {
 			value: task.startingScore,
 			previous: null,
 		};
-		for (let answerField of task.answers) {
+		for (const answerField of task.answers) {
 			subscores.set(answerField.identifier.id, startScore);
 		}
 		this.taskStates.set(task.id, {

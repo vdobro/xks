@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 import {AnswerValue} from "@app/models/answer-value";
 import {Table} from "@app/models/table";
@@ -37,7 +37,7 @@ import {TableElementService} from "@app/services/table-element.service";
 	templateUrl: './table-row.component.html',
 	styleUrls: ['./table-row.component.sass']
 })
-export class TableRowComponent implements OnInit {
+export class TableRowComponent {
 
 	@Input()
 	row: TableRow | null = null;
@@ -52,9 +52,6 @@ export class TableRowComponent implements OnInit {
 	editingStopped = new EventEmitter();
 
 	constructor(private readonly cellService: TableElementService) {
-	}
-
-	ngOnInit(): void {
 	}
 
 	async cellChanged(value: AnswerValue, row: TableRow, column: TableColumn) {

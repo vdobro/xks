@@ -67,7 +67,7 @@ export class UserSessionService {
 		});
 	}
 
-	async login(username: string, password: string) {
+	async login(username: string, password: string): Promise<void> {
 		try {
 			await firstValueFrom(this.httpClient.post(
 				this.sessionUrl,
@@ -84,7 +84,7 @@ export class UserSessionService {
 		}
 	}
 
-	async register(username: string, password: string) {
+	async register(username: string, password: string): Promise<void> {
 		try {
 			await firstValueFrom(this.httpClient.post(this.registrationUrl,
 				UserSessionService.authRequest(username, password)));
@@ -97,31 +97,31 @@ export class UserSessionService {
 		}
 	}
 
-	async logout() {
+	async logout(): Promise<void> {
 		this.updateCurrentUser(null);
 		await this.deleteSession();
 	}
 
-	async deleteUser(username: string, password: string) {
+	async deleteUser(username: string, password: string): Promise<void> {
 		await this.logout();
 		await firstValueFrom(this.httpClient.post(this.forgetUrl,
 			UserSessionService.authRequest(username, password),
 			HTTP_OPTIONS));
 	}
 
-	isLoggedIn() : boolean {
+	public isLoggedIn(): boolean {
 		return this.getUserName() !== null;
 	}
 
-	getCurrentUser() : User | null {
+	public getCurrentUser(): User | null {
 		return this.currentUser;
 	}
 
-	getUserName() : string | null {
+	public getUserName(): string | null {
 		return this.currentUser?.name || null;
 	}
 
-	private updateCurrentUser(user: User | null) {
+	private updateCurrentUser(user: User | null): void {
 		if (user) {
 			UserSessionService.saveUsername(user.name);
 		} else {
@@ -140,7 +140,7 @@ export class UserSessionService {
 		};
 	}
 
-	private async deleteSession() {
+	private async deleteSession(): Promise<void> {
 		try {
 			UserSessionService.forgetUsername();
 			await firstValueFrom(this.httpClient.delete(this.sessionUrl));
@@ -157,15 +157,15 @@ export class UserSessionService {
 		}
 	}
 
-	private static saveUsername(username: string) {
+	private static saveUsername(username: string): void {
 		localStorage.setItem(USERNAME_KEY, username);
 	}
 
-	private static forgetUsername() {
+	private static forgetUsername(): void {
 		localStorage.removeItem(USERNAME_KEY);
 	}
 
-	private async handleCredentialException(e: HttpErrorResponse) {
+	private async handleCredentialException(e: HttpErrorResponse): Promise<void> {
 		await this.logout();
 		switch (e.status) {
 			case 401:

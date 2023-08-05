@@ -52,15 +52,15 @@ export class SidebarService {
 		private readonly navigationControlService: NavigationControlService) {
 	}
 
-	hide() {
+	public hide(): void {
 		this.navigationControlService.setSidebarVisibility(false);
 	}
 
-	deselectDeckElement() {
+	public deselectDeckElement(): void {
 		this.updateDeckElement(null);
 	}
 
-	async selectDeckElement(element: DeckElement) {
+	public async selectDeckElement(element: DeckElement): Promise<void> {
 		this.updateDeckElement(element);
 		if (element) {
 			const deck = await this.deckService.getById(element.deckId);
@@ -68,13 +68,13 @@ export class SidebarService {
 		}
 	}
 
-	depopulate() {
+	public depopulate(): void {
 		this.navigationControlService.setSidebarVisibility(false);
 		this.updateDeck(null);
 		this.deselectDeckElement();
 	}
 
-	populate(deck: Deck) {
+	public populate(deck: Deck): void {
 		this.navigationControlService.setSidebarVisibility(true);
 		this.updateDeck(deck);
 	}

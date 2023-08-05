@@ -162,7 +162,7 @@ export class TableElementService {
 
 	async deleteColumn(column: TableColumn, table: Table) {
 		const rows = table.rows;
-		for (let row of rows) {
+		for (const row of rows) {
 			remove(row.columnValues, x => x.columnId === column.id);
 		}
 		await this.sessionModeService.deleteAllWithColumn(table, column.id);

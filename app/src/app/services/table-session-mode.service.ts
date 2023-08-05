@@ -93,7 +93,7 @@ export class TableSessionModeService {
 		}
 		const all = table.sessionModes;
 		let shouldUpdate = false;
-		for (let mode of all) {
+		for (const mode of all) {
 			if (mode.answerColumnIds.find(id => columnId === id) || mode.questionColumnIds.find(id => columnId === id)) {
 				if (mode.id === table.defaultSessionModeId) {
 					table.defaultSessionModeId = null;

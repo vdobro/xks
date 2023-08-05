@@ -39,16 +39,16 @@ export class DeckListCardComponent implements OnInit {
 
 	editMode: boolean = false;
 
-	nameInput = new FormControl('');
-	descriptionInput = new FormControl('');
+	nameInput = new FormControl<string>('', { nonNullable: true });
+	descriptionInput = new FormControl<string>('', { nonNullable: true });
 
 	constructor(private readonly deckService: DeckService,
 				private readonly navigationService: NavigationService) {
 	}
 
 	ngOnInit(): void {
-		this.nameInput.setValue(this.deck?.name);
-		this.descriptionInput.setValue(this.deck?.description);
+		this.nameInput.setValue(this.deck?.name ?? '');
+		this.descriptionInput.setValue(this.deck?.description ?? '');
 	}
 
 	onEditClicked() {

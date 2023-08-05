@@ -33,7 +33,7 @@ import {ExerciseTaskService} from "@app/services/exercise-task.service";
  * @since 2020.09.15
  */
 export class StudySessionService {
-	private readonly defaultTaskWindowSize = 10;
+	private readonly defaultTaskWindowSize: number = 10;
 
 	private readonly activeSessions = new Map<string, InternalSessionState>();
 
@@ -43,6 +43,7 @@ export class StudySessionService {
 	submitAnswer(answer: string,
 				 fieldId: string,
 				 state: LearningSessionState): LearningSessionState {
+
 		const answerFeedback = this.taskService.logInAnswer(answer, fieldId,
 			state.currentTask, state.lastAnswer?.fieldId || null);
 		return this.handleAnswerFeedback(answerFeedback.actualField.identifier.id,
@@ -51,6 +52,7 @@ export class StudySessionService {
 
 	acceptLastAnswer(currentValue: string,
 					 state: LearningSessionState): LearningSessionState {
+
 		if (!state.lastAnswer) {
 			return state;
 		}
@@ -60,11 +62,12 @@ export class StudySessionService {
 		return this.handleAnswerFeedback(fieldId, answerFeedback, state);
 	}
 
-	cleanup() {
+	public cleanup(): void {
 		this.taskService.resetTasks();
 	}
 
-	protected createSessionFromTasks(allTasks: ExerciseTask[]) {
+	protected createSessionFromTasks(allTasks: ExerciseTask[]): LearningSessionState {
+
 		const session: LearningSession = StudySessionService.createSession();
 		const actualInitialWindowSize = Math.min(allTasks.length, this.defaultTaskWindowSize);
 		const initialWindow = allTasks.slice(0, actualInitialWindowSize);
@@ -85,7 +88,7 @@ export class StudySessionService {
 		return state;
 	}
 
-	private removeAnswerFieldFromPending(answerFeedback: AnswerFeedback, state: LearningSessionState) {
+	private removeAnswerFieldFromPending(answerFeedback: AnswerFeedback, state: LearningSessionState): void {
 		if (!answerFeedback.correct) {
 			return;
 		}
@@ -101,6 +104,7 @@ export class StudySessionService {
 	private handleAnswerFeedback(fieldId: string,
 								 answerFeedback: AnswerFeedback,
 								 state: LearningSessionState): LearningSessionState {
+
 		this.removeAnswerFieldFromPending(answerFeedback, state);
 		this.updateActiveTaskWindow(state);
 		const allFieldsSubmitted = state.currentTask.pendingAnswers.length === 0;
@@ -125,7 +129,7 @@ export class StudySessionService {
 		return state;
 	}
 
-	private checkCompletion(state: LearningSessionState) {
+	private checkCompletion(state: LearningSessionState): void {
 		const internalState = this.getInternalState(state);
 		if (internalState.remainingTasks.length === 0
 			&& internalState.taskWindow.every(task => this.taskService.isComplete(task))) {
@@ -168,7 +172,7 @@ export class StudySessionService {
 		return Math.max(progress, 0);
 	}
 
-	private updateActiveTaskWindow(state: LearningSessionState) {
+	private updateActiveTaskWindow(state: LearningSessionState): void {
 		const defaultWindowSize = this.getTaskWindow(state).length;
 		this.removeDoneTasksFromWindow(state);
 
@@ -185,11 +189,11 @@ export class StudySessionService {
 		}
 	}
 
-	private removeDoneTasksFromWindow(state: LearningSessionState) {
+	private removeDoneTasksFromWindow(state: LearningSessionState): void {
 		const internalState = this.getInternalState(state);
 		const oldWindow = this.getTaskWindow(state);
 		const newWindow: ExerciseTask[] = [];
-		for (let task of oldWindow) {
+		for (const task of oldWindow) {
 			if (this.taskService.isComplete(task)) {
 				internalState.tasksDone.push(task);
 			} else {
@@ -212,7 +216,7 @@ export class StudySessionService {
 		}
 	}
 
-	private updateInternalState(internalState: InternalSessionState) {
+	private updateInternalState(internalState: InternalSessionState): void {
 		this.activeSessions.set(internalState.sessionState.session.id, internalState);
 	}
 
@@ -239,9 +243,9 @@ export class StudySessionService {
 	}
 
 	private static randomElement<T>(array: T[]): T {
-		const start = 0;
-		const end = array.length - 1;
-		const index = this.random(start, end);
+		const start: number = 0;
+		const end: number = array.length - 1;
+		const index: number = this.random(start, end);
 		return array[index];
 	}
 

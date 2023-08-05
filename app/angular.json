@@ -142,8 +142,7 @@
 				}
 			}
 		}
-	},
-	"defaultProject": "xks",
+  },
 	"cli": {
 		"analytics": false
 	}

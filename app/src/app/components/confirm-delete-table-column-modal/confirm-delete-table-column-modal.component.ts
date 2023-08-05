@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 
 import {TableColumn} from "@app/models/table-column";
 
@@ -34,7 +34,7 @@ import {TableColumn} from "@app/models/table-column";
 	templateUrl: './confirm-delete-table-column-modal.component.html',
 	styleUrls: ['./confirm-delete-table-column-modal.component.sass']
 })
-export class ConfirmDeleteTableColumnModalComponent implements OnInit {
+export class ConfirmDeleteTableColumnModalComponent {
 
 	@ViewChild('confirmDeleteTableColumnModal')
 	modal: ElementRef | undefined;
@@ -46,9 +46,6 @@ export class ConfirmDeleteTableColumnModalComponent implements OnInit {
 	confirmed = new EventEmitter<void>();
 
 	constructor() {
-	}
-
-	ngOnInit(): void {
 	}
 
 	openDialog() {

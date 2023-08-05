@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {UserSessionService} from "@app/services/user-session.service";
@@ -35,7 +35,7 @@ import {UserSessionService} from "@app/services/user-session.service";
 	templateUrl: './login-modal.component.html',
 	styleUrls: ['./login-modal.component.sass']
 })
-export class LoginModalComponent implements OnInit, AfterViewInit {
+export class LoginModalComponent implements AfterViewInit {
 
 	@ViewChild("loginModal", {static: true})
 	modal: ElementRef | undefined;
@@ -46,18 +46,15 @@ export class LoginModalComponent implements OnInit, AfterViewInit {
 	@Input()
 	existingUser: boolean = true;
 
-	usernameInput = new FormControl('');
-	passwordInput = new FormControl('');
-	passwordConfirmationInput = new FormControl('');
+	usernameInput: FormControl<string> = new FormControl<string>('', { nonNullable: true });
+	passwordInput: FormControl<string> = new FormControl('', { nonNullable: true });
+	passwordConfirmationInput: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	loginErrorMessage: string = '';
 	requestInProgress: boolean = false;
 
 	constructor(
 		private readonly userSessionService: UserSessionService) {
-	}
-
-	ngOnInit(): void {
 	}
 
 	ngAfterViewInit() {

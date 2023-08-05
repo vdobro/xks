@@ -93,7 +93,7 @@ export class DeckElementRepository {
 		const user = this.userSessionService.getCurrentUser();
 		const newDecks = decks.filter(deck => !this.deckRepos.has(deck.id));
 
-		for (let deck of newDecks) {
+		for (const deck of newDecks) {
 			if (this.deckRepos.get(deck.id)) {
 				continue; //this assumes that a deck does not change its database
 			}
@@ -101,7 +101,7 @@ export class DeckElementRepository {
 			this.deckRepos.set(deck.id, repo);
 		}
 		// Remove previously used decks not present in the updated list anymore
-		for (let existingDeckId of this.deckRepos.keys()) {
+		for (const existingDeckId of this.deckRepos.keys()) {
 			if (!find(decks, x => existingDeckId === x.id)) {
 				this.deckRepos.delete(existingDeckId);
 			}
