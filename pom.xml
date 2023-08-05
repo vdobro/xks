@@ -27,7 +27,8 @@
 		<kotlin.version>1.9.0</kotlin.version>
 		<logging.version>3.0.5</logging.version>
 		<cloudant.version>2.20.1</cloudant.version>
-		<node.version>v16.20.1</node.version>
+		<node.version>v18.16.0</node.version>
+		<npm.version>9.8.1</npm.version>
 		<yarn.version>v1.22.19</yarn.version>
 		<serialization.version>1.5.1</serialization.version>
 		<frontend-plugin.version>1.12.1</frontend-plugin.version>
@@ -149,22 +150,22 @@
 				<configuration>
 					<workingDirectory>${project.basedir}/app</workingDirectory>
 					<nodeVersion>${node.version}</nodeVersion>
-					<yarnVersion>${yarn.version}</yarnVersion>
+					<npmVersion>${npm.version}</npmVersion>
 
 					<installDirectory>./</installDirectory>
 				</configuration>
 				<executions>
 					<execution>
-						<id>install node and yarn</id>
+						<id>install node and npm</id>
 						<goals>
-							<goal>install-node-and-yarn</goal>
+							<goal>install-node-and-npm</goal>
 						</goals>
 						<phase>generate-resources</phase>
 					</execution>
 					<execution>
-						<id>yarn install</id>
+						<id>npm install</id>
 						<goals>
-							<goal>yarn</goal>
+							<goal>npm</goal>
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
@@ -172,10 +173,10 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>yarn build</id>
+						<id>npm build</id>
 						<phase>generate-resources</phase>
 						<goals>
-							<goal>yarn</goal>
+							<goal>npm</goal>
 						</goals>
 						<configuration>
 							<arguments>run package</arguments>
