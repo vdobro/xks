@@ -38,8 +38,8 @@ type BaseDataEntity = {
 
 type DataLayerEntity<T extends IdEntity> = BaseDataEntity & Omit<Partial<T>, keyof IdEntity>;
 
-const ID_PREFIX = "xks-";
-const ID_PREFIX_LENGTH = ID_PREFIX.length;
+const ID_PREFIX: string = "xks-";
+const ID_PREFIX_LENGTH: number = ID_PREFIX.length;
 
 export type CouchDatabase<TEntity extends IdEntity> = PouchDB.Database<DataLayerEntity<TEntity>>;
 
@@ -159,8 +159,7 @@ export abstract class CouchDbRepository<TEntity extends IdEntity>
 		const remoteUrl = stripTrailingSlash(environment.databaseUrl) + "/" + dbName;
 		return new PouchDB<DataLayerEntity<TEntity>>(remoteUrl, {
 			fetch(url, opts) {
-				// @ts-ignore
-				opts.credentials = 'include';
+				opts!.credentials = 'include';
 				return PouchDB.fetch(url, opts);
 			}
 		});
