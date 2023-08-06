@@ -2,6 +2,6 @@
 	window["env"] = window["env"] || {};
 
 	// Environment variables
-	window["env"]["apiUrl"] = "http://localhost:8080";
-	window["env"]["dbUrl"] = "http://localhost:32770/";
+	window["env"]["apiUrl"] = null;
+	window["env"]["dbUrl"] = null;
 })(this);

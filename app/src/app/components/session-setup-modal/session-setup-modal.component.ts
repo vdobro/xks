@@ -31,7 +31,6 @@ import {FlashcardSet, isFlashcardList} from "@app/models/flashcard-set";
 
 import {NavigationService} from "@app/services/navigation.service";
 import {TableSessionModeService} from "@app/services/table-session-mode.service";
-import {TableService} from "@app/services/table.service";
 
 import {ScoreParams} from "@app/components/session-view/session-view.component";
 import {SessionScoreSettingsComponent} from "@app/components/session-score-settings/session-score-settings.component";
@@ -89,14 +88,13 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	startSessionEnabled: boolean = false;
 	useExisting: boolean = true;
 
-	defaultSessionCheckbox = new FormControl('');
+	defaultSessionCheckbox: FormControl<boolean> = new FormControl<boolean>(false, { nonNullable: true });
 
 	constructor(
 		private readonly navigationService: NavigationService,
-		private readonly tableService: TableService,
 		private readonly sessionModeService: TableSessionModeService) {
 
-		sessionModeService.$modesChanged.subscribe(async _ => {
+		sessionModeService.$modesChanged.subscribe(async (_: Table): Promise<void> => {
 			await this.checkIfSessionModesExist();
 		})
 	}
@@ -104,7 +102,7 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 	ngOnInit(): void {
 	}
 
-	async ngOnChanges(changes: SimpleChanges): Promise<void> {
+	async ngOnChanges(_: SimpleChanges): Promise<void> {
 		await this.checkIfSessionModesExist();
 		this.validateConfiguration();
 	}
@@ -114,10 +112,10 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 			return;
 		}
 		await this.scoreSettingsComponent?.saveScoreSettings();
-		const scores = this.getScoreParams(this.deckElement);
+		const scores: ScoreParams = this.getScoreParams(this.deckElement);
 
 		if (isTable(this.deckElement)) {
-			const modeId = await this.getSessionModeId();
+			const modeId: string | null = await this.getSessionModeId();
 
 			if (modeId) {
 				await this.saveDefaultTableOptions(modeId);
@@ -175,12 +173,12 @@ export class SessionSetupModalComponent implements OnInit, OnChanges {
 		}
 	}
 
-	private async saveDefaultTableOptions(modeId: string) {
+	private async saveDefaultTableOptions(modeId: string): Promise<void> {
 		if (!isTable(this.deckElement)) {
 			return;
 		}
 		if (this.defaultSessionCheckbox.value || !this.anySessionModesAvailable) {
-			const mode = await this.sessionModeService.getById(modeId, this.deckElement);
+			const mode = this.sessionModeService.getById(modeId, this.deckElement);
 			await this.sessionModeService.setAsDefault(mode, this.deckElement);
 		}
 	}

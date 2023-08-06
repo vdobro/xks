@@ -20,7 +20,7 @@
  */
 
 import {v4 as uuid} from 'uuid';
-import {Subject, Subscribable} from "rxjs";
+import {Observable, Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
 
@@ -42,11 +42,11 @@ export class GraphService {
 
 	private static readonly elementType: DeckElementType = "graph";
 
-	private readonly _graphsChanged = new Subject<string>();
+	private readonly _graphsChanged: Subject<string> = new Subject<string>();
 	readonly graphsChanged: Subscribable<string> = this._graphsChanged.asObservable();
 
-	private readonly _graphChanged = new Subject<Graph>();
-	readonly graphChanged = this._graphChanged.asObservable();
+	private readonly _graphChanged: Subject<Graph> = new Subject<Graph>();
+	readonly graphChanged: Observable<Graph> = this._graphChanged.asObservable();
 
 	constructor(private readonly deckElementService: DeckElementService) {
 		this.graphChanged.subscribe((graph) => this._graphsChanged.next(graph.deckId));
@@ -91,7 +91,7 @@ export class GraphService {
 
 	public async deleteAllInDeck(deck: Deck) : Promise<void> {
 		const graphs = await this.getByDeck(deck);
-		for (let graph of graphs) {
+		for (const graph of graphs) {
 			await this.delete({element: graph.id, deck: deck.id});
 		}
 		this._graphsChanged.next(deck.id);

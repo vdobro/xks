@@ -66,7 +66,7 @@ export class TableService {
 		return await this.deckElementService.existAny(deck.id, TableService.elementType);
 	}
 
-	public async create(deck: Deck, name: string) : Promise<void> {
+	public async create(deck: Deck, name: string): Promise<void> {
 		const table: Table = {
 			id: uuid(),
 			deckId: deck.id,

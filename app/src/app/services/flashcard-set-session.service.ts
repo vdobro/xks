@@ -35,6 +35,7 @@ import {ExerciseTaskService} from "@app/services/exercise-task.service";
 	providedIn: 'root'
 })
 export class FlashcardSetSessionService extends StudySessionService {
+
 	constructor(taskService: ExerciseTaskService) {
 		super(taskService);
 	}

@@ -26,27 +26,32 @@ import com.dobrovolskis.xks.config.ApplicationConfiguration
 import com.dobrovolskis.xks.config.DatabaseConnector
 import com.dobrovolskis.xks.config.PROFILE_DEVELOPMENT
 import com.dobrovolskis.xks.config.PersistenceConfiguration
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.EventListener
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import java.net.URL
 
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.19
  */
-@Component
+@Service
 class DatabaseSetupService(
-		environment: Environment,
-		private val applicationConfiguration: ApplicationConfiguration,
-		private val persistenceConfiguration: PersistenceConfiguration,
-		databaseConnector: DatabaseConnector) : ApplicationListener<ApplicationReadyEvent> {
+	environment: Environment,
+	private val applicationConfiguration: ApplicationConfiguration,
+	private val persistenceConfiguration: PersistenceConfiguration,
+	databaseConnector: DatabaseConnector
+) : ApplicationListener<ApplicationReadyEvent> {
+
+	private val logger = LoggerFactory.getLogger(DatabaseSetupService::class.java)
+
 	private val client = databaseConnector.adminClient()
-	private val developmentProfile = environment.activeProfiles.contains(PROFILE_DEVELOPMENT)
+	private val developmentProfileActive = environment.activeProfiles.contains(PROFILE_DEVELOPMENT)
 
 	@EventListener
 	override fun onApplicationEvent(event: ApplicationReadyEvent) {
@@ -54,39 +59,60 @@ class DatabaseSetupService(
 	}
 
 	fun fixUsersTablePermission() {
+		logger.debug("Fixing users table permission")
 		client.database(USERS_DB, true)
 		client.database(REPLICATOR_DB, true)
 
 		pushSettings()
+		logger.debug("Done fixing users table permission")
+	}
+
+	fun request(path: String, body: String) {
+		val connection = HttpConnection(
+			HttpMethod.PUT.name(),
+			resolveAndFormatUrl(path),
+			MediaType.APPLICATION_JSON_VALUE
+		)
+		connection.setRequestBody(body)
+		client.executeRequest(connection)
+
+		val verificationConnection = HttpConnection(
+			HttpMethod.GET.name(),
+			resolveAndFormatUrl(path),
+			MediaType.APPLICATION_JSON_VALUE
+		)
+		client.executeRequest(verificationConnection)
+		val verificationResponse = verificationConnection.responseAsString()
+		require(verificationResponse.replace("\n", "") == body) {
+			"Could not set database setting"
+		}
 	}
 
 	private fun pushSettings() {
-		configure(USERS_SECURITY_EDITABLE, TRUE)
-		request(USERS_SECURITY, "{}")
+		configure(BaseSettings.UsersSecurityEditable, TRUE)
+		request(UsersDb.Security.value, "{}")
 
-		if (developmentProfile) {
-			configure(CORS_CREDENTIALS, TRUE)
+		configure(HttpdSettings.EnableCors, TRUE)
+		if (developmentProfileActive) {
+			logger.debug("Development profile is active, setting up CORS")
+			configure(CorsSettings.Credentials, TRUE)
 		}
-		configure(CORS_ORIGINS, getCorsOrigins())
-		configure(ENABLE_CORS, TRUE)
-		configure(SAME_SITE, "strict")
-		configure(ALLOW_PERSISTENT_COOKIES, TRUE)
-		configure(SESSION_TIMEOUT, 604800.toString())
+		configure(CorsSettings.Origins, getCorsOrigins())
 
-		configure(DATABASE_PER_USER, TRUE)
-		configure(AUTOMATICALLY_DELETE_USER_DATABASE, TRUE)
+		configure(HttpdAuthSettings.SameSite, "strict")
+		configure(ChttpdAuth.AllowPersistentCookies, TRUE)
+		configure(ChttpdAuth.SessionTimeout, 604800.toString())
+
+		configure(CouchPerUser.Enable, TRUE)
+		configure(CouchPerUser.AutomaticallyDeleteUserDatabase, TRUE)
+	}
+
+	private fun configure(setting: SettingsCollection, value: String) {
+		configure(setting.value, value)
 	}
 
 	private fun configure(setting: String, value: String) {
 		request(CONFIG_PREFIX + setting, "\"$value\"")
-	}
-
-	private fun request(path: String, body: String) {
-		val connection = HttpConnection(HttpMethod.PUT.name,
-				resolveAndFormatUrl(path),
-				MediaType.APPLICATION_JSON_VALUE)
-		connection.setRequestBody(body)
-		client.executeRequest(connection)
 	}
 
 	private fun resolveAndFormatUrl(path: String): URL {
@@ -97,10 +123,10 @@ class DatabaseSetupService(
 		return URL(base + separator + path)
 	}
 
-	private fun getCorsOrigins() : String {
-		return if (developmentProfile)
-			"http://localhost:4200, http://localhost:8080"
-		 else {
+	private fun getCorsOrigins(): String {
+		return if (developmentProfileActive)
+			"http://localhost:4200, http://localhost:9091"
+		else {
 			"https://${applicationConfiguration.host}"
 		}
 	}
@@ -109,28 +135,48 @@ class DatabaseSetupService(
 private const val TRUE = true.toString()
 private const val FALSE = false.toString()
 
-private const val REPLICATOR_DB = "_replicator"
-const val USERS_DB = "_users"
-private const val USERS_SECURITY = "$USERS_DB/_security"
+private interface SettingsCollection {
+	val value: String
+}
+
 private const val CONFIG_PREFIX = "_node/_local/_config"
-
 private const val BASE = "/couchdb"
-private const val USERS_SECURITY_EDITABLE = "$BASE/users_db_security_editable"
+private enum class BaseSettings(override val value: String): SettingsCollection {
+	UsersSecurityEditable("${BASE}/users_db_security_editable")
+}
 
-private const val COUCH_PERUSER = "/couch_peruser"
-private const val DATABASE_PER_USER = "$COUCH_PERUSER/enable"
-private const val AUTOMATICALLY_DELETE_USER_DATABASE = "$COUCH_PERUSER/delete_dbs"
+const val USERS_DB = "_users"
+private const val REPLICATOR_DB = "_replicator"
+private enum class UsersDb(override val value: String): SettingsCollection {
+	Security("${USERS_DB}/_security")
+}
 
-private const val HTTPD = "/httpd"
-private const val ENABLE_CORS = "$HTTPD/enable_cors"
+private const val CHTTPD = "/chttpd"
+private enum class HttpdSettings(override val value: String): SettingsCollection {
+	EnableCors("$CHTTPD/enable_cors")
+}
 
 private const val CORS = "/cors"
-private const val CORS_ORIGINS = "$CORS/origins"
-private const val CORS_CREDENTIALS = "$CORS/credentials"
+private enum class CorsSettings(override val value: String): SettingsCollection {
+	Origins("${CORS}/origins"),
+	Credentials("${CORS}/credentials")
+}
 
 private const val HTTPD_AUTH = "/couch_httpd_auth"
-private const val SAME_SITE = "$HTTPD_AUTH/same_site"
+private enum class HttpdAuthSettings(override val value: String): SettingsCollection {
+	SameSite("$HTTPD_AUTH/same_site")
+}
 
 private const val CHTTPD_AUTH = "/chttpd_auth"
-private const val ALLOW_PERSISTENT_COOKIES = "$CHTTPD_AUTH/allow_persistent_cookies"
+private enum class ChttpdAuth(override val value: String) : SettingsCollection {
+	AllowPersistentCookies("${CHTTPD_AUTH}/allow_persistent_cookies"),
+	SessionTimeout("${CHTTPD_AUTH}/timeout")
+}
+
+private const val COUCH_PERUSER = "/couch_peruser"
+private enum class CouchPerUser(override val value: String) : SettingsCollection {
+	Enable("${COUCH_PERUSER}/enable"),
+	AutomaticallyDeleteUserDatabase("${COUCH_PERUSER}/delete_dbs")
+}
+
 private const val SESSION_TIMEOUT = "$CHTTPD_AUTH/timeout"

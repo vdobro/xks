@@ -62,7 +62,7 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 	@Output()
 	closed = new EventEmitter();
 
-	inputs = new FormArray([]);
+	readonly inputs: FormArray<FormControl<string>> = new FormArray<FormControl<string>>([]);
 	handlerInitialized: boolean = false;
 
 	anyInputEmpty : boolean = false;
@@ -71,8 +71,8 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		for (let existingValue of this.existingValues) {
-			const control = new FormControl('');
+		for (const existingValue of this.existingValues) {
+			const control = new FormControl<string>('', { nonNullable: true });
 			this.inputs.push(control);
 			control.setValue(existingValue);
 		}
@@ -101,7 +101,7 @@ export class AlternativeAnswerEditorComponent implements OnInit {
 		if (this.inputElements?.last?.nativeElement?.value === '') {
 			return;
 		}
-		const control = new FormControl('');
+		const control: FormControl<string> = new FormControl<string>('', { nonNullable: true });
 		this.inputs.push(control);
 		this.checkValuesValid();
 

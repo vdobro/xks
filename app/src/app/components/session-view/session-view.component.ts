@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ParamMap} from "@angular/router";
 
 import {isTable} from "@app/models/table";
@@ -65,7 +65,7 @@ export const SESSION_MAX_SCORE_PARAM = "maximum-score";
 	templateUrl: './session-view.component.html',
 	styleUrls: ['./session-view.component.sass']
 })
-export class SessionViewComponent implements OnInit, OnDestroy {
+export class SessionViewComponent implements OnDestroy {
 
 	state: LearningSessionState | null = null;
 
@@ -123,9 +123,6 @@ export class SessionViewComponent implements OnInit, OnDestroy {
 
 			this.initSession();
 		});
-	}
-
-	async ngOnInit() {
 	}
 
 	ngOnDestroy() {

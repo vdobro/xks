@@ -23,28 +23,46 @@
  * @author Vitalijus Dobrovolskis
  * @since 2020.09.20
  */
-export const stripTrailingSlash = (str: string) => {
-	return str.endsWith('/') ?
-		str.slice(0, -1) :
-		str;
+export const stripTrailingSlash = (str: string): string => {
+	return str.endsWith('/')
+		? str.slice(0, -1)
+		: str;
 };
 
 export const levenshtein = (a: string, b: string): number => {
-	let t = [], u, i, j, m = a.length, n = b.length;
+	let t: number[] = [];
+	let u: number[] = [];
+	let m: number = a.length;
+	let n: number = b.length;
+
 	if (!m) {
 		return n;
 	}
 	if (!n) {
 		return m;
 	}
-	for (j = 0; j <= n; j++) {
+	for (let j = 0; j <= n; j++) {
 		t[j] = j;
 	}
-	for (i = 1; i <= m; i++) {
-		for (u = [i], j = 1; j <= n; j++) {
-			u[j] = a[i - 1] === b[j - 1] ? t[j - 1] : Math.min(t[j - 1], t[j], u[j - 1]) + 1;
+	for (let i = 1; i <= m; i++) {
+		let j = 1;
+		for (u = [i]; j <= n; j++) {
+			u[j] = a[i - 1] === b[j - 1]
+				? t[j - 1]
+				: Math.min(t[j - 1], t[j], u[j - 1]) + 1;
 		}
 		t = u;
 	}
 	return u ? u[n] : 0;
+};
+
+export const enum ApplicationMode {
+	PRODUCTION = "production",
+	DEFAULT = "default",
+}
+
+export interface EnvironmentSettings {
+	readonly mode: ApplicationMode;
+	readonly serverUrl: string
+	readonly databaseUrl: string;
 }

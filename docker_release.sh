@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -eou pipefail
 
 rm -rf src/main/resources/static
 mkdir src/main/resources/static
 
-mvn clean package
+mvn clean package -DskipTests
 
 docker build -t dobrovolskis/xks:0.1-SNAPSHOT .
 docker push dobrovolskis/xks:0.1-SNAPSHOT

@@ -19,10 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const environment = {
-	production: true,
+import {ApplicationMode, EnvironmentSettings} from "@environments/utils";
+
+export const environment: EnvironmentSettings = {
+	mode: ApplicationMode.PRODUCTION,
 // @ts-ignore
-	serverUrl: window["env"]["apiUrl"] || "",
+	serverUrl: window["env"]["apiUrl"] ?? "",
 // @ts-ignore
-	databaseUrl: window["env"]["dbUrl"] || "https://xks.dobrovolskis.com/api"
+	databaseUrl: window["env"]["dbUrl"] ?? "/db"
 };

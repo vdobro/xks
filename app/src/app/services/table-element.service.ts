@@ -21,7 +21,7 @@
 
 import {find, findIndex, remove} from "lodash-es";
 import {v4 as uuid} from 'uuid';
-import arrayMove from "array-move";
+import {arrayMoveMutable} from "array-move";
 import {Subject, Subscribable} from "rxjs";
 
 import {Injectable} from '@angular/core';
@@ -150,19 +150,19 @@ export class TableElementService {
 
 	async moveColumn(oldIndex: number, newIndex: number, table: Table) {
 		const rows = table.rows;
-		arrayMove.mutate(rows, oldIndex, newIndex);
+		arrayMoveMutable(rows, oldIndex, newIndex);
 		await this.tableService.update(table);
 	}
 
 	async moveRow(oldIndex: number, newIndex: number, table: Table) {
 		const rows = table.rows;
-		arrayMove.mutate(rows, oldIndex, newIndex);
+		arrayMoveMutable(rows, oldIndex, newIndex);
 		await this.tableService.update(table);
 	}
 
 	async deleteColumn(column: TableColumn, table: Table) {
 		const rows = table.rows;
-		for (let row of rows) {
+		for (const row of rows) {
 			remove(row.columnValues, x => x.columnId === column.id);
 		}
 		await this.sessionModeService.deleteAllWithColumn(table, column.id);

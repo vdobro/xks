@@ -13,12 +13,16 @@
 		"experimentalDecorators": true,
 		"moduleResolution": "node",
 		"importHelpers": true,
-		"target": "es2015",
+		"target": "ES2022",
 		"module": "es2020",
 		"allowSyntheticDefaultImports": true,
 		"paths": {
-			"@app/*": ["src/app/*"],
-			"@environments/*": ["src/environments/*"]
+			"@app/*": [
+				"src/app/*"
+			],
+			"@environments/*": [
+				"src/environments/*"
+			]
 		},
 		"typeRoots": [
 			"node_modules/@types"
@@ -27,6 +31,7 @@
 			"es2018",
 			"dom"
 		],
+		"useDefineForClassFields": false
 	},
 	"angularCompilerOptions": {
 		"strictTemplates": true,

@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {AfterContentChecked, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
 
 import {DeckRepository} from "@app/repositories/deck-repository.service";
 
@@ -35,7 +35,7 @@ import {NavigationService} from "@app/services/navigation.service";
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.sass'],
 })
-export class AppComponent implements OnInit, AfterContentChecked {
+export class AppComponent implements AfterContentChecked {
 
 	title = 'xks';
 	sidebarVisible: boolean = false;
@@ -60,9 +60,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
 		this.deckRepository.sourceChanged.subscribe(async () => {
 			await this.navigationService.goHome();
 		});
-	}
-
-	ngOnInit() {
 	}
 
 	ngAfterContentChecked() {

@@ -108,7 +108,7 @@ export class DeckService {
 		return result.database;
 	}
 
-	private async onDecksChanged() {
+	private async onDecksChanged(): Promise<void> {
 		this._decksChanged.next(await this.getAll());
 	}
 }

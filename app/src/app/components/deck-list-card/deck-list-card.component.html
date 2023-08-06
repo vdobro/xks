@@ -1,11 +1,9 @@
 <div *ngIf="deck"
-	 class="uk-card uk-card-small uk-display-block uk-card-default uk-card-body uk-animation-fade uk-animation-fast"
-	 [ngClass]="{'uk-link-toggle': !editMode}"
-	 (click)="openDeckDetails()">
+	 class="uk-card uk-card-small uk-display-block uk-card-default uk-card-body uk-animation-fade uk-animation-fast">
 	<div class="uk-grid-small uk-flex-middle"
 		 *ngIf="!editMode"
 		 uk-grid>
-		<div class="uk-width-expand">
+		<div class="uk-width-expand uk-link-toggle" (click)="openDeckDetails()">
 			<h3 class="uk-card-title uk-link-heading uk-text-break">
 				{{ deck.name }}
 			</h3>
@@ -22,12 +20,13 @@
 	<form *ngIf="editMode"
 		  class="uk-grid-small uk-margin-remove-top" uk-grid>
 		<div class="uk-width-1-1">
-			<div class="uk-inline">
+			<div class="uk-inline uk-width-1-1">
 				<a type="submit"
 				   (click)="onChangesSubmit()"
 				   class="uk-form-icon uk-form-icon-flip"
 				   uk-icon="check"></a>
 				<input class="uk-input"
+                       #nameInputControl
 					   (keydown.enter)="onChangesSubmit()"
 					   type="text"
 					   [ngClass]="{'uk-form-danger': nameInput.value.trim() === ''}"
@@ -38,7 +37,7 @@
 		</div>
 		<div class="uk-width-1-1">
 			<textarea style="resize: vertical;"
-					  class="uk-textarea uk-margin-top" placeholder="Description"
+					  class="uk-textarea" placeholder="Description"
 					  [formControl]="descriptionInput"
 					  [value]="deck.description">
 			</textarea>

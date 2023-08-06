@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 import {TableColumn} from "@app/models/table-column";
 import {Table} from "@app/models/table";
@@ -33,7 +33,7 @@ import {Table} from "@app/models/table";
 	templateUrl: './table-column.component.html',
 	styleUrls: ['./table-column.component.sass']
 })
-export class TableColumnComponent implements OnInit {
+export class TableColumnComponent {
 
 	@Input()
 	table: Table | null = null;
@@ -48,12 +48,6 @@ export class TableColumnComponent implements OnInit {
 	editingStarted = new EventEmitter<void>();
 
 	editMode: boolean = false;
-
-	constructor() {
-	}
-
-	ngOnInit(): void {
-	}
 
 	@HostListener("click")
 	onClick() {

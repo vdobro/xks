@@ -40,21 +40,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 class ApiRestExceptionHandler : ResponseEntityExceptionHandler() {
 
 	@ExceptionHandler(IllegalArgumentException::class)
-	protected fun handleException(e: IllegalArgumentException, request: WebRequest): ResponseEntity<Any> {
+	fun handleException(e: IllegalArgumentException, request: WebRequest): ResponseEntity<Any>? {
 		val msg = ValidationResponse(e.message ?: "Unknown error")
 		return handleExceptionInternal(e as Exception, msg, headers(), BAD_REQUEST, request)
 	}
 
 	@ExceptionHandler(CredentialsError::class)
-	protected fun handleException(e: CredentialsError, request: WebRequest): ResponseEntity<Any> {
+	fun handleException(e: CredentialsError, request: WebRequest): ResponseEntity<Any>? {
 		val msg = ValidationResponse(e.message ?: "Unknown error")
 		return handleExceptionInternal(e as Exception, msg, headers(), UNAUTHORIZED, request)
 	}
 }
 
 private fun headers(): HttpHeaders {
-	val headers = HttpHeaders()
-	headers.contentType = MediaType.APPLICATION_JSON
+	val headers = HttpHeaders().apply {
+		contentType = MediaType.APPLICATION_JSON
+	}
+	//headers.contentType = MediaType.APPLICATION_JSON
 	return headers
 }
 

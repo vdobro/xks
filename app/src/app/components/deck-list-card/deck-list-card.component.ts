@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {Deck} from "@app/models/deck";
@@ -35,28 +35,35 @@ import {NavigationService} from "@app/services/navigation.service";
 export class DeckListCardComponent implements OnInit {
 
 	@Input()
-	deck: Deck | null = null;
+	public deck: Deck | null = null;
 
-	editMode: boolean = false;
+	public editMode: boolean = false;
 
-	nameInput = new FormControl('');
-	descriptionInput = new FormControl('');
+	@ViewChild('nameInputControl', {static: false})
+	nameInputControl: ElementRef | undefined;
+
+	public readonly nameInput: FormControl<string> = new FormControl<string>('', { nonNullable: true });
+	public readonly descriptionInput: FormControl<string> = new FormControl<string>('', { nonNullable: true });
 
 	constructor(private readonly deckService: DeckService,
 				private readonly navigationService: NavigationService) {
 	}
 
-	ngOnInit(): void {
-		this.nameInput.setValue(this.deck?.name);
-		this.descriptionInput.setValue(this.deck?.description);
+	public ngOnInit(): void {
+		this.nameInput.setValue(this.deck?.name ?? '');
+		this.descriptionInput.setValue(this.deck?.description ?? '');
 	}
 
-	onEditClicked() {
+	public onEditClicked(): void {
 		this.editMode = true;
+
+		setTimeout((): void => {
+			this.nameInputControl?.nativeElement.focus();
+		});
 	}
 
-	async onChangesSubmit() {
-		const title = this.nameInput.value.trim();
+	async onChangesSubmit(): Promise<void> {
+		const title: string = this.nameInput.value.trim();
 		if (!title || !this.deck) {
 			return;
 		}
@@ -67,7 +74,7 @@ export class DeckListCardComponent implements OnInit {
 		await this.deckService.update(this.deck);
 	}
 
-	async openDeckDetails() {
+	async openDeckDetails(): Promise<void> {
 		if (!this.editMode) {
 			await this.navigationService.openDeck(this.deck!.id);
 		}

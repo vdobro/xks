@@ -50,7 +50,7 @@ export class DeckListPageComponent implements OnInit {
 				private readonly topBarService: TopBarService) {
 	}
 
-	async ngOnInit() {
+	public async ngOnInit(): Promise<void> {
 		this.topBarService.clearItems();
 		this.topBarService.disableBackButton();
 		this.topBarService.addItem(new NavBarItem(DeckListNavbarComponent));
@@ -62,7 +62,7 @@ export class DeckListPageComponent implements OnInit {
 		});
 	}
 
-	async onDecksChanged(decks: Deck[]) {
+	private async onDecksChanged(decks: Deck[]) {
 		this.decks = decks;
 		this.deckListView?.onNewDeckCreated();
 	}

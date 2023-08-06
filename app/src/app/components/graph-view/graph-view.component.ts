@@ -111,7 +111,7 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		});
 	}
 
-	async ngOnInit() {
+	async ngOnInit(): Promise<void> {
 		this.topBarService.clearItems();
 		this.topBarService.setBackButtonLabel('Back to deck');
 
@@ -196,22 +196,22 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 
 			const oldGraph = this.graphElements!;
 			const diff = this.graphElementService.getDiff(oldGraph, updatedGraph);
-			for (let addedNode of diff.added.nodes) {
+			for (const addedNode of diff.added.nodes) {
 				this.addNode(addedNode, true);
 			}
-			for (let editedNode of diff.edited.nodes) {
+			for (const editedNode of diff.edited.nodes) {
 				this.updateNode(editedNode);
 			}
-			for (let removedNode of diff.removed.nodes) {
+			for (const removedNode of diff.removed.nodes) {
 				this.removeNode(removedNode);
 			}
-			for (let addedEdge of diff.added.edges) {
+			for (const addedEdge of diff.added.edges) {
 				this.addEdge(addedEdge, true);
 			}
-			for (let editedEdge of diff.edited.edges) {
+			for (const editedEdge of diff.edited.edges) {
 				this.updateEdge(editedEdge);
 			}
-			for (let removedEdge of diff.removed.edges) {
+			for (const removedEdge of diff.removed.edges) {
 				this.removeEdge(removedEdge);
 			}
 			this.graphElements = GraphElementService.cloneGraphElements(updatedGraph);
@@ -260,10 +260,10 @@ export class GraphViewComponent implements OnInit, AfterContentChecked {
 		const nodes = this.graphElements.nodes;
 		const edges = this.graphElements.edges;
 
-		for (let node of nodes) {
+		for (const node of nodes) {
 			this.addNode(node, false);
 		}
-		for (let edge of edges) {
+		for (const edge of edges) {
 			this.addEdge(edge, false);
 		}
 		this.network?.fit();

@@ -44,28 +44,28 @@ export class TopBarService {
 	constructor() {
 	}
 
-	addItem(item: NavBarItem) {
+	public addItem(item: NavBarItem): void {
 		this.currentItems.push(item);
 		this.update();
 	}
 
-	clearItems() {
+	public clearItems(): void {
 		this._backNavigationEnabled$.next(true);
 		this._backButtonLabel$.next('');
 		this.currentItems.splice(0, this.currentItems.length);
 		this.update();
 	}
 
-	disableBackButton() {
+	public disableBackButton(): void {
 		this._backButtonLabel$.next('');
 		this._backNavigationEnabled$.next(false);
 	}
 
-	setBackButtonLabel(value: string) {
+	public setBackButtonLabel(value: string): void {
 		this._backButtonLabel$.next(value);
 	}
 
-	private update() {
+	private update(): void {
 		this._items$.next(this.currentItems);
 	}
 }

@@ -1,0 +1,34 @@
+services:
+  db:
+    image: couchdb:3.3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.xks-couchdb.entrypoints=web"
+      - "traefik.http.routers.xks-couchdb.middlewares=xks-couchdb-strip-prefix"
+      - "traefik.http.services.xks-couchdb.loadbalancer.server.port=5984"
+      - "traefik.http.middlewares.xks-couchdb-strip-prefix.replacepathregex.regex=^/db/(.*)"
+      - "traefik.http.middlewares.xks-couchdb-strip-prefix.replacepathregex.replacement=/$$1"
+      - "traefik.http.middlewares.xks-couchdb-headers.headers.customresponseheaders.X-Script-Name=/db"
+    networks:
+      - service
+    volumes:
+      - db_data:/opt/couchdb/data
+  web:
+    image: dobrovolskis/xks:0.1-SNAPSHOT
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.xks-web.entrypoints=web"
+      - "traefik.http.services.xks-web.loadbalancer.server.port=8080"
+    networks:
+      - service
+    volumes:
+      - web_tmp:/tmp
+
+volumes:
+  db_data:
+  web_tmp:
+
+networks:
+  service:

@@ -19,7 +19,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 
 import {GraphNode} from "@app/models/graph-node";
 import {GraphEdge} from "@app/models/graph-edge";
@@ -37,7 +37,7 @@ import {GraphService} from "@app/services/graph.service";
 	templateUrl: './graph-toolbar.component.html',
 	styleUrls: ['./graph-toolbar.component.sass']
 })
-export class GraphToolbarComponent implements OnInit {
+export class GraphToolbarComponent {
 
 	@ViewChild('graphEditorTutorialModal', {static: true})
 	tutorialModal: ElementRef | undefined;
@@ -63,9 +63,6 @@ export class GraphToolbarComponent implements OnInit {
 				this.closeEditor();
 			}
 		})
-	}
-
-	ngOnInit(): void {
 	}
 
 	async deleteSelectedElement() {

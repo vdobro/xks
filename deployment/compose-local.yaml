@@ -1,0 +1,19 @@
+services:
+  db:
+    ports:
+      - "5984:5984"
+    environment:
+      COUCHDB_USER: xks
+      COUCHDB_PASSWORD: Password1234
+  web:
+    ports:
+      - "9091:8080"
+    profiles:
+      - "full"
+    environment:
+      INTERNAL_COUCHDB_URL: http://db:5984
+      EXTERNAL_COUCHDB_URL: http://localhost:5984
+      COUCHDB_USERNAME: xks
+      COUCHDB_PASSWORD: Password1234
+      APPLICATION_HOST: http://localhost:9091
+      SPRING_PROFILES_ACTIVE: development

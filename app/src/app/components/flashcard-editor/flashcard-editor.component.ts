@@ -48,8 +48,8 @@ export class FlashcardEditorComponent implements OnInit {
 	question: string = '';
 	answer: string = '';
 
-	questionFormControl = new FormControl('');
-	answerFormControl = new FormControl('');
+	questionFormControl: FormControl<string> = new FormControl('', { nonNullable: true });
+	answerFormControl: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	private readonly _valuesChanged = new Subject<FlashcardFields>();
 	private readonly _deleted = new Subject<void>();
@@ -63,11 +63,11 @@ export class FlashcardEditorComponent implements OnInit {
 	constructor() {
 	}
 
-	async ngOnInit() {
-		await this.resetFields();
+	public ngOnInit(): void {
+		this.resetFields();
 	}
 
-	async resetFields() {
+	resetFields(): void {
 		if (this.flashcard) {
 			this.question = this.flashcard.question;
 			const answerValue = this.flashcard.value;

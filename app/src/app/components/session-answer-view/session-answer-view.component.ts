@@ -47,7 +47,7 @@ export class SessionAnswerViewComponent implements OnInit {
 	@Input()
 	pending: boolean = false;
 
-	control = new FormControl('');
+	control: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	constructor() {
 	}

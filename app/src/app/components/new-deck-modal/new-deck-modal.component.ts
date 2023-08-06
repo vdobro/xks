@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {DeckService} from "@app/services/deck.service";
@@ -35,7 +35,7 @@ import {DeckService} from "@app/services/deck.service";
 	templateUrl: './new-deck-modal.component.html',
 	styleUrls: ['./new-deck-modal.component.sass']
 })
-export class NewDeckModalComponent implements OnInit {
+export class NewDeckModalComponent implements AfterViewInit {
 
 	@ViewChild("newDeckModal")
 	modal: ElementRef | undefined;
@@ -45,16 +45,13 @@ export class NewDeckModalComponent implements OnInit {
 
 	submitDisabled : boolean = false;
 
-	nameInput = new FormControl('');
-	descriptionInput = new FormControl('');
+	nameInput: FormControl<string> = new FormControl('', { nonNullable: true });
+	descriptionInput: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	constructor(private readonly deckService: DeckService) {
 	}
 
-	ngOnInit(): void {
-	}
-
-	async onSaveClick() {
+	async onSaveClick(): Promise<void> {
 		this.submitDisabled = true;
 		const name = this.nameInput.value.trim();
 		if (name === '') {
@@ -67,20 +64,24 @@ export class NewDeckModalComponent implements OnInit {
 		UIkit.modal(this.modal!.nativeElement).hide();
 	}
 
-	private clearForm() {
+	private clearForm(): void {
 		this.nameInput.reset();
 		this.descriptionInput.reset();
 	}
 
-	openModal() {
+	public openModal(): void {
 		if (!this.modal) {
 			return;
 		}
 		UIkit.modal(this.modal.nativeElement).show();
 		this.submitDisabled = false;
-		setTimeout(() => {
+		this.nameInput.setValue('');
+	}
+
+	public ngAfterViewInit(): void {
+		// @ts-ignore
+		UIkit.util.on(this.modal.nativeElement, 'shown', _ => {
 			this.nameInputElement?.nativeElement.focus()
 		});
-		this.nameInput.setValue('');
 	}
 }

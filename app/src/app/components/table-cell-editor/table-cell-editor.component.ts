@@ -52,13 +52,13 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 	@ViewChild(AlternativeAnswerEditorComponent, {static: true})
 	alternativeEditor: AlternativeAnswerEditorComponent | undefined;
 
-	cellInput = new FormControl('');
+	cellInput: FormControl<string> = new FormControl<string>('', {nonNullable: true});
 
 	@Input()
 	existingValue: string = '';
 
 	@Input()
-	alternativeValues : string[] = [];
+	alternativeValues: string[] = [];
 
 	@Output()
 	valueSubmitted = new EventEmitter<string>();
@@ -80,11 +80,11 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 		this.cellInputElement?.nativeElement.focus();
 	}
 
-	ngOnChanges(changes: SimpleChanges) {
+	ngOnChanges(_: SimpleChanges): void {
 		this.preloadValue();
 	}
 
-	onSubmit() {
+	onSubmit(): void {
 		const value = this.cellInput.value.trim();
 		if (value === '') {
 			return;
@@ -92,17 +92,17 @@ export class TableCellEditorComponent implements OnInit, AfterContentInit, OnCha
 		this.valueSubmitted.emit(value);
 	}
 
-	openAlternativesDialog() {
+	openAlternativesDialog(): void {
 		this.alternativesInEdit.emit(true);
 		this.alternativeEditor?.openModal();
 	}
 
-	onAlternativesSubmitted(values: string[]) {
+	onAlternativesSubmitted(values: string[]): void {
 		this.alternativesInEdit.emit(false);
 		this.alternativesSubmitted.emit(values);
 	}
 
-	private preloadValue() : void {
+	private preloadValue(): void {
 		this.cellInput.setValue(this.existingValue);
 	}
 

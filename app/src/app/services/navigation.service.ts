@@ -34,7 +34,7 @@ import {TableService} from "@app/services/table.service";
 import {SidebarService} from "@app/services/sidebar.service";
 import {GraphService} from "@app/services/graph.service";
 
-import {ScoreParams,} from "@app/components/session-view/session-view.component";
+import {ScoreParams} from "@app/components/session-view/session-view.component";
 import {FlashcardSetService} from "@app/services/flashcard-set.service";
 
 /**
@@ -59,7 +59,7 @@ export class NavigationService {
 		private readonly router: Router) {
 	}
 
-	async goBack() {
+	async goBack(): Promise<void> {
 		if (!this.deck || !this.deckElement) {
 			await this.goHome();
 			return;
@@ -71,7 +71,7 @@ export class NavigationService {
 		}
 	}
 
-	async navigateToCurrentDeckElement() {
+	async navigateToCurrentDeckElement(): Promise<void> {
 		if (!this.deck) {
 			return;
 		}
@@ -84,19 +84,19 @@ export class NavigationService {
 			await this.openFlashcardSet({element: this.deckElement.id, deck: deckId});
 		}
 	}
-	async openTable(id: ElementId) {
+	async openTable(id: ElementId): Promise<void> {
 		await this.selectTable(id);
 		this.studySessionActive = false;
 		await this.router.navigate(['/decks', id.deck, 'tables', id.element, 'edit']);
 	}
 
-	async openGraph(id: ElementId) {
+	async openGraph(id: ElementId): Promise<void> {
 		await this.selectGraph(id);
 		this.studySessionActive = false;
 		await this.router.navigate(['/decks', id.deck, 'graphs', id.element, 'edit']);
 	}
 
-	async openFlashcardSet(id: ElementId) {
+	async openFlashcardSet(id: ElementId): Promise<void> {
 		await this.selectFlashcardList(id);
 		this.studySessionActive = false;
 		await this.router.navigate(['/decks', id.deck, 'cards', id.element, 'edit']);
@@ -104,7 +104,8 @@ export class NavigationService {
 
 	async studyTable(table: Table,
 					 sessionModeId: string,
-					 difficultySettings: ScoreParams) {
+					 difficultySettings: ScoreParams): Promise<void> {
+
 		const id = getId(table);
 		await this.selectTable(id);
 		this.studySessionActive = true;
@@ -114,7 +115,7 @@ export class NavigationService {
 		});
 	}
 
-	async studyGraph(graph: Graph, difficultySettings: ScoreParams) {
+	async studyGraph(graph: Graph, difficultySettings: ScoreParams): Promise<void> {
 		const id = getId(graph);
 		await this.selectGraph(id);
 		this.studySessionActive = true;
@@ -124,7 +125,7 @@ export class NavigationService {
 		});
 	}
 
-	async studyFlashcards(flashcards: FlashcardSet, difficultySettings: ScoreParams) {
+	async studyFlashcards(flashcards: FlashcardSet, difficultySettings: ScoreParams): Promise<void> {
 		const id = getId(flashcards);
 		await this.selectFlashcardList(id);
 		this.studySessionActive = true;
@@ -134,7 +135,7 @@ export class NavigationService {
 		});
 	}
 
-	async navigateToCurrentDeck() {
+	async navigateToCurrentDeck(): Promise<void> {
 		if (this.deck) {
 			this.deckElement = null;
 			this.sidebarService.deselectDeckElement();
@@ -142,21 +143,21 @@ export class NavigationService {
 		}
 	}
 
-	async openDeck(id: string) {
+	async openDeck(id: string): Promise<void> {
 		this.studySessionActive = false;
 		this.deck = await this.deckService.getById(id);
 		this.sidebarService.populate(this.deck);
 		await this.router.navigate(['/decks', id]);
 	}
 
-	async goHome() {
+	async goHome(): Promise<void> {
 		this.studySessionActive = false;
 		this.deck = null;
 		this.deckElement = null;
 		await this.router.navigate(['/']);
 	}
 
-	async goToDeckList() {
+	async goToDeckList(): Promise<void> {
 		this.studySessionActive = false;
 		this.deck = null;
 		this.deckElement = null;
@@ -164,19 +165,19 @@ export class NavigationService {
 		await this.router.navigate(['/decks']);
 	}
 
-	private async selectTable(id: ElementId) {
+	private async selectTable(id: ElementId): Promise<void> {
 		await this.selectDeckElement(id, "table");
 	}
 
-	private async selectGraph(id: ElementId) {
+	private async selectGraph(id: ElementId): Promise<void> {
 		await this.selectDeckElement(id, "graph");
 	}
 
-	private async selectFlashcardList(id: ElementId) {
+	private async selectFlashcardList(id: ElementId): Promise<void> {
 		await this.selectDeckElement(id, "flashcards");
 	}
 
-	private async selectDeckElement(id: ElementId, type: DeckElementType) {
+	private async selectDeckElement(id: ElementId, type: DeckElementType): Promise<void> {
 		switch (type) {
 			case "graph":
 				this.deckElement = await this.graphService.getById(id);
