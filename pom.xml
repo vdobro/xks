@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.0</version>
+		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.dobrovolskis</groupId>
@@ -25,12 +25,12 @@
 		<java.version>17</java.version>
 		<jvm.version>17</jvm.version>
 		<kotlin.version>1.9.0</kotlin.version>
-		<logging.version>3.0.5</logging.version>
 		<cloudant.version>2.20.1</cloudant.version>
 		<node.version>v18.17.0</node.version>
 		<npm.version>9.8.1</npm.version>
 		<serialization.version>1.5.1</serialization.version>
-		<frontend-plugin.version>1.12.1</frontend-plugin.version>
+		<frontend-plugin.version>1.13.4</frontend-plugin.version>
+		<commons.version>2.13.0</commons.version>
 		<snakeyaml.version>2.0</snakeyaml.version>
 	</properties>
 	<dependencies>
@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version>
+			<version>${commons.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

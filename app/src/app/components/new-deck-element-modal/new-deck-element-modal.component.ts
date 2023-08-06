@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {Deck} from "@app/models/deck";
@@ -39,20 +39,20 @@ import {FlashcardSetService} from "@app/services/flashcard-set.service";
 	templateUrl: './new-deck-element-modal.component.html',
 	styleUrls: ['./new-deck-element-modal.component.sass']
 })
-export class NewDeckElementModalComponent {
+export class NewDeckElementModalComponent implements AfterViewInit {
 
 	@ViewChild("modal")
-	modal: ElementRef | undefined;
+	public modal: ElementRef | undefined;
 
-	@ViewChild("nameInputElement")
-	nameInputElement: ElementRef | undefined;
+	@ViewChild("nameInputElement", {static: true})
+	public nameInputElement: ElementRef | undefined;
 
 	@Input()
-	deck: Deck | null = null;
+	public deck: Deck | null = null;
 
-	type: DeckElementType = DeckElementType.TABLE;
+	public type: DeckElementType = DeckElementType.TABLE;
 
-	nameInput: FormControl<string> = new FormControl('', { nonNullable: true });
+	public readonly nameInput: FormControl<string> = new FormControl('', { nonNullable: true });
 
 	constructor(
 		private readonly graphService: GraphService,
@@ -61,8 +61,17 @@ export class NewDeckElementModalComponent {
 	) {
 	}
 
+	public ngAfterViewInit(): void {
+		if (this.modal) {
+			// @ts-ignore
+			UIkit.util.on(this.modal.nativeElement, 'shown', _ => {
+				this.nameInputElement?.nativeElement.focus();
+			});
+		}
+	}
+
 	async onSaveClick(): Promise<void> {
-		const name = this.nameInput?.value?.trim();
+		const name: string = this.nameInput?.value?.trim();
 		if (name === null || name === '') {
 			return;
 		}
@@ -77,14 +86,10 @@ export class NewDeckElementModalComponent {
 			return;
 		}
 		UIkit.modal(this.modal.nativeElement).show();
-
-		setTimeout(() => {
-			this.nameInputElement?.nativeElement.focus()
-		});
 		this.nameInput.setValue('');
 	}
 
-	private async createElement(name: string) {
+	private async createElement(name: string): Promise<void> {
 		if (!this.deck) {
 			return;
 		}
@@ -98,25 +103,23 @@ export class NewDeckElementModalComponent {
 			case DeckElementType.FLASHCARDS:
 				await this.flashcardSetService.create(this.deck, name);
 				break;
-			default:
-				break;
 		}
 	}
 
-	selectTypeGraph() {
+	public selectTypeGraph(): void {
 		this.type = DeckElementType.GRAPH;
 	}
 
-	selectTypeTable() {
+	public selectTypeTable(): void {
 		this.type = DeckElementType.TABLE;
 	}
 
-	selectTypeFlashcards() {
+	public selectTypeFlashcards(): void {
 		this.type = DeckElementType.FLASHCARDS;
 	}
 }
 
-export enum DeckElementType {
+const enum DeckElementType {
 	GRAPH = 'graph',
 	TABLE = 'table',
 	FLASHCARDS = 'flashcard list',

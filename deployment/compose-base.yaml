@@ -9,6 +9,7 @@ services:
       - "traefik.http.middlewares.xks-couchdb-strip-prefix.replacepathregex.regex=^/db/(.*)"
       - "traefik.http.middlewares.xks-couchdb-strip-prefix.replacepathregex.replacement=/$$1"
       - "traefik.http.middlewares.xks-couchdb-headers.headers.customresponseheaders.X-Script-Name=/db"
+    restart: unless-stopped
     networks:
       - service
     volumes:
@@ -21,6 +22,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.xks-web.entrypoints=web"
       - "traefik.http.services.xks-web.loadbalancer.server.port=8080"
+    restart: unless-stopped
     networks:
       - service
     volumes:

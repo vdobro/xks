@@ -1,1 +1,8 @@
 /deployment
+/.run
+/node
+/app
+/.idea
+/.git
+/.vscode
+/src
