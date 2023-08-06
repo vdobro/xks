@@ -5,6 +5,7 @@ services:
       COUCHDB_PASSWORD: ${COUCHDB_PASSWORD}
     labels:
       - "traefik.http.routers.xks-couchdb.rule=Host(`${APPLICATION_HOST}`) && PathPrefix(`/db`)"
+      - "traefik.docker.network=xks-bridge"
     networks:
       xks-bridge:
   web:
@@ -16,6 +17,7 @@ services:
       APPLICATION_HOST: ${APPLICATION_HOST}
     labels:
       - "traefik.http.routers.xks-web.rule=Host(`${APPLICATION_HOST}`) && PathPrefix(`/`)"
+      - "traefik.docker.network=xks-bridge"
     networks:
       xks-bridge:
 
