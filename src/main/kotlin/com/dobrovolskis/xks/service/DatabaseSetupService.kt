@@ -125,7 +125,7 @@ class DatabaseSetupService(
 
 	private fun getCorsOrigins(): String {
 		return if (developmentProfileActive)
-			"http://localhost:4200, http://localhost:8080"
+			"http://localhost:4200, http://localhost:9091"
 		else {
 			"https://${applicationConfiguration.host}"
 		}

@@ -15,5 +15,5 @@ services:
       EXTERNAL_COUCHDB_URL: http://localhost:5984
       COUCHDB_USERNAME: xks
       COUCHDB_PASSWORD: Password1234
-      APPLICATION_HOST: http://localhost:8080
+      APPLICATION_HOST: http://localhost:9091
       SPRING_PROFILES_ACTIVE: development
