@@ -21,7 +21,7 @@
 
 import UIkit from 'uikit';
 
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
 import {DeckService} from "@app/services/deck.service";
@@ -35,7 +35,7 @@ import {DeckService} from "@app/services/deck.service";
 	templateUrl: './new-deck-modal.component.html',
 	styleUrls: ['./new-deck-modal.component.sass']
 })
-export class NewDeckModalComponent {
+export class NewDeckModalComponent implements AfterViewInit {
 
 	@ViewChild("newDeckModal")
 	modal: ElementRef | undefined;
@@ -75,9 +75,13 @@ export class NewDeckModalComponent {
 		}
 		UIkit.modal(this.modal.nativeElement).show();
 		this.submitDisabled = false;
-		setTimeout(() => {
+		this.nameInput.setValue('');
+	}
+
+	public ngAfterViewInit(): void {
+		// @ts-ignore
+		UIkit.util.on(this.modal.nativeElement, 'shown', _ => {
 			this.nameInputElement?.nativeElement.focus()
 		});
-		this.nameInput.setValue('');
 	}
 }

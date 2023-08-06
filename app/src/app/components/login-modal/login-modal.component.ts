@@ -57,29 +57,31 @@ export class LoginModalComponent implements AfterViewInit {
 		private readonly userSessionService: UserSessionService) {
 	}
 
-	ngAfterViewInit() {
+	public ngAfterViewInit(): void {
 		if (this.modal) {
 			// @ts-ignore
 			UIkit.util.on(this.modal.nativeElement, 'hidden', _ => {
 				this.loginErrorMessage = '';
 			});
+
+			// @ts-ignore
+			UIkit.util.on(this.modal.nativeElement, 'shown', _ => {
+				this.usernameInputElement?.nativeElement.focus();
+			});
 		}
 	}
 
-	openDialog() {
+	public openDialog(): void {
 		if (!this.modal) {
 			return;
 		}
 		UIkit.modal(this.modal.nativeElement).show();
-		setTimeout(() => {
-			this.usernameInputElement?.nativeElement.focus();
-		});
 		this.usernameInput.setValue('');
 		this.passwordInput.setValue('');
 		this.passwordConfirmationInput.setValue('');
 	}
 
-	async submitCredentials() {
+	public async submitCredentials(): Promise<void> {
 		this.requestInProgress = true;
 		const username = this.usernameInput.value.trim().normalize();
 		const password = this.passwordInput.value;

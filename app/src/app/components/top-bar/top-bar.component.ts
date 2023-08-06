@@ -49,8 +49,8 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
 	active: boolean = true;
 
-	backNavigationEnabled = true;
-	backButtonLabel = '';
+	backNavigationEnabled: boolean = true;
+	backButtonLabel: string = '';
 
 	loginEnabled: boolean = true;
 
@@ -99,11 +99,11 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	ngOnDestroy() {
+	ngOnDestroy(): void {
 		this.componentRefs.forEach(ref => ref.destroy());
 	}
 
-	openLoginDialog() {
+	openLoginDialog(): void {
 		if (!this.loginModal) {
 			return;
 		}
@@ -131,7 +131,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
 		await this.userSessionService.logout();
 	}
 
-	private updateItemsList(items: NavBarItem[]) {
+	private updateItemsList(items: NavBarItem[]): void {
 		const viewContainerRef = this.navBarItems!.viewContainerRef;
 		viewContainerRef.clear();
 

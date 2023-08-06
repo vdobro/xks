@@ -22,6 +22,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {RouterModule} from "@angular/router";
+import {NgOptimizedImage} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DragDropModule} from "@angular/cdk/drag-drop";
@@ -65,10 +66,7 @@ import {SessionModeChooserComponent} from '@app/components/session-mode-chooser/
 import {SessionScoreSettingsComponent} from '@app/components/session-score-settings/session-score-settings.component';
 import {AlternativeAnswerEditorComponent} from '@app/components/alternative-answer-editor/alternative-answer-editor.component';
 import {SidebarFlashcardSetListElementComponent} from "@app/components/sidebar-deck-element/sidebar-flashcard-set-list-element.component";
-import {
-	FLASHCARD_SET_ID_PARAM,
-	FlashcardSetViewComponent
-} from '@app/components/flashcard-set-view/flashcard-set-view.component';
+import {FLASHCARD_SET_ID_PARAM, FlashcardSetViewComponent} from '@app/components/flashcard-set-view/flashcard-set-view.component';
 import {FlashcardEditorComponent} from '@app/components/flashcard-editor/flashcard-editor.component';
 import {ElementTitleComponent} from '@app/components/element-title/element-title.component';
 
@@ -141,10 +139,11 @@ const FLASHCARD_ROUTE = `${DECK_ROUTE}/cards/:${FLASHCARD_SET_ID_PARAM}`;
 			{path: `${FLASHCARD_ROUTE}/edit`, component: FlashcardSetViewComponent},
 			{path: `${FLASHCARD_ROUTE}/learn`, component: SessionViewComponent},
 			{path: '**', component: NotFoundViewComponent},
-		], { useHash: true }),
+		], {useHash: true}),
 		FormsModule,
 		ReactiveFormsModule,
 		DragDropModule,
+		NgOptimizedImage,
 	],
 	providers: [],
 	bootstrap: [AppComponent]
