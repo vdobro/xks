@@ -188,7 +188,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>run test-headless</arguments>
+							<arguments>run test-ci</arguments>
 						</configuration>
 					</execution>
 				</executions>

@@ -7,8 +7,9 @@
 		"start": "ng serve",
 		"build": "ng build",
 		"package": "ng build --configuration production",
-		"test": "ng test",
-		"test-headless": "ng test --watch=false --browsers=ChromeHeadless",
+		"test": "ng test --watch=false --browsers=ChromeHeadless",
+		"test-watch": "ng test --watch=true --browsers=ChromeHeadless",
+		"test-ci": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
 		"stats-dev": "ng build --stats-json",
 		"stats-prod": "ng build --configuration production --stats-json",
 		"bundle-report": "webpack-bundle-analyzer ../src/main/resources/static/stats.json"
