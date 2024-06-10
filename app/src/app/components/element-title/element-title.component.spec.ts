@@ -33,12 +33,11 @@ describe('ElementTitleComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [ElementTitleComponent]
-		})
-			.compileComponents();
-	});
+			declarations: [
+				ElementTitleComponent,
+			],
+		}).compileComponents();
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(ElementTitleComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

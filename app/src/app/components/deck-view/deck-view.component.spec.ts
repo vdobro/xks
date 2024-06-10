@@ -20,7 +20,6 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {RouterTestingModule} from "@angular/router/testing";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
@@ -38,13 +37,16 @@ describe('DeckViewComponent', () => {
 		await TestBed.configureTestingModule({
 			declarations: [DeckViewComponent],
 			imports: [
-				RouterTestingModule,
+				RouterTestingModule.withRoutes([
+					{
+						path: 'decks',
+						component: DeckViewComponent
+					},
+				]),
 				HttpClientTestingModule,
-			]
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(DeckViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

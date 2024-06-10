@@ -24,6 +24,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 
 import {FlashcardSetViewComponent} from '@app/components/flashcard-set-view/flashcard-set-view.component';
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.11.22
@@ -36,13 +37,18 @@ describe('FlashcardSetViewComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
-				RouterTestingModule
+				RouterTestingModule.withRoutes([
+					{
+						path: 'decks',
+						component: FlashcardSetViewComponent
+					},
+				]),
 			],
-			declarations: [FlashcardSetViewComponent]
+			declarations: [
+				FlashcardSetViewComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(FlashcardSetViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

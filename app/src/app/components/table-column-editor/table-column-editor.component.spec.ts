@@ -21,10 +21,14 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {UserSessionService} from "@app/services/user-session.service";
 
 import {TableColumnEditorComponent} from '@app/components/table-column-editor/table-column-editor.component';
+import {
+	ConfirmDeleteTableColumnModalComponent
+} from "@app/components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,13 +40,18 @@ describe('TableColumnEditorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [TableColumnEditorComponent],
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				TableColumnEditorComponent,
+				ConfirmDeleteTableColumnModalComponent,
+			],
 			providers: [UserSessionService]
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableColumnEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

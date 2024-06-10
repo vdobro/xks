@@ -6,7 +6,13 @@ mkdir src/main/resources/static
 
 mvn clean package -DskipTests
 
-docker build -t dobrovolskis/xks:0.1-SNAPSHOT .
-docker push dobrovolskis/xks:0.1-SNAPSHOT
-docker tag dobrovolskis/xks:0.1-SNAPSHOT dobrovolskis/xks:latest
-docker push dobrovolskis/xks:latest
+source deployment/versions.env
+
+IMAGE_TAG="dobrovolskis/xks:$XKS_VERSION"
+LATEST_TAG="dobrovolskis/xks:latest"
+
+docker build -t "$IMAGE_TAG" .
+docker tag "$IMAGE_TAG" "$LATEST_TAG"
+
+#docker push "$IMAGE_TAG"
+#docker push "$LATEST_TAG"

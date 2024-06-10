@@ -21,6 +21,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {SessionAnswerViewComponent} from '@app/components/session-answer-view/session-answer-view.component';
 
@@ -34,12 +35,16 @@ describe('SessionAnswerViewComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [SessionAnswerViewComponent]
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				SessionAnswerViewComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionAnswerViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

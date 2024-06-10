@@ -23,6 +23,7 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {TableService} from '@app/services/table.service';
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.06.11
@@ -30,10 +31,13 @@ import {TableService} from '@app/services/table.service';
 describe('TableService', () => {
 	let service: TableService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(TableService);
 	});
 

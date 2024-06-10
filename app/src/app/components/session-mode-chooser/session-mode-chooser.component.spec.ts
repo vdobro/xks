@@ -34,12 +34,14 @@ describe('SessionModeChooserComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [SessionModeChooserComponent],
+			imports: [
+				HttpClientTestingModule,
+			],
+			declarations: [
+				SessionModeChooserComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionModeChooserComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

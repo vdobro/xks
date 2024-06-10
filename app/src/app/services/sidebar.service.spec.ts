@@ -21,6 +21,7 @@
 
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {SidebarService} from '@app/services/sidebar.service';
 
@@ -31,10 +32,15 @@ import {SidebarService} from '@app/services/sidebar.service';
 describe('SidebarService', () => {
 	let service: SidebarService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				FormsModule,
+				ReactiveFormsModule,
+				HttpClientTestingModule
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(SidebarService);
 	});
 

@@ -22,8 +22,12 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {SidebarFlashcardSetListElementComponent} from "@app/components/sidebar-deck-element/sidebar-flashcard-set-list-element.component";
+import {
+	ConfirmDeleteElementModalComponent
+} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,13 +41,16 @@ describe('SidebarFlashcardSetElementComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
-				RouterTestingModule
+				RouterTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
 			],
-			declarations: [SidebarFlashcardSetListElementComponent]
+			declarations: [
+				SidebarFlashcardSetListElementComponent,
+				ConfirmDeleteElementModalComponent
+			]
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SidebarFlashcardSetListElementComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

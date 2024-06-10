@@ -20,10 +20,12 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {GraphToolbarComponent} from '@app/components/graph-toolbar/graph-toolbar.component';
+import {
+	ConfirmDeleteElementModalComponent
+} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -35,12 +37,15 @@ describe('GraphToolbarComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [GraphToolbarComponent]
+			imports: [
+				HttpClientTestingModule,
+			],
+			declarations: [
+				GraphToolbarComponent,
+				ConfirmDeleteElementModalComponent,
+			]
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(GraphToolbarComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

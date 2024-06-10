@@ -39,11 +39,11 @@ describe('SessionViewComponent', () => {
 				RouterTestingModule,
 				HttpClientTestingModule,
 			],
-			declarations: [SessionViewComponent]
+			declarations: [
+				SessionViewComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

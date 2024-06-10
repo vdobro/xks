@@ -31,10 +31,13 @@ import {TableElementService} from '@app/services/table-element.service';
 describe('TableElementService', () => {
 	let service: TableElementService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(TableElementService);
 	});
 

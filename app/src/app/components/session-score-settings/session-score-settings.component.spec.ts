@@ -21,8 +21,10 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {SessionScoreSettingsComponent} from '@app/components/session-score-settings/session-score-settings.component';
+import {NewDeckModalComponent} from "@app/components/new-deck-modal/new-deck-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,12 +36,17 @@ describe('SessionScoreSettingsComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [SessionScoreSettingsComponent]
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				SessionScoreSettingsComponent,
+				NewDeckModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionScoreSettingsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

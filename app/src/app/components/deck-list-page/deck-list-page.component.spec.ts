@@ -20,10 +20,10 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {DeckListPageComponent} from '@app/components/deck-list-page/deck-list-page.component';
+import {DeckListViewComponent} from "@app/components/deck-list-view/deck-list-view.component";
 
 describe('DeckListPageComponent', () => {
 	let component: DeckListPageComponent;
@@ -31,12 +31,15 @@ describe('DeckListPageComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [DeckListPageComponent]
+			imports: [
+				HttpClientTestingModule,
+			],
+			declarations: [
+				DeckListPageComponent,
+				DeckListViewComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(DeckListPageComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

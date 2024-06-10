@@ -40,11 +40,12 @@ describe('DeckListCardComponent', () => {
 				HttpClientTestingModule,
 				RouterTestingModule,
 			],
-			declarations: [DeckListCardComponent, TestHostComponent]
+			declarations: [
+				DeckListCardComponent,
+				TestHostComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TestHostComponent);
 		component = fixture.componentInstance;
 		component.deck = generateDeck();

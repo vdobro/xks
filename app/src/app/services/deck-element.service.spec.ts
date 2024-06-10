@@ -31,10 +31,13 @@ import {DeckElementService} from '@app/services/deck-element.service';
 describe('DeckElementService', () => {
 	let service: DeckElementService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(DeckElementService);
 	});
 

@@ -22,8 +22,10 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {TopBarComponent} from '@app/components/top-bar/top-bar.component';
+import {LoginModalComponent} from "@app/components/login-modal/login-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -38,12 +40,15 @@ describe('TopBarComponent', () => {
 			imports: [
 				HttpClientTestingModule,
 				RouterTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
 			],
-			declarations: [TopBarComponent]
+			declarations: [
+				TopBarComponent,
+				LoginModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TopBarComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

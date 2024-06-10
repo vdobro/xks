@@ -39,11 +39,11 @@ describe('SessionSetupModalComponent', () => {
 				HttpClientTestingModule,
 				RouterTestingModule,
 			],
-			declarations: [SessionSetupModalComponent]
+			declarations: [
+				SessionSetupModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionSetupModalComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

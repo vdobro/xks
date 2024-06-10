@@ -19,9 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {DeckListNavbarComponent} from '@app/components/deck-list-navbar/deck-list-navbar.component';
+import {NewDeckModalComponent} from "@app/components/new-deck-modal/new-deck-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,13 +34,19 @@ describe('DeckListNavbarComponent', () => {
 	let component: DeckListNavbarComponent;
 	let fixture: ComponentFixture<DeckListNavbarComponent>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
-			declarations: [DeckListNavbarComponent]
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				DeckListNavbarComponent,
+				NewDeckModalComponent,
+			],
 		}).compileComponents();
-	}));
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(DeckListNavbarComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

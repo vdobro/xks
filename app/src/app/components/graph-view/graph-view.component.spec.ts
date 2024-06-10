@@ -24,6 +24,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 
 import {GraphViewComponent} from '@app/components/graph-view/graph-view.component';
+import {ElementTitleComponent} from "@app/components/element-title/element-title.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,13 +38,16 @@ describe('GraphViewComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
-				RouterTestingModule,
+				RouterTestingModule.withRoutes([
+					{path: 'decks', component: GraphViewComponent}
+				]),
 			],
-			declarations: [GraphViewComponent]
+			declarations: [
+				GraphViewComponent,
+				ElementTitleComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(GraphViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

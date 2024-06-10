@@ -37,8 +37,8 @@ import {ExerciseTaskService} from "@app/services/exercise-task.service";
 describe('StudySessionService', () => {
 	let service: StudySessionService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
 				RouterTestingModule,
@@ -52,7 +52,7 @@ describe('StudySessionService', () => {
 					])
 				},
 			],
-		});
+		}).compileComponents();
 		service = new StudySessionService(TestBed.inject(ExerciseTaskService));
 	});
 

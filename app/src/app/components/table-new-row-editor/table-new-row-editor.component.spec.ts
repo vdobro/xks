@@ -21,8 +21,10 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {TableNewRowEditorComponent} from '@app/components/table-new-row-editor/table-new-row-editor.component';
+import {NewDeckModalComponent} from "@app/components/new-deck-modal/new-deck-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,12 +36,17 @@ describe('TableNewRowEditorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [TableNewRowEditorComponent]
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				TableNewRowEditorComponent,
+				NewDeckModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableNewRowEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

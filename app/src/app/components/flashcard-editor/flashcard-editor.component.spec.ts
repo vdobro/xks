@@ -20,6 +20,7 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {FlashcardEditorComponent} from '@app/components/flashcard-editor/flashcard-editor.component';
 
@@ -33,11 +34,15 @@ describe('FlashcardEditorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [FlashcardEditorComponent]
+			imports: [
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				FlashcardEditorComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(FlashcardEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

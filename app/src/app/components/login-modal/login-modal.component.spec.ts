@@ -20,6 +20,7 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
@@ -35,12 +36,16 @@ describe('LoginModalComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [LoginModalComponent]
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				LoginModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(LoginModalComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

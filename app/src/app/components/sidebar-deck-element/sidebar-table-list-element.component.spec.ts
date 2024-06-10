@@ -22,8 +22,13 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {SidebarTableListElementComponent} from "@app/components/sidebar-deck-element/sidebar-table-list-element.component";
+import {
+	ConfirmDeleteElementModalComponent
+} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
+import {DeckListCardComponent} from "@app/components/deck-list-card/deck-list-card.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -37,13 +42,17 @@ describe('SidebarTableListElementComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
-				RouterTestingModule
+				RouterTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
 			],
-			declarations: [SidebarTableListElementComponent]
+			declarations: [
+				SidebarTableListElementComponent,
+				ConfirmDeleteElementModalComponent,
+				DeckListCardComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SidebarTableListElementComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

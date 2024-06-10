@@ -31,10 +31,13 @@ import {GraphSessionService} from '@app/services/graph-session.service';
 describe('GraphSessionService', () => {
 	let service: GraphSessionService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(GraphSessionService);
 	});
 

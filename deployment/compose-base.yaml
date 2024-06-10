@@ -1,6 +1,6 @@
 services:
   db:
-    image: couchdb:3.3
+    image: couchdb:$COUCHDB_VERSION
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.xks-couchdb.entrypoints=web"
@@ -15,7 +15,7 @@ services:
     volumes:
       - db_data:/opt/couchdb/data
   web:
-    image: dobrovolskis/xks:0.1-SNAPSHOT
+    image: dobrovolskis/xks:$XKS_VERSION
     depends_on:
       - db
     labels:

@@ -35,9 +35,7 @@ describe('SessionQuestionViewComponent', () => {
 		await TestBed.configureTestingModule({
 			declarations: [SessionQuestionViewComponent]
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionQuestionViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

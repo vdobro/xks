@@ -20,8 +20,20 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {TableColumnComponent} from '@app/components/table-column/table-column.component';
+import {LoginModalComponent} from "@app/components/login-modal/login-modal.component";
+import {
+	AlternativeAnswerEditorComponent
+} from "@app/components/alternative-answer-editor/alternative-answer-editor.component";
+import {
+	ConfirmDeleteElementModalComponent
+} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
+import {DeckListCardComponent} from "@app/components/deck-list-card/deck-list-card.component";
+import {
+	ConfirmDeleteTableColumnModalComponent
+} from "@app/components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -33,11 +45,20 @@ describe('TableColumnComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [TableColumnComponent]
+			imports: [
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				TableColumnComponent,
+				LoginModalComponent,
+				AlternativeAnswerEditorComponent,
+				ConfirmDeleteElementModalComponent,
+				DeckListCardComponent,
+				ConfirmDeleteTableColumnModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableColumnComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

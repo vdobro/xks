@@ -20,9 +20,9 @@
  */
 
 import {TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {TableSessionModeService} from '@app/services/table-session-mode.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,10 +31,13 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 describe('TableSessionModeService', () => {
 	let service: TableSessionModeService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(TableSessionModeService);
 	});
 

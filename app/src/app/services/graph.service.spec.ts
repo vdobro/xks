@@ -32,10 +32,13 @@ import {GraphService} from '@app/services/graph.service';
 describe('GraphService', () => {
 	let service: GraphService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(GraphService);
 	});
 

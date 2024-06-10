@@ -22,8 +22,14 @@
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {AppComponent} from '@app/app.component';
+import {TopBarComponent} from "@app/components/top-bar/top-bar.component";
+import {
+	AlternativeAnswerEditorComponent
+} from "@app/components/alternative-answer-editor/alternative-answer-editor.component";
+import {LoginModalComponent} from "@app/components/login-modal/login-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -34,10 +40,15 @@ describe('AppComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
-				RouterTestingModule
+				RouterTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
 			],
 			declarations: [
-				AppComponent
+				AppComponent,
+				LoginModalComponent,
+				TopBarComponent,
+				AlternativeAnswerEditorComponent,
 			],
 		}).compileComponents();
 	});

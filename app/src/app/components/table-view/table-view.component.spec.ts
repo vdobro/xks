@@ -21,12 +21,20 @@
 
 import {v4 as uuid} from 'uuid';
 
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {Component, ViewChild} from "@angular/core";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {Table} from "@app/models/table";
 
 import {TableViewComponent} from '@app/components/table-view/table-view.component';
+import {LoginModalComponent} from "@app/components/login-modal/login-modal.component";
+import {
+	AlternativeAnswerEditorComponent
+} from "@app/components/alternative-answer-editor/alternative-answer-editor.component";
+import {
+	ConfirmDeleteElementModalComponent
+} from "@app/components/confirm-delete-element-modal/confirm-delete-element-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -36,13 +44,20 @@ describe('TableViewComponent', () => {
 	let component: TestHostComponent;
 	let fixture: ComponentFixture<TestHostComponent>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
-			declarations: [TableViewComponent]
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				TableViewComponent,
+				LoginModalComponent,
+				AlternativeAnswerEditorComponent,
+				ConfirmDeleteElementModalComponent,
+			],
 		}).compileComponents();
-	}));
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TestHostComponent);
 		component = fixture.componentInstance;
 		component.table = generateTable();

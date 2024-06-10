@@ -21,6 +21,7 @@
 
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {DeckService} from '@app/services/deck.service';
 
@@ -31,10 +32,15 @@ import {DeckService} from '@app/services/deck.service';
 describe('DeckService', () => {
 	let service: DeckService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				FormsModule,
+				ReactiveFormsModule,
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(DeckService);
 	});
 

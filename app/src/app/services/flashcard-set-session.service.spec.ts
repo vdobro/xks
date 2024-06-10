@@ -21,6 +21,7 @@
 
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {FlashcardSetSessionService} from '@app/services/flashcard-set-session.service';
 
@@ -31,10 +32,15 @@ import {FlashcardSetSessionService} from '@app/services/flashcard-set-session.se
 describe('FlashcardSetSessionService', () => {
 	let service: FlashcardSetSessionService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+			    ReactiveFormsModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(FlashcardSetSessionService);
 	});
 

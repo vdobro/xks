@@ -21,6 +21,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {GraphLabelEditorComponent} from '@app/components/graph-label-editor/graph-label-editor.component';
 
@@ -34,12 +35,16 @@ describe('GraphLabelEditorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [GraphLabelEditorComponent]
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule
+			],
+			declarations: [
+				GraphLabelEditorComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(GraphLabelEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

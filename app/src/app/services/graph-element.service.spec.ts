@@ -31,10 +31,13 @@ import {GraphElementService} from '@app/services/graph-element.service';
 describe('GraphElementService', () => {
 	let service: GraphElementService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(GraphElementService);
 	});
 

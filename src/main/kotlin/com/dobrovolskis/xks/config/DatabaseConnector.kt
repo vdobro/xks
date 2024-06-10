@@ -25,6 +25,7 @@ import com.cloudant.client.api.ClientBuilder
 import com.cloudant.client.api.CloudantClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.net.URI
 import java.net.URL
 
 /**
@@ -37,7 +38,7 @@ class DatabaseConnector(private val persistenceConfiguration: PersistenceConfigu
 	@Bean
 	fun adminClient(): CloudantClient {
 		return ClientBuilder
-				.url(URL(persistenceConfiguration.url))
+				.url(URI.create(persistenceConfiguration.url).toURL())
 				.username(persistenceConfiguration.username)
 				.password(persistenceConfiguration.password)
 				.build()

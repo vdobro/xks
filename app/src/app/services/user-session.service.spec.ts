@@ -31,10 +31,13 @@ import {UserSessionService} from '@app/services/user-session.service';
 describe('UserSessionService', () => {
 	let service: UserSessionService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(UserSessionService);
 	});
 

@@ -20,7 +20,6 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {TopBarService} from '@app/services/top-bar.service';
@@ -32,10 +31,13 @@ import {TopBarService} from '@app/services/top-bar.service';
 describe('TopBarService', () => {
 	let service: TopBarService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule]
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(TopBarService);
 	});
 

@@ -31,10 +31,13 @@ import {NavigationControlService} from '@app/services/navigation-control.service
 describe('NavigationControlService', () => {
 	let service: NavigationControlService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(NavigationControlService);
 	});
 

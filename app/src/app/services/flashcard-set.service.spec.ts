@@ -20,9 +20,13 @@
  */
 
 import {TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {FlashcardSetService} from '@app/services/flashcard-set.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {
+	ConfirmDeleteTableColumnModalComponent
+} from "@app/components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,12 +35,18 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 describe('FlashcardSetService', () => {
 	let service: FlashcardSetService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientTestingModule,
-			]
-		});
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				ConfirmDeleteTableColumnModalComponent,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(FlashcardSetService);
 	});
 

@@ -21,7 +21,7 @@
 
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {RouterModule} from "@angular/router";
+import {Route, RouterModule} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -74,6 +74,19 @@ const DECK_ROUTE = `decks/:${DECK_ID_PARAM}`;
 const TABLE_ROUTE = `${DECK_ROUTE}/tables/:${TABLE_ID_PARAM}`;
 const GRAPH_ROUTE = `${DECK_ROUTE}/graphs/:${GRAPH_ID_PARAM}`;
 const FLASHCARD_ROUTE = `${DECK_ROUTE}/cards/:${FLASHCARD_SET_ID_PARAM}`;
+
+export const ROUTES: Route[] = [
+	{path: '', redirectTo: 'decks', pathMatch: 'full'},
+	{path: 'decks', component: DeckListPageComponent},
+	{path: DECK_ROUTE, component: DeckViewComponent},
+	{path: `${TABLE_ROUTE}/edit`, component: TableViewComponent},
+	{path: `${TABLE_ROUTE}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
+	{path: `${GRAPH_ROUTE}/edit`, component: GraphViewComponent},
+	{path: `${GRAPH_ROUTE}/learn`, component: SessionViewComponent},
+	{path: `${FLASHCARD_ROUTE}/edit`, component: FlashcardSetViewComponent},
+	{path: `${FLASHCARD_ROUTE}/learn`, component: SessionViewComponent},
+	{path: '**', component: NotFoundViewComponent},
+];
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -128,18 +141,7 @@ const FLASHCARD_ROUTE = `${DECK_ROUTE}/cards/:${FLASHCARD_SET_ID_PARAM}`;
 	imports: [
 		BrowserModule,
 		HttpClientModule,
-		RouterModule.forRoot([
-			{path: '', redirectTo: '/decks', pathMatch: 'full'},
-			{path: 'decks', component: DeckListPageComponent},
-			{path: DECK_ROUTE, component: DeckViewComponent},
-			{path: `${TABLE_ROUTE}/edit`, component: TableViewComponent},
-			{path: `${TABLE_ROUTE}/learn/:${TABLE_SESSION_MODE_ID_PARAM}`, component: SessionViewComponent},
-			{path: `${GRAPH_ROUTE}/edit`, component: GraphViewComponent},
-			{path: `${GRAPH_ROUTE}/learn`, component: SessionViewComponent},
-			{path: `${FLASHCARD_ROUTE}/edit`, component: FlashcardSetViewComponent},
-			{path: `${FLASHCARD_ROUTE}/learn`, component: SessionViewComponent},
-			{path: '**', component: NotFoundViewComponent},
-		], {useHash: true}),
+		RouterModule.forRoot(ROUTES, {useHash: true}),
 		FormsModule,
 		ReactiveFormsModule,
 		DragDropModule,

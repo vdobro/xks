@@ -21,8 +21,10 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {NewDeckModalComponent} from '@app/components/new-deck-modal/new-deck-modal.component';
+
 /**
  * @author Vitalijus Dobrovolskis
  * @since 2020.03.14
@@ -33,12 +35,14 @@ describe('NewDeckModalComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
 			declarations: [NewDeckModalComponent]
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(NewDeckModalComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

@@ -33,11 +33,11 @@ describe('AlternativeAnswerEditorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [AlternativeAnswerEditorComponent]
+			declarations: [
+				AlternativeAnswerEditorComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(AlternativeAnswerEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

@@ -34,6 +34,7 @@ import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
+import java.net.URI
 import java.net.URL
 
 /**
@@ -120,7 +121,7 @@ class DatabaseSetupService(
 		val slash = "/"
 		val separator = if (!base.endsWith(slash)) slash else ""
 
-		return URL(base + separator + path)
+		return URI.create(base + separator + path).toURL()
 	}
 
 	private fun getCorsOrigins(): String {

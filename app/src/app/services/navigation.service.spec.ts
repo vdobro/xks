@@ -20,7 +20,6 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 
@@ -33,10 +32,14 @@ import {NavigationService} from '@app/services/navigation.service';
 describe('NavigationService', () => {
 	let service: NavigationService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, RouterTestingModule],
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(NavigationService);
 	});
 

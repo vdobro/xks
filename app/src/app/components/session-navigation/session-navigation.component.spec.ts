@@ -35,12 +35,15 @@ describe('SessionNavigationComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, RouterTestingModule],
-			declarations: [SessionNavigationComponent]
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule,
+			],
+			declarations: [
+				SessionNavigationComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionNavigationComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

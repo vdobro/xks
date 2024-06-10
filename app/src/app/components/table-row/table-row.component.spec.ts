@@ -19,10 +19,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {TableRowComponent} from '@app/components/table-row/table-row.component';
+import {DeckListCardComponent} from "@app/components/deck-list-card/deck-list-card.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -32,14 +34,19 @@ describe('TableRowComponent', () => {
 	let component: TableRowComponent;
 	let fixture: ComponentFixture<TableRowComponent>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [TableRowComponent]
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				TableRowComponent,
+				DeckListCardComponent,
+			],
 		}).compileComponents();
-	}));
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableRowComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

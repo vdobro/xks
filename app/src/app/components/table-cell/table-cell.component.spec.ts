@@ -20,7 +20,6 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 import {TableCellComponent} from '@app/components/table-cell/table-cell.component';
@@ -35,12 +34,14 @@ describe('TableCellComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [TableCellComponent]
+			imports: [
+				HttpClientTestingModule
+			],
+			declarations: [
+				TableCellComponent
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableCellComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

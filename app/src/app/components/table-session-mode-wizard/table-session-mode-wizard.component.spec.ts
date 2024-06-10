@@ -34,12 +34,14 @@ describe('TableSessionModeWizardComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [TableSessionModeWizardComponent]
+			imports: [
+				HttpClientTestingModule,
+			],
+			declarations: [
+				TableSessionModeWizardComponent
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableSessionModeWizardComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

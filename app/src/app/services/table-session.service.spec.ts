@@ -31,11 +31,16 @@ import {TableSessionService} from '@app/services/table-session.service';
 describe('TableSessionService', () => {
 	let service: TableSessionService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			providers: [TableSessionService]
-		});
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule
+			],
+			providers: [
+				TableSessionService,
+			],
+		}).compileComponents();
+
 		service = TestBed.inject(TableSessionService);
 	});
 

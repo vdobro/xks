@@ -22,12 +22,21 @@
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {Component, ViewChild} from "@angular/core";
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {Deck} from "@app/models/deck";
 
 import {MockData} from "@app/services/mock-data";
 
 import {DeckListViewComponent} from '@app/components/deck-list-view/deck-list-view.component';
+import {DeckListCardComponent} from "@app/components/deck-list-card/deck-list-card.component";
+import {LoginModalComponent} from "@app/components/login-modal/login-modal.component";
+import {
+	AlternativeAnswerEditorComponent
+} from "@app/components/alternative-answer-editor/alternative-answer-editor.component";
+import {
+	ConfirmDeleteTableColumnModalComponent
+} from "@app/components/confirm-delete-table-column-modal/confirm-delete-table-column-modal.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -39,12 +48,21 @@ describe('DeckListViewComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [DeckListViewComponent, TestHostComponent]
+			imports: [
+				HttpClientTestingModule,
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				DeckListViewComponent,
+				TestHostComponent,
+				DeckListCardComponent,
+				LoginModalComponent,
+				AlternativeAnswerEditorComponent,
+				ConfirmDeleteTableColumnModalComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TestHostComponent);
 		component = fixture.componentInstance;
 		component.setDecks(MockData.decks);

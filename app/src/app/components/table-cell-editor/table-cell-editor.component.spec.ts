@@ -19,9 +19,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {TableCellEditorComponent} from '@app/components/table-cell-editor/table-cell-editor.component';
+import {
+	AlternativeAnswerEditorComponent
+} from "@app/components/alternative-answer-editor/alternative-answer-editor.component";
 
 /**
  * @author Vitalijus Dobrovolskis
@@ -31,13 +35,18 @@ describe('TableCellEditorComponent', () => {
 	let component: TableCellEditorComponent;
 	let fixture: ComponentFixture<TableCellEditorComponent>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
-			declarations: [TableCellEditorComponent]
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				FormsModule,
+				ReactiveFormsModule,
+			],
+			declarations: [
+				TableCellEditorComponent,
+				AlternativeAnswerEditorComponent,
+			],
 		}).compileComponents();
-	}));
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(TableCellEditorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

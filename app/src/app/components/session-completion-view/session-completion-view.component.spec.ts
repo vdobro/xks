@@ -35,12 +35,15 @@ describe('SessionCompletionViewComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, RouterTestingModule],
-			declarations: [SessionCompletionViewComponent]
+			imports: [
+				HttpClientTestingModule,
+				RouterTestingModule
+			],
+			declarations: [
+				SessionCompletionViewComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(SessionCompletionViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

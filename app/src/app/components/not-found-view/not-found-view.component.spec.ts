@@ -39,11 +39,11 @@ describe('NotFoundViewComponent', () => {
 				HttpClientTestingModule,
 				RouterTestingModule,
 			],
-			declarations: [NotFoundViewComponent]
+			declarations: [
+				NotFoundViewComponent,
+			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(NotFoundViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
