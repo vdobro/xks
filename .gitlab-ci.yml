@@ -28,6 +28,9 @@ build:
 # See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 verify:
   stage: test
+  before_script:
+    - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - apt install -y ./google-chrome-stable_current_amd64.deb
   script:
     - mvn $MAVEN_CLI_OPTS verify
   except:

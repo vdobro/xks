@@ -14,5 +14,5 @@ LATEST_TAG="dobrovolskis/xks:latest"
 docker build -t "$IMAGE_TAG" .
 docker tag "$IMAGE_TAG" "$LATEST_TAG"
 
-#docker push "$IMAGE_TAG"
-#docker push "$LATEST_TAG"
+docker push "$IMAGE_TAG"
+docker push "$LATEST_TAG"
