@@ -1,9 +1,9 @@
-<div *ngIf="cardSet" class="uk-container">
+<div *ngIf="cardSet" class="uk-container uk-container-expand">
 	<div class="uk-grid-divider uk-grid-medium uk-grid-row-large uk-grid-match" uk-grid uk-height-match>
 		<app-element-title [name]="cardSet.name"></app-element-title>
 	</div>
 	<div class="uk-margin uk-margin-xlarge-bottom">
-		<div class="uk-grid-small uk-child-width-1-2@l uk-child-width-1-1@s"
+		<div class="uk-grid-small uk-child-width-1-3@xl uk-child-width-1-2@l uk-child-width-1-1@s"
 			 uk-grid
 			 *ngIf="cardSet">
 			<app-flashcard-editor *ngFor="let card of cards"
